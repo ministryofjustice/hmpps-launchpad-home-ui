@@ -1,0 +1,38 @@
+.internal-link-tile {
+    background-color: govuk-colour("blue");
+    padding-bottom: govuk-spacing(4);
+    border: solid 1px govuk-colour("mid-grey");
+
+    &:hover,
+    &:focus-within {
+        border: solid 1px govuk-colour("dark-grey")
+    }
+
+    a {
+        padding: govuk-spacing(4) govuk-spacing(4) govuk-spacing(0) govuk-spacing(4);
+        display: block;
+        height: 100%;
+        text-decoration: none;
+        box-shadow: 0px -5px 0px 0px govuk-colour("mid-grey") inset;
+
+        &:hover {
+            background-color: govuk-colour("dark-blue");
+            box-shadow: 0px -5px 0px 0px govuk-colour("dark-grey") inset;
+        }
+
+        &:focus {
+            background-color: govuk-colour("yellow");
+            box-shadow: 0px -5px 0px 0px govuk-colour("dark-grey") inset;
+
+            p,
+            h2 {
+                color: govuk-colour("black");
+            }
+        }
+
+        p,
+        h2 {
+            color: govuk-colour("white");
+        }
+    }
+}

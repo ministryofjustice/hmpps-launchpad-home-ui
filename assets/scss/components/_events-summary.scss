@@ -1,0 +1,14 @@
+/* 
+==========================================================================
+    COMPONENTS / EVENTS SUMMARY
+========================================================================== 
+*/
+
+.events-summary {
+    border: 5px solid govuk-colour("blue");
+
+    > *:first-child {
+        background-image: url('/assets/images/icon-calendar.svg');
+        background-repeat: no-repeat;
+    }
+}

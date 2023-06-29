@@ -1,0 +1,19 @@
+{% from "../link-tile/index.njk" import linkTile %}
+
+{% macro tilesPanel(params, user) %}
+    <section class="govuk-grid-row tiles-panel govuk-width-container">
+        {% if params.title %}
+            <h2>{{ params.title }}</h2>
+        {% endif %}
+
+        {% for link in params.links %}
+            {{ linkTile ({
+                image: link.image,
+                title: link.title,
+                url: link.url,
+                description: link.description,
+                openInNewTab: link.openInNewTab
+            }) }}
+        {% endfor %}
+    </section>
+{% endmacro %}
