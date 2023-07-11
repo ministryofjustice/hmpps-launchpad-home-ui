@@ -15,10 +15,10 @@
         align-items: stretch;
         transition: transform 0.5s ease;
         background-color:  govuk-colour("white");
-        box-shadow: 0px -5px 0px 0px govuk-colour("mid-grey") inset;
+        box-shadow: 0 -5px 0 0 govuk-colour("mid-grey") inset;
         
         &:hover {
-            box-shadow: 0px -5px 0px 0px govuk-colour("dark-grey") inset;
+            box-shadow: 0 -5px 0 0 govuk-colour("dark-grey") inset;
         }
 
         &:hover h3 {
@@ -27,7 +27,7 @@
 
         &:focus {
             background-color: govuk-colour("yellow");
-            box-shadow: 0px -5px 0px 0px govuk-colour("dark-grey") inset;
+            box-shadow: 0 -5px 0 0 govuk-colour("dark-grey") inset;
         }
 
         &:focus h3 {
