@@ -3,7 +3,7 @@ import cookieSession from 'cookie-session'
 import createError from 'http-errors'
 import path from 'path'
 
-import routes from '../index'
+import routes from '../homepage/index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/auth'

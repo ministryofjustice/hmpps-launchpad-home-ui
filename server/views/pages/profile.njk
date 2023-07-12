@@ -1,0 +1,25 @@
+{% extends "../partials/layout.njk" %}
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {{ breadCrumb('Profile') }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-column-full">
+    
+    <h1 class="govuk-grid-row">Profile</h1>
+
+    <div class="govuk-grid-row">
+    
+      <a class="govuk-link" href="/timetable">View my timetable</a>
+    
+    </div>
+
+  </div>
+
+{% endblock %}

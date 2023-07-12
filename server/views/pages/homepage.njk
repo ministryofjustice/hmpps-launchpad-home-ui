@@ -1,0 +1,37 @@
+{% extends "../partials/homepage-layout.njk" %}
+
+{% from "components/events-summary/index.njk" import eventsSummary %}
+{% from "components/tiles-panel/index.njk" import tilesPanel %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "govuk-body govuk-!-margin-bottom-0 govuk-!-padding-bottom-0" %}
+
+{% block content %}
+
+  <div>
+
+    <section class="govuk-grid-row govuk-width-container">
+      <time class="govuk-heading-l">{{ today }}</time>
+    </section>
+
+    <section class="govuk-grid-row flex govuk-!-padding-bottom-8 govuk-width-container">
+      <div class="govuk-grid-column-three-quarters govuk-!-padding-left-0">
+        {{ eventsSummary(eventsData, user) }}
+      </div>
+
+      <div class="govuk-grid-column-one-quarter govuk-!-padding-top-0 govuk-!-padding-left-0 govuk-!-padding-right-0 internal-link-tile">
+        <a href="/profile">
+          <h2 class="govuk-!-font-size-24 govuk-!-margin-top-0">Profile</h2>
+          <p>Check money, visits, IEP, adjudications and timetable</p> 
+        </a>
+      </div>
+
+    </section>
+  
+    <div class="container-background-black govuk-!-padding-top-8 govuk-!-padding-bottom-8">
+      {{ tilesPanel(linksData, user) }}
+    </div>
+
+  </div>
+
+{% endblock %}

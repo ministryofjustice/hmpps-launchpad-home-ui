@@ -1,0 +1,17 @@
+{% extends "../partials/layout.njk" %}
+
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {% set breadCrumbList = [{ href: '/profile', title: 'Profile'}] %}
+  {{ breadCrumb('Timetable', breadCrumbList) }}
+{% endblock %}
+
+{% block content %}
+
+  <h1>Timetable</h1>
+
+{% endblock %}
