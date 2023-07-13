@@ -14,20 +14,19 @@
       <time class="govuk-heading-l">{{ today }}</time>
     </section>
 
-    <section class="govuk-grid-row flex govuk-!-padding-bottom-8 govuk-width-container">
-      <div class="govuk-grid-column-three-quarters govuk-!-padding-left-0">
+    <section class="fill-row-height-from-desktop govuk-grid-row govuk-!-padding-bottom-8 govuk-width-container"><!-- flex -->
+      <div class="govuk-grid-column-three-quarters-from-desktop govuk-!-padding-left-0">
         {{ eventsSummary(eventsData, user) }}
       </div>
 
-      <div class="govuk-grid-column-one-quarter govuk-!-padding-top-0 govuk-!-padding-left-0 govuk-!-padding-right-0 internal-link-tile">
+      <div class="govuk-grid-column-one-quarter-from-desktop govuk-!-padding-top-0 govuk-!-padding-left-0 govuk-!-padding-right-0 internal-link-tile">
         <a href="/profile">
           <h2 class="govuk-!-font-size-24 govuk-!-margin-top-0">Profile</h2>
           <p>Check money, visits, IEP, adjudications and timetable</p> 
         </a>
       </div>
-
     </section>
-  
+
     <div class="container-background-black govuk-!-padding-top-8 govuk-!-padding-bottom-8">
       {{ tilesPanel(linksData, user) }}
     </div>

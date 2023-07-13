@@ -1,29 +1,28 @@
 {% macro eventsSummary(params, user) %}
   <div class="events-summary govuk-!-padding-4">
     <div class="govuk-!-padding-left-8 ">
-      <h2 class="govuk-heading-m">{% if params.isTomorrow %}Tomorrow{% else %}Today{% endif %}'s events</h2>
+      <h2 class="govuk-heading-s">{% if params.isTomorrow %}Tomorrow{% else %}Today{% endif %}'s events</h2>
     </div>
 
-    <div class="govuk-!-padding-left-8">
-      <div class="govuk-!-padding-bottom-4 govuk-grid-column-full govuk-!-padding-left-0">
-        {% if params.error %}
-          <span data-test="event-error" class="govuk-!-font-size-24">
-            {{ params.error }}, <a href="{{ params.authReturnUrl }}" class="govuk-link">try again</a>
-          </span>
-        {% elif not params.events | length %}
-            <span data-test="no-events">You have no events today</span>
-        {% else %}
-          {% for event in params.events %}
-            <div class="govuk-grid-column-full govuk-!-padding-left-0">
-              <span class="govuk-grid-column-one-quarter govuk-!-padding-left-0">{{event.timeString}}</span>
-              <span class="govuk-grid-column-three-quarters govuk-!-padding-left-0"><strong>{{event.description}}</strong> {{event.location}}</span>
-            </div> 
-          {% endfor %}
-        {% endif %}
-      </div>
-      <div>
-        <a href="/timetable" class="govuk-link">View my timetable</a>
-      </div>
+    <div class="govuk-!-padding-bottom-2">
+      {% if params.error %}
+        <span data-test="event-error" class="govuk-!-font-size-24">
+          {{ params.error }}, <a href="{{ params.authReturnUrl }}" class="govuk-link">try again</a>
+        </span>
+      {% elif not params.events | length %}
+          <span data-test="no-events">You have no events today</span>
+      {% else %}
+        {% for event in params.events %}
+          <div class="govuk-!-padding-left-8 event-details govuk-!-margin-bottom-2">
+            <div class="time">{{event.timeString}}</div>
+            <div class="description"><strong>{{event.description}}</strong> {{event.location}}</div>
+          </div> 
+        {% endfor %}
+      {% endif %}
     </div>
+    <div class="govuk-!-padding-left-8">
+      <a href="/timetable" class="govuk-link">View my timetable</a>
+    </div>
+
   </div>
 {% endmacro %}

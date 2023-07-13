@@ -7,8 +7,30 @@
 .events-summary {
     border: 5px solid govuk-colour("blue");
 
-    > *:first-child {
-        background-image: url('/assets/images/icon-calendar.svg');
-        background-repeat: no-repeat;
+    @media(min-width: 640px) {
+        > *:first-child {
+            background-image: url('/assets/images/icon-calendar.svg');
+            background-repeat: no-repeat;
+        }
+    }
+    
+    .event-details {
+        display: flex;
+
+        @media(max-width: 1100px) {
+            flex-direction: column;
+        }
+
+        @media(min-width: 1100px) {
+            flex-direction: row;
+        }
+
+        justify-content: flex-start;
+
+        .time {
+            @media(min-width: 1100px) {
+                min-width: 25%;
+            }
+        }
     }
 }
