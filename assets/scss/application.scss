@@ -13,6 +13,7 @@ $govuk-page-width: $moj-page-width;
 @import './components/link-tile';
 @import './components/internal-link-tile';
 
+@import './pages/homepage';
+
 @import './tables';
 @import './local';
-@import './utils';
