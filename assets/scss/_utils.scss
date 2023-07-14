@@ -1,3 +1,6 @@
-.flex {
-    display: flex;
+@media(min-width: 48.0625em) {
+    .fill-row-height-from-desktop {
+        display: flex;
+        align-items: stretch;
+    }
 }

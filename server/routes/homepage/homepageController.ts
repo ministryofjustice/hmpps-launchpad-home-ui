@@ -42,7 +42,7 @@ export default class PrisonStatusController {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
         title: 'Content Hub',
         url: '#',
-        description: 'Watch, readand listen to local and national content',
+        description: 'Watch, read and listen to local and national content',
         openInNewTab: false,
       },
       {
