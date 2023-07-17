@@ -1,8 +1,7 @@
 {% macro eventsSummary(params, user) %}
   <div class="events-summary govuk-!-padding-4">
-    <div class="govuk-!-padding-left-8 ">
-      <h2 class="govuk-heading-s">{% if params.isTomorrow %}Tomorrow{% else %}Today{% endif %}'s events</h2>
-    </div>
+    
+    <h2 class="govuk-heading-s">{% if params.isTomorrow %}Tomorrow{% else %}Today{% endif %}'s events</h2>
 
     <div class="govuk-!-padding-bottom-2">
       {% if params.error %}
@@ -13,16 +12,15 @@
           <span data-test="no-events">You have no events today</span>
       {% else %}
         {% for event in params.events %}
-          <div class="govuk-!-padding-left-8 event-details govuk-!-margin-bottom-2">
+          <div class="event-details govuk-!-margin-bottom-2">
             <div class="time">{{event.timeString}}</div>
             <div class="description"><strong>{{event.description}}</strong> {{event.location}}</div>
           </div> 
         {% endfor %}
       {% endif %}
     </div>
-    <div class="govuk-!-padding-left-8">
-      <a href="/timetable" class="govuk-link">View my timetable</a>
-    </div>
+
+    <a href="/timetable" class="govuk-link" id="view-timetable-link">View my timetable</a>
 
   </div>
 {% endmacro %}
