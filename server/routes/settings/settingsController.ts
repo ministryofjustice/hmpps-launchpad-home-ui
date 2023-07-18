@@ -42,7 +42,7 @@ export default class SettingsController {
         'Apps you allow access to',
         'Apps you remove access to',
       ],
-      sharedOn: '10 July 2023',
+      sharedOn: '17 July 2023',
       status: '',
     },
   ]

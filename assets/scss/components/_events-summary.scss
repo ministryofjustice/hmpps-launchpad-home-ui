@@ -1,34 +1,37 @@
-/* 
-==========================================================================
-    COMPONENTS / EVENTS SUMMARY
-========================================================================== 
-*/
-
 .events-summary {
     border: 5px solid govuk-colour("blue");
 
-    @media(min-width: 640px) {
+    @media(min-width: 40em) {
         > *:first-child {
             background-image: url('/assets/images/icon-calendar.svg');
             background-repeat: no-repeat;
+        }
+
+        h2,
+        #view-timetable-link {
+            padding-left: govuk-spacing(8);
         }
     }
     
     .event-details {
         display: flex;
 
-        @media(max-width: 1100px) {
+        @media(min-width: 40em) {
+            padding-left: govuk-spacing(8);
+        }
+
+        @media(max-width: 68.75em) {
             flex-direction: column;
         }
 
-        @media(min-width: 1100px) {
+        @media(min-width: 68.75em) {
             flex-direction: row;
         }
 
         justify-content: flex-start;
 
         .time {
-            @media(min-width: 1100px) {
+            @media(min-width: 68.75em) {
                 min-width: 25%;
             }
         }
