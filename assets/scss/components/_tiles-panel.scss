@@ -1,9 +1,11 @@
 .tiles-panel {
-    justify-content: flex-start;
+  padding: govuk-spacing(8) 0;
+  
+  div {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
-    
-    & > div:last-child {
-        margin-right: 0;
-      }
+    column-gap: .75%;
+    row-gap: .5em;
+  }
 }

@@ -1,7 +1,4 @@
 .link-tile {
-    max-width: 24.5%;
-    margin-right: 0.4%;
-    display: flex;
     border: solid 1px #D9DADB;
 
     &:hover,
@@ -10,10 +7,7 @@
     }
     
     a {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        transition: transform 0.5s ease;
+        text-decoration: none;
         background-color:  govuk-colour("white");
         box-shadow: 0 -5px 0 0 #D9DADB inset;
         
@@ -36,21 +30,23 @@
     }
 
     img {
-        max-width: 100%;
+        width: 100%;
     }
 
     footer {
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
 
         h3 {
             color: govuk-colour("blue");
         }
     }
 
-    @include govuk-media-query($until: tablet) {
-        flex: 0 0 100%;
-        max-width: 100%;
+    @media(max-width: 60.625em) {
+        flex: 0 0 48.8%;
+    }
+
+    @media(min-width: 60.626em) {
+        flex: 0 0 24%;
     }
 }
