@@ -25,7 +25,5 @@ export const initialiseName = (fullName?: string): string | null => {
 }
 
 export const formatDate = (date: Date): string => {
-  // add unit test for this function
-  // format date as per design
   return format(date, 'EEEE d MMMM, yyyy')
 }
