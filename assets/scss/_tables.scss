@@ -8,31 +8,3 @@
     vertical-align: middle;
   }
 }
-
-/* 
-==========================================================================
-    SETTINGS PAGE - TABLE STYLES
-========================================================================== 
-*/
-#settings-table {
-  td {
-    padding-top: govuk-spacing(4);
-    padding-bottom: govuk-spacing(4);
-  }
-
-  .two-column-cell {
-    display: flex;
-    margin-left: govuk-spacing(2);
-    flex-direction: column;
-    align-items: center;
-
-    @include govuk-media-query() {
-      flex-direction: row;
-
-      img {
-        height: 78px;
-        width: 104px;
-      }
-    }
-  }
-}
