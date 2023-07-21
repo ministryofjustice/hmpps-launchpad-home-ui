@@ -1,0 +1,42 @@
+#settings-table {
+    td {
+      padding-top: govuk-spacing(4);
+      padding-bottom: govuk-spacing(4);
+    }
+
+    .table-cell-vertical-align {
+        td {
+            vertical-align: middle;
+        }
+    }
+
+    .two-column-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+
+        img {
+            height: 78px;
+            width: 104px;
+            margin-top: 0;
+            margin-bottom: govuk-spacing(1);
+        }
+
+        p {
+            margin: 0;
+        }
+        
+        @media(min-width: 1280px) {
+            align-items: center;
+            flex-direction: row;
+            margin-left: govuk-spacing(2);
+
+            p {
+                margin-bottom: 0;
+                margin-left: 1em;
+            }
+    
+        }
+    }
+}
+  
