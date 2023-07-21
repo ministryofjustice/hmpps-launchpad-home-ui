@@ -135,9 +135,9 @@
 #profile-link {
   background-image: url('/assets/images/icon-profile.svg');
   background-repeat: no-repeat;
-  background-size: 23px;
+  background-size: 22px;
   @include govuk-media-query($from: tablet) {
-    background-size: 29px 27px;
+    background-size: 27px 25px;
   }
 
   a {
