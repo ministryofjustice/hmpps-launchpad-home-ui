@@ -1,4 +1,5 @@
 import { type RequestHandler, Router } from 'express'
+import { Application } from '../../@types/launchpad'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
@@ -8,7 +9,7 @@ export default function routes(services: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  const data = [
+  const applications: Application[] = [
     {
       details: {
         image: '/assets/images/logo-think-through-nutrition-104x78.png',
@@ -54,7 +55,7 @@ export default function routes(services: Services): Router {
     return res.render('pages/settings', {
       errors: req.flash('errors'),
       message: req.flash('message'),
-      data,
+      applications,
     })
   })
 

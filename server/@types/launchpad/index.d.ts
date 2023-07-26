@@ -22,3 +22,13 @@ export type LinksData = {
   title: string
   links: Link[]
 }
+
+export type Application = {
+  details: {
+    image: string
+    name: string
+  }
+  sharing: string[]
+  sharedOn: string
+  status: string
+}
