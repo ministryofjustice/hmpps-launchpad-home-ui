@@ -9,6 +9,9 @@ export default function routes(services: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
+  /* 
+    TEMP TEST DATA
+  */
   const applications: Application[] = [
     {
       details: {
@@ -50,6 +53,9 @@ export default function routes(services: Services): Router {
       status: '',
     },
   ]
+  /* 
+    END - TEMP TEST DATA
+  */
 
   get('/', (req, res) => {
     return res.render('pages/settings', {
