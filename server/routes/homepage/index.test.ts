@@ -27,10 +27,10 @@ describe('GET /', () => {
   })
 
   afterEach(() => {
-    UNILINK_URL = null
-    CONTENT_HUB_URL = null
-    NPR_URL = null
-    INSIDE_TIME_URL = null
+    UNILINK_URL = ''
+    CONTENT_HUB_URL = ''
+    NPR_URL = ''
+    INSIDE_TIME_URL = ''
   })
 
   it('should render the home page link tiles', () => {
