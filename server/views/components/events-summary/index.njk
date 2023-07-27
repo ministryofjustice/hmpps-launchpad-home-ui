@@ -12,7 +12,7 @@
           <span data-test="no-events">You have no events today</span>
       {% else %}
         {% for event in params.events %}
-          <div class="event-details govuk-!-margin-bottom-2">
+          <div class="event-details govuk-!-margin-bottom-2" data-test='event-detail-{{loop.index}}'>
             <div class="time">{{event.timeString}}</div>
             <div class="description"><strong>{{event.description}}</strong> {{event.location}}</div>
           </div> 

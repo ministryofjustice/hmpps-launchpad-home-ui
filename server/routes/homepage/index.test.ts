@@ -34,8 +34,6 @@ describe('GET /', () => {
   })
 
   it('should render the home page link tiles', () => {
-    app = appWithAllRoutes({})
-
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
@@ -62,6 +60,40 @@ describe('GET /', () => {
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) a').attr('href')).toBe(INSIDE_TIME_URL)
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) p').text()).toBe(
           'Read the national newspaper for prisoners and detainees',
+        )
+      })
+  })
+
+  it('should render the home page events summary panel', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.events-summary h2').text()).toBe("Today's events")
+
+        expect($('[data-test="event-detail-1"] .time').text()).toBe('8:30am to 11:45am')
+        expect($('[data-test="event-detail-1"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-2"] .time').text()).toBe('1:45pm to 4:45pm')
+        expect($('[data-test="event-detail-2"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-3"] .time').text()).toBe('6:30pm to 7:45pm')
+        expect($('[data-test="event-detail-3"] .description').text()).toBe('Event description Event location')
+
+        expect($('.events-summary a').text()).toBe('View my timetable')
+        expect($('.events-summary a').attr('href')).toBe('/timetable')
+      })
+  })
+
+  it('should render a profile link tile', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('#internal-link-tile-profile a').attr('href')).toBe('/profile')
+        expect($('#internal-link-tile-profile a h2').text()).toBe('Profile')
+        expect($('#internal-link-tile-profile a p').text()).toBe(
+          'Check money, visits, IEP, adjudications and timetable',
         )
       })
   })
