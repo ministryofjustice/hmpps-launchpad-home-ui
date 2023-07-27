@@ -34,8 +34,6 @@ describe('GET /', () => {
   })
 
   it('should render the home page link tiles', () => {
-    app = appWithAllRoutes({})
-
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
@@ -62,6 +60,20 @@ describe('GET /', () => {
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) a').attr('href')).toBe(INSIDE_TIME_URL)
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) p').text()).toBe(
           'Read the national newspaper for prisoners and detainees',
+        )
+      })
+  })
+
+  it('should render a profile link tile', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('#internal-link-tile-profile a').attr('href')).toBe('/profile')
+        expect($('#internal-link-tile-profile a h2').text()).toBe('Profile')
+        expect($('#internal-link-tile-profile a p').text()).toBe(
+          'Check money, visits, IEP, adjudications and timetable',
         )
       })
   })
