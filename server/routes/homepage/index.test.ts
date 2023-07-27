@@ -64,6 +64,26 @@ describe('GET /', () => {
       })
   })
 
+  it('should render the home page events summary panel', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('.events-summary h2').text()).toBe("Today's events")
+
+        expect($('[data-test="event-detail-1"] .time').text()).toBe('8:30am to 11:45am')
+        expect($('[data-test="event-detail-1"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-2"] .time').text()).toBe('1:45pm to 4:45pm')
+        expect($('[data-test="event-detail-2"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-3"] .time').text()).toBe('6:30pm to 7:45pm')
+        expect($('[data-test="event-detail-3"] .description').text()).toBe('Event description Event location')
+
+        expect($('.events-summary a').text()).toBe('View my timetable')
+        expect($('.events-summary a').attr('href')).toBe('/timetable')
+      })
+  })
+
   it('should render a profile link tile', () => {
     return request(app)
       .get('/')
