@@ -1,5 +1,5 @@
 import { type RequestHandler, Router } from 'express'
-import { Event, EventsData, Link, LinksData } from '../../@types/launchpad'
+import { PrisonerEvent, EventsData, Link, LinksData } from '../../@types/launchpad'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 
@@ -14,7 +14,7 @@ export default function routes(services: Services): Router {
   /* 
     TEMP TEST DATA
   */
-  const events: Event[] = [
+  const events: PrisonerEvent[] = [
     {
       timeString: '8:30am to 11:45am',
       description: 'Event description',

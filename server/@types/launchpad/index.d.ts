@@ -1,4 +1,4 @@
-export type Event = {
+export type PrisonerEvent = {
   timeString: string
   description: string
   location: string
@@ -7,7 +7,7 @@ export type Event = {
 export type EventsData = {
   isTomorrow: boolean
   error: boolean
-  events: Event[]
+  prisonerEvents: PrisonerEvent[]
 }
 
 export type Link = {
