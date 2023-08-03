@@ -19,7 +19,7 @@ export type Link = {
 }
 
 export type LinksData = {
-  title: string
+  title?: string
   links: Link[]
 }
 

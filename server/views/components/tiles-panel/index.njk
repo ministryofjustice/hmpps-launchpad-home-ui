@@ -3,7 +3,7 @@
 {% macro tilesPanel(params, user) %}
     <section class="govuk-width-container">
         {% if params.title %}
-            <h2>{{ params.title }}</h2>
+            <h2 data-test="tiles-panel-title">{{ params.title }}</h2>
         {% endif %}
 
         <div id="tiles">

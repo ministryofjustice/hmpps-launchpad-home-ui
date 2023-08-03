@@ -95,7 +95,6 @@ describe('GET /', () => {
     ]
 
     linksData = {
-      title: '',
       links,
     }
 
@@ -107,14 +106,24 @@ describe('GET /', () => {
     CONTENT_HUB_URL = ''
     NPR_URL = ''
     INSIDE_TIME_URL = ''
+    prisonerEvents = []
+    eventsData = {
+      isTomorrow: false,
+      error: false,
+      prisonerEvents,
+    }
+    links = []
+    linksData = {
+      title: '',
+      links,
+    }
   })
 
-  it('should render the home page link tiles', () => {
+  it('should render the homepage link tiles', () => {
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
-        // failing since data passed into router from service / api client - works when data directly added to router
         const $ = cheerio.load(res.text)
 
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Unilink')
@@ -138,6 +147,18 @@ describe('GET /', () => {
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) p').text()).toBe(
           'Read the national newspaper for prisoners and detainees',
         )
+      })
+  })
+
+  it('should display a title within the homepage link tiles component when the linksData object contains a title value', () => {
+    linksData.title = 'A Tile Panel Title'
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-test="tiles-panel-title"]').text()).toBe('A Tile Panel Title')
       })
   })
 
