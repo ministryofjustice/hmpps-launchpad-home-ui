@@ -12,7 +12,7 @@ export default class PrisonApiClient {
   async getEventsSummary(bookingId: string): Promise<EventsData> {
     this.bookingId = bookingId
 
-    // temp data - THIS WILL BE REPLACES WITH HTTP REQUEST TO THE PRISON API ENDPOINT
+    // temp data - THIS WILL BE REPLACED WITH HTTP REQUEST TO THE PRISON API ENDPOINT
     const prisonerEvents: PrisonerEvent[] = [
       {
         timeString: '8:30am to 11:45am',
