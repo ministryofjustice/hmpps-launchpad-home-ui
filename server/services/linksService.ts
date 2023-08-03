@@ -40,7 +40,6 @@ export default class Linkservice {
     ]
 
     const linksData: LinksData = {
-      title: '',
       links,
     }
     /* 
