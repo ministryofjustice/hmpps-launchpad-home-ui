@@ -2,11 +2,18 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from '../testutils/appSetup'
+import { createMockPrisonerProfileService, createMockLinksService } from '../../services/testutils/mocks'
+import { EventsData, PrisonerEvent, Link, LinksData } from '../../@types/launchpad'
 
 let app: Express
 
+const prisonerProfileService = createMockPrisonerProfileService()
+const linksService = createMockLinksService()
+
 beforeEach(() => {
-  app = appWithAllRoutes({})
+  app = appWithAllRoutes({
+    services: { prisonerProfileService, linksService },
+  })
 })
 
 afterEach(() => {
@@ -19,11 +26,80 @@ describe('GET /', () => {
   let NPR_URL: string
   let INSIDE_TIME_URL: string
 
+  let prisonerEvents: PrisonerEvent[]
+  let eventsData: EventsData
+  let links: Link[]
+  let linksData: LinksData
+
   beforeEach(() => {
     UNILINK_URL = '#'
     CONTENT_HUB_URL = '#'
     NPR_URL = `${CONTENT_HUB_URL}/tags/785`
     INSIDE_TIME_URL = 'https://insidetimeprison.org/'
+
+    prisonerEvents = [
+      {
+        timeString: '8:30am to 11:45am',
+        description: 'Event description',
+        location: 'Event location',
+      },
+      {
+        timeString: '1:45pm to 4:45pm',
+        description: 'Event description',
+        location: 'Event location',
+      },
+      {
+        timeString: '6:30pm to 7:45pm',
+        description: 'Event description',
+        location: 'Event location',
+      },
+    ]
+
+    eventsData = {
+      isTomorrow: false,
+      error: false,
+      prisonerEvents,
+    }
+
+    prisonerProfileService.getPrisonerEventsSummary.mockResolvedValue(eventsData)
+
+    links = [
+      {
+        image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
+        title: 'Unilink',
+        url: '#',
+        description: 'Access to kiosk apps',
+        openInNewTab: true,
+      },
+      {
+        image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
+        title: 'Content Hub',
+        url: '#',
+        description: 'Watch, read and listen to local and national content',
+        openInNewTab: false,
+      },
+      {
+        image: '/assets/images/link-tile-images/npr-link-tile-image.png',
+        title: 'NPR',
+        url: '#/tags/785',
+        description: 'Listen to 24/7 music, talk, requests and playbacks',
+        openInNewTab: true,
+      },
+      {
+        image: '/assets/images/link-tile-images/inside-time-link-tile-image.png',
+        title: 'Inside Time',
+        url: 'https://insidetimeprison.org/',
+        description: 'Read the national newspaper for prisoners and detainees',
+        openInNewTab: true,
+      },
+    ]
+
+    linksData = {
+      title: '',
+      links,
+    }
+
+    linksService.getLinks.mockResolvedValue(linksData)
   })
 
   afterEach(() => {
@@ -38,6 +114,7 @@ describe('GET /', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
+        // failing since data passed into router from service / api client - works when data directly added to router
         const $ = cheerio.load(res.text)
 
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Unilink')
