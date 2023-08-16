@@ -4,7 +4,7 @@ import { Link, LinksData } from '../@types/launchpad'
 export default class Linkservice {
   constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
 
-  async getLinks(): Promise<LinksData> {
+  async getHomepageLinks(): Promise<LinksData> {
     /* 
     TEMP TEST DATA
   */
