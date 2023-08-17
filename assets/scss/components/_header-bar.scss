@@ -132,7 +132,7 @@
   }
 }
 
-#profile-link {
+#user-name {
   background-image: url('/assets/images/icon-profile.svg');
   background-repeat: no-repeat;
   background-size: 22px;
@@ -140,7 +140,8 @@
     background-size: 27px 25px;
   }
 
-  a {
+  span {
     margin-left: 2em;
+    color: govuk-colour('white');
   }
 }

@@ -21,13 +21,8 @@
     {% if user and user.active %}
       <nav aria-label="Account navigation">
         <ul class="hmpps-header__navigation">
-          <li class="hmpps-header__navigation__item">
-            <a class="hmpps-header__link govuk-link--inverse govuk-!-font-size-19" href="/settings">Settings</a>
-          </li>
-          <li class="hmpps-header__navigation__item" id="profile-link">
-            <a class="hmpps-header__link govuk-!-font-size-18" href="/profile">
-              {{ user.displayName }}
-            </a>
+          <li class="hmpps-header__navigation__item" id="user-name">
+              <span>{{ user.displayName }}</span>
           </li>
         </ul>
       </nav>

@@ -98,7 +98,7 @@ describe('GET /', () => {
       links,
     }
 
-    linksService.getLinks.mockResolvedValue(linksData)
+    linksService.getHomepageLinks.mockResolvedValue(linksData)
   })
 
   afterEach(() => {
