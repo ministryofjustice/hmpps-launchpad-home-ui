@@ -1,12 +1,32 @@
 {% extends "../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Error" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
 
-  <h1>{{ message }}</h1>
-  <h2>{{ status }}</h2>
-  <pre>{{ stack }}</pre>
+  <h1 class="govuk-heading-l">{{ heading }}</h1>
+
+  <p class="govuk-body">
+    {% if pageNotFound %}
+      Go back to the <a href="/" class="govuk-link govuk-link--no-visited-state">home page</a>.
+    {% else %}
+      The was a problem loading the page
+    {% endif %}
+  </p>
+
+  {{ govukButton({
+    classes: "govuk-!-margin-top-5",
+    text: buttonText,
+    href: '/',
+    attributes: { "data-test": buttonAttribute },
+    preventDoubleClick: true
+  }) }}
+
+  {% if stack %}
+    <p>{{ errorMessage }}
+    <pre>{{ stack }}</pre>
+  {% endif %}
 
 {% endblock %}
