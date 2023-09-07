@@ -16,4 +16,4 @@ generic-service:
     PRISONER_CONTACT_REGISTRY_API_URL: "https://prisoner-contact-registry.prison.service.justice.gov.uk"
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service
+  alertSeverity: hmpps-launchpad
