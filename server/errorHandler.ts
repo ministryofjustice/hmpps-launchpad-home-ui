@@ -11,10 +11,10 @@ export default function createErrorHandler(production: boolean) {
       return res.redirect('/sign-out')
     }
 
-    res.locals.pageNotFound = error.status === 404
-    res.locals.heading = error.status === 404 ? 'Page not found' : 'Something went wrong'
-    res.locals.buttonText = error.status === 302 ? 'Try again' : 'Go to the home page'
-    res.locals.buttonAttribute = error.status === 302 ? 'try-again' : 'go-to-the-homepage'
+    res.locals.heading = 'Something went wrong'
+    res.locals.subheading = 'This page could not be found'
+    res.locals.buttonText = 'Go back to home page'
+    res.locals.buttonAttribute = 'go-back-to-homepage'
     res.locals.stack = production ? null : error.stack
 
     res.status(error.status || 500)

@@ -8,12 +8,8 @@
 
   <h1 class="govuk-heading-l">{{ heading }}</h1>
 
-  <p class="govuk-body">
-    {% if pageNotFound %}
-      Go back to the <a href="/" class="govuk-link govuk-link--no-visited-state">home page</a>.
-    {% else %}
-      The was a problem loading the page
-    {% endif %}
+  <p class="govuk-body" data-test="subheading">
+    {{ subheading }}
   </p>
 
   {{ govukButton({
