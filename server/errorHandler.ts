@@ -12,7 +12,7 @@ export default function createErrorHandler(production: boolean) {
     }
 
     res.locals.heading = 'Something went wrong'
-    res.locals.subheading = 'This page could not be found'
+    res.locals.subheading = 'This page could not be found.'
     res.locals.buttonText = 'Go back to home page'
     res.locals.buttonAttribute = 'go-back-to-homepage'
     res.locals.stack = production ? null : error.stack
