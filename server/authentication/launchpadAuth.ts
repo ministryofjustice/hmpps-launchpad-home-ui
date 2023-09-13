@@ -28,7 +28,6 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
   }
 }
 
-// need to overide this to add nonce value - https://stackoverflow.com/questions/32357879/module-passport-oauth2-in-nodej-js-extra-parameters-to-be-included-in-the-autho
 function init(): void {
   const strategy = new Strategy(
     {
@@ -44,12 +43,6 @@ function init(): void {
       return done(null, { token, username: params.user_name, authSource: params.auth_source })
     },
   )
-
-  // strategy.authorizationParams = () => {
-  //   return {
-  //     scope: 'user.establishment.read user.booking.read user.basic.read user.clients.read user.clients.delete',
-  //   }
-  // }
 
   passport.use(strategy)
 }
