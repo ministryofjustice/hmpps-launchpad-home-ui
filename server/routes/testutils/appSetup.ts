@@ -9,16 +9,6 @@ import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/launchpadAuth'
 import { Services } from '../../services'
 
-// export const user = {
-//   firstName: 'first',
-//   lastName: 'last',
-//   userId: 'id',
-//   token: 'token',
-//   username: 'user1',
-//   displayName: 'First Last',
-//   activeCaseLoadId: 'MDI',
-//   authSource: 'NOMIS',
-// }
 export const user = {
   refreshToken: '12345',
   idToken: '12345',
