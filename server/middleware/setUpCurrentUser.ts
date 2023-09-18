@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import auth from '../authentication/auth'
+import auth from '../authentication/launchpadAuth'
 import tokenVerifier from '../data/tokenVerification'
 import populateCurrentUser from './populateCurrentUser'
 import type { Services } from '../services'

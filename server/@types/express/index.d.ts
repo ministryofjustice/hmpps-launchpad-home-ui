@@ -19,11 +19,6 @@ export declare global {
       token: string
     }
 
-    // interface User {
-    //   username: string
-    //   token: string
-    //   authSource: string
-    // }
     interface Request {
       verified?: boolean
       id: string
