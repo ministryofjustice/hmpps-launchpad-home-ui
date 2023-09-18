@@ -7,9 +7,9 @@ import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
 
-import setUpAuthentication from './middleware/setUpLaunchpadAuthentication'
+import setUpLaunchpadAuthentication from './middleware/setUpLaunchpadAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
-import setUpCurrentUser from './middleware/setUpCurrentUser'
+// import setUpCurrentUser from './middleware/setUpCurrentUser'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
@@ -37,10 +37,10 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
   nunjucksSetup(app, path)
-  app.use(setUpAuthentication())
+  app.use(setUpLaunchpadAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
-  app.use(setUpCurrentUser(services))
+  // app.use(setUpCurrentUser(services))
 
   app.use('/', indexRoutes(services))
   app.use('/profile', profileRoutes(services))

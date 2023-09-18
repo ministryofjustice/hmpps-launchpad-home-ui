@@ -24,7 +24,7 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
       return next()
     }
     req.session.returnTo = req.originalUrl
-    return res.redirect('/sign-in')
+    return res.redirect('/sign-in') // this is not causing the auth loop
   }
 }
 
@@ -40,7 +40,24 @@ function init(): void {
       customHeaders: { Authorization: generateOauthClientToken() },
     },
     (token, refreshToken, params, profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: params.auth_source })
+      // UPDATED server > @types > express > index.d.ts > User interface
+
+      // TO DO - decode id_token
+
+      // TO DO - change Express.User (server > @types > express > index.d.ts > User interface) object interface to match user object
+
+      // TO DO - pass that through in addition to tokens
+
+      const user = {
+        refreshToken: JSON.parse(Buffer.from(refreshToken.split('.')[1], 'base64').toString()),
+        idToken: JSON.parse(Buffer.from(params.id_token.split('.')[1], 'base64').toString()),
+        accessToken: JSON.parse(Buffer.from(params.access_token.split('.')[1], 'base64').toString()),
+        tokenType: params.token_type,
+        expiresIn: params.expires_in,
+        token,
+      }
+
+      return done(null, user)
     },
   )
 

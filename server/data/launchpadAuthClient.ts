@@ -24,7 +24,7 @@ function getSystemClientTokenFromLaunchpadAuth(username?: string): Promise<super
   logger.info(`${grantRequest} Launchpad Auth request for client id '${config.apis.launchpadAuth.systemClientId}''`)
 
   return superagent
-    .post(`${launchpadAuthUrl}/oauth/token`)
+    .post(`${launchpadAuthUrl}/v1/oauth2/token`)
     .set('Authorization', clientToken)
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(grantRequest)
@@ -45,17 +45,6 @@ export default class LaunchpadAuthClient {
 
   private static restClient(token: string): RestClient {
     return new RestClient('Launchpad Auth Client', config.apis.launchpadAuth, token)
-  }
-
-  getUser(token: string): Promise<User> {
-    logger.info(`Getting user details: calling HMPPS Auth`)
-    return LaunchpadAuthClient.restClient(token).get({ path: '/api/user/me' }) as Promise<User>
-  }
-
-  getUserRoles(token: string): Promise<string[]> {
-    return LaunchpadAuthClient.restClient(token)
-      .get({ path: '/api/user/me/roles' })
-      .then(roles => (<UserRole[]>roles).map(role => role.roleCode))
   }
 
   async getSystemClientToken(username?: string): Promise<string> {

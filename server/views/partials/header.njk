@@ -18,11 +18,11 @@
       <a class="hmpps-header__link hmpps-header__title__service-name govuk-!-font-weight-bold" href="/">Launchpad</a>
     </div>
 
-    {% if user and user.active %}
+    {% if user %}
       <nav aria-label="Account navigation">
         <ul class="hmpps-header__navigation">
           <li class="hmpps-header__navigation__item" id="user-name">
-              <span>{{ user.displayName }}</span>
+              <span>{{ user.idToken.name }}</span>
           </li>
         </ul>
       </nav>

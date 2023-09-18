@@ -24,23 +24,40 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
       return next()
     }
     req.session.returnTo = req.originalUrl
-    return res.redirect('/sign-in')
+    return res.redirect('/sign-in') // this is not causing the auth loop
   }
 }
 
 function init(): void {
   const strategy = new Strategy(
     {
-      authorizationURL: `${config.apis.hmppsAuth.externalUrl}/oauth/authorize`,
-      tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
-      clientID: config.apis.hmppsAuth.apiClientId,
-      clientSecret: config.apis.hmppsAuth.apiClientSecret,
+      authorizationURL: `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/authorize`,
+      tokenURL: `${config.apis.launchpadAuth.url}/v1/oauth2/token`,
+      clientID: config.apis.launchpadAuth.apiClientId,
+      clientSecret: config.apis.launchpadAuth.apiClientSecret,
       callbackURL: `${config.domain}/sign-in/callback`,
       state: true,
       customHeaders: { Authorization: generateOauthClientToken() },
     },
     (token, refreshToken, params, profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: params.auth_source })
+      // UPDATED server > @types > express > index.d.ts > User interface
+
+      // TO DO - decode id_token
+
+      // TO DO - change Express.User (server > @types > express > index.d.ts > User interface) object interface to match user object
+
+      // TO DO - pass that through in addition to tokens
+
+      const user = {
+        refreshToken: JSON.parse(Buffer.from(refreshToken.split('.')[1], 'base64').toString()),
+        idToken: JSON.parse(Buffer.from(params.id_token.split('.')[1], 'base64').toString()),
+        accessToken: JSON.parse(Buffer.from(params.access_token.split('.')[1], 'base64').toString()),
+        tokenType: params.token_type,
+        expiresIn: params.expires_in,
+        token,
+      }
+
+      return done(null, user)
     },
   )
 
