@@ -40,7 +40,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpLaunchpadAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
-  // app.use(setUpCurrentUser(services))
+  // app.use(setUpCurrentUser(services)) // causes something went wrong - 404
 
   app.use('/', indexRoutes(services))
   app.use('/profile', profileRoutes(services))
