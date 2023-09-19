@@ -24,7 +24,14 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
       return next()
     }
     req.session.returnTo = req.originalUrl
-    return res.redirect('/sign-in') // this is not causing the auth loop
+
+    // if refresh token !expired - refresh token here not redirect to /sign-in
+
+    // ...
+
+    // if refresh token has expired redirect to /sign-in
+    // check if refresh toek is updated in redis
+    return res.redirect('/sign-in')
   }
 }
 
@@ -40,20 +47,10 @@ function init(): void {
       customHeaders: { Authorization: generateOauthClientToken() },
     },
     (token, refreshToken, params, profile, done) => {
-      // UPDATED server > @types > express > index.d.ts > User interface
-
-      // TO DO - decode id_token
-
-      // TO DO - change Express.User (server > @types > express > index.d.ts > User interface) object interface to match user object
-
-      // TO DO - pass that through in addition to tokens
-
       const user = {
-        refreshToken: JSON.parse(Buffer.from(refreshToken.split('.')[1], 'base64').toString()),
-        idToken: JSON.parse(Buffer.from(params.id_token.split('.')[1], 'base64').toString()),
-        accessToken: JSON.parse(Buffer.from(params.access_token.split('.')[1], 'base64').toString()),
-        tokenType: params.token_type,
-        expiresIn: params.expires_in,
+        refreshToken,
+        idToken: params.id_token,
+        accessToken: params.access_token,
         token,
       }
 

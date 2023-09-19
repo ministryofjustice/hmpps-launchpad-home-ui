@@ -14,8 +14,6 @@ export declare global {
       refreshToken: string
       idToken: string
       accessToken: string
-      tokenType: string
-      expiresIn: string
       token: string
     }
 
