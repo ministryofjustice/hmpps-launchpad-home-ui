@@ -7,9 +7,8 @@ import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
 
-import setUpLaunchpadAuthentication from './middleware/setUpLaunchpadAuthentication'
+import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
-// import setUpCurrentUser from './middleware/setUpCurrentUser'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
 import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
@@ -37,10 +36,9 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
   nunjucksSetup(app, path)
-  app.use(setUpLaunchpadAuthentication())
+  app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
-  // app.use(setUpCurrentUser(services)) // causes something went wrong - 404
 
   app.use('/', indexRoutes(services))
   app.use('/profile', profileRoutes(services))

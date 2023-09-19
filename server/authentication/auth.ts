@@ -48,8 +48,8 @@ function init(): void {
     },
     (token, refreshToken, params, profile, done) => {
       const user = {
+        idToken: JSON.parse(Buffer.from(params.id_token.split('.')[1], 'base64').toString()),
         refreshToken,
-        idToken: params.id_token,
         accessToken: params.access_token,
         token,
       }
