@@ -6,7 +6,7 @@ import createError from 'http-errors'
 import routes from '../homepage/index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import * as auth from '../../authentication/launchpadAuth'
+import * as auth from '../../authentication/auth'
 import { Services } from '../../services'
 
 export const user = {
