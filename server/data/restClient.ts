@@ -33,11 +33,7 @@ interface StreamRequest {
 export default class RestClient {
   agent: Agent
 
-  constructor(
-    private readonly name: string,
-    private readonly config: ApiConfig,
-    private readonly token: string,
-  ) {
+  constructor(private readonly name: string, private readonly config: ApiConfig, private readonly token: string) {
     this.agent = config.url.startsWith('https') ? new HttpsAgent(config.agent) : new Agent(config.agent)
   }
 
@@ -51,6 +47,7 @@ export default class RestClient {
 
   async get({ path = null, query = '', headers = {}, responseType = '', raw = false }: GetRequest): Promise<unknown> {
     logger.info(`Get using user credentials: calling ${this.name}: ${path} ${query}`)
+
     try {
       const result = await superagent
         .get(`${this.apiUrl()}${path}`)

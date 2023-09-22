@@ -30,7 +30,8 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
     // ...
 
     // if refresh token has expired redirect to /sign-in
-    // check if refresh toek is updated in redis
+    // check if refresh token is updated in redis
+
     return res.redirect('/sign-in')
   }
 }
