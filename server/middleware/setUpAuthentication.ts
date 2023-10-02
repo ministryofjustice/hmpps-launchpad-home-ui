@@ -21,13 +21,13 @@ export default function setUpAuth(): Router {
 
   router.get('/sign-in', passport.authenticate('openidconnect'))
 
-  router.get('/sign-in/callback', (req, res, next) =>
-    passport.authenticate('openidconnect', {
+  router.get('/sign-in/callback', (req, res, next) => {
+    return passport.authenticate('openidconnect', {
       successReturnToOrRedirect: req.session.returnTo || '/',
       failureRedirect: '/login',
       failureMessage: true,
-    })(req, res, next),
-  )
+    })(req, res, next)
+  })
 
   const authUrl = config.apis.hmppsAuth.externalUrl
   const authSignOutUrl = `${authUrl}/sign-out?client_id=${config.apis.hmppsAuth.apiClientId}&redirect_uri=${config.domain}`
