@@ -22,6 +22,7 @@ export default function setUpAuth(): Router {
   router.get('/sign-in', passport.authenticate('openidconnect'))
 
   router.get('/sign-in/callback', (req, res, next) => {
+    // console.log('looping here++++++++')
     return passport.authenticate('openidconnect', {
       successReturnToOrRedirect: req.session.returnTo || '/',
       failureRedirect: '/login',
