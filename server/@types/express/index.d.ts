@@ -11,9 +11,10 @@ declare module 'express-session' {
 export declare global {
   namespace Express {
     interface User {
-      username: string
+      refreshToken: string
+      idToken: string
+      accessToken: string
       token: string
-      authSource: string
     }
 
     interface Request {

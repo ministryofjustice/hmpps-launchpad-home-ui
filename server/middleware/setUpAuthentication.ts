@@ -1,4 +1,4 @@
-import type { Router } from 'express'
+import type { Router, Request, Response, NextFunction } from 'express'
 import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
@@ -22,18 +22,17 @@ export default function setUpAuth(): Router {
   router.get('/sign-in', passport.authenticate('openidconnect'))
 
   router.get('/sign-in/callback', (req, res, next) => {
-    // console.log('looping here++++++++')
     return passport.authenticate('openidconnect', {
       successReturnToOrRedirect: req.session.returnTo || '/',
-      failureRedirect: '/login',
+      failureRedirect: '/autherror',
       failureMessage: true,
     })(req, res, next)
   })
 
-  const authUrl = config.apis.hmppsAuth.externalUrl
-  const authSignOutUrl = `${authUrl}/sign-out?client_id=${config.apis.hmppsAuth.apiClientId}&redirect_uri=${config.domain}`
+  const authUrl = config.apis.launchpadAuth.externalUrl
+  const authSignOutUrl = `${authUrl}/sign-out?client_id=${config.apis.launchpadAuth.apiClientId}&redirect_uri=${config.domain}`
 
-  router.use('/sign-out', (req, res, next) => {
+  router.use('/sign-out', (req: Request, res: Response, next: NextFunction) => {
     if (req.user) {
       req.logout(err => {
         if (err) return next(err)
@@ -42,12 +41,9 @@ export default function setUpAuth(): Router {
     } else res.redirect(authSignOutUrl)
   })
 
-  router.use('/account-details', (req, res) => {
-    res.redirect(`${authUrl}/account-details`)
-  })
-
   router.use((req, res, next) => {
     res.locals.user = req.user
+    console.log('REQ LOCALS USER', res.locals.user)
     next()
   })
 
