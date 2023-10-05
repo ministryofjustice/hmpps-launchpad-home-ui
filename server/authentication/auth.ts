@@ -18,16 +18,6 @@ passport.deserializeUser((user, cb) => {
   })
 })
 
-// passport.serializeUser((user, done) => {
-//   // Not used but required for Passport
-//   done(null, user)
-// })
-
-// passport.deserializeUser((user, done) => {
-//   // Not used but required for Passport
-//   done(null, user as Express.User)
-// })
-
 export type AuthenticationMiddleware = (tokenVerifier: TokenVerifier) => RequestHandler
 
 const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
