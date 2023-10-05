@@ -81,13 +81,6 @@ function init(): void {
         cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
         console.log('IN VERIFY')
-        // console.log('IN VERIFY iss', iss)
-        // console.log('IN VERIFY profile', profile)
-        // console.log('IN VERIFY context', context)
-        // console.log('IN VERIFY idToken', idToken)
-        // console.log('IN VERIFY accessToken', accessToken)
-        // console.log('IN VERIFY refreshToken', refreshToken)
-        // console.log('IN VERIFY verified', verified)
 
         const user = {
           idToken: JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString()),
