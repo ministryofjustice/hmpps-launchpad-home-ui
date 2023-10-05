@@ -10,14 +10,10 @@ import * as auth from '../../authentication/auth'
 import { Services } from '../../services'
 
 export const user = {
-  firstName: 'first',
-  lastName: 'last',
-  userId: 'id',
-  token: 'token',
-  username: 'user1',
-  displayName: 'First Last',
-  activeCaseLoadId: 'MDI',
-  authSource: 'NOMIS',
+  refreshToken: 'REFRESH_TOKEN',
+  idToken: 'ID_TOKEN',
+  accessToken: 'ACCESS_TOKEN',
+  token: 'ACCESS_TOKEN',
 }
 
 export const flashProvider = jest.fn()

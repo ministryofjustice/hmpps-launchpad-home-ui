@@ -57,6 +57,19 @@ export default {
       systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
     },
+    launchpadAuth: {
+      url: get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080', requiredInProduction),
+      externalUrl: get('LAUNCHPAD_AUTH_EXTERNAL_URL', get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080')),
+      timeout: {
+        response: Number(get('LAUNCHPAD_AUTH_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('LAUNCHPAD_AUTH_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('LAUNCHPAD_AUTH_TIMEOUT_RESPONSE', 10000))),
+      apiClientId: get('API_CLIENT_ID', 'clientid', requiredInProduction),
+      apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      systemClientId: get('SYSTEM_CLIENT_ID', 'clientid', requiredInProduction),
+      systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+    },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
       timeout: {
@@ -65,6 +78,14 @@ export default {
       },
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
+    },
+    prison: {
+      url: get('PRISON_API_URL', 'http://localhost:8080', requiredInProduction),
+      timeout: {
+        response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),

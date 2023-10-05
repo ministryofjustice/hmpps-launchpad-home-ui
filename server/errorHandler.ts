@@ -4,12 +4,7 @@ import logger from '../logger'
 
 export default function createErrorHandler(production: boolean) {
   return (error: HTTPError, req: Request, res: Response, next: NextFunction): void => {
-    logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.username}'`, error)
-
-    if (error.status === 401 || error.status === 403) {
-      logger.info('Logging user out')
-      return res.redirect('/sign-out')
-    }
+    logger.error(`Error handling request for '${req.originalUrl}', user '${res.locals.user?.name}'`, error)
 
     res.locals.heading = 'Something went wrong'
     res.locals.subheading = 'This page could not be found.'
