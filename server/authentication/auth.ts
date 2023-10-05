@@ -6,27 +6,27 @@ import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../data/tokenVerification'
 
-// passport.serializeUser((user, cb) => {
-//   process.nextTick(() => {
-//     cb(null, user)
-//   })
-// })
-
-// passport.deserializeUser((user, cb) => {
-//   process.nextTick(() => {
-//     return cb(null, user as Express.User)
-//   })
-// })
-
-passport.serializeUser((user, done) => {
-  // Not used but required for Passport
-  done(null, user)
+passport.serializeUser((user, cb) => {
+  process.nextTick(() => {
+    cb(null, user)
+  })
 })
 
-passport.deserializeUser((user, done) => {
-  // Not used but required for Passport
-  done(null, user as Express.User)
+passport.deserializeUser((user, cb) => {
+  process.nextTick(() => {
+    return cb(null, user as Express.User)
+  })
 })
+
+// passport.serializeUser((user, done) => {
+//   // Not used but required for Passport
+//   done(null, user)
+// })
+
+// passport.deserializeUser((user, done) => {
+//   // Not used but required for Passport
+//   done(null, user as Express.User)
+// })
 
 export type AuthenticationMiddleware = (tokenVerifier: TokenVerifier) => RequestHandler
 
@@ -44,8 +44,7 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
 
     // if refresh token has expired redirect to /sign-in
     // check if refresh token is updated in redis
-    return res.json({ test })
-    // return res.redirect('/sign-in')
+    return res.redirect('/sign-in')
   }
 }
 
@@ -79,9 +78,9 @@ function init(): void {
         accessToken: string,
         refreshToken: any,
         verified: any,
-        done: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
+        cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
-        // console.log('IN VERIFY')
+        console.log('IN VERIFY')
         // console.log('IN VERIFY iss', iss)
         // console.log('IN VERIFY profile', profile)
         // console.log('IN VERIFY context', context)
@@ -97,9 +96,9 @@ function init(): void {
           token: accessToken,
         }
 
-        console.log('USER:', user)
+        console.log('IN VERIFY USER:', user)
 
-        return done(null, user)
+        return cb(null, user)
       },
     ),
   )
