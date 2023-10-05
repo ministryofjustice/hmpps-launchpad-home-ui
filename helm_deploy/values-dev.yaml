@@ -10,7 +10,10 @@ generic-service:
   env:
     INGRESS_URL: "https://launchpad-dev.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+    NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
+    PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
+    PRISONER_CONTACT_REGISTRY_API_URL: "https://prisoner-contact-registry-dev.prison.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: "https://sign-in-launchpad-dev.hmpps.service.justice.gov.uk/auth"
 
 generic-prometheus-alerts:
