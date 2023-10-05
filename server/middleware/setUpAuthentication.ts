@@ -14,15 +14,12 @@ export default function setUpAuth(): Router {
   router.use(flash())
 
   router.get('/autherror', (req, res) => {
-    console.log('AUTH FAILURE:')
-    // console.log('REQ', req)
     res.status(401)
     return res.render('autherror')
   })
 
   router.get('/sign-in', passport.authenticate('openidconnect'))
 
-  // START HERE >>>>>SUCCESSFULLY GETTING TOKENS FORM AUTH - INTERMITDENT SAVING TO REDIS - 401 ERROR AND REDIRECTING TO /sign-out
   router.get('/sign-in/callback', (req: Request, res: Response, next: NextFunction) => {
     return passport.authenticate('openidconnect', {
       successReturnToOrRedirect: req.session.returnTo || '/',

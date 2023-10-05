@@ -80,16 +80,12 @@ function init(): void {
         verified: any,
         cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
-        console.log('IN VERIFY')
-
         const user = {
           idToken: JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString()),
           refreshToken,
           accessToken,
           token: accessToken,
         }
-
-        console.log('IN VERIFY USER:', user)
 
         return cb(null, user)
       },
