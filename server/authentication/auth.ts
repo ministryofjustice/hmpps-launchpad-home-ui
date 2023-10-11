@@ -28,11 +28,12 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
 
     req.session.returnTo = req.originalUrl
 
-    // if refresh token !expired - refresh token here not redirect to /sign-in
+    // if access token has expired (valid for 1 hour)
+    // and refresh token (valid for 7 days) !expired - get a new access
+    // else if refresh token also expired - get new tokens by forcing sign-in again - redirect to /sign-in
 
     // ...
 
-    // if refresh token has expired redirect to /sign-in
     // check if refresh token is updated in redis
     return res.redirect('/sign-in')
   }
