@@ -105,9 +105,14 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
         const updatedToken = await updateToken(refreshToken)
 
         console.log('req.session.passport.user', req.session.passport.user)
-        // return createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token))
+
         // req.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
+
+        /*
+            >>>> this works but should we be updating passport.user directly within the session? <<<<<
+        */
         req.session.passport.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
+
         // passport.serializeUser((user, cb) => {
         //   process.nextTick(() => {
         //     cb(null, user)
