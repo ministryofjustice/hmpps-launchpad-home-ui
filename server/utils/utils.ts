@@ -104,8 +104,16 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
       try {
         const updatedToken = await updateToken(refreshToken)
 
+        console.log('req.session.passport.user', req.session.passport.user)
         // return createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token))
-        req.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
+        // req.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
+        req.session.passport.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
+        // passport.serializeUser((user, cb) => {
+        //   process.nextTick(() => {
+        //     cb(null, user)
+        //   })
+        // })
+        console.log('req.session.passport.user 2', req.session.passport.user)
 
         // console.log('req.session.user ', req.session.user)
         // req.session.user = req.user
