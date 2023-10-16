@@ -23,7 +23,6 @@ export type AuthenticationMiddleware = (tokenVerifier: TokenVerifier) => Request
 
 const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
   return async (req, res, next) => {
-    console.log('HERE')
     if (req.isAuthenticated() && (await verifyToken(req))) {
       return next()
     }
