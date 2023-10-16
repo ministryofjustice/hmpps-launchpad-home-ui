@@ -5,6 +5,7 @@ import type { RequestHandler } from 'express'
 import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../data/tokenVerification'
+import { createUserObject } from '../utils/utils'
 
 passport.serializeUser((user, cb) => {
   process.nextTick(() => {
@@ -22,19 +23,13 @@ export type AuthenticationMiddleware = (tokenVerifier: TokenVerifier) => Request
 
 const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
   return async (req, res, next) => {
+    console.log('HERE')
     if (req.isAuthenticated() && (await verifyToken(req))) {
       return next()
     }
 
     req.session.returnTo = req.originalUrl
 
-    // if access token has expired (valid for 1 hour)
-    // and refresh token (valid for 7 days) !expired - get a new access
-    // else if refresh token also expired - get new tokens by forcing sign-in again - redirect to /sign-in
-
-    // ...
-
-    // check if refresh token is updated in redis
     return res.redirect('/sign-in')
   }
 }
@@ -71,14 +66,7 @@ function init(): void {
         verified: any,
         cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
-        const user = {
-          idToken: JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString()),
-          refreshToken,
-          accessToken,
-          token: accessToken,
-        }
-
-        return cb(null, user)
+        return cb(null, createUserObject(idToken, refreshToken, accessToken))
       },
     ),
   )

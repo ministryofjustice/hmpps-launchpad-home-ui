@@ -29,9 +29,17 @@ export default function setUpAuth(): Router {
     })(req, res, next)
   })
 
-  router.use((req, res, next) => {
+  router.use(async (req, res, next) => {
+    console.log('req.user 1: req.user.idToken.exp:', req?.user?.idToken?.exp) // is old user - old user gets passed into checkTokenValidityAndUpdate() - why?
+    console.log('req.isAuthenticated()', req.isAuthenticated())
+    // const refreshTokens = await checkTokenValidityAndUpdate(req, res, next)
+    // req.user = refreshTokens
+
+    await checkTokenValidityAndUpdate(req, res, next)
+
+    console.log('req.user 2: req.user.idToken.exp:', req?.user?.idToken?.exp) // req.user has been updated iwth the new user
+
     res.locals.user = req.user
-    checkTokenValidityAndUpdate(res, next)
   })
 
   return router

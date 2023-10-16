@@ -1,7 +1,10 @@
 import { format } from 'date-fns'
-import type { Response, NextFunction } from 'express'
+import type { Request, Response, NextFunction } from 'express'
+import superagent from 'superagent'
+import passport from 'passport'
 import { IdToken, RefreshToken } from '../@types/launchpad'
 import logger from '../../logger'
+import config from '../config'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -31,10 +34,24 @@ export const formatDate = (date: Date): string => {
   return format(date, 'EEEE d MMMM, yyyy')
 }
 
-export const nowMinus5minutes = (): number => {
+export const generateBasicAuthHeader = (clientId: string, clientSecret: string): string => {
+  const token = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
+  return `Basic ${token}`
+}
+
+export const createUserObject = (idToken: string, refreshToken: string, accessToken: string) => {
+  return {
+    idToken: JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString()),
+    refreshToken,
+    accessToken,
+    token: accessToken,
+  }
+}
+
+export const nowMinus5Minutes = (): number => {
   const oneSecondInMillis = 1000
   const fiveMinutesInMillis = 300 * oneSecondInMillis
-  const nowEpochInSeconds = Math.round(new Date().getTime() - fiveMinutesInMillis / oneSecondInMillis)
+  const nowEpochInSeconds = Math.floor((Date.now() - fiveMinutesInMillis) / oneSecondInMillis)
 
   return nowEpochInSeconds
 }
@@ -42,37 +59,66 @@ export const nowMinus5minutes = (): number => {
 export const tokenIsValid = (token: RefreshToken | IdToken, nowEpochMinus5Minutes: number): boolean =>
   !(nowEpochMinus5Minutes > token.exp)
 
-/*
-  REFRESH TOKEN
-  
-  - To obtain a new token if access token (valid for 1 hour) has expired or id token (valid for 12 hours) has expired
-    - If refresh token (valid for 7 days) !expired - get a new token
-    - else if refresh token also expired - get new a token by forcing sign-in again - redirect to /sign-in
-*/
-export const checkTokenValidityAndUpdate = (res: Response, next: NextFunction): void => {
-  if (!res.locals.user) {
+export const updateToken = (refreshToken: RefreshToken) => {
+  const url = `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/token`
+  const grantType = 'refresh_token'
+  const authHeaderValue = generateBasicAuthHeader(
+    `${config.apis.launchpadAuth.apiClientId}`,
+    `${config.apis.launchpadAuth.apiClientSecret}`,
+  )
+
+  const refreshedTokens = new Promise((resolve, reject) => {
+    superagent
+      .post(url)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', authHeaderValue)
+      .query({ refresh_token: refreshToken, grant_type: grantType })
+      .end((err, res) => {
+        if (err) {
+          reject(err) // Reject the promise in case of an error
+        } else {
+          resolve(res.body) // Resolve the promise with the response body
+        }
+      })
+  })
+
+  return refreshedTokens
+}
+
+export const checkTokenValidityAndUpdate = async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
     return next()
   }
-
-  const idToken = res.locals?.user?.accessToken
-  const refreshToken = res.locals?.user?.refreshToken
+  const { idToken, refreshToken } = req.user
 
   if (idToken && refreshToken) {
-    if (tokenIsValid(idToken, nowMinus5minutes())) {
-      console.log('id token is valid')
+    if (tokenIsValid(idToken, nowMinus5Minutes())) {
+      console.log('id_token is valid')
       return next()
     }
 
-    if (tokenIsValid(refreshToken, nowMinus5minutes())) {
-      // id_token is invalid and refresh_token is valid
+    // also use this logic for try again button and access_token refresh (settings page)
+    if (tokenIsValid(refreshToken, nowMinus5Minutes())) {
       console.log('id_token is invalid and refresh_token is valid')
+
       try {
-        // refresh / get new id_token
-        // save new access token to res.locals.user
+        const updatedToken = await updateToken(refreshToken)
+
+        // return createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token))
+        req.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
+
+        // console.log('req.session.user ', req.session.user)
+        // req.session.user = req.user
+
+        // passport.serializeUser((usr, done) => {
+        //   done(null, usr) // Serialize the user by their ID
+        // })
+
         return next()
       } catch (error) {
         logger.error(`Token refresh error:`, error.stack)
-        return res.redirect('/sign-out')
+        // Handle the error here
+        res.redirect('/autherror')
       }
     }
 
@@ -82,5 +128,6 @@ export const checkTokenValidityAndUpdate = (res: Response, next: NextFunction): 
   }
 
   logger.error('Missing idToken or refreshToken')
-  return res.redirect('/sign-out')
+  // go to landing page '/' to initiate sign in flow
+  return res.redirect('/sign-in')
 }
