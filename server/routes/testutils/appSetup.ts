@@ -9,9 +9,30 @@ import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/auth'
 import { Services } from '../../services'
 
+export const idToken = {
+  name: 'name',
+  given_name: 'given name',
+  family_name: 'family name',
+  nonce: 'a nonce',
+  iat: 123456,
+  aud: 'aud',
+  sub: 'sub',
+  exp: 12345,
+  booking: {
+    id: '12345',
+  },
+  establishment: {
+    id: '12345',
+    agency_id: '12345',
+    name: 'name',
+    display_name: 'display name',
+    youth: false,
+  },
+  iss: 'iss',
+}
 export const user = {
   refreshToken: 'REFRESH_TOKEN',
-  idToken: 'ID_TOKEN',
+  idToken,
   accessToken: 'ACCESS_TOKEN',
   token: 'ACCESS_TOKEN',
 }

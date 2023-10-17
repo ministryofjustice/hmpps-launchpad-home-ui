@@ -44,7 +44,6 @@ export type RefreshToken = {
 }
 
 export type IdToken = {
-  split(arg0: string): unknown
   name: string
   given_name: string
   family_name: string

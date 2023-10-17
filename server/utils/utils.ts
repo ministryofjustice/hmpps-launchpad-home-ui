@@ -58,7 +58,7 @@ export const nowMinus5Minutes = (): number => {
 export const tokenIsValid = (token: RefreshToken | IdToken, nowEpochMinus5Minutes: number): boolean =>
   !(nowEpochMinus5Minutes > token.exp)
 
-export const updateToken = (refreshToken: string) => {
+export const updateToken = (refreshToken: string): Promise<UpdatedTokensResponse> => {
   const url = `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/token`
   const grantType = 'refresh_token'
   const authHeaderValue = generateBasicAuthHeader(
@@ -66,7 +66,7 @@ export const updateToken = (refreshToken: string) => {
     `${config.apis.launchpadAuth.apiClientSecret}`,
   )
 
-  const refreshedTokens = new Promise((resolve, reject) => {
+  const refreshedTokens: Promise<UpdatedTokensResponse> = new Promise((resolve, reject) => {
     superagent
       .post(url)
       .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -84,6 +84,7 @@ export const updateToken = (refreshToken: string) => {
   return refreshedTokens
 }
 
+// also use this logic for try again button and access_token refresh (settings page)
 export const checkTokenValidityAndUpdate = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     return next()
@@ -98,7 +99,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
 
   const parsedFefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
 
-  // id_token is invalid and refresh_token is valid - (also use this logic for try again button and access_token refresh (settings page))
+  // id_token is invalid and refresh_token is valid
   if (tokenIsValid(parsedFefreshToken, nowMinus5Minutes())) {
     try {
       const updatedTokensResponse: UpdatedTokensResponse = await updateToken(refreshToken)
