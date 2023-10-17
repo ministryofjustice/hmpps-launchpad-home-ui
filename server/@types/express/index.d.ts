@@ -13,17 +13,22 @@ declare module 'express-session' {
 export declare global {
   namespace Express {
     interface User {
-      refreshToken: RefreshToken
+      refreshToken: string
       idToken: IdToken
       accessToken: string
       token: string
     }
 
     interface Request {
+      user: User
+      session: {
+        passport: {
+          user: User
+        }
+      }
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
-      user: User
     }
   }
 }

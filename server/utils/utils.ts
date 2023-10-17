@@ -1,7 +1,6 @@
 import { format } from 'date-fns'
 import type { Request, Response, NextFunction } from 'express'
 import superagent from 'superagent'
-import passport from 'passport'
 import { IdToken, RefreshToken } from '../@types/launchpad'
 import logger from '../../logger'
 import config from '../config'
@@ -59,7 +58,7 @@ export const nowMinus5Minutes = (): number => {
 export const tokenIsValid = (token: RefreshToken | IdToken, nowEpochMinus5Minutes: number): boolean =>
   !(nowEpochMinus5Minutes > token.exp)
 
-export const updateToken = (refreshToken: RefreshToken) => {
+export const updateToken = (refreshToken: string) => {
   const url = `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/token`
   const grantType = 'refresh_token'
   const authHeaderValue = generateBasicAuthHeader(
@@ -89,58 +88,40 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   if (!req.user) {
     return next()
   }
+
   const { idToken, refreshToken } = req.user
 
-  if (idToken && refreshToken) {
-    if (tokenIsValid(idToken, nowMinus5Minutes())) {
-      console.log('id_token is valid')
-      return next()
-    }
-
-    // also use this logic for try again button and access_token refresh (settings page)
-    if (tokenIsValid(refreshToken, nowMinus5Minutes())) {
-      console.log('id_token is invalid and refresh_token is valid')
-
-      try {
-        const updatedToken = await updateToken(refreshToken)
-
-        console.log('req.session.passport.user', req.session.passport.user)
-
-        // req.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
-
-        /*
-            >>>> this works but should we be updating passport.user directly within the session? <<<<<
-        */
-        req.session.passport.user = createUserObject(updatedToken.id_token, updatedToken.refresh_token, updatedToken.access_token)
-
-        // passport.serializeUser((user, cb) => {
-        //   process.nextTick(() => {
-        //     cb(null, user)
-        //   })
-        // })
-        console.log('req.session.passport.user 2', req.session.passport.user)
-
-        // console.log('req.session.user ', req.session.user)
-        // req.session.user = req.user
-
-        // passport.serializeUser((usr, done) => {
-        //   done(null, usr) // Serialize the user by their ID
-        // })
-
-        return next()
-      } catch (error) {
-        logger.error(`Token refresh error:`, error.stack)
-        // Handle the error here
-        res.redirect('/autherror')
-      }
-    }
-
-    // id_token is invalid and refresh_token is invalid
-    // refresh / get id_token and refresh_token by redirecting to /sign-in - need to sign out first?
-    res.redirect('/sign-in')
+  if (tokenIsValid(idToken, nowMinus5Minutes())) {
+    // id_token is valid - continue
+    return next()
   }
 
-  logger.error('Missing idToken or refreshToken')
-  // go to landing page '/' to initiate sign in flow
+  const parsedFefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
+
+  // id_token is invalid and refresh_token is valid - (also use this logic for try again button and access_token refresh (settings page))
+  if (tokenIsValid(parsedFefreshToken, nowMinus5Minutes())) {
+    try {
+      const updatedTokensResponse = await updateToken(refreshToken)
+
+      // updates req.user for the current request
+      req.user = createUserObject(
+        updatedTokensResponse.id_token,
+        updatedTokensResponse.refresh_token,
+        updatedTokensResponse.access_token,
+      )
+
+      // updates user abject in the session for all future requests
+      req.session.passport.user = req.user
+
+      return next()
+    } catch (error) {
+      logger.error(`Token refresh error:`, error.stack)
+      // Handle the error here
+      return res.redirect('/autherror')
+    }
+  }
+
+  // id_token is invalid and refresh_token is invalid
+  // refresh / get id_token and refresh_token by redirecting to /sign-in - need to sign out first?
   return res.redirect('/sign-in')
 }

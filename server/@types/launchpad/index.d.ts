@@ -44,6 +44,7 @@ export type RefreshToken = {
 }
 
 export type IdToken = {
+  split(arg0: string): unknown
   name: string
   given_name: string
   family_name: string
@@ -63,4 +64,10 @@ export type IdToken = {
     youth: boolean
   }
   iss: string
+}
+
+export type UpdatedTokensResponse = {
+  id_token: string
+  refresh_token: string
+  access_token: string
 }
