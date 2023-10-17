@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import type { Request, Response, NextFunction } from 'express'
 import superagent from 'superagent'
-import { IdToken, RefreshToken } from '../@types/launchpad'
+import { IdToken, RefreshToken, UpdatedTokensResponse } from '../@types/launchpad'
 import logger from '../../logger'
 import config from '../config'
 
@@ -101,7 +101,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   // id_token is invalid and refresh_token is valid - (also use this logic for try again button and access_token refresh (settings page))
   if (tokenIsValid(parsedFefreshToken, nowMinus5Minutes())) {
     try {
-      const updatedTokensResponse = await updateToken(refreshToken)
+      const updatedTokensResponse: UpdatedTokensResponse = await updateToken(refreshToken)
 
       // updates req.user for the current request
       req.user = createUserObject(
