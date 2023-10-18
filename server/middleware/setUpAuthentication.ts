@@ -3,6 +3,7 @@ import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
 import auth from '../authentication/auth'
+import { checkTokenValidityAndUpdate } from '../utils/utils'
 
 const router = express.Router()
 
@@ -28,9 +29,10 @@ export default function setUpAuth(): Router {
     })(req, res, next)
   })
 
-  router.use((req, res, next) => {
+  router.use(async (req, res, next) => {
+    await checkTokenValidityAndUpdate(req, res, next)
+
     res.locals.user = req.user
-    next()
   })
 
   return router

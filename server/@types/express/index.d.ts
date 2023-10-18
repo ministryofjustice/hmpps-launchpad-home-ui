@@ -1,3 +1,5 @@
+import { IdToken } from '../launchpad'
+
 export default {}
 
 declare module 'express-session' {
@@ -5,6 +7,9 @@ declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    passport: {
+      user: User
+    }
   }
 }
 
@@ -12,12 +17,13 @@ export declare global {
   namespace Express {
     interface User {
       refreshToken: string
-      idToken: string
+      idToken: IdToken
       accessToken: string
       token: string
     }
 
     interface Request {
+      user: User
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void

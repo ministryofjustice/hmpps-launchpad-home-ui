@@ -5,6 +5,7 @@ import type { RequestHandler } from 'express'
 import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../data/tokenVerification'
+import { createUserObject } from '../utils/utils'
 
 passport.serializeUser((user, cb) => {
   process.nextTick(() => {
@@ -28,12 +29,6 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
 
     req.session.returnTo = req.originalUrl
 
-    // if refresh token !expired - refresh token here not redirect to /sign-in
-
-    // ...
-
-    // if refresh token has expired redirect to /sign-in
-    // check if refresh token is updated in redis
     return res.redirect('/sign-in')
   }
 }
@@ -70,14 +65,7 @@ function init(): void {
         verified: any,
         cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
-        const user = {
-          idToken: JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString()),
-          refreshToken,
-          accessToken,
-          token: accessToken,
-        }
-
-        return cb(null, user)
+        return cb(null, createUserObject(idToken, refreshToken, accessToken))
       },
     ),
   )
