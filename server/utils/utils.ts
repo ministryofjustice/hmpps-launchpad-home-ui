@@ -97,10 +97,10 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
     return next()
   }
 
-  const parsedFefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
+  const parsedRefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
 
   // id_token is invalid and refresh_token is valid
-  if (tokenIsValid(parsedFefreshToken, nowMinus5Minutes())) {
+  if (tokenIsValid(parsedRefreshToken, nowMinus5Minutes())) {
     try {
       const updatedTokensResponse: UpdatedTokensResponse = await updateToken(refreshToken)
 
