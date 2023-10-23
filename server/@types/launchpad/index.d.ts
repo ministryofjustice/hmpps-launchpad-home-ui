@@ -47,7 +47,7 @@ export type IdToken = {
   name: string
   given_name: string
   family_name: string
-  nonce: string
+  nonce?: string
   iat: number
   aud: string
   sub: string
