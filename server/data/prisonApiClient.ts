@@ -21,7 +21,7 @@ export default class PrisonApiClient {
 
     rawPrisonerEvents.forEach(rawPrisonerEvent => {
       const prisonerEvent: PrisonerEvent = {
-        timeString: formatDateTimeString(rawPrisonerEvent.startTime, rawPrisonerEvent.endTime, DateFormats.PRETTY_TIME), // update to format as in content hub - replicate functionality
+        timeString: formatDateTimeString(rawPrisonerEvent.startTime, rawPrisonerEvent.endTime, DateFormats.PRETTY_TIME),
         description: `${rawPrisonerEvent.eventSourceDesc}`, // update to format as in content hub - replicate functionality
         location: `${rawPrisonerEvent.eventLocation}`, // update to format as in content hub - replicate functionality
       }
