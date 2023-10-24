@@ -8,6 +8,8 @@ import {
   tokenIsValid,
 } from './utils'
 
+import { DateFormats } from './enums'
+
 describe('convert to title case', () => {
   it.each([
     [null, null, ''],
@@ -78,7 +80,7 @@ describe('format date', () => {
   })
 
   it('it should return a string formatted version of the provided Date object', () => {
-    expect(formatDate(date)).toEqual('Monday 1 December, 2025')
+    expect(formatDate(date, DateFormats.PRETTY_DATE)).toEqual('Monday 1 December, 2025')
   })
 })
 
