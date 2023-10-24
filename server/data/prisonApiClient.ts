@@ -22,8 +22,8 @@ export default class PrisonApiClient {
     rawPrisonerEvents.forEach(rawPrisonerEvent => {
       const prisonerEvent: PrisonerEvent = {
         timeString: formatDateTimeString(rawPrisonerEvent.startTime, rawPrisonerEvent.endTime, DateFormats.PRETTY_TIME),
-        description: convertToTitleCase(rawPrisonerEvent.eventSourceDesc), // update to format as in content hub - replicate functionality
-        location: convertToTitleCase(rawPrisonerEvent.eventLocation), // update to format as in content hub - replicate functionality
+        description: convertToTitleCase(rawPrisonerEvent.eventSourceDesc),
+        location: convertToTitleCase(rawPrisonerEvent.eventLocation),
       }
       prisonerEvents.push(prisonerEvent)
     })
