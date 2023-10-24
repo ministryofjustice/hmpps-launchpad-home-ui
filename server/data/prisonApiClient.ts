@@ -1,7 +1,7 @@
 import { EventsData, PrisonerEvent, RawPrisonerEvent } from '../@types/launchpad'
 import RestClient from './restClient'
 import config, { ApiConfig } from '../config'
-import { formatDateTimeString } from '../utils/utils'
+import { formatDateTimeString, convertToTitleCase } from '../utils/utils'
 import { DateFormats } from '../utils/enums'
 
 export default class PrisonApiClient {
@@ -22,8 +22,8 @@ export default class PrisonApiClient {
     rawPrisonerEvents.forEach(rawPrisonerEvent => {
       const prisonerEvent: PrisonerEvent = {
         timeString: formatDateTimeString(rawPrisonerEvent.startTime, rawPrisonerEvent.endTime, DateFormats.PRETTY_TIME),
-        description: `${rawPrisonerEvent.eventSourceDesc}`, // update to format as in content hub - replicate functionality
-        location: `${rawPrisonerEvent.eventLocation}`, // update to format as in content hub - replicate functionality
+        description: convertToTitleCase(rawPrisonerEvent.eventSourceDesc), // update to format as in content hub - replicate functionality
+        location: convertToTitleCase(rawPrisonerEvent.eventLocation), // update to format as in content hub - replicate functionality
       }
       prisonerEvents.push(prisonerEvent)
     })
