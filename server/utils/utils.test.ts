@@ -96,7 +96,7 @@ describe('Dates', () => {
     expect(formatDate(date, DateFormats.PRETTY_DATE)).toEqual('Monday 1 December, 2025')
   })
 
-  it('it should return a string formatted version of the provided Date objects', () => {
+  it('it should return a string combining the provided from and to times in the expected format', () => {
     expect(formatDateTimeString(from, to, DateFormats.PRETTY_TIME)).toEqual(`${formattedFrom} to ${formattedTo}`)
   })
 })
