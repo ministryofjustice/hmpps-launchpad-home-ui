@@ -1,4 +1,5 @@
-import { EventsData, PrisonerEvent, RawPrisonerEvent } from '../@types/launchpad'
+import { EventsData, PrisonerEvent } from '../@types/launchpad'
+import { ScheduledEvent } from '../@types/prisonApiTypes'
 import RestClient from './restClient'
 import config, { ApiConfig } from '../config'
 import { formatDateTimeString, convertToTitleCase } from '../utils/utils'
@@ -12,18 +13,18 @@ export default class PrisonApiClient {
   }
 
   async getEventsSummary(bookingId: string): Promise<EventsData> {
-    const rawPrisonerEvents = (await this.restClient.get({
+    const scheduledEvents = (await this.restClient.get({
       path: `/api/bookings/${bookingId}/events/today`,
       query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
-    })) as RawPrisonerEvent[]
+    })) as ScheduledEvent[]
 
     const prisonerEvents: PrisonerEvent[] = []
 
-    rawPrisonerEvents.forEach(rawPrisonerEvent => {
+    scheduledEvents.forEach(scheduledEvent => {
       const prisonerEvent: PrisonerEvent = {
-        timeString: formatDateTimeString(rawPrisonerEvent.startTime, rawPrisonerEvent.endTime, DateFormats.PRETTY_TIME),
-        description: convertToTitleCase(rawPrisonerEvent.eventSourceDesc),
-        location: convertToTitleCase(rawPrisonerEvent.eventLocation),
+        timeString: formatDateTimeString(scheduledEvent.startTime, scheduledEvent.endTime, DateFormats.PRETTY_TIME),
+        description: convertToTitleCase(scheduledEvent.eventSourceDesc),
+        location: convertToTitleCase(scheduledEvent.eventLocation),
       }
       prisonerEvents.push(prisonerEvent)
     })
