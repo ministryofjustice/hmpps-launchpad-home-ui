@@ -1,4 +1,5 @@
 import { type RequestHandler, Router } from 'express'
+import { DateFormats } from '../../utils/enums'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 
@@ -16,7 +17,7 @@ export default function routes(services: Services): Router {
     return res.render('pages/homepage', {
       errors: req.flash('errors'),
       message: req.flash('message'),
-      today: formatDate(new Date()),
+      today: formatDate(new Date(), DateFormats.PRETTY_DATE),
       eventsData,
       linksData,
     })

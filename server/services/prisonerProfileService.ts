@@ -7,10 +7,10 @@ export default class PrisonerProfileService {
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
   ) {}
 
-  async getPrisonerEventsSummary(bookingId: string): Promise<EventsData> {
-    const prisonApiClient = new PrisonApiClient('TEMP_VALUE_THIS_LINE_WILL_BE_REPLACED')
-    const eventsSummary = await prisonApiClient.getEventsSummary(bookingId)
-
+  async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+    const eventsSummary = await prisonApiClient.getEventsSummary(user.idToken.booking.id)
     return eventsSummary
   }
 }
