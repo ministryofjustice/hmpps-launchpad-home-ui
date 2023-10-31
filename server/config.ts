@@ -89,7 +89,108 @@ export default {
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
-  establishments: {
+  establishments: [
+    {
+      agencyId: 'BWI',
+      name: 'berwyn',
+      displayName: 'HMP Berwyn',
+      youth: false,
+    },
+    {
+      agencyId: 'WLI',
+      name: 'wayland',
+      displayName: 'HMP Wayland',
+      youth: false,
+    },
+    {
+      agencyId: 'CKI',
+      name: 'cookhamwood',
+      displayName: 'HMYOI Cookham Wood',
+      youth: true,
+    },
+    {
+      agencyId: 'EEI',
+      name: 'erlestoke',
+      displayName: 'HMP Erlestoke',
+      youth: false,
+    },
+    {
+      agencyId: 'GHI',
+      name: 'garth',
+      displayName: 'HMP Garth',
+      youth: false,
+    },
+    {
+      agencyId: 'LHI',
+      name: 'lindholme',
+      displayName: 'HMYOI Lindholme',
+      youth: true,
+    },
+    {
+      agencyId: 'NHI',
+      name: 'newhall',
+      displayName: 'HMPYOI New Hall',
+      youth: true,
+    },
+    {
+      agencyId: 'RNI',
+      name: 'ranby',
+      displayName: 'HMP Ranby',
+      youth: false,
+    },
+    {
+      agencyId: 'SHI',
+      name: 'stokeheath',
+      displayName: 'HMPYOI Stoke Heath',
+      youth: true,
+    },
+    {
+      agencyId: 'STI',
+      name: 'styal',
+      displayName: 'HMPYOI Styal',
+      youth: true,
+    },
+    {
+      agencyId: 'SLI',
+      name: 'swaleside',
+      displayName: 'HMP Swaleside',
+      youth: false,
+    },
+    {
+      agencyId: 'MTI',
+      name: 'themount',
+      displayName: 'HMP The Mount',
+      youth: false,
+    },
+    {
+      agencyId: 'FYI',
+      name: 'felthama',
+      displayName: 'HMYOI Feltham A',
+      youth: true,
+    },
+    {
+      agencyId: 'FMI',
+      name: 'felthamb',
+      displayName: 'HMYOI Feltham B',
+      youth: true,
+    },
+    {
+      agencyId: 'WNI',
+      name: 'werrington',
+      displayName: 'HMYOI Werrington',
+      youth: true,
+    },
+    {
+      agencyId: 'WYI',
+      name: 'wetherby',
+      displayName: 'HMYOI Wetherby',
+      youth: true,
+    },
+  ],
+}
+
+/*
+establishments: {
     BWI: {
       agencyId: 'BWI',
       name: 'berwyn',
@@ -187,4 +288,4 @@ export default {
       youth: true,
     },
   },
-}
+  */
