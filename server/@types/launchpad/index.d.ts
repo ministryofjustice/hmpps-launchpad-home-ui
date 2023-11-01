@@ -72,3 +72,10 @@ export type UpdatedTokensResponse = {
   token_type: string
   expires_in: number
 }
+
+export type Establishment = {
+  agencyId: string
+  name: string
+  displayName: string
+  youth: boolean
+}

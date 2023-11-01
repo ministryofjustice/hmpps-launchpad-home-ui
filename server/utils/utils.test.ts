@@ -7,9 +7,11 @@ import {
   createUserObject,
   nowMinus5Minutes,
   tokenIsValid,
+  getEstablishmentData,
 } from './utils'
 
 import { DateFormats } from './enums'
+import { Establishment } from '../@types/launchpad'
 
 describe('convert to title case', () => {
   it.each([
@@ -213,5 +215,33 @@ describe('now minus 5 minutes', () => {
 
   it('it should return a number value that is equal in seconds to the provided time in milliseconds minus 5 minutes', () => {
     expect(nowMinus5Minutes(now)).toEqual(nowEpochInSeconds)
+  })
+})
+
+describe('get establishment data', () => {
+  let agencyId: string
+  let establishment: Establishment
+
+  beforeEach(() => {
+    agencyId = 'CKI'
+    establishment = {
+      agencyId: 'CKI',
+      name: 'cookhamwood',
+      displayName: 'HMYOI Cookham Wood',
+      youth: true,
+    }
+  })
+
+  afterEach(() => {
+    agencyId = null
+    establishment = null
+  })
+
+  it('it should return the expected establishment object for the provided agency id', () => {
+    expect(getEstablishmentData(agencyId)).toEqual(establishment)
+  })
+
+  it('it should return null when an unknown agency id is provided', () => {
+    expect(getEstablishmentData('ABC')).toBeNull()
   })
 })
