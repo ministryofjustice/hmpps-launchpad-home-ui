@@ -11,6 +11,7 @@ import {
 } from './utils'
 
 import { DateFormats } from './enums'
+import { Establishment } from '../@types/launchpad'
 
 describe('convert to title case', () => {
   it.each([
@@ -219,7 +220,7 @@ describe('now minus 5 minutes', () => {
 
 describe('get establishment data', () => {
   let agencyId: string
-  let establishment: object
+  let establishment: Establishment
 
   beforeEach(() => {
     agencyId = 'CKI'
