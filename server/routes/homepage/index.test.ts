@@ -32,8 +32,8 @@ describe('GET /', () => {
   let linksData: LinksData
 
   beforeEach(() => {
-    UNILINK_URL = '#'
-    CONTENT_HUB_URL = '#'
+    UNILINK_URL = 'PRISON_SPECIFIC_SELF_SERVICE_URL'
+    CONTENT_HUB_URL = 'PRISON_SPECIFIC_URL'
     NPR_URL = `${CONTENT_HUB_URL}/tags/785`
     INSIDE_TIME_URL = 'https://insidetimeprison.org/'
 
@@ -67,21 +67,21 @@ describe('GET /', () => {
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
         title: 'Unilink',
-        url: '#',
+        url: `${UNILINK_URL}`,
         description: 'Access to kiosk apps',
         openInNewTab: true,
       },
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
         title: 'Content Hub',
-        url: '#',
+        url: `${CONTENT_HUB_URL}`,
         description: 'Watch, read and listen to local and national content',
         openInNewTab: false,
       },
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.png',
         title: 'NPR',
-        url: '#/tags/785',
+        url: `${CONTENT_HUB_URL}/tags/785`,
         description: 'Listen to 24/7 music, talk, requests and playbacks',
         openInNewTab: true,
       },
@@ -96,6 +96,7 @@ describe('GET /', () => {
 
     linksData = {
       links,
+      prisonerContentHubURL: CONTENT_HUB_URL,
     }
 
     linksService.getHomepageLinks.mockResolvedValue(linksData)
@@ -116,6 +117,7 @@ describe('GET /', () => {
     linksData = {
       title: '',
       links,
+      prisonerContentHubURL: '',
     }
   })
 
@@ -178,7 +180,7 @@ describe('GET /', () => {
         expect($('[data-test="event-detail-3"] .description').text()).toBe('Event description Event location')
 
         expect($('.events-summary a').text()).toBe('View my timetable')
-        expect($('.events-summary a').attr('href')).toBe('/timetable')
+        expect($('.events-summary a').attr('href')).toBe(`${CONTENT_HUB_URL}/timetable`)
       })
   })
 
@@ -188,7 +190,7 @@ describe('GET /', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('#internal-link-tile-profile a').attr('href')).toBe('/profile')
+        expect($('#internal-link-tile-profile a').attr('href')).toBe(`${CONTENT_HUB_URL}/profile`)
         expect($('#internal-link-tile-profile a h2').text()).toBe('Profile')
         expect($('#internal-link-tile-profile a p').text()).toBe(
           'Check money, visits, IEP, adjudications and timetable',
