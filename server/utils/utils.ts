@@ -129,8 +129,13 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
 }
 
 export const getEstablishmentLinksData = (agencyId: string) => {
-  const { prisonerContentHubURL, selfServiceURL } =
-    config.establishments.find(establishment => establishment.agencyId === agencyId) || null
+  try {
+    const { prisonerContentHubURL, selfServiceURL } = config.establishments.find(
+      establishment => establishment.agencyId === agencyId,
+    )
 
-  return { prisonerContentHubURL, selfServiceURL }
+    return { prisonerContentHubURL, selfServiceURL }
+  } catch (err) {
+    return null
+  }
 }
