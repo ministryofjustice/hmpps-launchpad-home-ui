@@ -7,11 +7,10 @@ import {
   createUserObject,
   nowMinus5Minutes,
   tokenIsValid,
-  getEstablishmentData,
+  getEstablishmentLinksData,
 } from './utils'
 
 import { DateFormats } from './enums'
-import { Establishment } from '../@types/launchpad'
 
 describe('convert to title case', () => {
   it.each([
@@ -218,30 +217,31 @@ describe('now minus 5 minutes', () => {
   })
 })
 
-describe('get establishment data', () => {
+describe('get establishment link data', () => {
   let agencyId: string
-  let establishment: Establishment
+  let establishmentLinksData: {
+    prisonerContentHubURL: string
+    selfServiceURL: string
+  }
 
   beforeEach(() => {
     agencyId = 'CKI'
-    establishment = {
-      agencyId: 'CKI',
-      name: 'cookhamwood',
-      displayName: 'HMYOI Cookham Wood',
-      youth: true,
+    establishmentLinksData = {
+      prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
+      selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
     }
   })
 
   afterEach(() => {
     agencyId = null
-    establishment = null
+    establishmentLinksData = null
   })
 
   it('it should return the expected establishment object for the provided agency id', () => {
-    expect(getEstablishmentData(agencyId)).toEqual(establishment)
+    expect(getEstablishmentLinksData(agencyId)).toEqual(establishmentLinksData)
   })
 
   it('it should return null when an unknown agency id is provided', () => {
-    expect(getEstablishmentData('ABC')).toBeNull()
+    expect(getEstablishmentLinksData('ABC')).toBeNull()
   })
 })
