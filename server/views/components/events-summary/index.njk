@@ -1,4 +1,4 @@
-{% macro eventsSummary(params, user) %}
+{% macro eventsSummary(params, prisonerContentHubURL, user) %}
   <div class="events-summary govuk-!-padding-4">
     
     <h2 class="govuk-heading-s">{% if params.isTomorrow %}Tomorrow{% else %}Today{% endif %}'s events</h2>
@@ -20,7 +20,7 @@
       {% endif %}
     </div>
 
-    <a href="/timetable" class="govuk-link" id="view-timetable-link">View my timetable</a>
+    <a href="{{prisonerContentHubURL}}/timetable" class="govuk-link" id="view-timetable-link" rel="noreferrer noopener" target="_blank">View my timetable</a>
 
   </div>
 {% endmacro %}

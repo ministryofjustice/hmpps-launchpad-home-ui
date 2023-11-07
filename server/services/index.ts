@@ -10,7 +10,7 @@ export const services = () => {
 
   const prisonerProfileService = new PrisonerProfileService(hmppsAuthClient, prisonApiClientBuilder)
 
-  const linksService = new LinksService(hmppsAuthClient)
+  const linksService = new LinksService()
 
   return {
     userService,

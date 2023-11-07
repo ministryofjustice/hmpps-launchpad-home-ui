@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 import superagent from 'superagent'
 import { format } from 'date-fns'
-import { IdToken, RefreshToken, UpdatedTokensResponse, Establishment } from '../@types/launchpad'
+import { IdToken, RefreshToken, UpdatedTokensResponse } from '../@types/launchpad'
 import logger from '../../logger'
 import config from '../config'
 
@@ -128,5 +128,9 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   return res.redirect('/sign-in')
 }
 
-export const getEstablishmentData = (agencyId: string): Establishment | null =>
-  config.establishments.find(establishment => establishment.agencyId === agencyId) || null
+export const getEstablishmentLinksData = (agencyId: string) => {
+  const { prisonerContentHubURL, selfServiceURL } =
+    config.establishments.find(establishment => establishment.agencyId === agencyId) || null
+
+  return { prisonerContentHubURL, selfServiceURL }
+}
