@@ -66,7 +66,7 @@ describe('GET /', () => {
     links = [
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
-        title: 'Unilink',
+        title: 'Self Service',
         url: `${SELF_SERVICE_URL}`,
         description: 'Access to kiosk apps',
         openInNewTab: true,
@@ -128,7 +128,7 @@ describe('GET /', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
 
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Unilink')
+        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Self Service')
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) a').attr('href')).toBe(SELF_SERVICE_URL)
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) p').text()).toBe('Access to kiosk apps')
 
