@@ -79,6 +79,6 @@ export type Establishment = {
   name: string
   displayName: string
   youth: boolean
-  contentHubURL: string
-  unilinkURL: string
+  prisonerContentHubURL: string
+  selfServiceURL: string
 }
