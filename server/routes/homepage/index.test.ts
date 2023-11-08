@@ -21,7 +21,7 @@ afterEach(() => {
 })
 
 describe('GET /', () => {
-  let UNILINK_URL: string
+  let SELF_SERVICE_URL: string
   let CONTENT_HUB_URL: string
   let NPR_URL: string
   let INSIDE_TIME_URL: string
@@ -32,7 +32,7 @@ describe('GET /', () => {
   let linksData: LinksData
 
   beforeEach(() => {
-    UNILINK_URL = 'PRISON_SPECIFIC_SELF_SERVICE_URL'
+    SELF_SERVICE_URL = 'PRISON_SPECIFIC_SELF_SERVICE_URL'
     CONTENT_HUB_URL = 'PRISON_SPECIFIC_URL'
     NPR_URL = `${CONTENT_HUB_URL}/tags/785`
     INSIDE_TIME_URL = 'https://insidetimeprison.org/'
@@ -66,8 +66,8 @@ describe('GET /', () => {
     links = [
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
-        title: 'Unilink',
-        url: `${UNILINK_URL}`,
+        title: 'Self Service',
+        url: `${SELF_SERVICE_URL}`,
         description: 'Access to kiosk apps',
         openInNewTab: true,
       },
@@ -103,7 +103,7 @@ describe('GET /', () => {
   })
 
   afterEach(() => {
-    UNILINK_URL = ''
+    SELF_SERVICE_URL = ''
     CONTENT_HUB_URL = ''
     NPR_URL = ''
     INSIDE_TIME_URL = ''
@@ -128,8 +128,8 @@ describe('GET /', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
 
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Unilink')
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) a').attr('href')).toBe(UNILINK_URL)
+        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Self Service')
+        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) a').attr('href')).toBe(SELF_SERVICE_URL)
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) p').text()).toBe('Access to kiosk apps')
 
         expect($('[data-test="tiles-panel"] .link-tile:nth-child(2) h3').text()).toBe('Content Hub')

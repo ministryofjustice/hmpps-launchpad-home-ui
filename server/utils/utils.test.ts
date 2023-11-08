@@ -237,7 +237,7 @@ describe('get establishment link data', () => {
     establishmentLinksData = null
   })
 
-  it('it should return the expected establishment object for the provided agency id', () => {
+  it('it should return the expected establishment links data for the provided agency id', () => {
     expect(getEstablishmentLinksData(agencyId)).toEqual(establishmentLinksData)
   })
 
