@@ -16,11 +16,11 @@
 
     <section class="govuk-grid-row govuk-width-container" id="top-row-wrapper">
       <div id="events-summary-wrapper">
-        {{ eventsSummary(eventsData, user) }}
+        {{ eventsSummary(eventsData, linksData.prisonerContentHubURL, user) }}
       </div>
 
       <div class="internal-link-tile" id="internal-link-tile-profile">
-        <a href="/profile">
+        <a href="{{linksData.prisonerContentHubURL}}/profile" rel="noreferrer noopener" target="_blank">
           <h2 class="govuk-!-font-size-24 govuk-!-margin-top-0">Profile</h2>
           <p>Check money, visits, IEP, adjudications and timetable</p> 
         </a>

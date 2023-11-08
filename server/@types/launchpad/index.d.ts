@@ -21,6 +21,7 @@ export type Link = {
 export type LinksData = {
   title?: string
   links: Link[]
+  prisonerContentHubURL: string
 }
 
 export type Application = {
@@ -78,4 +79,6 @@ export type Establishment = {
   name: string
   displayName: string
   youth: boolean
+  prisonerContentHubURL: string
+  selfServiceURL: string
 }

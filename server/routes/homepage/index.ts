@@ -11,8 +11,9 @@ export default function routes(services: Services): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    const eventsData = await services.prisonerProfileService.getPrisonerEventsSummary(res.locals.user)
-    const linksData = await services.linksService.getHomepageLinks()
+    const { user } = res.locals
+    const eventsData = await services.prisonerProfileService.getPrisonerEventsSummary(user)
+    const linksData = await services.linksService.getHomepageLinks(user)
 
     return res.render('pages/homepage', {
       errors: req.flash('errors'),

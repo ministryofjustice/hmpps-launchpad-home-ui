@@ -1,32 +1,31 @@
-import { HmppsAuthClient } from '../data'
 import { Link, LinksData } from '../@types/launchpad'
+import { getEstablishmentLinksData } from '../utils/utils'
 
 export default class Linkservice {
-  constructor(private readonly hmppsAuthClient: HmppsAuthClient) {}
+  constructor() {}
 
-  async getHomepageLinks(): Promise<LinksData> {
-    /* 
-    TEMP TEST DATA
-  */
+  async getHomepageLinks(user: { idToken: { establishment: { agency_id: string } } }): Promise<LinksData> {
+    const { prisonerContentHubURL, selfServiceURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id)
+
     const links: Link[] = [
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
-        title: 'Unilink',
-        url: '#',
+        title: 'Self Service',
+        url: selfServiceURL,
         description: 'Access to kiosk apps',
         openInNewTab: true,
       },
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
         title: 'Content Hub',
-        url: '#',
+        url: prisonerContentHubURL,
         description: 'Watch, read and listen to local and national content',
-        openInNewTab: false,
+        openInNewTab: true,
       },
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.png',
         title: 'NPR',
-        url: '#/tags/785',
+        url: `${prisonerContentHubURL}/tags/785`,
         description: 'Listen to 24/7 music, talk, requests and playbacks',
         openInNewTab: true,
       },
@@ -41,10 +40,8 @@ export default class Linkservice {
 
     const linksData: LinksData = {
       links,
+      prisonerContentHubURL,
     }
-    /* 
-    END - TEMP TEST DATA
-  */
 
     return linksData
   }
