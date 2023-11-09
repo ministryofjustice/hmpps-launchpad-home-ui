@@ -59,7 +59,7 @@ export default {
     },
     launchpadAuth: {
       url: get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080', requiredInProduction),
-      externalUrl: get('LAUNCHPAD_AUTH_URL', get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080')),
+      externalUrl: get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080'),
       timeout: {
         response: Number(get('LAUNCHPAD_AUTH_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('LAUNCHPAD_AUTH_TIMEOUT_DEADLINE', 10000)),
