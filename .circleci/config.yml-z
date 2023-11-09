@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7.2.1
+  hmpps: ministryofjustice/hmpps@7
   slack: circleci/slack@4.12.1
 
 parameters:
@@ -47,7 +47,8 @@ jobs:
             export BUILD_NUMBER=${DATE}.${CIRCLE_BUILD_NUM}
             export GIT_REF="$CIRCLE_SHA1"
             npm run record-build-info
-      - run: # Run linter after build because the integration test code depend on compiled typescript...
+      - run:
+          # Run linter after build because the integration test code depend on compiled typescript...
           name: Linter check
           command: npm run lint
       - persist_to_workspace:
@@ -150,38 +151,38 @@ workflows:
             - integration_test
             - build_docker
           helm_timeout: 5m
-#      - request-preprod-approval:
-#          type: approval
-#          requires:
-#            - deploy_dev
-#      - hmpps/deploy_env:
-#          name: deploy_preprod
-#          env: "preprod"
-#          jira_update: true
-#          jira_env_type: staging
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-launchpad-preprod
-#          requires:
-#            - request-preprod-approval
-#          helm_timeout: 5m
-#      - request-prod-approval:
-#          type: approval
-#          requires:
-#            - deploy_preprod
-#      - hmpps/deploy_env:
-#          name: deploy_prod
-#          env: "prod"
-#          jira_update: true
-#          jira_env_type: production
-#          slack_notification: true
-#          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-#          context:
-#            - hmpps-common-vars
-#            - hmpps-launchpad-prod
-#          requires:
-#            - request-prod-approval
-#          helm_timeout: 5m
+  #      - request-preprod-approval:
+  #          type: approval
+  #          requires:
+  #            - deploy_dev
+  #      - hmpps/deploy_env:
+  #          name: deploy_preprod
+  #          env: "preprod"
+  #          jira_update: true
+  #          jira_env_type: staging
+  #          context:
+  #            - hmpps-common-vars
+  #            - hmpps-launchpad-preprod
+  #          requires:
+  #            - request-preprod-approval
+  #          helm_timeout: 5m
+  #      - request-prod-approval:
+  #          type: approval
+  #          requires:
+  #            - deploy_preprod
+  #      - hmpps/deploy_env:
+  #          name: deploy_prod
+  #          env: "prod"
+  #          jira_update: true
+  #          jira_env_type: production
+  #          slack_notification: true
+  #          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
+  #          context:
+  #            - hmpps-common-vars
+  #            - hmpps-launchpad-prod
+  #          requires:
+  #            - request-prod-approval
+  #          helm_timeout: 5m
 
   security:
     triggers:
