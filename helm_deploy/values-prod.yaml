@@ -1,4 +1,3 @@
----
 # Per environment values which override defaults in hmpps-launchpad/values.yaml
 
 generic-service:
@@ -17,10 +16,8 @@ generic-service:
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth.hmpps.service.justice.gov.uk"
 
   allowlist:
-    groups:
-      - internal
-      - prisons
-      - prisoner_facing_services
+    undefined: internal,prisons,prisoner_facing_services/32
+    groups: []
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-launchpad
