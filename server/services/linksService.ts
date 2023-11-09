@@ -10,7 +10,7 @@ export default class Linkservice {
     const links: Link[] = [
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
-        title: 'Self Service',
+        title: 'Self-service',
         url: selfServiceURL,
         description: 'Access to kiosk apps',
         openInNewTab: true,
