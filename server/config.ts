@@ -71,31 +71,31 @@ export default {
       systemClientSecret: get('SYSTEM_CLIENT_SECRET', 'clientsecret', requiredInProduction),
       scopes: [
         {
-          scope: 'user.basic.read',
+          type: 'user.basic.read',
           accessGranted: 'Grants permission to read basic user information like firstName and lastName.',
           permittedImplicitly: true,
           humanReadableDescription: 'Your name',
         },
         {
-          scope: 'user.establishment.read',
+          type: 'user.establishment.read',
           accessGranted: 'Grants permission to read details about the establishment or prison the user is located.',
           permittedImplicitly: false,
           humanReadableDescription: 'Details of your prison',
         },
         {
-          scope: 'user.booking.read',
+          type: 'user.booking.read',
           accessGranted: 'Grants permission to read the booking details of the user.',
           permittedImplicitly: false,
           humanReadableDescription: 'Prison booking details',
         },
         {
-          scope: 'user.client.read',
+          type: 'user.client.read',
           accessGranted: 'Grants permission to read information about clients that a user has approved.',
           permittedImplicitly: false,
           humanReadableDescription: "Apps you've allowed access to",
         },
         {
-          scope: 'user.client.delete',
+          type: 'user.client.delete',
           accessGranted: 'Grants permission to delete clients that a user has approved.',
           permittedImplicitly: false,
           humanReadableDescription: "Apps you've removed access to",
