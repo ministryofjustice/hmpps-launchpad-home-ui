@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: launchpad-preprod.hmpps.service.justice.gov.uk
+    host: launchpad-home-preprod.hmpps.service.justice.gov.uk
 
   env:
     INGRESS_URL: "https://launchpad-preprod.hmpps.service.justice.gov.uk"
