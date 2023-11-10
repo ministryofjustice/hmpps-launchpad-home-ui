@@ -34,6 +34,8 @@ const authenticationMiddleware: AuthenticationMiddleware = verifyToken => {
 }
 
 function init(): void {
+  const scopes: string[] = config.apis.launchpadAuth.scopes.map(scope => scope.type)
+
   passport.use(
     new OpenIDConnectStrategy(
       {
@@ -45,13 +47,7 @@ function init(): void {
         clientID: config.apis.launchpadAuth.apiClientId,
         clientSecret: config.apis.launchpadAuth.apiClientSecret,
         callbackURL: `${config.domain}/sign-in/callback`,
-        scope: [
-          'user.establishment.read',
-          'user.booking.read',
-          'user.basic.read',
-          'user.clients.read',
-          'user.clients.delete',
-        ],
+        scope: scopes,
         nonce: 'true',
         customHeaders: { Authorization: generateOauthClientToken() },
       },
