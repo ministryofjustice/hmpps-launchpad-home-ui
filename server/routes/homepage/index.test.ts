@@ -197,4 +197,18 @@ describe('GET /', () => {
         )
       })
   })
+
+  it('should display the expected links in the page footer', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const firstLink = $('.govuk-footer ul li a').first()
+        expect(firstLink.attr('href')).toBe(`${CONTENT_HUB_URL}/content/4856`)
+        expect(firstLink.text().trim()).toBe('Privacy policy')
+        expect(firstLink.attr('rel')).toBe('noreferrer noopener')
+        expect(firstLink.attr('target')).toBe('_blank')
+      })
+  })
 })
