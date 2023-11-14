@@ -171,7 +171,7 @@ workflows:
           jira_env_type: staging
           context:
             - hmpps-common-vars
-            - hmpps-launchpad-staging
+            - hmpps-launchpad-stage
           requires:
             - request-staging-preview-approval
           helm_timeout: 5m
