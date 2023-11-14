@@ -8,7 +8,7 @@ generic-service:
     host: launchpad-home-preprod.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://launchpad-preprod.hmpps.service.justice.gov.uk"
+    INGRESS_URL: "https://launchpad-home-preprod.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     NOMIS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
