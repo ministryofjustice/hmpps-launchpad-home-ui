@@ -198,7 +198,7 @@ workflows:
           name: deploy_preprod
           env: "preprod"
           jira_update: true
-          jira_env_type: staging
+          jira_env_type: preprod
           context:
             - hmpps-common-vars
             - hmpps-launchpad-preprod
