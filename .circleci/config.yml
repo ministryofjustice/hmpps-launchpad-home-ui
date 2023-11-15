@@ -188,11 +188,27 @@ workflows:
             - integration_test
             - build_docker
           helm_timeout: 5m
-      - request-preprod-approval:
+      - request-staging-approval:
           <<: *main_branch
           type: approval
           requires:
             - deploy_dev
+      - hmpps/deploy_env:
+          <<: *main_branch
+          name: deploy_staging
+          env: "staging"
+          jira_update: true
+          jira_env_type: staging
+          context:
+            - hmpps-common-vars
+            - hmpps-launchpad-stage
+          requires:
+            - request-staging-approval
+      - request-preprod-approval:
+          <<: *main_branch
+          type: approval
+          requires:
+            - deploy_staging
       - hmpps/deploy_env:
           <<: *main_branch
           name: deploy_preprod
