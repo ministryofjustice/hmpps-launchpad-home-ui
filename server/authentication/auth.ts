@@ -39,7 +39,7 @@ function init(): void {
   passport.use(
     new OpenIDConnectStrategy(
       {
-        issuer: `${config.apis.launchpadAuth.externalUrl}/v1/oauth2`,
+        issuer: `${config.apis.launchpadAuth.externalUrl}`,
         authorizationURL: `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/authorize`,
         tokenURL: `${config.apis.launchpadAuth.url}/v1/oauth2/token`,
         userInfoURL: '',
