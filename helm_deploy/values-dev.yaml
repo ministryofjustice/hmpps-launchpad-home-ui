@@ -1,13 +1,38 @@
----
-# Per environment values which override defaults in hmpps-launchpad/values.yaml
-
 generic-service:
-  replicaCount: 2
+  nameOverride: hmpps-launchpad
+
+  replicaCount: 4
+
+  image:
+    repository: quay.io/hmpps/hmpps-launchpad
+    tag: app_version    # override at deployment time
+    port: 3000
 
   ingress:
-    host: launchpad-home-dev.hmpps.service.justice.gov.uk
+    enabled: true
+    host: app-hostname.local    # override per environment
+    tlsSecretName: hmpps-launchpad-cert
 
+  livenessProbe:
+    httpGet:
+      path: /ping
+
+  readinessProbe:
+    httpGet:
+      path: /ping
+
+  custommetrics:
+    enabled: true
+    scrapeInterval: 15s
+    metricsPath: /metrics
+    metricsPort: 3001
+
+  # Environment variables to load into the deployment
   env:
+    NODE_ENV: "production"
+    REDIS_TLS_ENABLED: "true"
+    TOKEN_VERIFICATION_ENABLED: "true"
+    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
     INGRESS_URL: "https://launchpad-home-dev.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
@@ -16,5 +41,27 @@ generic-service:
     PRISONER_CONTACT_REGISTRY_API_URL: "https://prisoner-contact-registry-dev.prison.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth-dev.hmpps.service.justice.gov.uk"
 
+  # Pre-existing kubernetes secrets to load as environment variables in the deployment.
+  # namespace_secrets:
+  #   [name of kubernetes secret]:
+  #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
+
+  namespace_secrets:
+    hmpps-launchpad:
+      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+      LAUNCHPAD_API_CLIENT_ID: "LAUNCHPAD_API_CLIENT_ID"
+      LAUNCHPAD_API_CLIENT_SECRET: "LAUNCHPAD_API_CLIENT_SECRET"
+      SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
+      SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
+      SESSION_SECRET: "SESSION_SECRET"
+    elasticache-redis:
+      REDIS_HOST: "primary_endpoint_address"
+      REDIS_AUTH_TOKEN: "auth_token"
+
+  allowlist:
+    groups:
+      - internal
+
 generic-prometheus-alerts:
+  targetApplication: hmpps-launchpad
   alertSeverity: digital-prison-service-dev
