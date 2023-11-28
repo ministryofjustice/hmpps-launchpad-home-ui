@@ -19,6 +19,7 @@ generic-service:
   allowlist:
     groups:
       - cymulate
+      - internal
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
