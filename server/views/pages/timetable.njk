@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
-
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
+{% from "../components/timetable-period-selector/index.njk" import timetablePeriodSelector %}
+{% from "../components/timetable-day-row/index.njk" import timetableDayRow %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -10,8 +11,16 @@
   {{ breadCrumb('Timetable', breadCrumbList) }}
 {% endblock %}
 
+{% block title %}
+  <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content">
+    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+    {{ timetablePeriodSelector({ nextWeek: config.nextWeek, lastWeek: config.lastWeek }) }}
+  </div>
+{% endblock %}
+
 {% block content %}
-
-  <h1>Timetable</h1>
-
+  {{ timetableDayRow({ data: events | first, authReturnUrl:  returnUrl }) }}
+  <div class="govuk-width-container govuk-body timetable-header timetable-footer">
+    {{ timetablePeriodSelector({ nextWeek: config.nextWeek, lastWeek: config.lastWeek }) }}
+  </div>
 {% endblock %}

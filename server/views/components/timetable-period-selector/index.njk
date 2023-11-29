@@ -1,0 +1,19 @@
+{% macro timetablePeriodSelector(params) %}
+    <nav class="timetable-period-selector">
+        {% if params.lastWeek %}
+            <span>Last week</span>
+        {% else %}
+            <a href="/timetable/last-week" class="govuk-link">Last week</a>
+        {% endif %}
+        {% if not params.lastWeek and not params.nextWeek %}
+            <span>This week</span>
+        {% else %}
+            <a href="/timetable" class="govuk-link">This week</a>
+        {% endif %}
+        {% if params.nextWeek %}
+            <span>Next week</span>
+        {% else %}
+            <a href="/timetable/next-week" class="govuk-link">Next week</a>
+        {% endif %}
+    </nav>
+{% endmacro %}

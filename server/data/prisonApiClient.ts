@@ -2,7 +2,7 @@ import { EventsData, PrisonerEvent } from '../@types/launchpad'
 import { ScheduledEvent } from '../@types/prisonApiTypes'
 import RestClient from './restClient'
 import config, { ApiConfig } from '../config'
-import { formatDateTimeString, convertToTitleCase } from '../utils/utils'
+import { formatDate, formatDateTimeString, convertToTitleCase } from '../utils/utils'
 import { DateFormats } from '../utils/enums'
 
 export default class PrisonApiClient {
@@ -16,6 +16,35 @@ export default class PrisonApiClient {
     const scheduledEvents = (await this.restClient.get({
       path: `/api/bookings/${bookingId}/events/today`,
       query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
+    })) as ScheduledEvent[]
+
+    const prisonerEvents: PrisonerEvent[] = []
+
+    scheduledEvents.forEach(scheduledEvent => {
+      const prisonerEvent: PrisonerEvent = {
+        timeString: formatDateTimeString(scheduledEvent.startTime, scheduledEvent.endTime, DateFormats.PRETTY_TIME),
+        description: convertToTitleCase(scheduledEvent.eventSourceDesc),
+        location: convertToTitleCase(scheduledEvent.eventLocation),
+      }
+      prisonerEvents.push(prisonerEvent)
+    })
+
+    const eventsData: EventsData = {
+      isTomorrow: false,
+      error: false,
+      prisonerEvents,
+    }
+
+    return eventsData
+  }
+
+  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date): Promise<EventsData> {
+    const scheduledEvents = (await this.restClient.get({
+      path: `/api/bookings/${bookingId}/events`,
+      query: new URLSearchParams({
+        fromDate: formatDate(fromDate, 'yyyy-MM-dd'),
+        toDate: formatDate(toDate, 'yyyy-MM-dd'),
+      }).toString(),
     })) as ScheduledEvent[]
 
     const prisonerEvents: PrisonerEvent[] = []

@@ -10,6 +10,11 @@ export type EventsData = {
   prisonerEvents: PrisonerEvent[]
 }
 
+export type CalendarEventsData = {
+  error: boolean
+  prisonerEvents: ScheduledEvent[]
+}
+
 export type Link = {
   image: string
   title: string

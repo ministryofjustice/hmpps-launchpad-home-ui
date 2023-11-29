@@ -13,4 +13,15 @@ export default class PrisonerProfileService {
     const eventsSummary = await prisonApiClient.getEventsSummary(user.idToken.booking.id)
     return eventsSummary
   }
+
+  async getEventsFor(
+    user: { idToken: { booking: { id: string } } },
+    fromDate: Date,
+    toDate: Date,
+  ): Promise<EventsData> {
+    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+    const prisonApiClient = this.prisonApiClientFactory(token)
+    const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
+    return eventsData
+  }
 }

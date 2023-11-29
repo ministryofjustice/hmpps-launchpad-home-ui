@@ -1,0 +1,33 @@
+{% macro timetableDayBlock(params) %}
+    {% for event in params.events %}
+        {% if loop.first %}
+            <div class="govuk-body{% if params.finished %} day-block-finished{% endif %}" data-hj-suppress>
+        {% endif %}
+        <div class="{% if event.finished %} event-finished{% endif %}{% if event.eventType === 'APP' %} event-appt{% endif %}" data-test="{{ defaultTimeRange }}">
+            <div class="timetable-time">{{event.timeString}}</div>
+            <div class="timetable-desc">
+                <strong>{{event.description}}</strong>
+                {{event.location}}
+            </div>
+        </div>
+
+        {% if loop.last %}
+            </div>
+        {% endif %}
+        {% else %}
+        {% if timetableHasEvents %}
+            <div class="govuk-body{% if params.finished %} day-block-finished{% endif %}" data-hj-suppress>
+                <div class="timetable-empty">
+                    <div class="timetable-time">{{event.timeString}}</div>
+                    <strong>No activities</strong>
+                </div>
+            </div>
+        {% else %}
+            <div class="govuk-body day-block--placeholder" data-hj-suppress>
+                <div class="timetable-empty">
+                    <div class="timetable-time">{{defaultTimeRange}}</div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
