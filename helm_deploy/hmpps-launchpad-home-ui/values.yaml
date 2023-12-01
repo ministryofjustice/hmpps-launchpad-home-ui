@@ -41,7 +41,7 @@ generic-service:
   #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
 
   namespace_secrets:
-    hmpps-launchpad:
+    hmpps-launchpad-home-ui:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
       LAUNCHPAD_API_CLIENT_ID: "LAUNCHPAD_API_CLIENT_ID"
       LAUNCHPAD_API_CLIENT_SECRET: "LAUNCHPAD_API_CLIENT_SECRET"
