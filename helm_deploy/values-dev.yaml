@@ -1,5 +1,5 @@
 ---
-# Per environment values which override defaults in hmpps-launchpad/values.yaml
+# Per environment values which override defaults in hmpps-launchpad-home-ui/values.yaml
 
 generic-service:
   replicaCount: 2
