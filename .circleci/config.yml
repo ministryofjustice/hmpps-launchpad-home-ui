@@ -171,7 +171,7 @@ workflows:
           jira_env_type: staging
           context:
             - hmpps-common-vars
-            - hmpps-launchpad-stage
+            - hmpps-launchpad-home-ui-stage
           requires:
             - request-staging-preview-approval
           helm_timeout: 5m
@@ -201,7 +201,7 @@ workflows:
           jira_env_type: staging
           context:
             - hmpps-common-vars
-            - hmpps-launchpad-stage
+            - hmpps-launchpad-home-ui-stage
           requires:
             - request-staging-approval
       - request-preprod-approval:
@@ -217,7 +217,7 @@ workflows:
           jira_env_type: staging
           context:
             - hmpps-common-vars
-            - hmpps-launchpad-preprod
+            - hmpps-launchpad-home-ui-preprod
           requires:
             - request-preprod-approval
           helm_timeout: 5m
@@ -236,7 +236,7 @@ workflows:
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
             - hmpps-common-vars
-            - hmpps-launchpad-prod
+            - hmpps-launchpad-home-ui-prod
           requires:
             - request-prod-approval
           helm_timeout: 5m
