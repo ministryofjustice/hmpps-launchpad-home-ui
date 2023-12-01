@@ -57,4 +57,4 @@ generic-service:
       - internal
 
 generic-prometheus-alerts:
-  targetApplication: hmpps-launchpad
+  targetApplication: hmpps-launchpad-home-ui
