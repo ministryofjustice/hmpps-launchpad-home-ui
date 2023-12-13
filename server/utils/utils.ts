@@ -1,11 +1,11 @@
 import type { Request, Response, NextFunction } from 'express'
 import superagent from 'superagent'
-import { format } from 'date-fns'
+import { format, isValid, parseISO } from 'date-fns'
 import { IdToken, RefreshToken, UpdatedTokensResponse } from '../@types/launchpad'
 import logger from '../../logger'
 import config from '../config'
 
-const properCase = (word: string): string =>
+export const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
 const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
@@ -33,6 +33,13 @@ export const formatDate = (date: Date, dateTimeFormat: string): string => format
 
 export const formatDateTimeString = (from: string, to: string, dateTimeFormat: string): string =>
   `${formatDate(new Date(from), dateTimeFormat)} to ${formatDate(new Date(to), dateTimeFormat)}`
+
+export const formatDateOrDefault = (placeHolder: string, dateFormat: string, date: string): string => {
+  if (!isValid(parseISO(date))) {
+    return placeHolder
+  }
+  return format(parseISO(date), dateFormat)
+}
 
 export const generateBasicAuthHeader = (clientId: string, clientSecret: string): string => {
   const token = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
