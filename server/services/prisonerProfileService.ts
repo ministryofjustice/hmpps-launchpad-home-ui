@@ -1,5 +1,6 @@
 import { HmppsAuthClient, RestClientBuilder, PrisonApiClient } from '../data'
-import { EventsData } from '../@types/launchpad'
+import { EventsData, TimetableEvents } from '../@types/launchpad'
+import Timetable from '../data/timetable'
 
 export default class PrisonerProfileService {
   constructor(
@@ -18,10 +19,12 @@ export default class PrisonerProfileService {
     user: { idToken: { booking: { id: string } } },
     fromDate: Date,
     toDate: Date,
-  ): Promise<EventsData> {
+  ): Promise<TimetableEvents> {
     const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
     const prisonApiClient = this.prisonApiClientFactory(token)
     const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
-    return eventsData
+    const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
+
+    return timetableData.events
   }
 }
