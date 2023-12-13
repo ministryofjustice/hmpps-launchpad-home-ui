@@ -42,8 +42,8 @@ export default class PrisonApiClient {
     return (await this.restClient.get({
       path: `/api/bookings/${bookingId}/events`,
       query: new URLSearchParams({
-        fromDate: formatDate(fromDate, 'yyyy-MM-dd'),
-        toDate: formatDate(toDate, 'yyyy-MM-dd'),
+        fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
+        toDate: formatDate(toDate, DateFormats.ISO_DATE),
       }).toString(),
     })) as ScheduledEvent[]
   }
