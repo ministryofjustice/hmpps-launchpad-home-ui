@@ -38,32 +38,13 @@ export default class PrisonApiClient {
     return eventsData
   }
 
-  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date): Promise<EventsData> {
-    const scheduledEvents = (await this.restClient.get({
+  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date): Promise<ScheduledEvent[]> {
+    return (await this.restClient.get({
       path: `/api/bookings/${bookingId}/events`,
       query: new URLSearchParams({
         fromDate: formatDate(fromDate, 'yyyy-MM-dd'),
         toDate: formatDate(toDate, 'yyyy-MM-dd'),
       }).toString(),
     })) as ScheduledEvent[]
-
-    const prisonerEvents: PrisonerEvent[] = []
-
-    scheduledEvents.forEach(scheduledEvent => {
-      const prisonerEvent: PrisonerEvent = {
-        timeString: formatDateTimeString(scheduledEvent.startTime, scheduledEvent.endTime, DateFormats.PRETTY_TIME),
-        description: convertToTitleCase(scheduledEvent.eventSourceDesc),
-        location: convertToTitleCase(scheduledEvent.eventLocation),
-      }
-      prisonerEvents.push(prisonerEvent)
-    })
-
-    const eventsData: EventsData = {
-      isTomorrow: false,
-      error: false,
-      prisonerEvents,
-    }
-
-    return eventsData
   }
 }
