@@ -13,7 +13,7 @@ export enum DateFormats {
 }
 
 // eslint-disable-next-line no-shadow
-export enum Timetable {
+export enum TimetableValues {
   SCHEDULED_EVENT_TYPE = 'SCH',
   APP_EVENT_TYPE = 'APP',
   VISIT_EVENT_TYPE = 'VISIT',
