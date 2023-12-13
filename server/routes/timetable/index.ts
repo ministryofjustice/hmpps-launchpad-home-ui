@@ -34,12 +34,10 @@ export default function routes(services: Services): Router {
   })
 
   get('/last-week', (req, res) => {
-    console.log('last week')
     return res.json({ last: 'week' })
   })
 
   get('/next-week', (req, res) => {
-    console.log('next week')
     return res.json({ next: 'week' })
   })
 
