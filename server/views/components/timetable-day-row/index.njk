@@ -7,11 +7,6 @@
             {{params.data.error}}, <a href="{{ params.authReturnUrl }}" class="govuk-link">try again</a>
         </p>
     {% else %}
-        {# {% if not isLoggedIn %}
-        <p class="govuk-!-font-size-24" data-test="signin-prompt">
-            <a href="/auth/sign-in?returnUrl={{ params.authReturnUrl }}" class="govuk-link">Sign in</a> to see your timetable
-        </p>
-        {% endif %} #} 
         {% for day, event in params.data %} 
             <h3 data-test="date">{{event.title}}</h3>
             <div data-test="time-of-day">

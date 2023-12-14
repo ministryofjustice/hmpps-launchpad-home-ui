@@ -1,4 +1,4 @@
-{% macro timetableDayBlock(params) %}
+{% macro timetableDayBlock(params, timetableHasEvents, defaultTimeRange) %}
     {% for event in params.events %}
         {% if loop.first %}
             <div class="govuk-body{% if params.finished %} day-block-finished{% endif %}" data-hj-suppress>
@@ -15,7 +15,7 @@
             </div>
         {% endif %}
         {% else %}
-        {% if timetableHasEvents %}
+        {% if not timetableHasEvents %}
             <div class="govuk-body{% if params.finished %} day-block-finished{% endif %}" data-hj-suppress>
                 <div class="timetable-empty">
                     <div class="timetable-time">{{event.timeString}}</div>
