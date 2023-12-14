@@ -65,7 +65,7 @@
   
     & > :last-child::after,
     & > :first-child::before {
-      background-image: url('/public/images/icons/chevron-left.svg');
+      background-image: url('/assets/images/icons/chevron-left.svg');
       background-repeat: no-repeat;
       background-position: 0 50%;
       content: '';
@@ -74,7 +74,7 @@
     }
   
     & > :last-child::after {
-      background-image: url('/public/images/icons/chevron-right.svg');
+      background-image: url('/assets/images//icons/chevron-right.svg');
       background-position: 8px 50%;
     }
   }
