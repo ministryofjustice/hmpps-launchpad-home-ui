@@ -1,5 +1,5 @@
 import { type RequestHandler, Router } from 'express'
-import { format, addDays, subDays } from 'date-fns'
+import { addDays, subDays } from 'date-fns'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
