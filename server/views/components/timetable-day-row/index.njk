@@ -7,7 +7,6 @@
             {{params.data.error}}, <a href="{{ params.authReturnUrl }}" class="govuk-link">try again</a>
         </p>
     {% else %}
-        {% endif %} #} 
         {% for day, event in params.data %} 
             <h3 data-test="date">{{event.title}}</h3>
             <div data-test="time-of-day">
