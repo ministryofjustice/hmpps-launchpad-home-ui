@@ -2,7 +2,7 @@ import { EventsData, PrisonerEvent } from '../@types/launchpad'
 import { ScheduledEvent } from '../@types/prisonApiTypes'
 import RestClient from './restClient'
 import config, { ApiConfig } from '../config'
-import { formatDateTimeString, convertToTitleCase } from '../utils/utils'
+import { formatDate, formatDateTimeString, convertToTitleCase } from '../utils/utils'
 import { DateFormats } from '../utils/enums'
 
 export default class PrisonApiClient {
@@ -36,5 +36,15 @@ export default class PrisonApiClient {
     }
 
     return eventsData
+  }
+
+  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date): Promise<ScheduledEvent[]> {
+    return (await this.restClient.get({
+      path: `/api/bookings/${bookingId}/events`,
+      query: new URLSearchParams({
+        fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
+        toDate: formatDate(toDate, DateFormats.ISO_DATE),
+      }).toString(),
+    })) as ScheduledEvent[]
   }
 }

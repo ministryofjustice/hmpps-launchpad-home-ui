@@ -10,6 +10,15 @@ export type EventsData = {
   prisonerEvents: PrisonerEvent[]
 }
 
+export type TimetableEvents = {
+  [key: string]: TimetableRow
+}
+
+export type CalendarEventsData = {
+  error: boolean
+  prisonerEvents: ScheduledEvent[]
+}
+
 export type Link = {
   image: string
   title: string
@@ -81,4 +90,31 @@ export type Establishment = {
   youth: boolean
   prisonerContentHubURL: string
   selfServiceURL: string
+}
+
+export type TimetableOptions = {
+  fromDate: Date
+  toDate: Date
+}
+
+export type TimetableSession = {
+  finished: boolean
+  events: TimetableEventFormatted[] // Updated to specify type
+}
+
+export type TimetableRow = {
+  morning: TimetableSession
+  afternoon: TimetableSession
+  evening: TimetableSession
+  title: string
+}
+
+export type NewTableRowOptions = {
+  title: string
+  hasDateElapsed: boolean
+}
+
+export type TimetableState = {
+  events: TimetableEvents
+  hasEvents: boolean
 }

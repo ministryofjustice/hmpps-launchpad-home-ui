@@ -180,7 +180,7 @@ describe('GET /', () => {
         expect($('[data-test="event-detail-3"] .description').text()).toBe('Event description Event location')
 
         expect($('.events-summary a').text()).toBe('View my timetable')
-        expect($('.events-summary a').attr('href')).toBe(`${CONTENT_HUB_URL}/timetable`)
+        expect($('.events-summary a').attr('href')).toBe('/timetable')
       })
   })
 

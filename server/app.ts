@@ -18,7 +18,7 @@ import setUpWebSession from './middleware/setUpWebSession'
 import indexRoutes from './routes/homepage'
 // import profileRoutes from './routes/profile'
 // import settingsRoutes from './routes/settings'
-// import timetableRoutes from './routes/timetable'
+import timetableRoutes from './routes/timetable'
 
 import type { Services } from './services'
 
@@ -41,9 +41,9 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
 
   app.use('/', indexRoutes(services))
+  app.use('/timetable', timetableRoutes(services))
   // app.use('/profile', profileRoutes(services))
   // app.use('/settings', settingsRoutes(services))
-  // app.use('/timetable', timetableRoutes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
