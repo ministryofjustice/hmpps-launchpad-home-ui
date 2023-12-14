@@ -12,6 +12,8 @@ $govuk-page-width: $moj-page-width;
 @import './components/tiles-panel';
 @import './components/link-tile';
 @import './components/internal-link-tile';
+@import './components/timetable';
+@import './components/timetable-one-day';
 
 @import './pages/homepage';
 @import './pages/settings';
