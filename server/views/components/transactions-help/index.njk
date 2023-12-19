@@ -1,0 +1,19 @@
+{% macro transactionsHelp(contentHubTransactionsHelpLinkURL) %}
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Help with transactions
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p class="govuk-body">For more help:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    <a href="{{contentHubTransactionsHelpLinkURL}}" class="govuk-link" rel="noreferrer noopener" target="_blank">read more about what this page means</a>
+                </li>
+                <li>put in an app</li>
+                <li>ask a member of staff</li>
+            </ul> 
+        </div>
+    </details>
+{% endmacro %}
