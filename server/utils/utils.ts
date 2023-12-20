@@ -1,4 +1,14 @@
-import { format, isValid, parseISO } from 'date-fns'
+import type { Request, Response, NextFunction } from 'express'
+import superagent from 'superagent'
+import { format, isValid, parseISO, startOfMonth, subMonths, formatISO, endOfMonth, isFuture } from 'date-fns'
+import {
+  IdToken,
+  RefreshToken,
+  UpdatedTokensResponse,
+  ProcesseSelectedTransactionDates,
+  ProcessedDateSelection,
+} from '../@types/launchpad'
+import logger from '../../logger'
 import config from '../config'
 
 export const properCase = (word: string): string =>
@@ -35,6 +45,47 @@ export const formatDateOrDefault = (placeHolder: string, dateFormat: string, dat
     return placeHolder
   }
   return format(parseISO(date), dateFormat)
+}
+
+const getDateSelection = (date: Date, selectedDate: Date, amount = 12): ProcessedDateSelection[] => {
+  const startDate: Date = startOfMonth(date)
+  const dateRange: ProcessedDateSelection[] = []
+
+  for (let offset = 0; offset < amount; offset += 1) {
+    const current: Date = subMonths(startDate, offset)
+    const element: ProcessedDateSelection = {
+      text: format(current, 'MMMM yyyy'),
+      value: formatISO(current, { representation: 'date' }),
+    }
+
+    if (selectedDate && startOfMonth(selectedDate).valueOf() === current.valueOf()) {
+      element.selected = true
+    }
+
+    dateRange.push(element)
+  }
+
+  return dateRange
+}
+
+const isValidDateSelection = (selectedDate: string, dateSelection: ProcessedDateSelection[]) => {
+  return dateSelection.filter(d => selectedDate === d.value).length > 0
+}
+
+export const processSelectedDate = (selectedDate: string | undefined): ProcesseSelectedTransactionDates => {
+  const dateSelection = getDateSelection(new Date(), parseISO(selectedDate))
+
+  const fromDate = isValidDateSelection(selectedDate, dateSelection) ? parseISO(selectedDate) : startOfMonth(new Date())
+
+  const endOfSelectedMonth = endOfMonth(fromDate)
+
+  const toDate = !isFuture(endOfSelectedMonth) ? endOfSelectedMonth : new Date()
+
+  return {
+    dateSelection,
+    fromDate,
+    toDate,
+  }
 }
 
 export const generateBasicAuthHeader = (clientId: string, clientSecret: string): string => {
