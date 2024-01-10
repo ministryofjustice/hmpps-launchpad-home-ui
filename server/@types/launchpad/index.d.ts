@@ -130,3 +130,11 @@ export type ProcesseSelectedTransactionDates = {
   fromDate: Date
   toDate: Date
 }
+
+export type TransactionData = {
+  transactions: OffenderTransactionHistoryDto
+  balances: Account
+  prison: string
+}
+
+export type AccountCode = 'spends' | 'cash' | 'savings'

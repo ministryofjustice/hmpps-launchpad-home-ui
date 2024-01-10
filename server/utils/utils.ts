@@ -10,6 +10,7 @@ import {
 } from '../@types/launchpad'
 import logger from '../../logger'
 import config from '../config'
+// import { Agency, OffenderTransactionHistoryDto } from '../@types/prisonApiTypes'
 
 export const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
