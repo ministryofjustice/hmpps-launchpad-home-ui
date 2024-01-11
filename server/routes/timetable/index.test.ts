@@ -437,4 +437,16 @@ describe('GET /timetable', () => {
         expect($('[data-test="main-content"] h1').text()).toBe('Timetable')
       })
   })
+
+  it('should render time-of-day elements', () => {
+    return request(app)
+      .get('/timetable')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-test="time-of-day"] h4:nth-child(1)').text()).toBe('Morning')
+        expect($('[data-test="time-of-day"] h4:nth-child(2)').text()).toBe('Afternoon')
+        expect($('[data-test="time-of-day"] h4:nth-child(3)').text()).toBe('Evening')
+      })
+  })
 })
