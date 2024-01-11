@@ -27,8 +27,17 @@
         font-weight: 700;
       }
     }
+
+    @media (max-width: 60.625em) {
+        display: block;
+    }
   }
   
+  .timetable-day-blocks div.govuk-body {
+    margin-bottom: 40px;
+    width: 32.5%;
+  }
+
   .timetable-headings {
     border-top: solid $govuk-border-colour;
     border-bottom: solid $govuk-border-colour;
@@ -85,11 +94,25 @@
       background-image: url('/assets/images//icons/chevron-right.svg');
       background-position: 8px 50%;
     }
-  }
+
+    @media (max-width: 60.625em) {
+        display: block;
+        text-align: left;;
+        * {margin-left: 0; margin-right: 25px;}
+      }
+    }
+
 
   div.sticky {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 100;
+  }
+
+  @media (min-width: 40.0625em) {
+    .timetable-headings > h4 {
+      font-size: 24px;
+      font-size: 1.5rem;
+      }
   }
