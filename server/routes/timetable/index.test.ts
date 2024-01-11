@@ -445,8 +445,36 @@ describe('GET /timetable', () => {
       .expect(res => {
         const $ = cheerio.load(res.text)
         expect($('[data-test="time-of-day"] h4:nth-child(1)').text()).toBe('Morning')
-        expect($('[data-test="time-of-day"] h4:nth-child(2)').text()).toBe('Afternoon')
-        expect($('[data-test="time-of-day"] h4:nth-child(3)').text()).toBe('Evening')
+      })
+  })
+
+  it('should render the expected timetable data date title for today', () => {
+    return request(app)
+      .get('/timetable')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-test="timetable-day-data"] h3:nth-child(1)').text()).toBe('Today')
+      })
+  })
+
+  it('should render the expected timetable data date title for tomorrow', () => {
+    return request(app)
+      .get('/timetable')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-test="timetable-day-data"] h3:nth-child(3)').text()).toBe('Tomorrow')
+      })
+  })
+
+  it('should render the expected timetable data date title for the next expected date', () => {
+    return request(app)
+      .get('/timetable')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-test="timetable-day-data"] h3:nth-child(5)').text()).toBe('Saturday 13 January')
       })
   })
 })

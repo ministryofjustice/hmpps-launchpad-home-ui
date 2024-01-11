@@ -1,7 +1,7 @@
 {% from "../timetable-day-block/index.njk" import timetableDayBlock %}
 
 {% macro timetableDayRow(params) %}
-    <div class="govuk-width-container govuk-body timetable-day">
+    <div class="govuk-width-container govuk-body timetable-day" data-test="timetable-day-data">
     {% if params.data.error %}
         <p class="govuk-!-font-size-24">
             {{params.data.error}}, <a href="{{ params.authReturnUrl }}" class="govuk-link">try again</a>
