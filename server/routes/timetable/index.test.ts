@@ -429,13 +429,12 @@ describe('GET /timetable', () => {
   })
 
   it('should render the expected section title', () => {
-    // return request(app)
-    //   .get('/timetable')
-    //   .expect('Content-Type', /html/)
-    //   .expect(res => {
-    //     const $ = cheerio.load(res.text)
-    //     // console.log(res.text)
-    //     // expect($('[data-test="main-content"]:nth-child(1)').text()).toBe('Timetable')
-    //   })
+    return request(app)
+      .get('/timetable')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        expect($('[data-test="main-content"] h1').text()).toBe('Timetable')
+      })
   })
 })
