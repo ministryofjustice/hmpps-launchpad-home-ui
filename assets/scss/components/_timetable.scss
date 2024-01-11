@@ -29,6 +29,14 @@
     }
   }
   
+  .timetable-headings {
+    border-top: solid $govuk-border-colour;
+    border-bottom: solid $govuk-border-colour;
+    margin-top: govuk-spacing(5);
+    margin-bottom: govuk-spacing(5);
+    background-color: white;
+  }
+
   .timetable-footer {
     padding: govuk-spacing(5) 0;
   
@@ -77,4 +85,11 @@
       background-image: url('/assets/images//icons/chevron-right.svg');
       background-position: 8px 50%;
     }
+  }
+
+  div.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }

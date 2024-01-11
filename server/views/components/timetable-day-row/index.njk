@@ -8,18 +8,7 @@
         </p>
     {% else %}
         {% for day, event in params.data %} 
-            <h3 data-test="date">{{event.title}}</h3>
-            <div data-test="time-of-day">
-                {% if params.data.hasEvents %}
-                    <h4{% if event.morning.finished %} class="day-block-finished"{% endif %}>Morning</h4>
-                    <h4{% if event.afternoon.finished %} class="day-block-finished"{% endif %}>Afternoon</h4>
-                    <h4{% if event.evening.finished %} class="day-block-finished"{% endif %}>Evening</h4>
-                {% else %}
-                    <h4>Morning</h4>
-                    <h4>Afternoon</h4>
-                    <h4>Evening</h4>
-                {% endif %}
-            </div>
+            <h3 class="govuk-!-margin-bottom-3" data-test="date">{{event.title}}</h3>
             <div class="timetable-day-blocks" data-test="{{event.title}}">
                 {{ timetableDayBlock(event.morning, params.data.hasEvents, '8.30am to 12.00pm') }}
                 {{ timetableDayBlock(event.afternoon, params.data.hasEvents, '12.00pm to 5.00pm') }}

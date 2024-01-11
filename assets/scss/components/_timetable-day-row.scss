@@ -29,6 +29,8 @@
   }
   
   .timetable-day-blocks {
+    margin-bottom: govuk-spacing(8);
+    
     .timetable-empty,
     .timetable-time,
     .timetable-desc {
@@ -82,3 +84,4 @@
       border-color: #dee0e2;
     }
   }
+
