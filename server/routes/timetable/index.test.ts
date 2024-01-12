@@ -459,6 +459,21 @@ describe('GET /timetable', () => {
         })
     })
 
+    it('should render the expected timetable data for today', () => {
+      return request(app)
+        .get('/timetable')
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-test="Today"] [data-test="8.30am to 12.00pm"]:nth-child(1) .timetable-time').text()).toBe(
+            '8.50am to 10.20am',
+          )
+          expect(
+            $('[data-test="Today"] [data-test="8.30am to 12.00pm"]:nth-child(1) .timetable-desc strong').text(),
+          ).toBe('AM 1 HIGHER FUNC. SKILLS')
+        })
+    })
+
     it('should render the expected timetable data date title for tomorrow', () => {
       return request(app)
         .get('/timetable')
@@ -469,6 +484,21 @@ describe('GET /timetable', () => {
         })
     })
 
+    it('should render the expected timetable data for tomorrow', () => {
+      return request(app)
+        .get('/timetable')
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-test="Tomorrow"] [data-test="8.30am to 12.00pm"]:nth-child(1) .timetable-time').text()).toBe(
+            '8.50am to 10.20am',
+          )
+          expect(
+            $('[data-test="Tomorrow"] [data-test="8.30am to 12.00pm"]:nth-child(1) .timetable-desc strong').text(),
+          ).toBe('AM 1 GYM')
+        })
+    })
+
     it('should render the expected timetable data date title for the next expected date', () => {
       return request(app)
         .get('/timetable')
@@ -476,6 +506,18 @@ describe('GET /timetable', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect($('[data-test="timetable-day-data"] h3:nth-child(5)').text()).toBe('Saturday 13 January')
+        })
+    })
+
+    it("should render the No activities' when no no activities are planned for the particular time slot", () => {
+      return request(app)
+        .get('/timetable')
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect($('[data-test="Saturday 13 January"] div:nth-child(1) .timetable-empty strong').text()).toBe(
+            'No activities',
+          )
         })
     })
   })
