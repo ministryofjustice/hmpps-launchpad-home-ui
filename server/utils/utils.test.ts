@@ -3,6 +3,7 @@ import {
   initialiseName,
   formatDate,
   formatDateTimeString,
+  formatDateOrDefault,
   generateBasicAuthHeader,
   createUserObject,
   nowMinus5Minutes,
@@ -99,6 +100,14 @@ describe('Dates', () => {
 
   it('it should return a string combining the provided from and to times in the expected format', () => {
     expect(formatDateTimeString(from, to, DateFormats.PRETTY_TIME)).toEqual(`${formattedFrom} to ${formattedTo}`)
+  })
+
+  it('it should return a formatted time string in the expected format of x.xxam', () => {
+    expect(formatDateOrDefault('', DateFormats.PRETTY_TIME, from)).toEqual('8.30am')
+  })
+
+  it('it should return the provided placeHolder value when an invalid time format it provided', () => {
+    expect(formatDateOrDefault('', DateFormats.PRETTY_TIME, 'invalid')).toEqual('')
   })
 })
 

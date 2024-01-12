@@ -3,7 +3,8 @@ import express, { Express } from 'express'
 import cookieSession from 'cookie-session'
 import createError from 'http-errors'
 
-import routes from '../homepage/index'
+import homepageRoutes from '../homepage/index'
+import timetableRoutes from '../timetable/index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/auth'
@@ -55,7 +56,8 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
-  app.use(routes(services))
+  app.use('/', homepageRoutes(services))
+  app.use('/timetable', timetableRoutes(services))
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
 
