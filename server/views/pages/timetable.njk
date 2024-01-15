@@ -8,7 +8,7 @@
 
 {% block beforeContent %}
   {% set breadCrumbList = [{ href: '/profile', title: 'Profile'}] %}
-  {{ breadCrumb('Timetable', breadCrumbList) }}
+  {{ breadCrumb('Timetable', breadCrumbList, false) }}
 {% endblock %}
 
 {% block title %}
@@ -19,20 +19,19 @@
 {% endblock %}
 
 {% block content %}
-
   <div class="timetable-day timetable-headings sticky">
     <div data-test="time-of-day">
       {% if params.data.hasEvents %}
-          <h4 aria-hidden="true" {% if event.morning.finished %} class="day-block-finished"{% endif %}>Morning</h4>
-          <h4 aria-hidden="true" {% if event.afternoon.finished %} class="day-block-finished"{% endif %}>Afternoon</h4>
-          <h4 aria-hidden="true" {% if event.evening.finished %} class="day-block-finished"{% endif %}>Evening</h4>
+        <h4 aria-hidden="true" {% if event.morning.finished %} class="day-block-finished"{% endif %}>Morning</h4>
+        <h4 aria-hidden="true" {% if event.afternoon.finished %} class="day-block-finished"{% endif %}>Afternoon</h4>
+        <h4 aria-hidden="true" {% if event.evening.finished %} class="day-block-finished"{% endif %}>Evening</h4>
       {% else %}
-          <h4 aria-hidden="true">Morning</h4>
-          <h4 aria-hidden="true">Afternoon</h4>
-          <h4 aria-hidden="true">Evening</h4>
+        <h4 aria-hidden="true">Morning</h4>
+        <h4 aria-hidden="true">Afternoon</h4>
+        <h4 aria-hidden="true">Evening</h4>
       {% endif %}
+    </div>
   </div>
-</div>
   {{ timetableDayRow({ data: events | first, authReturnUrl:  returnUrl }) }}
   <div class="govuk-width-container govuk-body timetable-header timetable-footer">
     {{ timetablePeriodSelector({ nextWeek: config.nextWeek, lastWeek: config.lastWeek }) }}
