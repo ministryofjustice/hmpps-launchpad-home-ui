@@ -5,14 +5,14 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
-  {{ breadCrumb('Profile') }}
+  {{ breadCrumb('', breadCrumbList, false) }}
 {% endblock %}
 
 {% block content %}
 
   <div class="govuk-grid-column-full">
     
-    <h1 class="govuk-grid-row">Profile</h1>
+    <h1 class="govuk-grid-row">{{givenName}}'s Profile</h1>
 
     <div class="govuk-grid-row">
     
