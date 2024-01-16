@@ -35,21 +35,14 @@ export default class Timetable {
       hasEvents: false,
     }
 
-    let { fromDate } = options
-    const { toDate } = options
-    let fromDateString: string = format(fromDate, DateFormats.ISO_DATE)
-    const toDateString: string = format(toDate, DateFormats.ISO_DATE)
+    const { fromDate } = options
+    const fromDateString: string = format(fromDate, DateFormats.ISO_DATE)
     const todaysDate = new Date()
 
-    do {
-      this.timetable.events[fromDateString] = Timetable.createNewTableRow({
-        title: Timetable.getTimetableRowTitle(fromDateString),
-        hasDateElapsed: isBefore(fromDate, todaysDate),
-      })
-
-      fromDate = addDays(fromDate, 1)
-      fromDateString = format(fromDate, DateFormats.ISO_DATE)
-    } while (fromDateString !== toDateString)
+    this.timetable.events[fromDateString] = Timetable.createNewTableRow({
+      title: Timetable.getTimetableRowTitle(fromDateString),
+      hasDateElapsed: isBefore(fromDate, todaysDate),
+    })
   }
 
   static create(options: TimetableOptions) {
