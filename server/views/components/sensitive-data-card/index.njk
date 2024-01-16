@@ -1,0 +1,12 @@
+{% macro sensitiveDataCard(params) %}
+  <div class="card card__content card--clickable sensitive-card" data-is-closed="true" data-test="{{ params.id }}">
+    {%- if params.heading %}
+      <h3 class="govuk-heading-m card__heading card-title">
+        <a href="#" class="govuk-link govuk-link--no-visited-state card_link">{{ params.heading }}</a>
+        <span class="open hidden">-</span><span class="closed">+</span>
+      </h3>
+    {%- endif %}
+    <p class="govuk-body card__description" data-hj-suppress>{{ caller() }}
+    </p>
+  </div>
+{% endmacro %}
