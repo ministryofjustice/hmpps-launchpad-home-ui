@@ -119,7 +119,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response) =
         updatedTokensResponse.access_token,
       )
 
-      // updates user abject in the session for all future requests
+      // updates user object in the session for all future requests
       req.session.passport.user = req.user
 
       return true
