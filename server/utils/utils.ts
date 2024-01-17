@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express'
+import type { Request, Response } from 'express'
 import superagent from 'superagent'
 import { format, isValid, parseISO } from 'date-fns'
 import { IdToken, RefreshToken, UpdatedTokensResponse } from '../@types/launchpad'
