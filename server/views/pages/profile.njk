@@ -26,20 +26,19 @@
           {% else %}
             <ul class="govuk-grid-row card-group">
               <li class="govuk-grid-column-one-quarter card-group__item">
-                {{ card({ id: 'morningEvents', heading: 'Morning', events: timetableEvents.morning.events }) }}
+                {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetableEvents.morning.events }) }}
               </li>
               <li class="govuk-grid-column-one-quarter card-group__item">
-                {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: timetableEvents.afternoon.events }) }}
+                {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetableEvents.afternoon.events }) }}
               </li>
               <li class="govuk-grid-column-one-quarter card-group__item">
-                 {{ card({ id: 'eveningEvents', heading: 'Evening', events: timetableEvents.evening.events }) }}
+                 {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetableEvents.evening.events }) }}
               </li>
               <li class="govuk-grid-column-one-quarter card-group__item">
                 {{ imageCard({ id: 'timetableLink', src: "/assets/images/image_timetable.jpg", link: "/timetable", description: "View my timetable" }) }}
               </li>
             </ul>
-            <!-- TO DO - replace knownPages.profile.learningAndSkills with link --> 
-            <a href= '{{ knownPages.profile.learningAndSkills }}' class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
+            <a href= '{{ data.prisonerContentHubURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
               <span>Read more about learning and skills</span>
             </a>
           {% endif %}
