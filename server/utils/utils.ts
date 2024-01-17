@@ -93,16 +93,16 @@ export const updateToken = (refreshToken: string): Promise<UpdatedTokensResponse
 }
 
 // also use this logic for try again button and access_token refresh (settings page)
-export const checkTokenValidityAndUpdate = async (req: Request, res: Response, next: NextFunction) => {
+export const checkTokenValidityAndUpdate = async (req: Request, res: Response) => {
   if (!req.user) {
-    return next()
+    return true
   }
 
   const { idToken, refreshToken } = req.user
 
   if (tokenIsValid(idToken, nowMinus5Minutes(Date.now()))) {
     // id_token is valid - continue
-    return next()
+    return true
   }
 
   const parsedRefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
@@ -122,7 +122,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
       // updates user abject in the session for all future requests
       req.session.passport.user = req.user
 
-      return next()
+      return true
     } catch (error) {
       logger.error(`Token refresh error:`, error.stack)
       // Handle the error here

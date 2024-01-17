@@ -30,9 +30,11 @@ export default function setUpAuth(): Router {
   })
 
   router.use(async (req, res, next) => {
-    await checkTokenValidityAndUpdate(req, res, next)
+    await checkTokenValidityAndUpdate(req, res)
 
     res.locals.user = req.user
+
+    next()
   })
 
   return router
