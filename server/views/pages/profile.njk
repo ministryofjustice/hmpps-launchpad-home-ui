@@ -1,22 +1,48 @@
 {% extends "../partials/layout.njk" %}
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
+{% from "../components/card/index.njk" import card %}
+{% from "../components/image-card/index.njk" import imageCard %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
-  {{ breadCrumb('Profile') }}
+  {{ breadCrumb('', breadCrumbList, false) }}
 {% endblock %}
 
 {% block content %}
 
   <div class="govuk-grid-column-full">
     
-    <h1 class="govuk-grid-row">Profile</h1>
+    <h1 class="govuk-grid-row">{{givenName}}'s Profile</h1>
 
     <div class="govuk-grid-row">
-    
-      <a class="govuk-link" href="/timetable">View my timetable</a>
+      <div class="card-background">
+        <div class="govuk-width-container" data-test="timetable-container">
+          <h2 class="govuk-heading-m">Today's timetable</h2>
+          {% if timetableEvents.error %}
+            <p class="govuk-!-font-size-24" data-test="timetable-error">We are not able to show your timetable at this time, <a href="{{ params.returnUrl }}" class="govuk-link">try again</a>.</p>
+          {% else %}
+            <ul class="govuk-grid-row card-group">
+              <li class="govuk-grid-column-one-quarter card-group__item">
+                {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetableEvents.morning.events }) }}
+              </li>
+              <li class="govuk-grid-column-one-quarter card-group__item">
+                {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetableEvents.afternoon.events }) }}
+              </li>
+              <li class="govuk-grid-column-one-quarter card-group__item">
+                 {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetableEvents.evening.events }) }}
+              </li>
+              <li class="govuk-grid-column-one-quarter card-group__item">
+                {{ imageCard({ id: 'timetableLink', src: "/assets/images/image_timetable.jpg", link: "/timetable", description: "View my timetable" }) }}
+              </li>
+            </ul>
+            <a href= '{{ data.prisonerContentHubURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
+              <span>Read more about learning and skills</span>
+            </a>
+          {% endif %}
+        </div>
+      </div>
     
     </div>
 

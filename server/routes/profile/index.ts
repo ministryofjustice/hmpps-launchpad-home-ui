@@ -1,4 +1,5 @@
 import { type RequestHandler, Router } from 'express'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
@@ -8,8 +9,23 @@ export default function routes(services: Services): Router {
   const router = Router()
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
-  get('/', (req, res) => {
+  get('/', async (req, res) => {
+    const today = new Date()
+
+    const timetableEvents = await Promise.all([
+      services.prisonerProfileService.getEventsForToday(res.locals.user, today),
+    ])
+
+    const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
+
+    const { given_name: givenName } = res.locals.user.idToken
+
     return res.render('pages/profile', {
+      givenName,
+      data: {
+        timetableEvents: timetableEvents[0],
+        prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
+      },
       errors: req.flash('errors'),
       message: req.flash('message'),
     })
