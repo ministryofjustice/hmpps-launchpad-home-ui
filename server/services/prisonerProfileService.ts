@@ -1,6 +1,8 @@
+import { format } from 'date-fns'
 import { HmppsAuthClient, RestClientBuilder, PrisonApiClient } from '../data'
-import { EventsData, TimetableEvents } from '../@types/launchpad'
+import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import Timetable from '../data/timetable'
+import { DateFormats } from '../utils/enums'
 
 export default class PrisonerProfileService {
   constructor(
@@ -26,5 +28,13 @@ export default class PrisonerProfileService {
     const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
 
     return timetableData.events
+  }
+
+  async getEventsForToday(
+    user: { idToken: { booking: { id: string } } },
+    today: Date = new Date(),
+  ): Promise<TimetableRow> {
+    const results = await this.getEventsFor(user, today, today)
+    return results[format(today, DateFormats.ISO_DATE)]
   }
 }
