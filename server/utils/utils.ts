@@ -95,12 +95,14 @@ export const updateToken = (refreshToken: string): Promise<UpdatedTokensResponse
 // also use this logic for try again button and access_token refresh (settings page)
 export const checkTokenValidityAndUpdate = async (req: Request, res: Response) => {
   if (!req.user) {
+    logger.info('Auth: no user found in req')
     return true
   }
 
   const { idToken, refreshToken } = req.user
 
   if (tokenIsValid(idToken, nowMinus5Minutes(Date.now()))) {
+    logger.info('Auth: valid token found')
     // id_token is valid - continue
     return true
   }
@@ -109,6 +111,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response) =
 
   // id_token is invalid and refresh_token is valid
   if (tokenIsValid(parsedRefreshToken, nowMinus5Minutes(Date.now()))) {
+    logger.info('Auth: try to refresh token')
     try {
       const updatedTokensResponse: UpdatedTokensResponse = await updateToken(refreshToken)
 
@@ -118,13 +121,14 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response) =
         updatedTokensResponse.refresh_token,
         updatedTokensResponse.access_token,
       )
+      logger.info('Auth: token successfully refreshed')
 
       // updates user object in the session for all future requests
       req.session.passport.user = req.user
 
       return true
     } catch (error) {
-      logger.error(`Token refresh error:`, error.stack)
+      logger.error(`Auth: Token refresh error:`, error.stack)
       // Handle the error here
       return res.redirect('/autherror')
     }
@@ -132,6 +136,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response) =
 
   // id_token is invalid and refresh_token is invalid
   // refresh / get id_token and refresh_token by redirecting to /sign-in - need to sign out first?
+  logger.info('Auth: refresh token invalid')
   return res.redirect('/sign-in')
 }
 
