@@ -38,6 +38,7 @@ export default function setUpAuth(): Router {
     logger.info('Auth: checking token validity')
     await checkTokenValidityAndUpdate(req, res)
 
+    logger.info('Auth: setting res.lo')
     res.locals.user = req.user
 
     next()
