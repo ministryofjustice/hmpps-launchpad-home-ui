@@ -6,15 +6,15 @@
       </h3>
     {%- endif %}
     <p class="govuk-body card__description" data-hj-suppress>
-        {% for event in params.events %}
-            <div class="govuk-!-padding-bottom-4">
-                <strong>{{event.description}}</strong><br/>
-                {{event.startTime }} to {{event.endTime }}<br/>
-                {{event.location}}
-            </div>
-        {% else %}
-            <strong data-test="no-activities">No activities</strong>
-        {% endfor %}
+      {% for event in params.events %}
+        <div class="govuk-!-padding-bottom-4">
+          <strong>{{event.description}}</strong><br/>
+          {{event.startTime }} to {{event.endTime }}<br/>
+          {{event.location}}
+        </div>
+      {% else %}
+        <strong data-test="no-activities">No activities</strong>
+      {% endfor %}
     </p>
   </div>
 {% endmacro %}

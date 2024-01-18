@@ -13,15 +13,12 @@ export default function routes(services: Services): Router {
     const today = new Date()
 
     const timetableEvents = await Promise.all([
-      // services.prisonerProfileService.getEventsFor(res.locals.user, today, today), // update to getEventsForToday()
-      services.prisonerProfileService.getEventsForToday(res.locals.user, today), // update to getEventsForToday()
+      services.prisonerProfileService.getEventsForToday(res.locals.user, today),
     ])
 
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
 
     const { given_name: givenName } = res.locals.user.idToken
-
-    console.log(JSON.stringify(timetableEvents[0], null, 4))
 
     return res.render('pages/profile', {
       givenName,
