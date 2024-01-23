@@ -45,8 +45,6 @@ export default class PrisonerProfileService {
     const incentivesApiClient = this.incentivesApiClientFactory(token)
     const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
 
-    // console.log(incentivesData)
-
     return incentivesData
   }
 }

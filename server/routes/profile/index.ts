@@ -17,6 +17,7 @@ export default function routes(services: Services): Router {
     ])
 
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
+    console.log('incentivesData::::', incentivesData)
 
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
 
