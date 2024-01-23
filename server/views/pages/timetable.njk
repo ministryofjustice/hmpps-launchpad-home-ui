@@ -19,7 +19,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="timetable-day timetable-headings sticky">
+  <div class="govuk-width-container timetable-day timetable-headings sticky">
     <div data-test="time-of-day">
       {% if params.data.hasEvents %}
         <h4 aria-hidden="true" {% if event.morning.finished %} class="day-block-finished"{% endif %}>Morning</h4>
