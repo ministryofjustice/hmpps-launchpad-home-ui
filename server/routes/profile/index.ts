@@ -25,6 +25,7 @@ export default function routes(services: Services): Router {
       data: {
         timetableEvents: timetableEvents[0],
         prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
+        incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
