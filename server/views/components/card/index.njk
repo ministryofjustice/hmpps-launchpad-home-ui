@@ -1,9 +1,7 @@
 {% macro card(params) %}
   <div class="card card__content"  data-test="{{ params.id }}">
     {%- if params.heading %}
-      <h3 class="govuk-heading-m card__heading">
-        {{ params.heading }}
-      </h3>
+      <h3 class="govuk-heading-m card__heading">{{params.heading}}</h3>
     {%- endif %}
     <p class="govuk-body card__description" data-hj-suppress>
       {% for event in params.events %}

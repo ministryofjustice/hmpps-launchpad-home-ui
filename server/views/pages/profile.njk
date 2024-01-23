@@ -37,7 +37,7 @@
                 {{ imageCard({ id: 'timetableLink', src: "/assets/images/image_timetable.jpg", link: "/timetable", description: "View my timetable" }) }}
               </li>
             </ul>
-            <a href= '{{ data.prisonerContentHubURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
+            <a href= '{{ data.prisonerContentHubURL }}' data-test="learningSkillsLink" rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
               <span>Read more about learning and skills</span>
             </a>
           {% endif %}
