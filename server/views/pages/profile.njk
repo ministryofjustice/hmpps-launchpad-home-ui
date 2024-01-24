@@ -1,6 +1,7 @@
 {% extends "../partials/layout.njk" %}
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 {% from "../components/card/index.njk" import card %}
+{% from "../components/basic-card/index.njk" import basicCard %}
 {% from "../components/image-card/index.njk" import imageCard %}
 
 {% set pageTitle = applicationName + " - Home" %}
@@ -47,14 +48,12 @@
     <div class="card-background grey">
       <div class="govuk-width-container" data-test="incentive-container">
         <h2 class="govuk-heading-m">Incentives (IEP)</h2>
-        {% if incentivesSummary.error %}
+        {% if data.incentivesData.error %}
           <p class="govuk-!-font-size-24" data-test="incentives-error">We are not able to show your incentive level at this time. <a href="{{ params.returnUrl }}" class="govuk-link">Try again</a> or <a href="{{ incentivesSummary.link }}" class="govuk-link">find out more about incentive levels</a>.</p>
         {% else %}
           <ul class="govuk-grid-row card-group">
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {% call card({ id: 'currentLevel', heading: 'My current level:'}) -%}
-                {{ incentivesSummary.incentivesLevel }}
-              {%- endcall %}
+              {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: data.incentivesData.iepLevel }) }}
             </li>
           </ul>
           <a href= '{{ data.incentivesReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state"data-test="incentivesLink">
