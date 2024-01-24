@@ -12,14 +12,17 @@ import HmppsAuthClient from './hmppsAuthClient'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 import PrisonApiClient from './prisonApiClient'
+import IncentivesApiClient from './incentivesApiClient'
 
 type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
   prisonApiClientBuilder: ((token: string) => new PrisonApiClient(token)) as RestClientBuilder<PrisonApiClient>,
+  incentivesApiClientBuilder: ((token: string) =>
+    new IncentivesApiClient(token)) as RestClientBuilder<IncentivesApiClient>,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { HmppsAuthClient, RestClientBuilder, PrisonApiClient }
+export { HmppsAuthClient, RestClientBuilder, PrisonApiClient, IncentivesApiClient }

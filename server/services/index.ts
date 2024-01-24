@@ -4,11 +4,15 @@ import PrisonerProfileService from './prisonerProfileService'
 import LinksService from './linksService'
 
 export const services = () => {
-  const { hmppsAuthClient, prisonApiClientBuilder } = dataAccess()
+  const { hmppsAuthClient, prisonApiClientBuilder, incentivesApiClientBuilder } = dataAccess()
 
   const userService = new UserService(hmppsAuthClient)
 
-  const prisonerProfileService = new PrisonerProfileService(hmppsAuthClient, prisonApiClientBuilder)
+  const prisonerProfileService = new PrisonerProfileService(
+    hmppsAuthClient,
+    prisonApiClientBuilder,
+    incentivesApiClientBuilder,
+  )
 
   const linksService = new LinksService()
 

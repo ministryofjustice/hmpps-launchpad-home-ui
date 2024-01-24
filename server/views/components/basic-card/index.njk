@@ -1,0 +1,12 @@
+{% macro basicCard(params) %}
+  <div class="card card__content"  data-test="{{ params.id }}">
+    {%- if params.heading %}
+      <h3 class="govuk-heading-m card__heading">{{params.heading}}</h3>
+    {%- endif %}
+    <p class="govuk-body card__description" data-hj-suppress>
+      {{ params.content }}
+    </p>
+  </div>
+{% endmacro %}
+
+

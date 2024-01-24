@@ -16,6 +16,8 @@ export default function routes(services: Services): Router {
       services.prisonerProfileService.getEventsForToday(res.locals.user, today),
     ])
 
+    const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
+
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
 
     const { given_name: givenName } = res.locals.user.idToken
@@ -24,7 +26,9 @@ export default function routes(services: Services): Router {
       givenName,
       data: {
         timetableEvents: timetableEvents[0],
+        incentivesData,
         prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
+        incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
