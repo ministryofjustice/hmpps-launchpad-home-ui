@@ -1,4 +1,5 @@
 import { TimetableEvents } from '../../@types/launchpad'
+import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
 
 /* eslint-disable import/prefer-default-export */
 export const events: TimetableEvents = {
@@ -397,4 +398,17 @@ export const events: TimetableEvents = {
     },
     title: 'Wednesday 17 January',
   },
+}
+
+export const incentives: IncentiveReviewSummary = {
+  id: 2761962,
+  iepCode: 'STD',
+  iepLevel: 'Standard',
+  prisonerNumber: 'X1234XX',
+  bookingId: 123456,
+  iepDate: '2017-01-09',
+  iepTime: '2017-01-09T10:25:30',
+  iepDetails: [],
+  nextReviewDate: '2018-01-09',
+  daysSinceReview: 2572,
 }

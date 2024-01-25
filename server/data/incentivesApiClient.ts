@@ -9,9 +9,9 @@ export default class IncentivesApiClient {
     this.restClient = new RestClient('incentivesApiClient', config.apis.incentives as ApiConfig, token)
   }
 
-  async getIncentivesSummaryFor(bookingId: string): Promise<IncentiveReviewSummary[]> {
+  async getIncentivesSummaryFor(bookingId: string): Promise<IncentiveReviewSummary> {
     return (await this.restClient.get({
       path: `/incentive-reviews/booking/${bookingId}`,
-    })) as IncentiveReviewSummary[]
+    })) as IncentiveReviewSummary
   }
 }
