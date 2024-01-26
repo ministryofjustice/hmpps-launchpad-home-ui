@@ -1,7 +1,14 @@
 import { format } from 'date-fns'
-import { HmppsAuthClient, RestClientBuilder, PrisonApiClient, IncentivesApiClient } from '../data'
+import {
+  HmppsAuthClient,
+  RestClientBuilder,
+  PrisonApiClient,
+  IncentivesApiClient,
+  AdjudicationsApiClient,
+} from '../data'
 import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
+import { HasAdjudicationsResponse } from '../@types/adjudicationsApiTypes'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
 
@@ -10,6 +17,7 @@ export default class PrisonerProfileService {
     private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
     private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
+    private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
   ) {}
 
   async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
@@ -47,4 +55,68 @@ export default class PrisonerProfileService {
 
     return incentivesData
   }
+
+  async hasAdjudications(user: { idToken: { booking: { id: string } } }): Promise<HasAdjudicationsResponse> {
+    const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
+    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
+    const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(user.idToken.booking.id)
+
+    return userHasAdjudications
+  }
+
+  // async getAdjudicationsFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
+  //   const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+  //   const prisonApiClient = this.prisonApiClientFactory(token)
+  //   const adjudicationsData = await prisonApiClient.getAdjudicationsFor(user.idToken.booking.id)
+
+  //   return adjudicationsData
+  // }
 }
+
+/*
+
+  async function getAdjudicationsFor({ prisonerId }) {
+    try {
+      logger.info(
+        `OffenderService (getAdjudicationsFor) - User: ${prisonerId}`,
+      );
+
+      const response = await repository.getAdjudicationsFor(prisonerId);
+      return Adjudications.from(response).format();
+    } catch (e) {
+      logger.error(
+        `OffenderService (getAdjudicationsFor) - Failed: ${e.message} - User: ${prisonerId}`,
+      );
+      logger.debug(e.stack);
+      return {
+        error: true,
+      };
+    }
+  }
+  */
+
+/*
+
+    async function getAdjudicationFor(prisonerId, adjudicationId) {
+    try {
+      logger.info(
+        `OffenderService (getAdjudicationFor) - User: ${prisonerId}, Adjudication: ${adjudicationId}`,
+      );
+
+      const response = await repository.getAdjudicationFor(
+        prisonerId,
+        adjudicationId,
+      );
+
+      return Adjudication.from(response).format();
+    } catch (e) {
+      logger.error(
+        `OffenderService (getAdjudicationsFor) - Failed: ${e.message} - User: ${prisonerId}, Adjudication: ${adjudicationId}`,
+      );
+      logger.debug(e.stack);
+      return {
+        error: true,
+      };
+    }
+  }
+  */

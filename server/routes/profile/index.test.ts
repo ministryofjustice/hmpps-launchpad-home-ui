@@ -99,4 +99,23 @@ describe('GET /profile', () => {
         })
     })
   })
+
+  //   describe('Adjudications', () => {
+  //     // let adjudicationsData: IncentiveReviewSummary
+
+  //     beforeEach(() => {
+  //       // adjudicationsData = adjudications
+
+  //       // prisonerProfileService.getIncentivesSummaryFor.mockResolvedValue(adjudicationsData)
+  //     })
+  //     // it('should render the expected adjudications title', () => {
+  //     //   return request(app)
+  //     //     .get('/profile')
+  //     //     .expect('Content-Type', /html/)
+  //     //     .expect(res => {
+  //     //       const $ = cheerio.load(res.text)
+  //     //       expect($('[data-test="incentives-container"] h2').text()).toBe('Adjudications')
+  //     //     })
+  //     // })
+  //   })
 })

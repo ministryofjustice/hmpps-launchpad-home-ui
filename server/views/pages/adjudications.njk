@@ -1,0 +1,56 @@
+{% extends "../partials/layout.njk" %}
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {% set breadCrumbList = [{ href: '/profile', title: givenName + "'\s Profile"}] %}
+  {{ breadCrumb('Adjudications', breadCrumbList, false) }}
+{% endblock %}
+
+{% block title %}
+  <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content" data-test="main-content">
+    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+  </div>
+{% endblock %}
+
+{% block content %}  
+<div class="govuk-width-container">
+  {% if error %}
+    <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="approved-visitors-error">We can not list your adjudications at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a> or <a href="{{ knownPages.profile.adjudicationsInfo }}" class="govuk-link">read more about adjudications</a>.</p>
+  {% else %}  
+      <div class="govuk-!-margin-bottom-7">
+        <p class="govuk-body govuk-!-font-size-24">Up to 50 adjudications are shown here, in date order, with the newest first.</p>
+        <a href='{{ data.adjudicationsReadMoreURL }}'  rel="noreferrer noopener" target="_blank" class="govuk-link govuk-!-font-size-24">Read more about adjudications</a>
+      </div>  
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Report number</th>
+            <th scope="col" class="govuk-table__header">Report date and time</th>
+            <th scope="col" class="govuk-table__header"></th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for adjudication in paginatedData %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.adjudicationNumber}}" class="govuk-link">{{ adjudication.adjudicationNumber }}</a></td>
+            <td class="govuk-table__cell">{{ adjudication.reportTime }}</td>
+            <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.adjudicationNumber}}" class="govuk-link">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% if pageData.totalPages > 1 %}
+        <div class="govuk-!-margin-bottom-9">
+          {{ govukPagination( pageData | toPagination(rawQuery) ) }}
+        </div>
+      {% endif %}
+  {% endif %}
+  </div>
+{% endblock %}
+

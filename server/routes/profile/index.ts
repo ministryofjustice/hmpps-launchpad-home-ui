@@ -18,17 +18,21 @@ export default function routes(services: Services): Router {
 
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
 
+    const hasAdjudications = await services.prisonerProfileService.hasAdjudications(res.locals.user)
+
+    // const adjudicationsData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
+
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
 
-    const { given_name: givenName } = res.locals.user.idToken
-
     return res.render('pages/profile', {
-      givenName,
+      givenName: res.locals.user.idToken.given_name,
       data: {
         timetableEvents: timetableEvents[0],
         incentivesData,
         prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
         incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
+        hasAdjudications,
+        adjudicationsReadMoreURL: `${prisonerContentHubURL}/content/4193`,
       },
       errors: req.flash('errors'),
       message: req.flash('message'),

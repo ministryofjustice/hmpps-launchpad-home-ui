@@ -62,6 +62,27 @@
         {% endif %}
       </div>
     </div>
+
+    <!-- Adjudications -->
+    {# {% if hasAdjudications %} #}
+        <div class="card-background">
+          <div class="govuk-width-container" data-test="adjudications-container">
+            <h2 class="govuk-heading-m">Adjudications</h2>
+            {% if adjudications.error %}
+              <p class="govuk-!-font-size-24" data-test="visits-error">We are not able to show your adjudications at this time. <a href="{{ params.returnUrl }}" class="govuk-link">Try again</a></p>
+            {% else %}
+              <ul class="govuk-grid-row card-group">
+                <li class="govuk-grid-column-one-quarter card-group__item">
+                  {{imageCard({ id: 'adjudications', src: "/assets/images/image_adjudications.jpg", link: '/adjudications', description: "View my adjudications" }) }}
+                </li>
+              </ul>
+              <a href='{{ data.adjudicationsReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="adjudicationsLink">
+                <span>Read more about adjudications</span>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {# {%- endif %} #}
   </div>
 
 {% endblock %}

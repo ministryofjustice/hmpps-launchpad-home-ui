@@ -412,3 +412,7 @@ export const incentives: IncentiveReviewSummary = {
   nextReviewDate: '2018-01-09',
   daysSinceReview: 2572,
 }
+
+export const adjudications = {
+  //
+}
