@@ -40,7 +40,7 @@ export default class PrisonerProfileService {
     return results[format(today, DateFormats.ISO_DATE)]
   }
 
-  async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary[]> {
+  async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
     const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
     const incentivesApiClient = this.incentivesApiClientFactory(token)
     const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)

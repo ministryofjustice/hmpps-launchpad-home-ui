@@ -3,9 +3,7 @@
     {%- if params.heading %}
       <h3 class="govuk-heading-m card__heading">{{params.heading}}</h3>
     {%- endif %}
-    <p class="govuk-body card__description" data-hj-suppress>
-      {{ params.content }}
-    </p>
+    <p class="govuk-body card__description" data-hj-suppress data-test="basicCardContent">{{params.content}}</p>
   </div>
 {% endmacro %}
 
