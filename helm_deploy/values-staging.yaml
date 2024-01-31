@@ -18,7 +18,7 @@ generic-service:
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth-dev.hmpps.service.justice.gov.uk"
 
   namespace_secrets:
-    book-a-prison-visit-staff-ui:
+    hmpps-launchpad-home-ui:
       APPINSIGHTS_INSTRUMENTATIONKEY: null # disable App Insights for staging
 
 generic-prometheus-alerts:
