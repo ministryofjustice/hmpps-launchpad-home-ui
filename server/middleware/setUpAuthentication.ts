@@ -3,7 +3,7 @@ import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
 import auth from '../authentication/auth'
-import { checkTokenValidityAndUpdate } from '../utils/utils'
+import { checkTokenValidityAndUpdate } from '../authentication/refreshToken'
 
 const router = express.Router()
 
