@@ -5,7 +5,7 @@ import type { RequestHandler } from 'express'
 import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../data/tokenVerification'
-import { createUserObject } from '../utils/utils'
+import { createUserObject } from './refreshToken'
 
 passport.serializeUser((user, cb) => {
   process.nextTick(() => {
