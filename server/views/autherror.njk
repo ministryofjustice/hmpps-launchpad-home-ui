@@ -1,16 +1,21 @@
 {% extends "./partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% block content %}
-  <h1 class="govuk-heading-l">
-    Authorisation Error
-  </h1>
-  <p class="govuk-body" data-test="subheading">
-    You are not authorised to use this application.
-  </p>
+{% block title %}
+  <div class="govuk-width-container govuk-body hub-header" id="main-content" data-test="main-content">
+    <h1 class="govuk-heading-l" id="title">Authorisation Error</h1>
+  </div>
+{% endblock %}
 
-  {{ govukButton({
-    text: "Try again",
-    href: "/sign-in"
-  }) }}
+{% block content %}
+  <div class="govuk-width-container">
+     <p class="govuk-body" data-test="subheading">
+      You are not authorised to use this application.
+    </p>
+
+    {{ govukButton({
+      text: "Try again",
+      href: "/sign-in"
+    }) }}
+  </div>
 {% endblock %}

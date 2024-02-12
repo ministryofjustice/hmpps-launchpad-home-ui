@@ -4,23 +4,25 @@
 {% set pageTitle = applicationName + " - Error" %}
 {% set mainClasses = "app-container govuk-body" %}
 
+{% block title %}
+  <div class="govuk-width-container govuk-body hub-header" id="main-content" data-test="main-content">
+    <h1 class="govuk-heading-l" id="title">Something went wrong</h1>
+  </div>
+{% endblock %}
+
 {% block content %}
+  <div class="govuk-width-container">
+    <p class="govuk-body" data-test="subheading">
+      There was a problem loading the page.
+    </p>
+    {{ govukButton({
+      text: "Go back to homepage",
+      href: "/"
+    }) }}
 
- <h1 class="govuk-heading-l">
-    Something went wrong
-  </h1>
-  <p class="govuk-body" data-test="subheading">
-    There was a problem loading the page.
-  </p>
-
-  {{ govukButton({
-    text: "Go back to homepage",
-    href: "/"
-  }) }}
-
-  {% if stack %}
-    <p>{{ errorMessage }}
-    <pre>{{ stack }}</pre>
-  {% endif %}
-
+    {% if stack %}
+      <p>{{ errorMessage }}
+      <pre>{{ stack }}</pre>
+    {% endif %}
+  </div>
 {% endblock %}
