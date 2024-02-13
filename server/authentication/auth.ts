@@ -58,7 +58,7 @@ function init(): void {
         idToken: string,
         accessToken: string,
         refreshToken: any,
-        verified: any,
+        _verified: any,
         cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
         return cb(null, createUserObject(idToken, refreshToken, accessToken))

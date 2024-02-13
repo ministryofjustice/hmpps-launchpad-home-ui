@@ -3,7 +3,7 @@ import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
 import auth from '../authentication/auth'
-import { checkTokenValidityAndUpdate } from '../authentication/refreshToken'
+import { checkTokenValidityAndUpdate, nowMinus5Minutes, tokenIsValid } from '../authentication/refreshToken'
 
 const router = express.Router()
 
@@ -31,6 +31,14 @@ export default function setUpAuth(): Router {
 
   router.use(async (req, res, next) => {
     await checkTokenValidityAndUpdate(req, res, next)
+
+    if (req.user) {
+      const parsedRefreshToken = JSON.parse(Buffer.from(req.user.refreshToken?.split('.')[1], 'base64').toString())
+
+      if (tokenIsValid(parsedRefreshToken, nowMinus5Minutes(Date.now()))) {
+        req.session.cookie.expires = new Date(parsedRefreshToken.exp * 1000)
+      }
+    }
 
     res.locals.user = req.user
   })
