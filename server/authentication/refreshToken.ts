@@ -80,6 +80,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
 
       // updates user abject in the session for all future requests
       req.session.passport.user = req.user
+      req.session.cookie.expires = new Date(parsedRefreshToken.exp * 1000)
 
       return next()
     } catch (error) {
