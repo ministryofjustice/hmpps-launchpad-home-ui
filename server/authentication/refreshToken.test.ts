@@ -1,5 +1,5 @@
 import { generateBasicAuthHeader } from '../utils/utils'
-import { createUserObject, nowMinus5Minutes, tokenIsValid } from './refreshToken'
+import { createUserObject, millisecondsMinusMinutesInSeconds, tokenIsValid } from './refreshToken'
 
 describe('authentication', () => {
   let idToken: string
@@ -97,21 +97,13 @@ describe('authentication', () => {
   })
 })
 
-describe('now minus 5 minutes', () => {
-  let now: number
-  let nowEpochInSeconds: number
+describe('now minus X minutes in seconds', () => {
+  const cases = [
+    [5, 500000, 200],
+    [5, 1697709716207, 1697709416],
+  ]
 
-  beforeEach(() => {
-    now = 1697709716207
-    nowEpochInSeconds = 1697709416
-  })
-
-  afterEach(() => {
-    now = null
-    nowEpochInSeconds = null
-  })
-
-  it('it should return a number value that is equal in seconds to the provided time in milliseconds minus 5 minutes', () => {
-    expect(nowMinus5Minutes(now)).toEqual(nowEpochInSeconds)
+  test.each(cases)('subtracts %p minutes from %p milliseconds to give %p seconds', (minutes, now, result) => {
+    expect(result).toEqual(millisecondsMinusMinutesInSeconds(now, minutes))
   })
 })

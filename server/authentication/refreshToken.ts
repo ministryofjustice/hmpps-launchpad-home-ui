@@ -14,10 +14,10 @@ export const createUserObject = (idToken: string, refreshToken: string, accessTo
   }
 }
 
-export const nowMinus5Minutes = (now: number): number => {
+export const millisecondsMinusMinutesInSeconds = (now: number, minutes: number): number => {
   const oneSecondInMillis = 1000
-  const fiveMinutesInMillis = 300 * oneSecondInMillis
-  const nowEpochInSeconds = Math.floor((now - fiveMinutesInMillis) / oneSecondInMillis)
+  const minutesInMillis = minutes * 60 * oneSecondInMillis
+  const nowEpochInSeconds = Math.floor((now - minutesInMillis) / oneSecondInMillis)
 
   return nowEpochInSeconds
 }
@@ -59,7 +59,12 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
 
   const { idToken, refreshToken } = req.user
 
-  if (tokenIsValid(idToken, nowMinus5Minutes(Date.now()))) {
+  if (
+    tokenIsValid(
+      idToken,
+      millisecondsMinusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
+    )
+  ) {
     // id_token is valid - continue
     return next()
   }
@@ -67,7 +72,12 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   const parsedRefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
 
   // id_token is invalid and refresh_token is valid
-  if (tokenIsValid(parsedRefreshToken, nowMinus5Minutes(Date.now()))) {
+  if (
+    tokenIsValid(
+      parsedRefreshToken,
+      millisecondsMinusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
+    )
+  ) {
     try {
       const updatedTokensResponse: UpdatedTokensResponse = await updateToken(refreshToken)
 
