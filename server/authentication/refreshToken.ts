@@ -32,9 +32,9 @@ export const tokenHasNotExpired = (token: IdToken | RefreshToken, nowEpochMinusM
   return nowEpochMinusMinutes <= token.exp
 }
 
-export const updateToken = (refreshToken: string): Promise<UpdatedTokensResponse> => {
+export const getUpdatedToken = (refreshToken: string): Promise<UpdatedTokensResponse> => {
   const url = `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/token`
-  logger.debug(`updateToken calling ${url}`)
+  logger.debug(`getUpdatedToken calling ${url}`)
   const grantType = 'refresh_token'
   const authHeaderValue = generateBasicAuthHeader(
     `${config.apis.launchpadAuth.apiClientId}`,
@@ -100,7 +100,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   ) {
     logger.debug('Refresh token valid')
     try {
-      const updatedTokensResponse: UpdatedTokensResponse = await updateToken(refreshToken)
+      const updatedTokensResponse: UpdatedTokensResponse = await getUpdatedToken(refreshToken)
       logger.debug('Updated user token')
 
       // updates req.user for the current request
