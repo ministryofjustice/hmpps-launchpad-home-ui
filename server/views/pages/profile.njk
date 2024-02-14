@@ -63,8 +63,7 @@
       </div>
     </div>
 
-    <!-- Adjudications -->
-    {# {% if hasAdjudications %} #}
+    {% if data.hasAdjudications %}
         <div class="card-background">
           <div class="govuk-width-container" data-test="adjudications-container">
             <h2 class="govuk-heading-m">Adjudications</h2>
@@ -82,7 +81,7 @@
             {% endif %}
           </div>
         </div>
-      {# {%- endif %} #}
+      {%- endif %}
   </div>
 
 {% endblock %}

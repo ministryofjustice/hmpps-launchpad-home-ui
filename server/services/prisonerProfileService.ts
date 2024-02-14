@@ -56,10 +56,15 @@ export default class PrisonerProfileService {
     return incentivesData
   }
 
-  async hasAdjudications(user: { idToken: { booking: { id: string } } }): Promise<HasAdjudicationsResponse> {
+  async hasAdjudications(user: {
+    idToken: { booking: { id: string }; establishment: { agency_id: string } }
+  }): Promise<HasAdjudicationsResponse> {
     const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
-    const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(user.idToken.booking.id)
+    const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(
+      user.idToken.booking.id,
+      user.idToken.establishment.agency_id,
+    )
 
     return userHasAdjudications
   }
@@ -72,51 +77,3 @@ export default class PrisonerProfileService {
   //   return adjudicationsData
   // }
 }
-
-/*
-
-  async function getAdjudicationsFor({ prisonerId }) {
-    try {
-      logger.info(
-        `OffenderService (getAdjudicationsFor) - User: ${prisonerId}`,
-      );
-
-      const response = await repository.getAdjudicationsFor(prisonerId);
-      return Adjudications.from(response).format();
-    } catch (e) {
-      logger.error(
-        `OffenderService (getAdjudicationsFor) - Failed: ${e.message} - User: ${prisonerId}`,
-      );
-      logger.debug(e.stack);
-      return {
-        error: true,
-      };
-    }
-  }
-  */
-
-/*
-
-    async function getAdjudicationFor(prisonerId, adjudicationId) {
-    try {
-      logger.info(
-        `OffenderService (getAdjudicationFor) - User: ${prisonerId}, Adjudication: ${adjudicationId}`,
-      );
-
-      const response = await repository.getAdjudicationFor(
-        prisonerId,
-        adjudicationId,
-      );
-
-      return Adjudication.from(response).format();
-    } catch (e) {
-      logger.error(
-        `OffenderService (getAdjudicationsFor) - Failed: ${e.message} - User: ${prisonerId}, Adjudication: ${adjudicationId}`,
-      );
-      logger.debug(e.stack);
-      return {
-        error: true,
-      };
-    }
-  }
-  */

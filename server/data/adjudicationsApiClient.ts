@@ -9,9 +9,12 @@ export default class AdjudicationsApiClient {
     this.restClient = new RestClient('adjudicationsApiClient', config.apis.adjudications as ApiConfig, token)
   }
 
-  async hasAdjudications(bookingId: string): Promise<HasAdjudicationsResponse> {
+  async hasAdjudications(bookingId: string, agencyId: string): Promise<HasAdjudicationsResponse> {
     return (await this.restClient.get({
       path: `/adjudications/booking/${bookingId}/exists`,
+      headers: {
+        'Active-Caseload': agencyId,
+      },
     })) as HasAdjudicationsResponse
   }
 }

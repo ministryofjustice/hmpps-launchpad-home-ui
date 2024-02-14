@@ -18,7 +18,7 @@ export default function routes(services: Services): Router {
 
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
 
-    const hasAdjudications = await services.prisonerProfileService.hasAdjudications(res.locals.user)
+    const { hasAdjudications } = await services.prisonerProfileService.hasAdjudications(res.locals.user)
 
     // const adjudicationsData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
 

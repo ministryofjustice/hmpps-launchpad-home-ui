@@ -21,11 +21,6 @@ export default function routes(services: Services): Router {
       nextWeek: false,
     }
 
-    // const fromDate = new Date()
-    // const toDate = addDays(fromDate, 6)
-
-    // const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
-
     return res.render('pages/adjudications', {
       givenName: res.locals.user.idToken.given_name,
       title: 'Adjudications',
