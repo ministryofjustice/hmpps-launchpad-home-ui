@@ -20,8 +20,6 @@ export default function routes(services: Services): Router {
 
     const { hasAdjudications } = await services.prisonerProfileService.hasAdjudications(res.locals.user)
 
-    // const adjudicationsData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
-
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
 
     return res.render('pages/profile', {
