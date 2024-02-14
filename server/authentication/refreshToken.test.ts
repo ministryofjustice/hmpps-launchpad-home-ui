@@ -1,5 +1,5 @@
 import { generateBasicAuthHeader } from '../utils/utils'
-import { createUserObject, millisecondsMinusMinutesInSeconds, tokenIsValid } from './refreshToken'
+import { createUserObject, millisecondsMinusMinutesInSeconds, tokenHasNotExpired } from './refreshToken'
 
 describe('authentication', () => {
   let idToken: string
@@ -51,26 +51,26 @@ describe('authentication', () => {
   })
 
   describe('token validity', () => {
-    it('it should return a false when the provided id token is invalid', () => {
+    it('it should return false when the provided id token is invalid', () => {
       const nowEpochMinus5Minutes = user.idToken.exp + 1
-      expect(tokenIsValid(user.idToken, nowEpochMinus5Minutes)).toEqual(false)
+      expect(tokenHasNotExpired(user.idToken, nowEpochMinus5Minutes)).toEqual(false)
     })
 
-    it('it should return a true when the provided id token is valid', () => {
+    it('it should return true when the provided id token is valid', () => {
       const nowEpochMinus5Minutes = user.idToken.exp
-      expect(tokenIsValid(user.idToken, nowEpochMinus5Minutes)).toEqual(true)
+      expect(tokenHasNotExpired(user.idToken, nowEpochMinus5Minutes)).toEqual(true)
     })
 
-    it('it should return a false when the provided refresh token is invalid', () => {
+    it('it should return false when the provided refresh token is invalid', () => {
       const parsedRefreshToken = JSON.parse(Buffer.from(user.refreshToken.split('.')[1], 'base64').toString())
       const nowEpochMinus5Minutes = parsedRefreshToken.exp + 1
-      expect(tokenIsValid(parsedRefreshToken, nowEpochMinus5Minutes)).toEqual(false)
+      expect(tokenHasNotExpired(parsedRefreshToken, nowEpochMinus5Minutes)).toEqual(false)
     })
 
-    it('it should return a true when the provided refresh token is valid', () => {
+    it('it should return true when the provided refresh token is valid', () => {
       const parsedRefreshToken = JSON.parse(Buffer.from(user.refreshToken.split('.')[1], 'base64').toString())
       const nowEpochMinus5Minutes = parsedRefreshToken.exp
-      expect(tokenIsValid(parsedRefreshToken, nowEpochMinus5Minutes)).toEqual(true)
+      expect(tokenHasNotExpired(parsedRefreshToken, nowEpochMinus5Minutes)).toEqual(true)
     })
   })
 
