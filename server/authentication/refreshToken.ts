@@ -71,10 +71,10 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
 
   const pat = JSON.parse(Buffer.from(req.user.accessToken.split('.')[1], 'base64').toString())
   const prt = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
-  console.log(new Date())
-  console.log(new Date(idToken.exp * 1000))
-  console.log(new Date(pat.exp * 1000))
-  console.log(new Date(prt.exp * 1000))
+  logger.debug(`${new Date()}`)
+  logger.debug(`${new Date(idToken.exp * 1000)}`)
+  logger.debug(`${new Date(pat.exp * 1000)}`)
+  logger.debug(`${new Date(prt.exp * 1000)}`)
 
   logger.debug('Check idToken')
   if (
