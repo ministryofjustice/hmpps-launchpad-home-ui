@@ -14,22 +14,22 @@ export const createUserObject = (idToken: string, refreshToken: string, accessTo
   }
 }
 
-export const millisecondsMinusMinutesInSeconds = (now: number, minutes: number): number => {
+export const millisecondsPlusMinutesInSeconds = (now: number, minutes: number): number => {
   const oneSecondInMillis = 1000
   const minutesInMillis = minutes * 60 * oneSecondInMillis
-  const nowEpochInSeconds = Math.floor((now - minutesInMillis) / oneSecondInMillis)
+  const nowEpochInSeconds = Math.floor((now + minutesInMillis) / oneSecondInMillis)
 
   return nowEpochInSeconds
 }
 
-export const tokenHasNotExpired = (token: IdToken | RefreshToken, nowEpochMinusMinutes: number): boolean => {
+export const tokenHasNotExpired = (token: IdToken | RefreshToken, nowEpochPlusMinutes: number): boolean => {
   logger.debug(
-    `tokenHasNotExpired(${new Date(token.exp * 1000)}, ${new Date(nowEpochMinusMinutes * 1000)}) => ${
-      nowEpochMinusMinutes <= token.exp
+    `tokenHasNotExpired(${new Date(token.exp * 1000)}, ${new Date(nowEpochPlusMinutes * 1000)}) >= ${
+      token.exp >= nowEpochPlusMinutes
     }`,
   )
 
-  return nowEpochMinusMinutes <= token.exp
+  return token.exp >= nowEpochPlusMinutes
 }
 
 export const getUpdatedToken = (refreshToken: string): Promise<UpdatedTokensResponse> => {
@@ -80,7 +80,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   if (
     tokenHasNotExpired(
       idToken,
-      millisecondsMinusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
+      millisecondsPlusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
     )
   ) {
     // id_token is valid - continue
@@ -95,7 +95,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
   if (
     tokenHasNotExpired(
       parsedRefreshToken,
-      millisecondsMinusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
+      millisecondsPlusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
     )
   ) {
     logger.debug('Refresh token valid')
