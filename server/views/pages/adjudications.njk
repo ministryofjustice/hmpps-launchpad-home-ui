@@ -29,17 +29,17 @@
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Report number</th>
+            <th scope="col" class="govuk-table__header">Charge number</th>
             <th scope="col" class="govuk-table__header">Report date and time</th>
             <th scope="col" class="govuk-table__header"></th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">
-          {% for adjudication in paginatedData %}
+          {% for adjudication in data.reportedAdjudications.content %}
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.adjudicationNumber}}" class="govuk-link">{{ adjudication.adjudicationNumber }}</a></td>
-            <td class="govuk-table__cell">{{ adjudication.reportTime }}</td>
-            <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.adjudicationNumber}}" class="govuk-link">View</a></td>
+            <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.chargeNumber}}" class="govuk-link">{{ adjudication.chargeNumber }}</a></td>
+            <td class="govuk-table__cell">{{ adjudication.createdDateTime }}</td>
+            <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.chargeNumber}}" class="govuk-link">View</a></td>
           </tr>
           {% endfor %}
         </tbody>

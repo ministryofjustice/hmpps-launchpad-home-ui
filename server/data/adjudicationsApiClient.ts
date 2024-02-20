@@ -1,4 +1,4 @@
-import { HasAdjudicationsResponse } from '../@types/adjudicationsApiTypes'
+import { HasAdjudicationsResponse, ReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
 import RestClient from './restClient'
 import config, { ApiConfig } from '../config'
 
@@ -16,5 +16,18 @@ export default class AdjudicationsApiClient {
         'Active-Caseload': agencyId,
       },
     })) as HasAdjudicationsResponse
+  }
+
+  async getReportedAdjudicationsFor(
+    bookingId: string,
+    agencyId: string,
+    status: string,
+  ): Promise<ReportedAdjudicationDto> {
+    return (await this.restClient.get({
+      path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}`,
+      headers: {
+        'Active-Caseload': agencyId,
+      },
+    })) as ReportedAdjudicationDto
   }
 }

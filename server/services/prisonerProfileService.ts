@@ -8,7 +8,7 @@ import {
 } from '../data'
 import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
-import { HasAdjudicationsResponse } from '../@types/adjudicationsApiTypes'
+import { HasAdjudicationsResponse, ReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
 
@@ -69,11 +69,42 @@ export default class PrisonerProfileService {
     return userHasAdjudications
   }
 
-  // async getAdjudicationsFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
-  //   const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
-  //   const prisonApiClient = this.prisonApiClientFactory(token)
-  //   const adjudicationsData = await prisonApiClient.getAdjudicationsFor(user.idToken.booking.id)
+  async getReportedAdjudicationsFor(user: {
+    idToken: { booking: { id: string }; establishment: { agency_id: string } }
+  }): Promise<ReportedAdjudicationDto> {
+    const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
+    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
-  //   return adjudicationsData
-  // }
+    const statuses = [
+      'ACCEPTED',
+      'REJECTED',
+      'AWAITING_REVIEW',
+      'RETURNED',
+      'UNSCHEDULED',
+      'SCHEDULED',
+      'REFER_POLICE',
+      'REFER_INAD',
+      'REFER_GOV',
+      'PROSECUTION',
+      'DISMISSED',
+      'NOT_PROCEED',
+      'ADJOURNED',
+      'CHARGE_PROVED',
+      'QUASHED',
+      'INVALID_OUTCOME',
+      'INVALID_SUSPENDED',
+      'INVALID_ADA',
+    ]
+
+    // const statusQueryParam = statuses.map(stat => `${stat}`).join('')
+    const statusQueryParam = statuses.map(stat => `&status=${stat}`).join('')
+
+    const reportedAdjudicationsData = await adjudicationsApiClient.getReportedAdjudicationsFor(
+      user.idToken.booking.id,
+      user.idToken.establishment.agency_id,
+      statusQueryParam,
+    )
+
+    return reportedAdjudicationsData
+  }
 }
