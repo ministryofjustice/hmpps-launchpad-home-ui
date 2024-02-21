@@ -104,11 +104,14 @@ export default class PrisonerProfileService {
       statusQueryParam,
     )
 
+    // eslint-disable-next-line no-return-assign
+    const formatAdjudicationData = (item: { createdDateTime: string }) =>
+      // eslint-disable-next-line no-param-reassign
+      (item.createdDateTime = format(item.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME))
+
     const { content } = reportedAdjudicationsData
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for (const item of content) {
-      item.createdDateTime = format(item.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME)
-    }
+
+    content.map(formatAdjudicationData)
 
     return reportedAdjudicationsData
   }
