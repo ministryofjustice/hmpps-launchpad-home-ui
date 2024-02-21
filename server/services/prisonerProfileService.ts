@@ -8,7 +8,7 @@ import {
 } from '../data'
 import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
-import { HasAdjudicationsResponse, ReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
+import { HasAdjudicationsResponse, PageReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
 
@@ -71,7 +71,7 @@ export default class PrisonerProfileService {
 
   async getReportedAdjudicationsFor(user: {
     idToken: { booking: { id: string }; establishment: { agency_id: string } }
-  }): Promise<ReportedAdjudicationDto> {
+  }): Promise<PageReportedAdjudicationDto> {
     const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
@@ -96,7 +96,6 @@ export default class PrisonerProfileService {
       'INVALID_ADA',
     ]
 
-    // const statusQueryParam = statuses.map(stat => `${stat}`).join('')
     const statusQueryParam = statuses.map(stat => `&status=${stat}`).join('')
 
     const reportedAdjudicationsData = await adjudicationsApiClient.getReportedAdjudicationsFor(
@@ -104,6 +103,12 @@ export default class PrisonerProfileService {
       user.idToken.establishment.agency_id,
       statusQueryParam,
     )
+
+    const { content } = reportedAdjudicationsData
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const item of content) {
+      item.createdDateTime = format(item.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME)
+    }
 
     return reportedAdjudicationsData
   }

@@ -11,9 +11,8 @@ export default function routes(services: Services): Router {
 
   get('/', async (req, res) => {
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
-    // const reportedAdjudications = await services.prisonerProfileService.getReportedAdjudicationsFor(res.locals.user)
     const reportedAdjudications = await services.prisonerProfileService.getReportedAdjudicationsFor(res.locals.user)
-    console.log('reportedAdjudications', reportedAdjudications)
+
     const config = {
       content: false,
       header: false,
