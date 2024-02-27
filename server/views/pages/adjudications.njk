@@ -45,9 +45,9 @@
         </tbody>
       </table>
 
-      {% if pageData.totalPages > 1 %}
-        <div class="govuk-!-margin-bottom-9">
-          {{ govukPagination( pageData | toPagination(rawQuery) ) }}
+      {% if data.displayPagination %}
+        <div class="govuk-!-margin-bottom-9">t
+          {{ govukPagination( data ) }}
         </div>
       {% endif %}
   {% endif %}

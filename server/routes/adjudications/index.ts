@@ -12,14 +12,13 @@ export default function routes(services: Services): Router {
   get('/', async (req, res) => {
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
     const reportedAdjudications = await services.prisonerProfileService.getReportedAdjudicationsFor(res.locals.user)
+    const displayPagination: boolean = reportedAdjudications.totalPages > 1
 
     const config = {
       content: false,
       header: false,
       postscript: true,
       detailsType: 'small',
-      lastWeek: false,
-      nextWeek: false,
     }
 
     return res.render('pages/adjudications', {
@@ -28,6 +27,7 @@ export default function routes(services: Services): Router {
       config,
       data: {
         reportedAdjudications,
+        displayPagination,
         adjudicationsReadMoreURL: `${prisonerContentHubURL}/content/4193`,
       },
       errors: req.flash('errors'),
