@@ -21,7 +21,6 @@ generic-service:
     bsi-1: 54.37.241.156/30
     bsi-2: 167.71.136.237/32
     groups:
-      - cymulate
       - internal
 
 generic-prometheus-alerts:
