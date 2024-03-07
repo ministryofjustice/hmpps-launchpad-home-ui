@@ -25,7 +25,8 @@ And then, to build the assets and start the app with nodemon:
 
 `npm run start:dev`
 
-### Run linter
+### Run linter 
+
 
 `npm run lint`
 
