@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 import { format } from 'date-fns'
 import { HmppsAuthClient, RestClientBuilder, PrisonApiClient, IncentivesApiClient } from '../data'
 import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
-=======
-import { HmppsAuthClient, RestClientBuilder, PrisonApiClient } from '../data'
-import { EventsData, TimetableEvents } from '../@types/launchpad' // TransactionData, AccountCode
-import Timetable from '../data/timetable'
-// import { Agency, OffenderTransactionHistoryDto } from '../@types/prisonApiTypes'
->>>>>>> 8fe9834 (Initial changes with commented out code)
 
 export default class PrisonerProfileService {
   constructor(
