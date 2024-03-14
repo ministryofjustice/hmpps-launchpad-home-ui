@@ -112,7 +112,7 @@ export default class PrisonerProfileService {
     const { content } = reportedAdjudicationsData
 
     content.map(formatAdjudicationData)
-    console.log(reportedAdjudicationsData)
+    // console.log(reportedAdjudicationsData)
     return reportedAdjudicationsData
   }
 }
