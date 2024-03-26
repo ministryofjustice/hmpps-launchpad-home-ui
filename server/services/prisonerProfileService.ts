@@ -47,4 +47,62 @@ export default class PrisonerProfileService {
 
     return incentivesData
   }
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< called by server > routes > money > index.ts #31
+  // createPrisonFormatter = (prisons: Agency[], key: keyof Agency): ((v: OffenderTransactionHistoryDto[]) => { prison: string }[]) => {
+  //   const lookup = new Map(prisons.map(({ agencyId, description }) => [agencyId, description]))
+
+  //   return (v: OffenderTransactionHistoryDto[]) =>
+  //     v.map(item => ({
+  //       ...item,
+  //       prison: lookup.has(item[key] as string) ? lookup.get(item[key] as string) : (item[key] as string),
+  //     }))
+  // }
+
+  // async getTransactionsFor(
+  //   user: { idToken: { sub: string; booking: { id: string } } },
+  //   accountCode: AccountCode,
+  //   fromDate: Date,
+  //   toDate: Date,
+  // ): Promise<TransactionData> {
+  //   const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+  //   const prisonApiClient = this.prisonApiClientFactory(token)
+  //   const [transactionsResponse, balancesResponse, listOfPrisonsResponse] = await Promise.all([
+  //     prisonApiClient.getTransactionsForDateRange(user.idToken.sub, { accountCode, fromDate, toDate }),
+  //     prisonApiClient.getBalancesFor(user.idToken.booking.id),
+  //     prisonApiClient.getPrisonDetails(),
+  //   ])
+
+  // console.log('transactionsResponse', transactionsResponse)
+  /*
+      [ 
+        {
+          offenderId: 2319320,
+          transactionId: 407303270,
+          transactionEntrySequence: 1,
+          entryDate: '2023-09-18',
+          transactionType: 'TELE',
+          entryDescription: 'Television',
+          referenceNumber: null,
+          currency: 'GBP',
+          penceAmount: 100,
+          accountType: 'SPND',
+          postingType: 'DR',
+          offenderNo: 'G3682UE',
+          agencyId: 'CKI',
+          relatedOffenderTransactions: [],
+          currentBalance: 43433,
+          holdingCleared: false,
+          createDateTime: '2023-09-18T01:31:22.053755'
+        },
+        ...]
+      */
+  // const listOfPrisons: Agency[] | [] = listOfPrisonsResponse || []
+
+  // const convertPrisonIdToText = this.createPrisonFormatter(listOfPrisons, 'agencyId')
+
+  // const transactionData = {
+  //   transactions: transactionsResponse ? transactionsResponse.map(convertPrisonIdToText) : null,
+  //   balances: balancesResponse,
+  // }
+  // }
 }
