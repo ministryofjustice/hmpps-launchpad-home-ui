@@ -1,7 +1,14 @@
 import { format } from 'date-fns'
-import { HmppsAuthClient, RestClientBuilder, PrisonApiClient, IncentivesApiClient } from '../data'
+import {
+  HmppsAuthClient,
+  RestClientBuilder,
+  PrisonApiClient,
+  IncentivesApiClient,
+  AdjudicationsApiClient,
+} from '../data'
 import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
+import { HasAdjudicationsResponse, PageReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
 
@@ -10,6 +17,7 @@ export default class PrisonerProfileService {
     private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
     private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
+    private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
   ) {}
 
   async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
@@ -46,5 +54,65 @@ export default class PrisonerProfileService {
     const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
 
     return incentivesData
+  }
+
+  async hasAdjudications(user: {
+    idToken: { booking: { id: string }; establishment: { agency_id: string } }
+  }): Promise<HasAdjudicationsResponse> {
+    const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
+    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
+    const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(
+      user.idToken.booking.id,
+      user.idToken.establishment.agency_id,
+    )
+
+    return userHasAdjudications
+  }
+
+  async getReportedAdjudicationsFor(user: {
+    idToken: { booking: { id: string }; establishment: { agency_id: string } }
+  }): Promise<PageReportedAdjudicationDto> {
+    const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
+    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
+
+    const statuses = [
+      'ACCEPTED',
+      'REJECTED',
+      'AWAITING_REVIEW',
+      'RETURNED',
+      'UNSCHEDULED',
+      'SCHEDULED',
+      'REFER_POLICE',
+      'REFER_INAD',
+      'REFER_GOV',
+      'PROSECUTION',
+      'DISMISSED',
+      'NOT_PROCEED',
+      'ADJOURNED',
+      'CHARGE_PROVED',
+      'QUASHED',
+      'INVALID_OUTCOME',
+      'INVALID_SUSPENDED',
+      'INVALID_ADA',
+    ]
+
+    const statusQueryParam = statuses.map(stat => `&status=${stat}`).join('')
+
+    const reportedAdjudicationsData = await adjudicationsApiClient.getReportedAdjudicationsFor(
+      user.idToken.booking.id,
+      user.idToken.establishment.agency_id,
+      statusQueryParam,
+    )
+
+    // eslint-disable-next-line no-return-assign
+    const formatAdjudicationData = (item: { createdDateTime: string }) =>
+      // eslint-disable-next-line no-param-reassign
+      (item.createdDateTime = format(item.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME))
+
+    const { content } = reportedAdjudicationsData
+
+    content.map(formatAdjudicationData)
+    // console.log(reportedAdjudicationsData)
+    return reportedAdjudicationsData
   }
 }

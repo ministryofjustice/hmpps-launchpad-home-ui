@@ -7,7 +7,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
-  {% set breadCrumbList = [{ href: '/profile', title: 'Profile'}] %}
+  {% set breadCrumbList = [{ href: '/profile', title: givenName + "'\s Profile"}] %}
   {{ breadCrumb('Timetable', breadCrumbList, false) }}
 {% endblock %}
 

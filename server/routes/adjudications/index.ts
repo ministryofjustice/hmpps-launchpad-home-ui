@@ -10,26 +10,24 @@ export default function routes(services: Services): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    const today = new Date()
-
-    const timetableEvents = await Promise.all([
-      services.prisonerProfileService.getEventsForToday(res.locals.user, today),
-    ])
-
-    const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
-
-    const { hasAdjudications } = await services.prisonerProfileService.hasAdjudications(res.locals.user)
-
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
+    const reportedAdjudications = await services.prisonerProfileService.getReportedAdjudicationsFor(res.locals.user)
+    const displayPagination: boolean = reportedAdjudications.totalPages > 1
 
-    return res.render('pages/profile', {
+    const config = {
+      content: false,
+      header: false,
+      postscript: true,
+      detailsType: 'small',
+    }
+
+    return res.render('pages/adjudications', {
       givenName: res.locals.user.idToken.given_name,
+      title: 'Adjudications',
+      config,
       data: {
-        timetableEvents: timetableEvents[0],
-        incentivesData,
-        prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
-        incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
-        hasAdjudications,
+        reportedAdjudications,
+        displayPagination,
         adjudicationsReadMoreURL: `${prisonerContentHubURL}/content/4193`,
       },
       errors: req.flash('errors'),

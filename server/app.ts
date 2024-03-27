@@ -19,6 +19,7 @@ import indexRoutes from './routes/homepage'
 import profileRoutes from './routes/profile'
 // import settingsRoutes from './routes/settings'
 import timetableRoutes from './routes/timetable'
+import adjudicationsRoutes from './routes/adjudications'
 
 import type { Services } from './services'
 
@@ -41,8 +42,9 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
 
   app.use('/', indexRoutes(services))
-  app.use('/timetable', timetableRoutes(services))
   app.use('/profile', profileRoutes(services))
+  app.use('/timetable', timetableRoutes(services))
+  app.use('/adjudications', adjudicationsRoutes(services))
   // app.use('/settings', settingsRoutes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

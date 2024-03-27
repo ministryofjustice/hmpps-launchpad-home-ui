@@ -25,6 +25,7 @@ export default function routes(services: Services): Router {
     const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
 
     return res.render('pages/timetable', {
+      givenName: res.locals.user.idToken.given_name,
       title: 'Timetable',
       config,
       events,
@@ -50,6 +51,7 @@ export default function routes(services: Services): Router {
     const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
 
     return res.render('pages/timetable', {
+      givenName: res.locals.user.idToken.given_name,
       title: 'Timetable',
       config,
       events,
@@ -75,6 +77,7 @@ export default function routes(services: Services): Router {
     const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
 
     return res.render('pages/timetable', {
+      givenName: res.locals.user.idToken.given_name,
       title: 'Timetable',
       config,
       events,
