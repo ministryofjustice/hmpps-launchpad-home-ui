@@ -221,4 +221,8 @@ export default {
       selfServiceURL: 'https://wyiclient.unilink.prisoner.service.justice.gov.uk:1100',
     },
   ],
+  analytics: {
+    // use staging GA4 tag as fallback
+    ga4SiteId: get('GA4_SITE_ID', 'G-4VW039LBEF', requiredInProduction),
+  },
 }

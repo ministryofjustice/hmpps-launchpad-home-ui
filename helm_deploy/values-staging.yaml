@@ -17,6 +17,7 @@ generic-service:
     PRISONER_CONTACT_REGISTRY_API_URL: "https://prisoner-contact-registry-dev.prison.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth-dev.hmpps.service.justice.gov.uk"
     APPLICATIONINSIGHTS_CONNECTION_STRING: null
+    GA4_SITE_ID: "G-4VW039LBEF"
 
   namespace_secrets:
     hmpps-launchpad-home-ui:
