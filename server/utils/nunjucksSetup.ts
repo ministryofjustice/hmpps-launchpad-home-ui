@@ -38,6 +38,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       express: app,
     },
   )
-  njkEnv.addGlobal('GA4_SITE_ID', config.analytics.siteId)
+  njkEnv.addGlobal('ga4SiteId', config.analytics.ga4SiteId)
   njkEnv.addFilter('initialiseName', initialiseName)
 }

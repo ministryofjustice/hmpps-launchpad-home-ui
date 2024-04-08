@@ -223,6 +223,6 @@ export default {
   ],
   analytics: {
     // use staging GA4 tag as fallback
-    siteId: get('GA4_SITE_ID', 'G-4VW039LBEF', requiredInProduction),
+    ga4SiteId: get('GA4_SITE_ID', 'G-4VW039LBEF', requiredInProduction),
   },
 }
