@@ -1,10 +1,9 @@
-import { type RequestHandler, Router } from 'express'
-import { DateFormats } from '../../utils/enums'
+import { formatDate } from 'date-fns'
+import { Router, type RequestHandler } from 'express'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-
 import type { Services } from '../../services'
-import { formatDate } from '../../utils/utils'
+import { DateFormats } from '../../utils/enums'
 
 export default function routes(services: Services): Router {
   const router = Router()

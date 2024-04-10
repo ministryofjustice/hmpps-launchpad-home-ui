@@ -1,4 +1,3 @@
-import { format, isValid, parseISO } from 'date-fns'
 import config from '../config'
 
 export const properCase = (word: string): string =>
@@ -23,18 +22,6 @@ export const initialiseName = (fullName?: string): string | null => {
 
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
-}
-
-export const formatDate = (date: Date, dateTimeFormat: string): string => format(date, dateTimeFormat)
-
-export const formatDateTimeString = (from: string, to: string, dateTimeFormat: string): string =>
-  `${formatDate(new Date(from), dateTimeFormat)} to ${formatDate(new Date(to), dateTimeFormat)}`
-
-export const formatDateOrDefault = (placeHolder: string, dateFormat: string, date: string): string => {
-  if (!isValid(parseISO(date))) {
-    return placeHolder
-  }
-  return format(parseISO(date), dateFormat)
 }
 
 export const generateBasicAuthHeader = (clientId: string, clientSecret: string): string => {

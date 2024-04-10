@@ -1,9 +1,10 @@
 import { EventsData, PrisonerEvent } from '../@types/launchpad'
 import { ScheduledEvent } from '../@types/prisonApiTypes'
-import RestClient from './restClient'
 import config, { ApiConfig } from '../config'
-import { formatDate, formatDateTimeString, convertToTitleCase } from '../utils/utils'
+import { formatDate, formatDateTimeString } from '../utils/date'
 import { DateFormats } from '../utils/enums'
+import { convertToTitleCase } from '../utils/utils'
+import RestClient from './restClient'
 
 export default class PrisonApiClient {
   private restClient: RestClient
