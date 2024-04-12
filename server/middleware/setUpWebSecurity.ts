@@ -23,9 +23,20 @@ export default function setUpWebSecurity(): Router {
           // <link href="http://example.com/" rel="stylesheet" nonce="{{ cspNonce }}">
           // This ensures only scripts we trust are loaded, and not anything injected into the
           // page by an attacker.
-          scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          scriptSrc: [
+            "'self'",
+            (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+            'https://*.googletagmanager.com',
+          ],
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
+          imgSrc: ["'self'", 'https://*.googletagmanager.com', 'https://*.google-analytics.com'],
+          connectSrc: [
+            "'self'",
+            'https://*.googletagmanager.com',
+            'https://*.google-analytics.com',
+            'https://*.analytics.google.com',
+          ],
         },
       },
       crossOriginEmbedderPolicy: true,
