@@ -1,6 +1,10 @@
-import { HasAdjudicationsResponse, PageReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
-import RestClient from './restClient'
+import {
+  HasAdjudicationsResponse,
+  PageReportedAdjudicationDto,
+  ReportedAdjudicationApiResponse,
+} from '../@types/adjudicationsApiTypes'
 import config, { ApiConfig } from '../config'
+import RestClient from './restClient'
 
 export default class AdjudicationsApiClient {
   private restClient: RestClient
@@ -29,5 +33,14 @@ export default class AdjudicationsApiClient {
         'Active-Caseload': agencyId,
       },
     })) as PageReportedAdjudicationDto
+  }
+
+  async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
+    return (await this.restClient.get({
+      path: `/reported-adjudications/${chargeNumber}/v2`,
+      headers: {
+        'Active-Caseload': agencyId,
+      },
+    })) as ReportedAdjudicationApiResponse
   }
 }

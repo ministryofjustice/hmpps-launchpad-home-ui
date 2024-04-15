@@ -1,14 +1,19 @@
 import { format } from 'date-fns'
 import {
-  HmppsAuthClient,
-  RestClientBuilder,
-  PrisonApiClient,
-  IncentivesApiClient,
-  AdjudicationsApiClient,
-} from '../data'
-import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
+  HasAdjudicationsResponse,
+  PageReportedAdjudicationDto,
+  ReportedAdjudicationApiResponse,
+} from '../@types/adjudicationsApiTypes'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
-import { HasAdjudicationsResponse, PageReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
+import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
+import { ADJUDICATION_STATUSES } from '../constants/adjudications'
+import {
+  AdjudicationsApiClient,
+  HmppsAuthClient,
+  IncentivesApiClient,
+  PrisonApiClient,
+  RestClientBuilder,
+} from '../data'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
 
@@ -20,8 +25,12 @@ export default class PrisonerProfileService {
     private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
   ) {}
 
+  private async getToken() {
+    return this.hmppsAuthClient.getSystemClientToken()
+  }
+
   async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const token = await this.getToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
     const eventsSummary = await prisonApiClient.getEventsSummary(user.idToken.booking.id)
     return eventsSummary
@@ -32,7 +41,7 @@ export default class PrisonerProfileService {
     fromDate: Date,
     toDate: Date,
   ): Promise<TimetableEvents> {
-    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+    const token = await this.getToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
     const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
     const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
@@ -49,7 +58,7 @@ export default class PrisonerProfileService {
   }
 
   async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
-    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+    const token = await this.getToken()
     const incentivesApiClient = this.incentivesApiClientFactory(token)
     const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
 
@@ -59,7 +68,7 @@ export default class PrisonerProfileService {
   async hasAdjudications(user: {
     idToken: { booking: { id: string }; establishment: { agency_id: string } }
   }): Promise<HasAdjudicationsResponse> {
-    const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
+    const token = await this.getToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
     const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(
       user.idToken.booking.id,
@@ -72,31 +81,10 @@ export default class PrisonerProfileService {
   async getReportedAdjudicationsFor(user: {
     idToken: { booking: { id: string }; establishment: { agency_id: string } }
   }): Promise<PageReportedAdjudicationDto> {
-    const token = await this.hmppsAuthClient.getSystemClientToken() // MAY NOT NEED TOKEN FOR THE NEW ADJUDICATIONS API - TO CONFIRM
+    const token = await this.getToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
-    const statuses = [
-      'ACCEPTED',
-      'REJECTED',
-      'AWAITING_REVIEW',
-      'RETURNED',
-      'UNSCHEDULED',
-      'SCHEDULED',
-      'REFER_POLICE',
-      'REFER_INAD',
-      'REFER_GOV',
-      'PROSECUTION',
-      'DISMISSED',
-      'NOT_PROCEED',
-      'ADJOURNED',
-      'CHARGE_PROVED',
-      'QUASHED',
-      'INVALID_OUTCOME',
-      'INVALID_SUSPENDED',
-      'INVALID_ADA',
-    ]
-
-    const statusQueryParam = statuses.map(stat => `&status=${stat}`).join('')
+    const statusQueryParam = ADJUDICATION_STATUSES.map(status => `&status=${status}`).join('')
 
     const reportedAdjudicationsData = await adjudicationsApiClient.getReportedAdjudicationsFor(
       user.idToken.booking.id,
@@ -104,15 +92,21 @@ export default class PrisonerProfileService {
       statusQueryParam,
     )
 
-    // eslint-disable-next-line no-return-assign
-    const formatAdjudicationData = (item: { createdDateTime: string }) =>
-      // eslint-disable-next-line no-param-reassign
-      (item.createdDateTime = format(item.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME))
+    const formattedAdjudications = reportedAdjudicationsData.content.map(adjudication => ({
+      ...adjudication,
+      createdDateTime: format(adjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
+    }))
 
-    const { content } = reportedAdjudicationsData
+    return {
+      ...reportedAdjudicationsData,
+      content: formattedAdjudications,
+    }
+  }
 
-    content.map(formatAdjudicationData)
-    // console.log(reportedAdjudicationsData)
-    return reportedAdjudicationsData
+  async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
+    const token = await this.getToken()
+    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
+
+    return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
   }
 }

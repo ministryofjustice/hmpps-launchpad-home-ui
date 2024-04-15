@@ -1,0 +1,30 @@
+{% extends "../partials/layout.njk" %}
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {% set breadCrumbList = [{ href: '/profile', title: givenName + "'\s Profile"}, {href: '/adjudications', title: 'Adjudications'}] %}
+  {{ breadCrumb('Adjudications', breadCrumbList, false) }}
+{% endblock %}
+
+{% block title %}
+  <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content" data-test="main-content">
+    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+    {% if error %}
+      <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="approved-visitors-error">We can not list your adjudication at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a> or <a href="{{ data.adjudicationsReadMoreURL }}" class="govuk-link">read more about adjudications</a>.</p>
+    {% else %}  
+        <div class="govuk-!-margin-bottom-7">
+          <a href="{{ data.adjudicationsReadMoreURL }}" class="govuk-link govuk-!-font-size-24">Read more about adjudications</a>
+        </div>  
+    {% endif %}
+    </div>
+{% endblock%}
+

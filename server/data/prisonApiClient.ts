@@ -1,3 +1,4 @@
+import { PageReportedAdjudicationDto } from '../@types/adjudicationsApiTypes'
 import { EventsData, PrisonerEvent } from '../@types/launchpad'
 import { ScheduledEvent } from '../@types/prisonApiTypes'
 import config, { ApiConfig } from '../config'
@@ -48,4 +49,10 @@ export default class PrisonApiClient {
       }).toString(),
     })) as ScheduledEvent[]
   }
+
+  // async getAdjudicationFor(offenderNo: string, adjudicationNo: string) {
+  //   return this.restClient.get({
+  //     path: `/api/offenders/${offenderNo}/adjudications/${adjudicationNo}`,
+  //   })
+  // }
 }

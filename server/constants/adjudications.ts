@@ -1,0 +1,21 @@
+// eslint-disable-next-line import/prefer-default-export
+export const ADJUDICATION_STATUSES = [
+  'ACCEPTED',
+  'REJECTED',
+  'AWAITING_REVIEW',
+  'RETURNED',
+  'UNSCHEDULED',
+  'SCHEDULED',
+  'REFER_POLICE',
+  'REFER_INAD',
+  'REFER_GOV',
+  'PROSECUTION',
+  'DISMISSED',
+  'NOT_PROCEED',
+  'ADJOURNED',
+  'CHARGE_PROVED',
+  'QUASHED',
+  'INVALID_OUTCOME',
+  'INVALID_SUSPENDED',
+  'INVALID_ADA',
+]
