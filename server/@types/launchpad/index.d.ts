@@ -118,3 +118,23 @@ export type TimetableState = {
   events: TimetableEvents
   hasEvents: boolean
 }
+
+export type ProcessedDateSelection = {
+  text: string
+  value: string
+  selected?: boolean
+}
+
+export type ProcesseSelectedTransactionDates = {
+  dateSelection: ProcessedDateSelection[]
+  fromDate: Date
+  toDate: Date
+}
+
+export type TransactionData = {
+  transactions: OffenderTransactionHistoryDto
+  balances: Account
+  prison: string
+}
+
+export type AccountCode = 'spends' | 'cash' | 'savings'
