@@ -1,19 +1,14 @@
 import { Request, Response, Router } from 'express'
+
+import { format } from 'date-fns'
 import type { Services } from '../../services'
+import { asyncHandler } from '../../utils/asyncHandler'
+import { DateFormats } from '../../utils/enums'
 import { getEstablishmentLinksData } from '../../utils/utils'
+import { formatReportedAdjudication } from '../../utils/adjudications/formatReportedAdjudication'
 
 export default function routes(services: Services): Router {
   const router = Router()
-
-  const asyncHandler =
-    // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
-    (fn: (req: Request, res: Response) => Promise<any>) => async (req: Request, res: Response, next: Function) => {
-      try {
-        await fn(req, res)
-      } catch (err) {
-        next(err)
-      }
-    }
 
   const renderAdjudicationsPage = async (req: Request, res: Response) => {
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
@@ -35,21 +30,24 @@ export default function routes(services: Services): Router {
   }
 
   const renderAdjudicationPage = async (req: Request, res: Response) => {
+    const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
     const { reportedAdjudication } = await services.prisonerProfileService.getReportedAdjudication(
       req.params.chargeNumber,
       res.locals.user.idToken.establishment.agency_id,
     )
-    const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
+    const formattedAdjudication = await formatReportedAdjudication(reportedAdjudication, services)
 
     res.render('pages/adjudication', {
       givenName: res.locals.user.idToken.given_name,
       title: `View details of ${reportedAdjudication.chargeNumber}`,
       config: getConfig(),
       data: {
-        adjudication: reportedAdjudication,
+        adjudication: formattedAdjudication,
         adjudicationsReadMoreURL: `${prisonerContentHubURL}/content/4193`,
       },
     })
+
+    console.log({ formattedAdjudication: JSON.stringify(formattedAdjudication, null, 2) })
   }
 
   router.get('/', asyncHandler(renderAdjudicationsPage))

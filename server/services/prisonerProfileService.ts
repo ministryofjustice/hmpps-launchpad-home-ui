@@ -16,6 +16,7 @@ import {
 } from '../data'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
+import { Location, UserDetail } from '../@types/prisonApiTypes'
 
 export default class PrisonerProfileService {
   constructor(
@@ -108,5 +109,19 @@ export default class PrisonerProfileService {
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
     return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
+  }
+
+  async getUserByUserId(userId: string): Promise<UserDetail> {
+    const token = await this.getToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+    const user = await prisonApiClient.getUserByUserId(userId)
+    return user as UserDetail
+  }
+
+  async getLocationByLocationId(locationId: number): Promise<Location> {
+    const token = await this.getToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+    const location = await prisonApiClient.getLocationByLocationId(locationId)
+    return location as Location
   }
 }
