@@ -33,7 +33,7 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
-      contentHubUrl: prisonerContentHubURL,
+      prisonerContentHubURL,
     })
   })
 
