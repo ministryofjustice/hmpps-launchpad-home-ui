@@ -12,21 +12,29 @@ import { convertToTitleCase } from '../utils'
 
 // eslint-disable-next-line import/prefer-default-export
 export const formatReportedAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
-  const reportedBy = await services.prisonerProfileService.getUserByUserId(reportedAdjudication.createdByUserId)
-  const location = await services.prisonerProfileService.getLocationByLocationId(
-    reportedAdjudication.incidentDetails.locationId,
-  )
+  try {
+    const reportedBy = await services.prisonerProfileService.getUserByUserId(reportedAdjudication.createdByUserId)
+    const location = await services.prisonerProfileService.getLocationByLocationId(
+      reportedAdjudication.incidentDetails.locationId,
+    )
 
-  return {
-    ...reportedAdjudication,
-    incidentDetails: formatIncidentDetails(reportedAdjudication.incidentDetails),
-    hearings: await Promise.all(
-      reportedAdjudication.hearings.map((hearing, i) =>
+    const formattedIncidentDetails = formatIncidentDetails(reportedAdjudication.incidentDetails)
+    const formattedHearings = await Promise.all(
+      reportedAdjudication.hearings.map(hearing =>
         formatHearing(hearing, reportedAdjudication.offenceDetails, reportedAdjudication.punishments, services),
       ),
-    ),
-    location: `${location.userDescription} (${location.agencyId})`,
-    reportedBy: `${reportedBy.firstName} ${reportedBy.lastName}`,
+    )
+
+    return {
+      ...reportedAdjudication,
+      incidentDetails: formattedIncidentDetails,
+      hearings: formattedHearings,
+      location: `${location.userDescription} (${location.agencyId})`,
+      reportedBy: `${reportedBy.firstName} ${reportedBy.lastName}`,
+    }
+  } catch (error) {
+    console.error('Error formatting reported adjudication:', error)
+    throw error
   }
 }
 
@@ -44,24 +52,30 @@ const formatHearing = async (
   punishments: Punishment[],
   services: Services,
 ) => {
-  const location = await services.prisonerProfileService.getLocationByLocationId(hearing.locationId)
+  try {
+    const location = await services.prisonerProfileService.getLocationByLocationId(hearing.locationId)
 
-  return {
-    ...hearing,
-    dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
-    location: `${location.userDescription}`,
-    adjudicator: hearing.oicHearingType.includes('GOV') ? hearing.oicHearingType : `${hearing.outcome.adjudicator}`,
-    outcome: {
-      ...hearing.outcome,
-      details: hearing.outcome.details,
-      plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
-    },
-    offenceDetails,
-    punishments: punishments.map(punishment => ({
-      ...punishment,
-      effectiveDate: punishment.schedule.suspendedUntil
-        ? format(punishment.schedule.suspendedUntil, DateFormats.GDS_PRETTY_DATE)
-        : format(punishment.schedule.startDate, DateFormats.GDS_PRETTY_DATE),
-    })),
+    return {
+      ...hearing,
+      dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
+      location: `${location.userDescription}`,
+      adjudicator: hearing.oicHearingType.includes('GOV') ? hearing.oicHearingType : `${hearing.outcome.adjudicator}`,
+      outcome: {
+        ...hearing.outcome,
+        details: hearing.outcome.details,
+        plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
+      },
+      offenceDetails,
+      punishments: punishments.map(punishment => ({
+        ...punishment,
+        effectiveDate: format(
+          punishment.schedule.suspendedUntil || punishment.schedule.startDate,
+          DateFormats.GDS_PRETTY_DATE,
+        ),
+      })),
+    }
+  } catch (error) {
+    console.error('Error formatting hearing:', error)
+    throw error
   }
 }
