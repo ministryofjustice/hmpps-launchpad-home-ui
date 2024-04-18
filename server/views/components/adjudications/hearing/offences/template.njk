@@ -1,5 +1,5 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "./outcomes/macro.njk" import adjudicationHearingOffenceOutcomes %}
+{% from "./punishments/macro.njk" import adjudicationHearingOffencePunishments %}
 
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
@@ -21,7 +21,7 @@
           text: "Type"
         },
         value: {
-          text: hearing.locationId
+          text: "Prison Rule " + hearing.offenceDetails.offenceRule.paragraphNumber.substring(0, 2)
         }
       },
       {
@@ -43,4 +43,6 @@
     ]
   }) }}
 
-  {{ adjudicationHearingOffenceOutcomes(hearing) }}
+  {% if hearing.punishments | length %}
+    {{ adjudicationHearingOffencePunishments(hearing.punishments) }}
+  {% endif %}

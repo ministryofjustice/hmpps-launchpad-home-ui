@@ -1,5 +1,11 @@
 import { format } from 'date-fns'
-import { Hearing, IncidentDetailsDto, Offence, ReportedAdjudicationDto } from '../../@types/adjudicationsApiTypes'
+import {
+  Hearing,
+  IncidentDetailsDto,
+  Offence,
+  Punishment,
+  ReportedAdjudicationDto,
+} from '../../@types/adjudicationsApiTypes'
 import type { Services } from '../../services'
 import { DateFormats } from '../enums'
 import { convertToTitleCase } from '../utils'
@@ -13,18 +19,31 @@ export const formatReportedAdjudication = async (reportedAdjudication: ReportedA
 
   return {
     ...reportedAdjudication,
+    incidentDetails: formatIncidentDetails(reportedAdjudication.incidentDetails),
     hearings: await Promise.all(
-      reportedAdjudication.hearings.map(hearing =>
-        formatHearing(hearing, reportedAdjudication.offenceDetails, services),
+      reportedAdjudication.hearings.map((hearing, i) =>
+        formatHearing(hearing, reportedAdjudication.offenceDetails, reportedAdjudication.punishments, services),
       ),
     ),
     location: `${location.userDescription} (${location.agencyId})`,
     reportedBy: `${reportedBy.firstName} ${reportedBy.lastName}`,
-    incidentDetails: formatIncidentDetails(reportedAdjudication.incidentDetails),
   }
 }
 
-const formatHearing = async (hearing: Hearing, offenceDetails: Offence, services: Services) => {
+const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): IncidentDetailsDto => {
+  return {
+    ...incidentDetails,
+    dateTimeOfIncident: format(incidentDetails.dateTimeOfIncident, DateFormats.GDS_PRETTY_DATE_TIME),
+    dateTimeOfDiscovery: format(incidentDetails.dateTimeOfDiscovery, DateFormats.GDS_PRETTY_DATE_TIME),
+  }
+}
+
+const formatHearing = async (
+  hearing: Hearing,
+  offenceDetails: Offence,
+  punishments: Punishment[],
+  services: Services,
+) => {
   const location = await services.prisonerProfileService.getLocationByLocationId(hearing.locationId)
 
   return {
@@ -35,16 +54,14 @@ const formatHearing = async (hearing: Hearing, offenceDetails: Offence, services
     outcome: {
       ...hearing.outcome,
       details: hearing.outcome.details,
-      plea: convertToTitleCase(hearing.outcome.plea),
+      plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
     },
     offenceDetails,
-  }
-}
-
-const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): IncidentDetailsDto => {
-  return {
-    ...incidentDetails,
-    dateTimeOfIncident: format(incidentDetails.dateTimeOfIncident, DateFormats.GDS_PRETTY_DATE_TIME),
-    dateTimeOfDiscovery: format(incidentDetails.dateTimeOfDiscovery, DateFormats.GDS_PRETTY_DATE_TIME),
+    punishments: punishments.map(punishment => ({
+      ...punishment,
+      effectiveDate: punishment.schedule.suspendedUntil
+        ? format(punishment.schedule.suspendedUntil, DateFormats.GDS_PRETTY_DATE)
+        : format(punishment.schedule.startDate, DateFormats.GDS_PRETTY_DATE),
+    })),
   }
 }
