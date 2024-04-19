@@ -40,6 +40,9 @@ export default function routes(services: Services): Router {
   })
 
   get('/last-week', async (req, res) => {
+    const { prisonerContentHubURL } =
+      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
+
     const config = {
       content: false,
       header: false,
@@ -61,10 +64,16 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
+      linksData: {
+        prisonerContentHubURL,
+      },
     })
   })
 
   get('/next-week', async (req, res) => {
+    const { prisonerContentHubURL } =
+      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
+
     const config = {
       content: false,
       header: false,
@@ -86,6 +95,9 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
+      linksData: {
+        prisonerContentHubURL,
+      },
     })
   })
 
