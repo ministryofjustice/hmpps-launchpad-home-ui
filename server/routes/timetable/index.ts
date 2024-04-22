@@ -3,6 +3,7 @@ import { addDays, subDays } from 'date-fns'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
@@ -23,6 +24,8 @@ export default function routes(services: Services): Router {
     const toDate = addDays(fromDate, 6)
 
     const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
+    const { prisonerContentHubURL } =
+      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
 
     return res.render('pages/timetable', {
       title: 'Timetable',
@@ -30,10 +33,16 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
+      linksData: {
+        prisonerContentHubURL,
+      },
     })
   })
 
   get('/last-week', async (req, res) => {
+    const { prisonerContentHubURL } =
+      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
+
     const config = {
       content: false,
       header: false,
@@ -55,10 +64,16 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
+      linksData: {
+        prisonerContentHubURL,
+      },
     })
   })
 
   get('/next-week', async (req, res) => {
+    const { prisonerContentHubURL } =
+      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
+
     const config = {
       content: false,
       header: false,
@@ -80,6 +95,9 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
+      linksData: {
+        prisonerContentHubURL,
+      },
     })
   })
 
