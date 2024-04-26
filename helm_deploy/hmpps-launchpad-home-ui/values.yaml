@@ -15,6 +15,13 @@ generic-service:
     tlsSecretName: hmpps-launchpad-cert
     modsecurity_enabled: true
     modsecurity_github_team: "prisoner-content-hub-developers"
+    annotations:
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        server_tokens off;
+        location ~* /(etc|tmp|var|xampp|winnt|usr|proc|php)/ {
+          deny all;
+          return 401;
+        }
 
   livenessProbe:
     httpGet:
