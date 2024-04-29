@@ -14,6 +14,7 @@ export default class Linkservice {
         url: selfServiceURL,
         description: 'Access to kiosk apps',
         openInNewTab: true,
+        hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
@@ -21,6 +22,7 @@ export default class Linkservice {
         url: prisonerContentHubURL,
         description: 'Watch, read and listen to local and national content',
         openInNewTab: true,
+        hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.jpg',
@@ -28,6 +30,7 @@ export default class Linkservice {
         url: `${prisonerContentHubURL}/tags/785`,
         description: 'Listen to 24/7 music, talk, requests and playbacks',
         openInNewTab: true,
+        hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/inside-time-link-tile-image.jpg',
@@ -35,6 +38,7 @@ export default class Linkservice {
         url: 'https://insidetimeprison.org/',
         description: 'Read the national newspaper for prisoners and detainees',
         openInNewTab: true,
+        hidden: true,
       },
     ]
 

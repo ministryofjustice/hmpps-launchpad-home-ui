@@ -8,9 +8,9 @@
 
   div {
     display: flex;
-    justify-content: space-between;
+    justify-content: left;
     flex-wrap: wrap;
-    column-gap: .75%;
+    column-gap: 1.05%;
     row-gap: .5em;
   }
 }

@@ -70,6 +70,7 @@ describe('GET /', () => {
         url: `${SELF_SERVICE_URL}`,
         description: 'Access to kiosk apps',
         openInNewTab: true,
+        hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
@@ -77,6 +78,7 @@ describe('GET /', () => {
         url: `${CONTENT_HUB_URL}`,
         description: 'Watch, read and listen to local and national content',
         openInNewTab: false,
+        hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.png',
@@ -84,6 +86,7 @@ describe('GET /', () => {
         url: `${CONTENT_HUB_URL}/tags/785`,
         description: 'Listen to 24/7 music, talk, requests and playbacks',
         openInNewTab: true,
+        hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/inside-time-link-tile-image.png',
@@ -91,6 +94,7 @@ describe('GET /', () => {
         url: 'https://insidetimeprison.org/',
         description: 'Read the national newspaper for prisoners and detainees',
         openInNewTab: true,
+        hidden: true,
       },
     ]
 
@@ -121,7 +125,7 @@ describe('GET /', () => {
     }
   })
 
-  it('should render the homepage link tiles', () => {
+  it('should render the homepage link tiles when hidden value is false', () => {
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
@@ -144,9 +148,9 @@ describe('GET /', () => {
           'Listen to 24/7 music, talk, requests and playbacks',
         )
 
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) h3').text()).toBe('Inside Time')
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) a').attr('href')).toBe(INSIDE_TIME_URL)
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) p').text()).toBe(
+        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) h3').text()).not.toBe('Inside Time')
+        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) a').attr('href')).not.toBe(INSIDE_TIME_URL)
+        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) p').text()).not.toBe(
           'Read the national newspaper for prisoners and detainees',
         )
       })
