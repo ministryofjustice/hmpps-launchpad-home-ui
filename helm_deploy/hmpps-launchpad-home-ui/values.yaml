@@ -16,9 +16,9 @@ generic-service:
     modsecurity_enabled: true
     modsecurity_github_team: "prisoner-content-hub-developers"
     annotations:
-      nginx.ingress.kubernetes.io/configuration-snippet: |
+      nginx.ingress.kubernetes.io/server-snippet: |
         server_tokens off;
-        location ~* /(etc|tmp|var|xampp|winnt|usr|proc|php)/ {
+        location /queue-admin/retry-all-dlqs {
           deny all;
           return 401;
         }
