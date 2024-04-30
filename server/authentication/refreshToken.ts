@@ -23,18 +23,11 @@ export const millisecondsPlusMinutesInSeconds = (now: number, minutes: number): 
 }
 
 export const tokenHasNotExpired = (token: IdToken | RefreshToken, nowEpochPlusMinutes: number): boolean => {
-  logger.debug(
-    `tokenHasNotExpired(${new Date(token.exp * 1000)}, ${new Date(nowEpochPlusMinutes * 1000)}) >= ${
-      token.exp >= nowEpochPlusMinutes
-    }`,
-  )
-
   return token.exp >= nowEpochPlusMinutes
 }
 
 export const getUpdatedToken = (refreshToken: string): Promise<UpdatedTokensResponse> => {
   const url = `${config.apis.launchpadAuth.externalUrl}/v1/oauth2/token`
-  logger.debug(`getUpdatedToken calling ${url}`)
   const grantType = 'refresh_token'
   const authHeaderValue = generateBasicAuthHeader(
     `${config.apis.launchpadAuth.apiClientId}`,
@@ -61,22 +54,12 @@ export const getUpdatedToken = (refreshToken: string): Promise<UpdatedTokensResp
 
 // also use this logic for try again button and access_token refresh (settings page)
 export const checkTokenValidityAndUpdate = async (req: Request, res: Response, next: NextFunction) => {
-  logger.debug('checkTokenValidityAndUpdate')
   if (!req.user) {
-    logger.debug('No user')
     return next()
   }
 
   const { idToken, refreshToken } = req.user
 
-  const pat = JSON.parse(Buffer.from(req.user.accessToken.split('.')[1], 'base64').toString())
-  const prt = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
-  logger.debug(`${new Date()}`)
-  logger.debug(`${new Date(idToken.exp * 1000)}`)
-  logger.debug(`${new Date(pat.exp * 1000)}`)
-  logger.debug(`${new Date(prt.exp * 1000)}`)
-
-  logger.debug('Check idToken')
   if (
     tokenHasNotExpired(
       idToken,
@@ -84,24 +67,20 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
     )
   ) {
     // id_token is valid - continue
-    logger.debug('id_token valid')
     return next()
   }
 
   const parsedRefreshToken = JSON.parse(Buffer.from(req.user.refreshToken.split('.')[1], 'base64').toString())
 
   // id_token is invalid and refresh_token is valid
-  logger.debug('Check refresh_token')
   if (
     tokenHasNotExpired(
       parsedRefreshToken,
       millisecondsPlusMinutesInSeconds(Date.now(), config.apis.launchpadAuth.refreshCheckTimeInMinutes),
     )
   ) {
-    logger.debug('Refresh token valid')
     try {
       const updatedTokensResponse: UpdatedTokensResponse = await getUpdatedToken(refreshToken)
-      logger.debug('Updated user token')
 
       // updates req.user for the current request
       req.user = createUserObject(
@@ -115,12 +94,11 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
 
       return next()
     } catch (error) {
-      logger.error(`Token refresh error:`, error.stack)
+      logger.error(`Token refresh error`)
       // Handle the error here
       return res.redirect('/autherror')
     }
   }
-  logger.debug('Refresh token invalid')
 
   // id_token is invalid and refresh_token is invalid
   // refresh / get id_token and refresh_token by redirecting to /sign-in - need to sign out first?
