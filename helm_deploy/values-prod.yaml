@@ -2,8 +2,6 @@
 # Per environment values which override defaults in hmpps-launchpad-home-ui/values.yaml
 
 generic-service:
-  replicaCount: 2
-
   ingress:
     host: launchpad-home.hmpps.service.justice.gov.uk
 
