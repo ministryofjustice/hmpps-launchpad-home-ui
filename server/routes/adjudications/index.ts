@@ -1,11 +1,9 @@
 import { Request, Response, Router } from 'express'
 
-import { format } from 'date-fns'
 import type { Services } from '../../services'
-import { asyncHandler } from '../../utils/asyncHandler'
-import { DateFormats } from '../../utils/enums'
-import { getEstablishmentLinksData } from '../../utils/utils'
 import { formatReportedAdjudication } from '../../utils/adjudications/formatReportedAdjudication'
+import { asyncHandler } from '../../utils/asyncHandler'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -46,8 +44,6 @@ export default function routes(services: Services): Router {
         adjudicationsReadMoreURL: `${prisonerContentHubURL}/content/4193`,
       },
     })
-
-    console.log({ formattedAdjudication: JSON.stringify(formattedAdjudication, null, 2) })
   }
 
   router.get('/', asyncHandler(renderAdjudicationsPage))

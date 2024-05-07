@@ -8,8 +8,6 @@
       <th scope="col" class="govuk-table__header">Type</th>
       <th scope="col" class="govuk-table__header sanction_no_wrap">How long</th>
       <th scope="col" class="govuk-table__header sanction_no_wrap">Effective date</th>
-      <th scope="col" class="govuk-table__header">Status</th>
-      <th scope="col" class="govuk-table__header sanction_no_wrap">Status date</th>
     </tr>
   </thead>
 
@@ -19,8 +17,6 @@
         <td class="govuk-table__cell">{{punishment.privilegeType}}</td>
         <td class="govuk-table__cell sanction_no_wrap">{{punishment.schedule.days}} days</td>
         <td class="govuk-table__cell sanction_no_wrap">{{punishment.effectiveDate}}</td>
-        <td class="govuk-table__cell"></td>
-        <td class="govuk-table__cell sanction_no_wrap"></td>
       </tr>
     {% endfor %}
   </tbody>
