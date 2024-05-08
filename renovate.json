@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>ministryofjustice/hmpps-renovate-config:node"],
   "prBodyTemplate": "{{{table}}}{{{notes}}}{{{warnings}}}{{{controls}}}",
+  "prCreation": "immediate",
   "packageRules": [
     {
       "matchManagers": ["npm"],
@@ -15,6 +16,10 @@
       "stabilityDays": 5
     },
     {
+      "matchDepTypes": ["engines"],
+      "enabled": false
+    },
+    {
       "matchPackageNames": ["typescript", "govuk-frontend"],
       "rangeStrategy": "bump",
       "stabilityDays": 0
@@ -22,6 +27,12 @@
     {
       "matchManagers": ["npm"],
       "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["node"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     }

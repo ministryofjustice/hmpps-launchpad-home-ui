@@ -17,6 +17,7 @@ generic-service:
     PRISONER_CONTACT_REGISTRY_API_URL: "https://prisoner-contact-registry-preprod.prison.service.justice.gov.uk"
     ADJUDICATIONS_API_URL: "https://manage-adjudications-api-preprod.hmpps.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth-preprod.hmpps.service.justice.gov.uk"
+    GA4_SITE_ID: "G-4VW039LBEF"
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

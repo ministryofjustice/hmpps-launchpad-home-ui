@@ -3,6 +3,7 @@ import * as pathModule from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import { initialiseName } from './utils'
+import config from '../config'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -37,6 +38,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       express: app,
     },
   )
-
+  njkEnv.addGlobal('ga4SiteId', config.analytics.ga4SiteId)
   njkEnv.addFilter('initialiseName', initialiseName)
 }

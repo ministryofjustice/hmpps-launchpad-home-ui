@@ -25,6 +25,7 @@ export type Link = {
   url: string
   description: string
   openInNewTab: boolean
+  hidden: boolean
 }
 
 export type LinksData = {

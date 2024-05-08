@@ -1,6 +1,6 @@
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% macro breadCrumb(pageTitle, breadCrumbList, displayCurrentPageTitle="true") %}
+{% macro breadCrumb(pageTitle, breadCrumbList, displayCurrentPageTitle=true) %}
 
   {% set rows = [ {
     text: "Home",
@@ -9,10 +9,17 @@
   %}
 
   {% for item in breadCrumbList %}
+    {% set attributes = {} %}
+    
+    {% if item.target %}
+      {% set attributes = { "target": item.target } %}
+    {% endif %}
+
     {% set rows = (rows.push(
       {
         text: item.title,
-        href: item.href
+        href: item.href,
+        attributes: attributes
       }
     ), rows) %}
   {% endfor %}
@@ -34,4 +41,3 @@
 }) }}
 
 {% endmacro %}
-

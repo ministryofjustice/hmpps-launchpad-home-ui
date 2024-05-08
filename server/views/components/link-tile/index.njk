@@ -1,16 +1,18 @@
 {% macro linkTile(params, user) %}
-    <div class="link-tile">
-        <a href="{{ params.url }}"
-                {% if params.openInNewTab %}rel="noreferrer noopener" target="_blank"{% endif %}>
+    {% if not params.hidden %}
+        <div class="link-tile">
+            <a href="{{ params.url }}"
+                    {% if params.openInNewTab %}rel="noreferrer noopener" target="_blank"{% endif %}>
 
-            <img src="{{ params.image }}"
-                alt="link tile image"
-                loading="lazy" />
+                <img src="{{ params.image }}"
+                    alt="link tile image"
+                    loading="lazy" />
 
-            <footer class="govuk-!-padding-4 govuk-grid-column-full">
-                <h3 class="govuk-heading-m">{{ params.title }}</h3>
-                <p class="govuk-body">{{ params.description }}</p>
-            </footer>
-        </a>
-    </div>
+                <footer class="govuk-!-padding-4 govuk-grid-column-full">
+                    <h3 class="govuk-heading-m">{{ params.title }}</h3>
+                    <p class="govuk-body">{{ params.description }}</p>
+                </footer>
+            </a>
+        </div>
+    {% endif %}
 {% endmacro %}
