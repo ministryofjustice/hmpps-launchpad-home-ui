@@ -1,11 +1,45 @@
 import { IncidentDetailsDto } from '../../@types/adjudicationsApiTypes'
 import { Location, UserDetail } from '../../@types/prisonApiTypes'
 import { HmppsAuthClient } from '../../data'
+import { reportedAdjudication } from '../../routes/testutils/data'
 import { UserService } from '../../services'
 import { createMockLinksService, createMockPrisonerProfileService } from '../../services/testutils/mocks'
 import { UserDetails } from '../../services/userService'
 import { formatHearing, formatIncidentDetails, formatReportedAdjudication } from './formatReportedAdjudication'
-import { mockFormattedAdjudication, reportedAdjudication } from './mocks'
+import { FormattedReportedAdjudication } from './types'
+
+const mockFormattedAdjudication: FormattedReportedAdjudication = {
+  ...reportedAdjudication,
+  hearings: [
+    {
+      id: 294486,
+      locationId: 78703,
+      dateTimeOfHearing: '18 February 2011, 10.00am',
+      oicHearingType: 'GOV_ADULT',
+      outcome: {
+        id: 284319,
+        adjudicator: 'IQS13Z',
+        code: 'COMPLETE',
+        details: '',
+        plea: 'ABSTAIN',
+      },
+      agencyId: 'GHI',
+      location: 'Seg Adj. Room',
+      adjudicator: 'GOV_ADULT',
+      offenceDetails: {
+        offenceCode: 0,
+        offenceRule: {
+          paragraphNumber: '51:12',
+          paragraphDescription:
+            'Has in his possession-(a) any unauthorised article, or (b) a greater quantity of any article than he is authorised to have',
+        },
+      },
+      punishments: [],
+    },
+  ],
+  location: 'Reception (GHI)',
+  reportedBy: 'Iclquens Hannista',
+}
 
 class MockUserService extends UserService {
   async getUser(token: string): Promise<UserDetails> {
