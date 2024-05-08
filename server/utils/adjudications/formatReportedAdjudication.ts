@@ -33,8 +33,7 @@ export const formatReportedAdjudication = async (reportedAdjudication: ReportedA
       reportedBy: `${reportedBy.firstName} ${reportedBy.lastName}`,
     }
   } catch (error) {
-    console.error('Error formatting reported adjudication:', error)
-    throw error
+    throw new Error(`Error formatting reported adjudication: ${error}`)
   }
 }
 
@@ -75,7 +74,6 @@ const formatHearing = async (
       })),
     }
   } catch (error) {
-    console.error('Error formatting hearing:', error)
-    throw error
+    throw new Error(`Error formatting hearing: ${error}`)
   }
 }
