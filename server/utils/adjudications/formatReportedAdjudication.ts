@@ -1,9 +1,9 @@
 import { format } from 'date-fns'
 import {
-  Hearing,
+  HearingDto,
   IncidentDetailsDto,
-  Offence,
-  Punishment,
+  OffenceDto,
+  PunishmentDto,
   ReportedAdjudicationDto,
 } from '../../@types/adjudicationsApiTypes'
 import type { Services } from '../../services'
@@ -37,7 +37,7 @@ export const formatReportedAdjudication = async (reportedAdjudication: ReportedA
   }
 }
 
-const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): IncidentDetailsDto => {
+export const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): IncidentDetailsDto => {
   return {
     ...incidentDetails,
     dateTimeOfIncident: format(incidentDetails.dateTimeOfIncident, DateFormats.GDS_PRETTY_DATE_TIME),
@@ -45,10 +45,10 @@ const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): IncidentDet
   }
 }
 
-const formatHearing = async (
-  hearing: Hearing,
-  offenceDetails: Offence,
-  punishments: Punishment[],
+export const formatHearing = async (
+  hearing: HearingDto,
+  offenceDetails: OffenceDto,
+  punishments: PunishmentDto[],
   services: Services,
 ) => {
   try {
@@ -61,7 +61,6 @@ const formatHearing = async (
       adjudicator: hearing.oicHearingType.includes('GOV') ? hearing.oicHearingType : `${hearing.outcome.adjudicator}`,
       outcome: {
         ...hearing.outcome,
-        details: hearing.outcome.details,
         plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
       },
       offenceDetails,
