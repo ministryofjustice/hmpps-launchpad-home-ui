@@ -1,4 +1,9 @@
-import { HasAdjudicationsResponse, ReportedAdjudicationApiResponse } from '../@types/adjudicationsApiTypes'
+import {
+  HasAdjudicationsResponse,
+  PageReportedAdjudicationDto,
+  ReportedAdjudicationApiResponse,
+} from '../@types/adjudicationsApiTypes'
+import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
 import { EventsData } from '../@types/launchpad'
 import { Location, UserDetail } from '../@types/prisonApiTypes'
 import {
@@ -84,6 +89,38 @@ describe('PrisonerProfileService', () => {
     })
   })
 
+  describe('getIncentivesSummaryFor', () => {
+    it('should return incentives summary for the given user', async () => {
+      const mockUserId = '123456'
+      const mockIncentivesData: IncentiveReviewSummary = {
+        id: 12345,
+        iepCode: 'STD',
+        iepLevel: 'Standard',
+        prisonerNumber: 'A1234BC',
+        bookingId: 1234567,
+        iepDate: '2021-12-31',
+        iepTime: '2021-07-05T10:35:17',
+        locationId: '1-2-003',
+        iepDetails: [],
+        nextReviewDate: '2022-12-31',
+        daysSinceReview: 23,
+      }
+
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
+      incentivesApiClientFactory.mockReturnValue(incentivesApiClient)
+      incentivesApiClient.getIncentivesSummaryFor.mockResolvedValue(mockIncentivesData)
+
+      const result = await prisonerProfileService.getIncentivesSummaryFor({
+        idToken: { booking: { id: mockUserId } },
+      })
+
+      expect(result).toEqual(mockIncentivesData)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
+      expect(incentivesApiClientFactory).toHaveBeenCalledWith(mockToken)
+      expect(incentivesApiClient.getIncentivesSummaryFor).toHaveBeenCalledWith(mockUserId)
+    })
+  })
+
   describe('hasAdjudications', () => {
     it('should return whether the user has adjudications', async () => {
       const mockUserId = '123456'
@@ -104,6 +141,36 @@ describe('PrisonerProfileService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(adjudicationsApiClient.hasAdjudications).toHaveBeenCalledWith(mockUserId, mockAgencyId)
+    })
+  })
+
+  describe('getReportedAdjudicationsFor', () => {
+    it('should return reported adjudications for the given user', async () => {
+      const mockUserId = '123456'
+      const mockAgencyId = 'XYZ456'
+      const mockStatusQueryParam =
+        '&status=ACCEPTED&status=REJECTED&status=AWAITING_REVIEW&status=RETURNED&status=UNSCHEDULED&status=SCHEDULED&status=REFER_POLICE&status=REFER_INAD&status=REFER_GOV&status=PROSECUTION&status=DISMISSED&status=NOT_PROCEED&status=ADJOURNED&status=CHARGE_PROVED&status=QUASHED&status=INVALID_OUTCOME&status=INVALID_SUSPENDED&status=INVALID_ADA'
+
+      const mockReportedAdjudicationsData: PageReportedAdjudicationDto = {
+        content: [],
+      }
+
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
+      adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
+      adjudicationsApiClient.getReportedAdjudicationsFor.mockResolvedValue(mockReportedAdjudicationsData)
+
+      const result = await prisonerProfileService.getReportedAdjudicationsFor({
+        idToken: { booking: { id: mockUserId }, establishment: { agency_id: mockAgencyId } },
+      })
+
+      expect(result).toEqual(mockReportedAdjudicationsData)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
+      expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
+      expect(adjudicationsApiClient.getReportedAdjudicationsFor).toHaveBeenCalledWith(
+        mockUserId,
+        mockAgencyId,
+        mockStatusQueryParam,
+      )
     })
   })
 
