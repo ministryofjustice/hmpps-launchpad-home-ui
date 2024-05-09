@@ -7,7 +7,7 @@ import config, { ApiConfig } from '../config'
 import RestClient from './restClient'
 
 export default class AdjudicationsApiClient {
-  private restClient: RestClient
+  public restClient: RestClient
 
   constructor(token: string) {
     this.restClient = new RestClient('adjudicationsApiClient', config.apis.adjudications as ApiConfig, token)
