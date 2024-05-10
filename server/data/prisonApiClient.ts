@@ -1,9 +1,9 @@
 import { EventsData, PrisonerEvent } from '../@types/launchpad'
-import { ScheduledEvent } from '../@types/prisonApiTypes'
-import RestClient from './restClient'
+import { OffenderTransactionHistoryDto, ScheduledEvent } from '../@types/prisonApiTypes'
 import config, { ApiConfig } from '../config'
-import { formatDate, formatDateTimeString, convertToTitleCase } from '../utils/utils'
 import { DateFormats } from '../utils/enums'
+import { convertToTitleCase, formatDate, formatDateTimeString } from '../utils/utils'
+import RestClient from './restClient'
 
 export default class PrisonApiClient {
   private restClient: RestClient
@@ -46,5 +46,16 @@ export default class PrisonApiClient {
         toDate: formatDate(toDate, DateFormats.ISO_DATE),
       }).toString(),
     })) as ScheduledEvent[]
+  }
+
+  async getTransactionsForDateRange(prisonerId: string, accountCode: string, fromDate: Date, toDate: Date) {
+    return (await this.restClient.get({
+      path: `/api/offenders/${prisonerId}/transaction-history`,
+      query: new URLSearchParams({
+        accountCode,
+        fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
+        toDate: formatDate(toDate, DateFormats.ISO_DATE),
+      }).toString(),
+    })) as OffenderTransactionHistoryDto[]
   }
 }

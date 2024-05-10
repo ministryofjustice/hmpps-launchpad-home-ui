@@ -1,0 +1,23 @@
+{% extends "../partials/layout.njk" %}
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
+{% from "../components/transactions-help/index.njk" import transactionsHelp %}
+{% from "../components/transactions-tabs/index.njk" import transactionsTabs %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {% set breadCrumbList = [{ href: '/profile', title: user.idToken.given_name ~ "'s Profile"}] %}
+  {{ breadCrumb('', breadCrumbList, false) }}
+{% endblock %}
+
+{% block title %}
+  <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content">
+    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {# {{ transactionsHelp(contentHubTransactionsHelpLinkURL) }}
+  {{ transactionsTabs(data.selected, data.accountTypes, data.displayDamageObligationsTab) }} #}
+{% endblock %}
