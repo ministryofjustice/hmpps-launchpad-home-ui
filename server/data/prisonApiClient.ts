@@ -1,5 +1,5 @@
 import { EventsData, PrisonerEvent } from '../@types/launchpad'
-import { OffenderTransactionHistoryDto, ScheduledEvent } from '../@types/prisonApiTypes'
+import { Account, OffenderTransactionHistoryDto, ScheduledEvent } from '../@types/prisonApiTypes'
 import config, { ApiConfig } from '../config'
 import { DateFormats } from '../utils/enums'
 import { convertToTitleCase, formatDate, formatDateTimeString } from '../utils/utils'
@@ -57,5 +57,11 @@ export default class PrisonApiClient {
         toDate: formatDate(toDate, DateFormats.ISO_DATE),
       }).toString(),
     })) as OffenderTransactionHistoryDto[]
+  }
+
+  async getBalances(bookingId: string) {
+    return (await this.restClient.get({
+      path: `/api/bookings/${bookingId}/balances`,
+    })) as Account
   }
 }

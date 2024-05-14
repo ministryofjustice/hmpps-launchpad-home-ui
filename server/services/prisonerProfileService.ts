@@ -1,11 +1,10 @@
 import { format } from 'date-fns'
+import logger from '../../logger'
 import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
 import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
 import { HmppsAuthClient, IncentivesApiClient, PrisonApiClient, RestClientBuilder } from '../data'
 import Timetable from '../data/timetable'
 import { DateFormats } from '../utils/enums'
-import logger from '../../logger'
-import { User } from '../data/hmppsAuthClient'
 
 export default class PrisonerProfileService {
   constructor(
@@ -50,26 +49,27 @@ export default class PrisonerProfileService {
     return incentivesData
   }
 
-  async getTransactions(
-    user: { idToken: { booking: { id: string } } },
-    accountCode: string,
-    fromDate: Date,
-    toDate: Date,
-  ) {
+  async getTransactions(user: { idToken: { sub: string } }, accountCode: string, fromDate: Date, toDate: Date) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      const transactions = prisonApiClient.getTransactionsForDateRange(
-        user.idToken.booking.id,
-        accountCode,
-        fromDate,
-        toDate,
-      )
-
-      return transactions
+      return prisonApiClient.getTransactionsForDateRange(user.idToken.sub, accountCode, fromDate, toDate)
     } catch (e) {
       logger.error('Failed to get transactions for user', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
+
+  async getBalances(bookingId: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getBalances(bookingId)
+    } catch (e) {
+      logger.error('Failed to get balances for booking', e)
       logger.debug(e.stack)
       return null
     }
