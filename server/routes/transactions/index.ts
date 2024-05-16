@@ -6,7 +6,7 @@ import { AccountCodes, TransactionTypes } from '../../constants/transactions'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 import { createDateSelectionRange } from '../../utils/date'
-import { createTransactionTable } from '../../utils/transactions'
+import { createDamageObligationsTable, createTransactionTable } from '../../utils/transactions'
 import { getEstablishmentLinksData } from '../../utils/utils'
 import { getConfig } from '../config'
 
@@ -47,7 +47,8 @@ export default function routes(services: Services): Router {
         balance: balances.spends,
         contentHubTransactionsHelpLinkUrl: `${prisonerContentHubURL}/content/8534`,
         dateSelectionRange,
-        hasDamageObligations: balances.damageObligations > 0,
+        // hasDamageObligations: balances.damageObligations > 0,
+        hasDamageObligations: true,
         selectedDate: req.query.selectedDate,
         selectedTab: TransactionTypes.SPENDS,
         transactions: createTransactionTable(transactionsWithPrison),
@@ -145,37 +146,24 @@ export default function routes(services: Services): Router {
     const { prisonerContentHubURL } =
       (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
 
-    const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
-    const dateSelectionRange = createDateSelectionRange(selectedDate)
-
-    const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
-    const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
-
     const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
     const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
-    const transactions = await services.prisonerProfileService.getTransactions(
-      req.user,
-      AccountCodes.DAMAGE_OBLIGATIONS,
-      dateRangeFrom,
-      dateRangeTo,
-    )
+    const { damageObligations } = await services.prisonerProfileService.getDamageObligations(req.user)
 
-    const transactionsWithPrison = transactions.map(transaction => {
-      const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
-      return { ...transaction, prison: prisonDescription }
+    const damageObligationsWithPrison = damageObligations.map(damageObligation => {
+      const prisonDescription = prisons.find(p => p.agencyId === damageObligation.prisonId)?.description || ''
+      return { ...damageObligation, prison: prisonDescription }
     })
 
-    res.render('pages/transactions', {
+    res.render('pages/transactions/damage-obligations', {
       title: 'Transactions',
       config: getConfig(),
       data: {
         accountTypes,
         balance: balances.damageObligations,
         contentHubTransactionsHelpLinkUrl: `${prisonerContentHubURL}/content/8534`,
-        dateSelectionRange,
-        selectedDate: req.query.selectedDate,
+        damageObligations: createDamageObligationsTable(damageObligationsWithPrison),
         selectedTab: TransactionTypes.DAMAGE_OBLIGATIONS,
-        transactions: createTransactionTable(transactionsWithPrison),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),

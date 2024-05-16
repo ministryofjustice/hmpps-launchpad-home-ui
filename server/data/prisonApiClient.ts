@@ -63,7 +63,7 @@ export default class PrisonApiClient {
   async getDamageObligations(prisonerId: string) {
     return (await this.restClient.get({
       path: `/api/offenders/${prisonerId}/damage-obligations`,
-    })) as OffenderDamageObligation[]
+    })) as { damageObligations: OffenderDamageObligation[] }
   }
 
   async getPrisonsByAgencyType(type: string) {

@@ -3,7 +3,7 @@
 
 {% from "../../components/transactions/help/index.njk" import transactionsHelp %}
 {% from "../../components/transactions/tabs/index.njk" import transactionsTabs %}
-{% from "../../components/transactions/table/index.njk" import transactionsTable %}
+{% from "../../components/transactions/damage-obligations/table.njk" import damageObligationsTable %}
 
 
 {% set pageTitle = applicationName + " - Home" %}
@@ -24,6 +24,6 @@
   <div class="govuk-body govuk-width-container govuk-frontend-supported">
     {{ transactionsHelp(data.contentHubTransactionsHelpLinkUrl) }}
     {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations) }}
-    {{ transactionsTable(data.balance, data.dateSelectionRange, data.selectedDate, data.transactions) }}
+    {{ damageObligationsTable(data.balance, data.damageObligations)}}
   </div>
 {% endblock %}

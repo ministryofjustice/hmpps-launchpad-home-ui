@@ -87,4 +87,17 @@ export default class PrisonerProfileService {
       return null
     }
   }
+
+  async getDamageObligations(user: { idToken: { sub: string } }) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getDamageObligations(user.idToken.sub)
+    } catch (e) {
+      logger.error('Failed to get damage obligations for user', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
 }
