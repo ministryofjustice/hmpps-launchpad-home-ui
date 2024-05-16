@@ -12,7 +12,10 @@ type RelatedTransaction = {
   currency: string
   prison: string
 }
-export const formatTransaction = (transaction: OffenderTransactionHistoryDto | RelatedTransaction) => ({
+
+type ExtendedOffenderTransaction = OffenderTransactionHistoryDto & { prison: string }
+
+export const formatTransactionDetails = (transaction: ExtendedOffenderTransaction | RelatedTransaction) => ({
   paymentDate: formatDate(transaction.entryDate, DateFormats.GDS_PRETTY_DATE),
   balance: formatCurrency(transaction.currentBalance / 100, transaction.currency),
   moneyIn:
@@ -20,17 +23,14 @@ export const formatTransaction = (transaction: OffenderTransactionHistoryDto | R
   moneyOut:
     transaction.postingType === 'DR' ? formatCurrency(0 - transaction.penceAmount / 100, transaction.currency) : null,
   paymentDescription: transaction.entryDescription,
-  // prison: transaction.prison,
+  prison: transaction.prison,
 })
 
-export const createTransactionTable = (transactions: OffenderTransactionHistoryDto[]) => {
-  const hasRelatedOffenderTransactions = (transaction: OffenderTransactionHistoryDto) =>
+export const createTransactionTable = (transactions: ExtendedOffenderTransaction[]) => {
+  const hasRelatedOffenderTransactions = (transaction: ExtendedOffenderTransaction) =>
     transaction.relatedOffenderTransactions.length > 0
 
-  const sortByEntryDate = (
-    transaction1: OffenderTransactionHistoryDto,
-    transaction2: OffenderTransactionHistoryDto,
-  ) => {
+  const sortByEntryDate = (transaction1: ExtendedOffenderTransaction, transaction2: ExtendedOffenderTransaction) => {
     const entryDateDiff = parseISO(transaction2.entryDate).valueOf() - parseISO(transaction1.entryDate).valueOf()
 
     if (entryDateDiff !== 0) return entryDateDiff
@@ -49,7 +49,7 @@ export const createTransactionTable = (transactions: OffenderTransactionHistoryD
       )}`,
       postingType: 'CR',
       currency: transaction.currency,
-      // prison: transaction.prison,
+      prison: transaction.prison,
     })),
   )
 
@@ -63,7 +63,7 @@ export const createTransactionTable = (transactions: OffenderTransactionHistoryD
 
   const rows = [...nonRelatedTransactions, ...relatedTransactions]
     .sort(sortByEntryDate)
-    .map(formatTransaction)
+    .map(formatTransactionDetails)
     .map(transaction =>
       [
         transaction.paymentDate,
@@ -71,7 +71,7 @@ export const createTransactionTable = (transactions: OffenderTransactionHistoryD
         transaction.moneyOut,
         transaction.balance,
         transaction.paymentDescription,
-        // transaction.prison,
+        transaction.prison,
       ].map(rowValue => ({ text: rowValue })),
     )
 

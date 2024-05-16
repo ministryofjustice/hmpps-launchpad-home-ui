@@ -1,5 +1,11 @@
 import { EventsData, PrisonerEvent } from '../@types/launchpad'
-import { Account, OffenderTransactionHistoryDto, ScheduledEvent } from '../@types/prisonApiTypes'
+import {
+  Account,
+  Agency,
+  OffenderDamageObligation,
+  OffenderTransactionHistoryDto,
+  ScheduledEvent,
+} from '../@types/prisonApiTypes'
 import config, { ApiConfig } from '../config'
 import { DateFormats } from '../utils/enums'
 import { convertToTitleCase, formatDate, formatDateTimeString } from '../utils/utils'
@@ -48,20 +54,27 @@ export default class PrisonApiClient {
     })) as ScheduledEvent[]
   }
 
-  async getTransactionsForDateRange(prisonerId: string, accountCode: string, fromDate: Date, toDate: Date) {
-    return (await this.restClient.get({
-      path: `/api/offenders/${prisonerId}/transaction-history`,
-      query: new URLSearchParams({
-        accountCode,
-        fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
-        toDate: formatDate(toDate, DateFormats.ISO_DATE),
-      }).toString(),
-    })) as OffenderTransactionHistoryDto[]
-  }
-
   async getBalances(bookingId: string) {
     return (await this.restClient.get({
       path: `/api/bookings/${bookingId}/balances`,
     })) as Account
+  }
+
+  async getDamageObligations(prisonerId: string) {
+    return (await this.restClient.get({
+      path: `/api/offenders/${prisonerId}/damage-obligations`,
+    })) as OffenderDamageObligation[]
+  }
+
+  async getPrisonsByAgencyType(type: string) {
+    return (await this.restClient.get({
+      path: `/api/agencies/type/${type}`,
+    })) as Agency[]
+  }
+
+  async getTransactionsForDateRange(prisonerId: string, accountCode: string, fromDate: Date, toDate: Date) {
+    return (await this.restClient.get({
+      path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+    })) as OffenderTransactionHistoryDto[]
   }
 }

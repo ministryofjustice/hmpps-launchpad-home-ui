@@ -1,7 +1,8 @@
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { endOfMonth, isFuture, startOfMonth } from 'date-fns'
 import { Request, Response, Router } from 'express'
 
-import { TransactionTypes } from '../../constants/transactions'
+import { AgencyType } from '../../constants/agency'
+import { AccountCodes, TransactionTypes } from '../../constants/transactions'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 import { createDateSelectionRange } from '../../utils/date'
@@ -21,16 +22,22 @@ export default function routes(services: Services): Router {
     const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
     const dateSelectionRange = createDateSelectionRange(selectedDate)
 
-    const fromDate = startOfMonth(new Date())
-    const toDate = endOfMonth(fromDate)
+    const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
+    const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 
     const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
+    const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
     const transactions = await services.prisonerProfileService.getTransactions(
       req.user,
-      TransactionTypes.SPENDS,
-      fromDate,
-      toDate,
+      AccountCodes.SPENDS,
+      dateRangeFrom,
+      dateRangeTo,
     )
+
+    const transactionsWithPrison = transactions.map(transaction => {
+      const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
+      return { ...transaction, prison: prisonDescription }
+    })
 
     res.render('pages/transactions', {
       title: 'Transactions',
@@ -43,7 +50,7 @@ export default function routes(services: Services): Router {
         hasDamageObligations: balances.damageObligations > 0,
         selectedDate: req.query.selectedDate,
         selectedTab: TransactionTypes.SPENDS,
-        transactions: createTransactionTable(transactions),
+        transactions: createTransactionTable(transactionsWithPrison),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
@@ -57,16 +64,22 @@ export default function routes(services: Services): Router {
     const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
     const dateSelectionRange = createDateSelectionRange(selectedDate)
 
-    const fromDate = startOfMonth(new Date())
-    const toDate = endOfMonth(fromDate)
+    const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
+    const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 
     const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
+    const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
     const transactions = await services.prisonerProfileService.getTransactions(
       req.user,
-      TransactionTypes.PRIVATE,
-      fromDate,
-      toDate,
+      AccountCodes.PRIVATE,
+      dateRangeFrom,
+      dateRangeTo,
     )
+
+    const transactionsWithPrison = transactions.map(transaction => {
+      const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
+      return { ...transaction, prison: prisonDescription }
+    })
 
     res.render('pages/transactions', {
       title: 'Transactions',
@@ -79,7 +92,7 @@ export default function routes(services: Services): Router {
         hasDamageObligations: balances.damageObligations > 0,
         selectedDate: req.query.selectedDate,
         selectedTab: TransactionTypes.PRIVATE,
-        transactions,
+        transactions: createTransactionTable(transactionsWithPrison),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
@@ -93,16 +106,22 @@ export default function routes(services: Services): Router {
     const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
     const dateSelectionRange = createDateSelectionRange(selectedDate)
 
-    const fromDate = startOfMonth(new Date())
-    const toDate = endOfMonth(fromDate)
+    const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
+    const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 
     const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
+    const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
     const transactions = await services.prisonerProfileService.getTransactions(
       req.user,
-      TransactionTypes.SAVINGS,
-      fromDate,
-      toDate,
+      AccountCodes.SAVINGS,
+      dateRangeFrom,
+      dateRangeTo,
     )
+
+    const transactionsWithPrison = transactions.map(transaction => {
+      const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
+      return { ...transaction, prison: prisonDescription }
+    })
 
     res.render('pages/transactions', {
       title: 'Transactions',
@@ -115,7 +134,7 @@ export default function routes(services: Services): Router {
         hasDamageObligations: balances.damageObligations > 0,
         selectedDate: req.query.selectedDate,
         selectedTab: TransactionTypes.SAVINGS,
-        transactions,
+        transactions: createTransactionTable(transactionsWithPrison),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
@@ -129,18 +148,24 @@ export default function routes(services: Services): Router {
     const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
     const dateSelectionRange = createDateSelectionRange(selectedDate)
 
-    const fromDate = startOfMonth(new Date())
-    const toDate = endOfMonth(fromDate)
+    const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
+    const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 
     const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
+    const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
     const transactions = await services.prisonerProfileService.getTransactions(
       req.user,
-      TransactionTypes.DAMAGE_OBLIGATIONS,
-      fromDate,
-      toDate,
+      AccountCodes.DAMAGE_OBLIGATIONS,
+      dateRangeFrom,
+      dateRangeTo,
     )
 
-    res.render('pages/transactions/damage-obligations', {
+    const transactionsWithPrison = transactions.map(transaction => {
+      const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
+      return { ...transaction, prison: prisonDescription }
+    })
+
+    res.render('pages/transactions', {
       title: 'Transactions',
       config: getConfig(),
       data: {
@@ -148,10 +173,9 @@ export default function routes(services: Services): Router {
         balance: balances.damageObligations,
         contentHubTransactionsHelpLinkUrl: `${prisonerContentHubURL}/content/8534`,
         dateSelectionRange,
-        hasDamageObligations: balances.damageObligations > 0,
         selectedDate: req.query.selectedDate,
         selectedTab: TransactionTypes.DAMAGE_OBLIGATIONS,
-        transactions,
+        transactions: createTransactionTable(transactionsWithPrison),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),

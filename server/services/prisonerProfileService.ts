@@ -74,4 +74,17 @@ export default class PrisonerProfileService {
       return null
     }
   }
+
+  async getPrisonsByAgencyType(type: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getPrisonsByAgencyType(type)
+    } catch (e) {
+      logger.error('Failed to get prisons by type', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
 }

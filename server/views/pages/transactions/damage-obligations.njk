@@ -1,7 +1,10 @@
 {% extends "../../partials/layout.njk" %}
 {% from "../../partials/breadCrumb.njk" import breadCrumb %}
-{% from "../../components/transactions-help/index.njk" import transactionsHelp %}
-{% from "../../components/transactions-tabs/index.njk" import transactionsTabs %}
+
+{% from "../../components/transactions/help/index.njk" import transactionsHelp %}
+{% from "../../components/transactions/tabs/index.njk" import transactionsTabs %}
+{% from "../../components/transactions/table/index.njk" import transactionsTable %}
+
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -12,12 +15,15 @@
 {% endblock %}
 
 {% block title %}
-  <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content">
+  <div class="govuk-body govuk-width-container hub-header timetable-header" id="main-content">
     <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
   </div>
 {% endblock %}
 
 {% block content %}
-  {# {{ transactionsHelp(contentHubTransactionsHelpLinkURL) }}
-  {{ transactionsTabs(data.selected, data.accountTypes, data.displayDamageObligationsTab) }} #}
+  <div class="govuk-body govuk-width-container govuk-frontend-supported">
+    {{ transactionsHelp(data.contentHubTransactionsHelpLinkUrl) }}
+    {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations) }}
+    {{ transactionsTable(data.balance, data.dateSelectionRange, data.selectedDate, data.transactions) }}
+  </div>
 {% endblock %}
