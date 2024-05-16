@@ -18,7 +18,7 @@ generic-service:
     annotations:
       nginx.ingress.kubernetes.io/server-snippet: |
         server_tokens off;
-        location /queue-admin/retry-all-dlqs {
+        location ~* /(etc|tmp|var|xampp|winnt|usr|proc|php)/ {
           deny all;
           return 401;
         }
