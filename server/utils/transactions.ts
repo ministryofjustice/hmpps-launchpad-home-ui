@@ -1,8 +1,9 @@
 import { formatDate, parseISO } from 'date-fns'
-import { OffenderDamageObligation, OffenderTransactionHistoryDto } from '../@types/prisonApiTypes'
+import { Account, OffenderDamageObligation, OffenderTransactionHistoryDto } from '../@types/prisonApiTypes'
+import { AccountCodes } from '../constants/transactions'
 import { formatCurrency } from './currency'
-import { DateFormats } from './enums'
 import { sortByDateTime } from './date'
+import { DateFormats } from './enums'
 
 type ExtendedOffenderTransaction = OffenderTransactionHistoryDto & { prison: string }
 type ExtendedDamageObligation = OffenderDamageObligation & { prison: string }
@@ -128,5 +129,18 @@ export const createDamageObligationsTable = (damageObligations: ExtendedDamageOb
     })),
     rows,
     totalRemainingAmount: formatCurrency(totalRemainingAmount, 'GBP'),
+  }
+}
+
+export const getBalanceByAccountCode = (balances: Account, accountCode: string): number => {
+  switch (accountCode) {
+    case AccountCodes.SPENDS:
+      return balances.spends
+    case AccountCodes.PRIVATE:
+      return balances.cash
+    case AccountCodes.SAVINGS:
+      return balances.savings
+    default:
+      throw new Error(`Unknown account code: ${accountCode}`)
   }
 }

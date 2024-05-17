@@ -1,7 +1,7 @@
 import { dataAccess } from '../data'
-import UserService from './user/service'
-import PrisonerProfileService from './prisonerProfile/service'
-import LinksService from './links/service'
+import UserService from './userService'
+import PrisonerProfileService from './prisonerProfileService'
+import LinksService from './linksService'
 
 export const services = () => {
   const { hmppsAuthClient, prisonApiClientBuilder, incentivesApiClientBuilder } = dataAccess()

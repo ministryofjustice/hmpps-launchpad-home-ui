@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 
-import healthcheck from '../services/healthCheck/service'
+import healthcheck from '../services/healthCheck'
 
 export default function setUpHealthChecks(): Router {
   const router = express.Router()
