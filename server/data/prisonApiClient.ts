@@ -12,7 +12,7 @@ import { convertToTitleCase, formatDate, formatDateTimeString } from '../utils/u
 import RestClient from './restClient'
 
 export default class PrisonApiClient {
-  private restClient: RestClient
+  public restClient: RestClient
 
   constructor(token: string) {
     this.restClient = new RestClient('prisonApiClient', config.apis.prison as ApiConfig, token)
