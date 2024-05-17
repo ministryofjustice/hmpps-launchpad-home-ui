@@ -1,5 +1,5 @@
 import { convertToTitleCase } from '../utils/utils'
-import type HmppsAuthClient from '../data/hmppsAuthClient'
+import type HmppsAuthClient from '../data/api/hmppsAuth/client'
 
 interface UserDetails {
   name: string

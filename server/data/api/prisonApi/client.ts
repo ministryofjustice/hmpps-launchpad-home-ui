@@ -1,15 +1,15 @@
-import { EventsData, PrisonerEvent } from '../@types/launchpad'
+import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
 import {
   Account,
   Agency,
   OffenderDamageObligation,
   OffenderTransactionHistoryDto,
   ScheduledEvent,
-} from '../@types/prisonApiTypes'
-import config, { ApiConfig } from '../config'
-import { DateFormats } from '../utils/enums'
-import { convertToTitleCase, formatDate, formatDateTimeString } from '../utils/utils'
-import RestClient from './restClient'
+} from '../../../@types/prisonApiTypes'
+import config, { ApiConfig } from '../../../config'
+import { DateFormats } from '../../../utils/enums'
+import { convertToTitleCase, formatDate, formatDateTimeString } from '../../../utils/utils'
+import RestClient from '../../restClient'
 
 export default class PrisonApiClient {
   public restClient: RestClient

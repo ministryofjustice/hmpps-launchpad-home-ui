@@ -1,10 +1,10 @@
 import { formatDate } from 'date-fns'
-import { ApiConfig } from '../config'
-import { DateFormats } from '../utils/enums'
-import PrisonApiClientApiClient from './prisonApiClient'
-import RestClient from './restClient'
+import { ApiConfig } from '../../../config'
+import { DateFormats } from '../../../utils/enums'
+import PrisonApiClientApiClient from './client'
+import RestClient from '../../restClient'
 
-jest.mock('./restClient')
+jest.mock('../../restClient')
 
 describe('PrisonApiClient', () => {
   let mockRestClient: jest.Mocked<RestClient>

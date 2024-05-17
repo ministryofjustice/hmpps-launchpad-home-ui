@@ -8,11 +8,11 @@ import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureApp
 initialiseAppInsights()
 buildAppInsightsClient()
 
-import HmppsAuthClient from './hmppsAuthClient'
+import HmppsAuthClient from './api/hmppsAuth/client'
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
-import PrisonApiClient from './prisonApiClient'
-import IncentivesApiClient from './incentivesApiClient'
+import PrisonApiClient from './api/prisonApi/client'
+import IncentivesApiClient from './api/incentivesApi/client'
 
 type RestClientBuilder<T> = (token: string) => T
 
