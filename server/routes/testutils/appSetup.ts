@@ -6,6 +6,7 @@ import createError from 'http-errors'
 import homepageRoutes from '../homepage/index'
 import profileRoutes from '../profile/index'
 import timetableRoutes from '../timetable/index'
+import transactionsRoutes from '../transactions/index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/auth'
@@ -60,6 +61,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.use('/', homepageRoutes(services))
   app.use('/profile', profileRoutes(services))
   app.use('/timetable', timetableRoutes(services))
+  app.use('/transactions', transactionsRoutes(services))
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
 

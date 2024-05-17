@@ -91,24 +91,21 @@ export default function routes(services: Services): Router {
     })
   }
 
-  router.get(
-    ['/', '/spends'],
-    asyncHandler((req: Request, res: Response) =>
-      renderTransactions(req, res, AccountCodes.SPENDS, TransactionTypes.SPENDS),
-    ),
-  )
-  router.get(
-    '/private',
-    asyncHandler((req: Request, res: Response) =>
-      renderTransactions(req, res, AccountCodes.PRIVATE, TransactionTypes.PRIVATE),
-    ),
-  )
-  router.get(
-    '/savings',
-    asyncHandler((req: Request, res: Response) =>
-      renderTransactions(req, res, AccountCodes.SAVINGS, TransactionTypes.SAVINGS),
-    ),
-  )
+  const transactionRoutes = [
+    { path: ['/', '/spends'], accountCode: AccountCodes.SPENDS, transactionType: TransactionTypes.SPENDS },
+    { path: '/private', accountCode: AccountCodes.PRIVATE, transactionType: TransactionTypes.PRIVATE },
+    { path: '/savings', accountCode: AccountCodes.SAVINGS, transactionType: TransactionTypes.SAVINGS },
+  ]
+
+  transactionRoutes.forEach(({ path, accountCode, transactionType }) => {
+    router.get(
+      path,
+      asyncHandler((req: Request, res: Response) => {
+        return renderTransactions(req, res, accountCode, transactionType)
+      }),
+    )
+  })
+
   router.get('/damage-obligations', asyncHandler(renderDamageObligationsTransactions))
 
   return router
