@@ -1,7 +1,7 @@
-import UserService from './userService'
-import HmppsAuthClient, { User } from '../data/api/hmppsAuth/client'
+import UserService from './service'
+import HmppsAuthClient, { User } from '../../data/api/hmppsAuth/client'
 
-jest.mock('../data/api/hmppsAuth/client')
+jest.mock('../../data/api/hmppsAuth/client')
 
 const token = 'some token'
 

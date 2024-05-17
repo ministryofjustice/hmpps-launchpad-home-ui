@@ -1,10 +1,10 @@
 import { format } from 'date-fns'
-import logger from '../../logger'
-import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
-import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
-import { HmppsAuthClient, IncentivesApiClient, PrisonApiClient, RestClientBuilder } from '../data'
-import Timetable from '../data/timetable'
-import { DateFormats } from '../utils/enums'
+import logger from '../../../logger'
+import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
+import { EventsData, TimetableEvents, TimetableRow } from '../../@types/launchpad'
+import { HmppsAuthClient, IncentivesApiClient, PrisonApiClient, RestClientBuilder } from '../../data'
+import Timetable from '../../data/timetable'
+import { DateFormats } from '../../utils/enums'
 
 export default class PrisonerProfileService {
   constructor(

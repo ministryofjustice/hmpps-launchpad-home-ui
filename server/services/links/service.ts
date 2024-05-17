@@ -1,5 +1,5 @@
-import { Link, LinksData } from '../@types/launchpad'
-import { getEstablishmentLinksData } from '../utils/utils'
+import { Link, LinksData } from '../../@types/launchpad'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 export default class Linkservice {
   constructor() {}
