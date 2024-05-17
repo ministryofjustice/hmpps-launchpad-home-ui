@@ -7,7 +7,7 @@ import {
   ScheduledEvent,
 } from '../../../@types/prisonApiTypes'
 import config, { ApiConfig } from '../../../config'
-import { DateFormats } from '../../../utils/enums'
+import { DateFormats } from '../../../constants/date'
 import { convertToTitleCase, formatDate, formatDateTimeString } from '../../../utils/utils'
 import RestClient from '../../restClient'
 

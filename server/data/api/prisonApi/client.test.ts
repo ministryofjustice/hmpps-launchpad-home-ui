@@ -1,8 +1,8 @@
 import { formatDate } from 'date-fns'
 import { ApiConfig } from '../../../config'
-import { DateFormats } from '../../../utils/enums'
-import PrisonApiClientApiClient from './client'
+import { DateFormats } from '../../../constants/date'
 import RestClient from '../../restClient'
+import PrisonApiClientApiClient from './client'
 
 jest.mock('../../restClient')
 

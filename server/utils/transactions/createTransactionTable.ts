@@ -1,7 +1,7 @@
 import { formatDate, parseISO } from 'date-fns'
 import { OffenderTransactionHistoryDto } from '../../@types/prisonApiTypes'
+import { DateFormats } from '../../constants/date'
 import { formatCurrency } from '../currency'
-import { DateFormats } from '../enums'
 
 export type ExtendedOffenderTransaction = OffenderTransactionHistoryDto & { prison: string }
 

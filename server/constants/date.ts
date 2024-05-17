@@ -11,13 +11,3 @@ export enum DateFormats {
   ISO_DATE_TIME = 'yyyy-MM-dd HH:mm',
   HOUR = 'H',
 }
-
-// eslint-disable-next-line no-shadow
-export enum TimetableValues {
-  SCHEDULED_EVENT_TYPE = 'SCH',
-  APP_EVENT_TYPE = 'APP',
-  VISIT_EVENT_TYPE = 'VISIT',
-  MORNING = 'morning',
-  AFTERNOON = 'afternoon',
-  EVENING = 'evening',
-}

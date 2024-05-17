@@ -1,8 +1,8 @@
 import { formatDate } from 'date-fns'
 import { OffenderDamageObligation } from '../../@types/prisonApiTypes'
+import { DateFormats } from '../../constants/date'
 import { formatCurrency } from '../currency'
 import { sortByDateTime } from '../date'
-import { DateFormats } from '../enums'
 
 export type ExtendedDamageObligation = OffenderDamageObligation & { prison: string }
 

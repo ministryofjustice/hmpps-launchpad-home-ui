@@ -1,8 +1,9 @@
-import { format, isBefore, addDays, isValid, parseISO } from 'date-fns'
-import { DateFormats, TimetableValues } from '../utils/enums'
+import { addDays, format, isBefore, isValid, parseISO } from 'date-fns'
+import { NewTableRowOptions, TimetableOptions, TimetableRow, TimetableState } from '../@types/launchpad'
 import { ScheduledEvent } from '../@types/prisonApiTypes'
+import { DateFormats } from '../constants/date'
+import { TimetableValues } from '../constants/timetable'
 import TimetableEvent from './timetableEvent'
-import { TimetableOptions, TimetableRow, NewTableRowOptions, TimetableState } from '../@types/launchpad'
 
 const isoDate = (date: string) => {
   if (!isValid(new Date(date))) return ''
