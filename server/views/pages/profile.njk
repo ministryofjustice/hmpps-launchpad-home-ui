@@ -3,6 +3,7 @@
 {% from "../components/card/index.njk" import card %}
 {% from "../components/basic-card/index.njk" import basicCard %}
 {% from "../components/image-card/index.njk" import imageCard %}
+{% from "../components/transactions/card/index.njk" import transactionsCard %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -28,16 +29,20 @@
             <li class="govuk-grid-column-one-quarter card-group__item">
               {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetableEvents.morning.events }) }}
             </li>
+
             <li class="govuk-grid-column-one-quarter card-group__item">
               {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetableEvents.afternoon.events }) }}
             </li>
+            
             <li class="govuk-grid-column-one-quarter card-group__item">
                 {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetableEvents.evening.events }) }}
             </li>
+            
             <li class="govuk-grid-column-one-quarter card-group__item">
               {{ imageCard({ id: 'timetableLink', src: "/assets/images/image_timetable.jpg", link: "/timetable", description: "View my timetable" }) }}
             </li>
           </ul>
+
           <a href= '{{ data.prisonerContentHubURL }}' data-test="learningSkillsLink" rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
             <span>Read more about learning and skills</span>
           </a>
@@ -48,6 +53,7 @@
     <div class="card-background grey">
       <div class="govuk-width-container" data-test="incentives-container">
         <h2 class="govuk-heading-m">Incentives (IEP)</h2>
+
         {% if data.incentivesData.error %}
           <p class="govuk-!-font-size-24" data-test="incentives-error">We are not able to show your incentive level at this time. <a href="{{ params.returnUrl }}" class="govuk-link">Try again</a> or <a href="{{ incentivesSummary.link }}" class="govuk-link">find out more about incentive levels</a>.</p>
         {% else %}
@@ -56,10 +62,39 @@
               {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: data.incentivesData.iepLevel }) }}
             </li>
           </ul>
+
           <a href= '{{ data.incentivesReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="incentivesLink">
             <span>Read more about incentives (IEP)</span>
           </a>
         {% endif %}
+      </div>
+    </div>
+
+    <div class="card-background">
+      <div class="govuk-width-container" data-test="transactions-container">
+        <h2 class="govuk-heading-m">Transactions</h2>
+        
+        <ul class="govuk-grid-row card-group">
+          <li class="govuk-grid-column-one-quarter card-group__item">
+            {{ transactionsCard({ heading: 'Spends', link: '/transactions/spends' }) }}
+          </li>
+          
+          <li class="govuk-grid-column-one-quarter card-group__item">
+            {{ transactionsCard({ heading: 'Private', link: '/transactions/private' }) }}
+          </li>
+
+          <li class="govuk-grid-column-one-quarter card-group__item">
+            {{ transactionsCard({ heading: 'Savings', link: '/transactions/savings' }) }}
+          </li>
+
+          <li class="govuk-grid-column-one-quarter card-group__item">
+            {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
+          </li>
+        </ul>
+        
+        <a href='{{ data.adjudicationsReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="adjudicationsLink">
+          <span>More about money and debt</span>
+        </a>
       </div>
     </div>
   </div>

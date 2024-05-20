@@ -1,0 +1,7 @@
+{% macro transactionsCard(params) %}
+<div class="card card__content card--clickable">
+  <h3 class="govuk-heading-m">
+    <a href="{{ params.link }}" class="govuk-link govuk-link--no-visited-state card_link">{{ params.heading }}</a>
+  </h3>
+</div>
+{% endmacro %}
