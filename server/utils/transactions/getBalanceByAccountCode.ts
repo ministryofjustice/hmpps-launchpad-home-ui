@@ -1,6 +1,7 @@
 import { Account } from '../../@types/prisonApiTypes'
 import { AccountCodes } from '../../constants/transactions'
 
+// eslint-disable-next-line import/prefer-default-export
 export const getBalanceByAccountCode = (balances: Account, accountCode: string): number => {
   switch (accountCode) {
     case AccountCodes.SPENDS:

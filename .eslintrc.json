@@ -97,7 +97,6 @@
         "semi": false
       }
     ],
-    "no-empty-function": ["error", { "allow": ["constructors", "arrowFunctions"] }],
-    "import/prefer-default-export": "off"
+    "no-empty-function": ["error", { "allow": ["constructors", "arrowFunctions"] }]
   }
 }

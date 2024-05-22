@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export const formatCurrency = (amount: number, currency: string) => {
   if (amount === null || Number.isNaN(Number(amount)) || !currency) return null
 
