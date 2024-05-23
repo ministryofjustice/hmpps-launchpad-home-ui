@@ -15,7 +15,7 @@ import { getConfig } from '../config'
 export default function routes(services: Services): Router {
   const router = Router()
 
-  const accountTypes = [TransactionTypes.SPENDS, TransactionTypes.SAVINGS, TransactionTypes.PRIVATE]
+  const accountTypes = [TransactionTypes.SPENDS, TransactionTypes.PRIVATE, TransactionTypes.SAVINGS]
 
   const renderTransactions = async (
     req: Request,
