@@ -13,17 +13,17 @@ describe('getBalanceByAccountCode', () => {
 
   it('should return the balance for spends account', () => {
     const result = getBalanceByAccountCode(balances, AccountCodes.SPENDS)
-    expect(result).toBe(100)
+    expect(result).toBe('100.00')
   })
 
   it('should return the balance for private (cash) account', () => {
     const result = getBalanceByAccountCode(balances, AccountCodes.PRIVATE)
-    expect(result).toBe(200)
+    expect(result).toBe('200.00')
   })
 
   it('should return the balance for savings account', () => {
     const result = getBalanceByAccountCode(balances, AccountCodes.SAVINGS)
-    expect(result).toBe(300)
+    expect(result).toBe('300.00')
   })
 
   it('should throw an error for an unknown account code', () => {
