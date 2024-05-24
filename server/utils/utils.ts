@@ -44,11 +44,11 @@ export const generateBasicAuthHeader = (clientId: string, clientSecret: string):
 
 export const getEstablishmentLinksData = (agencyId: string) => {
   try {
-    const { prisonerContentHubURL, selfServiceURL } = config.establishments.find(
+    const { prisonerContentHubURL, selfServiceURL, disableSectionEventsAndProfile } = config.establishments.find(
       establishment => establishment.agencyId === agencyId,
     )
 
-    return { prisonerContentHubURL, selfServiceURL }
+    return { prisonerContentHubURL, selfServiceURL, disableSectionEventsAndProfile }
   } catch (err) {
     return null
   }
