@@ -4,7 +4,7 @@
 {% from "components/tiles-panel/index.njk" import tilesPanel %}
 
 {% set pageTitle = applicationName + " - Home" %}
-{% set disableSectionEventsAndProfile = establishmentLinksData.disableSectionEventsAndProfile %}
+{% set hideHomepageEventsSummaryAndProfileLinkTile = establishmentLinksData.hideHomepageEventsSummaryAndProfileLinkTile %}
 {% set mainClasses = "govuk-body govuk-!-margin-bottom-0 govuk-!-padding-bottom-0" %}
 
 {% block content %}
@@ -15,7 +15,7 @@
       <time class="govuk-heading-l">{{ today }}</time>
     </section>
 
-    {% if not disableSectionEventsAndProfile %}
+    {% if not hideHomepageEventsSummaryAndProfileLinkTile %}
     <section class="govuk-grid-row govuk-width-container" id="top-row-wrapper">
       <div id="events-summary-wrapper">
         {{ eventsSummary(eventsData, linksData.prisonerContentHubURL, user) }}

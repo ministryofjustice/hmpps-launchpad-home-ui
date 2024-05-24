@@ -139,7 +139,7 @@ export default {
       agencyId: 'BWI',
       prisonerContentHubURL: 'https://berwyn.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bwiclient.unilink.prisoner.service.justice.gov.uk:1108',
-      disableSectionEventsAndProfile: true,
+      hideHomepageEventsSummaryAndProfileLinkTile: true,
     },
     {
       agencyId: 'CKI',
