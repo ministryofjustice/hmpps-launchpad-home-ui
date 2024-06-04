@@ -1,0 +1,9 @@
+.transactions__selection__form {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+
+  .govuk-form-group {
+    margin-bottom: 0;
+  }
+}

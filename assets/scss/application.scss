@@ -1,5 +1,5 @@
 $govuk-global-styles: true;
-$path: "/assets/images/";
+$path: '/assets/images/';
 
 $moj-page-width: 1170px;
 $govuk-page-width: $moj-page-width;
@@ -15,6 +15,7 @@ $govuk-page-width: $moj-page-width;
 @import './components/timetable';
 @import './components/timetable-day-row';
 @import './components/card';
+@import './components/transactions';
 
 @import './pages/homepage';
 @import './pages/settings';

@@ -1,0 +1,29 @@
+{% extends "../../partials/layout.njk" %}
+{% from "../../partials/breadCrumb.njk" import breadCrumb %}
+
+{% from "../../components/transactions/help.njk" import transactionsHelp %}
+{% from "../../components/transactions/tabs.njk" import transactionsTabs %}
+{% from "../../components/transactions/damage-obligations/table.njk" import damageObligationsTable %}
+
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {% set breadCrumbList = [{ href: '/profile', title: user.idToken.given_name ~ "'s Profile"}] %}
+  {{ breadCrumb('', breadCrumbList, false) }}
+{% endblock %}
+
+{% block title %}
+  <div class="govuk-body govuk-width-container hub-header timetable-header" id="main-content">
+    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-body govuk-width-container govuk-frontend-supported">
+    {{ transactionsHelp(data.contentHubTransactionsHelpLinkUrl) }}
+    {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations) }}
+    {{ damageObligationsTable(data.balance, data.damageObligations)}}
+  </div>
+{% endblock %}

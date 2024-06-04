@@ -1,14 +1,13 @@
+import { DateFormats } from '../constants/date'
 import {
   convertToTitleCase,
-  initialiseName,
   formatDate,
-  formatDateTimeString,
   formatDateOrDefault,
+  formatDateTimeString,
   generateBasicAuthHeader,
   getEstablishmentLinksData,
+  initialiseName,
 } from './utils'
-
-import { DateFormats } from './enums'
 
 describe('convert to title case', () => {
   it.each([

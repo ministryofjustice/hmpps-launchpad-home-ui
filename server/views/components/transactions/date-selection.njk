@@ -1,0 +1,23 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro transactionsDateSelection(dateSelectionRange, selectedDate) %}
+<div class="transactions__selection_wrapper card-background grey govuk-!-padding-4 govuk-!-margin-bottom-2">
+  <form method="GET">
+    <div class="transactions__selection__form">
+      {{ govukSelect({
+        id: "selected-date",
+        name: "selectedDate",
+        label: {
+          text: "View by month and year"
+        },
+        items: dateSelectionRange,
+        value: selectedDate,
+        classes: "govuk-!-margin-right-2"
+      }) }}
+      
+      {{ govukButton({ text: "View", classes: "govuk-!-margin-bottom-0" }) }}
+    </div>
+  </form>
+</div>
+{% endmacro %}
