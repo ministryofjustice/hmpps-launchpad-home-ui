@@ -8,7 +8,7 @@ const featureFlagMiddleware = (flag: string) => {
     const prisonId = req.user?.idToken?.establishment?.agency_id
 
     if (!feature || !feature.enabled || (prisonId && !feature.allowedPrisons.includes(prisonId))) {
-      res.status(404).send('Feature not available')
+      res.redirect('/profile')
       return
     }
 

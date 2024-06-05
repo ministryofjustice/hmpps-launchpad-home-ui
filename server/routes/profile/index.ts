@@ -3,6 +3,7 @@ import { getEstablishmentLinksData } from '../../utils/utils'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
+import { featureFlags } from '../../constants/featureFlags'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
@@ -22,15 +23,21 @@ export default function routes(services: Services): Router {
 
     const { given_name: givenName } = res.locals.user.idToken
 
+    const prisonId = res.locals.user.idToken.establishment.agency_id
+    const isVisitsEnabled = featureFlags.visits.enabled && featureFlags.visits.allowedPrisons.includes(prisonId)
+
     return res.render('pages/profile', {
       givenName,
       data: {
-        timetableEvents: timetableEvents[0],
         incentivesData,
-        prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
         incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
         moneyReadMoreURL: `${prisonerContentHubURL}/tags/872`,
+        prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
+        timetableEvents: timetableEvents[0],
         visitsReadMoreURL: `${prisonerContentHubURL}/tags/1133`,
+      },
+      features: {
+        isVisitsEnabled,
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
