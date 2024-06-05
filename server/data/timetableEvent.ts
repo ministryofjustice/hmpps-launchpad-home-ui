@@ -1,6 +1,6 @@
-import { formatDateOrDefault } from '../utils/date'
-import { DateFormats, TimetableValues } from '../utils/enums'
-import { properCase } from '../utils/utils'
+import { DateFormats } from '../constants/date'
+import { TimetableValues } from '../constants/timetable'
+import { formatDateOrDefault, properCase } from '../utils/utils'
 
 const DEFAULT: string = 'Unavailable'
 

@@ -7,6 +7,9 @@ generic-service:
   ingress:
     host: launchpad-home-dev.hmpps.service.justice.gov.uk
 
+  scheduledDowntime:
+    enabled: true
+
   env:
     INGRESS_URL: "https://launchpad-home-dev.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
@@ -20,8 +23,6 @@ generic-service:
     GA4_SITE_ID: "G-EJVJ26SLFY"
 
   allowlist:
-    bsi-1: 54.37.241.156/30
-    bsi-2: 167.71.136.237/32
     groups:
       - internal
 

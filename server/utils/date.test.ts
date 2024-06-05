@@ -1,33 +1,41 @@
-import { formatDate, formatDateOrDefault, formatDateTimeString } from './date'
-import { DateFormats } from './enums'
+import { format, formatISO, startOfMonth, subMonths } from 'date-fns'
+import { createDateSelectionRange } from './date'
 
-describe(formatDate.name, () => {
-  it('should format date correctly', () => {
-    const date = new Date('2024-04-10T12:00:00Z')
-    const formattedDate = formatDate(date, DateFormats.PRETTY_DATE)
-    expect(formattedDate).toEqual('Wednesday 10 April, 2024')
-  })
-})
-
-describe(formatDateTimeString.name, () => {
-  it('should format date-time string correctly', () => {
-    const formattedString = formatDateTimeString('2024-04-10T12:00:00', '2024-04-11T12:00:00', DateFormats.PRETTY_TIME)
-    expect(formattedString).toEqual('12.00pm to 12.00pm')
-  })
-})
-
-describe(formatDateOrDefault.name, () => {
-  it('should return placeholder if date is invalid', () => {
-    const placeHolder = 'Invalid Date'
-    const invalidDateString = 'invalid date'
-    const formattedDate = formatDateOrDefault(placeHolder, DateFormats.PRETTY_TIME, invalidDateString)
-    expect(formattedDate).toEqual(placeHolder)
+describe(createDateSelectionRange.name, () => {
+  it('should create an array of length amount', () => {
+    const amount = 12
+    const selectionRange = createDateSelectionRange()
+    expect(selectionRange).toHaveLength(amount)
   })
 
-  it('should format valid date correctly', () => {
-    const placeHolder = 'Invalid Date'
-    const validDateString = '2024-04-10T12:00:00Z'
-    const formattedDate = formatDateOrDefault(placeHolder, DateFormats.PRETTY_TIME, validDateString)
-    expect(formattedDate).toEqual('1.00pm')
+  it('should create selection range with correct text and value', () => {
+    const selectionRange = createDateSelectionRange()
+    const currentDate = new Date()
+    selectionRange.forEach((item, index) => {
+      const expectedDate = subMonths(currentDate, index)
+      const expectedText = format(expectedDate, 'MMMM yyyy')
+      const expectedValue = formatISO(startOfMonth(expectedDate), { representation: 'date' })
+
+      expect(item.text).toBe(expectedText)
+      expect(item.value).toBe(expectedValue)
+    })
+  })
+
+  it('should select the correct date if selectedDate is provided', () => {
+    const selectedDate = '2024-02-15'
+    const selectionRange = createDateSelectionRange(selectedDate)
+    const selectedYearMonth = selectedDate.substring(0, 7)
+
+    selectionRange.forEach(item => {
+      const itemYearMonth = item.value.substring(0, 7)
+      expect(item.selected).toBe(itemYearMonth === selectedYearMonth)
+    })
+  })
+
+  it('should not select any date if selectedDate is not provided', () => {
+    const selectionRange = createDateSelectionRange()
+    selectionRange.forEach(item => {
+      expect(item.selected).toBeFalsy()
+    })
   })
 })

@@ -44,9 +44,6 @@ export default function routes(services: Services): Router {
         adjudicationsReadMoreURL: `${prisonerContentHubURL}/content/4193`,
       },
     })
-
-    console.log({ renderAdjudication: JSON.stringify(reportedAdjudication, null, 2) })
-    console.log({ formattedAdjudication: JSON.stringify(formattedAdjudication, null, 2) })
   }
 
   router.get('/', asyncHandler(renderAdjudicationsPage))

@@ -1,13 +1,19 @@
-import { EventsData, PrisonerEvent } from '../@types/launchpad'
-import { ScheduledEvent } from '../@types/prisonApiTypes'
-import config, { ApiConfig } from '../config'
-import { formatDate, formatDateTimeString } from '../utils/date'
-import { DateFormats } from '../utils/enums'
-import { convertToTitleCase } from '../utils/utils'
-import RestClient from './restClient'
+import { formatDate } from 'date-fns'
+import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
+import {
+  Account,
+  Agency,
+  OffenderDamageObligation,
+  OffenderTransactionHistoryDto,
+  ScheduledEvent,
+} from '../../../@types/prisonApiTypes'
+import config, { ApiConfig } from '../../../config'
+import { DateFormats } from '../../../constants/date'
+import { convertToTitleCase, formatDateTimeString } from '../../../utils/utils'
+import RestClient from '../../restClient'
 
 export default class PrisonApiClient {
-  private restClient: RestClient
+  public restClient: RestClient
 
   constructor(token: string) {
     this.restClient = new RestClient('prisonApiClient', config.apis.prison as ApiConfig, token)
@@ -65,5 +71,29 @@ export default class PrisonApiClient {
     return this.restClient.get({
       path: `/api/locations/${locationId}`,
     })
+  }
+
+  async getBalances(bookingId: string) {
+    return (await this.restClient.get({
+      path: `/api/bookings/${bookingId}/balances`,
+    })) as Account
+  }
+
+  async getDamageObligations(prisonerId: string) {
+    return (await this.restClient.get({
+      path: `/api/offenders/${prisonerId}/damage-obligations`,
+    })) as { damageObligations: OffenderDamageObligation[] }
+  }
+
+  async getPrisonsByAgencyType(type: string) {
+    return (await this.restClient.get({
+      path: `/api/agencies/type/${type}`,
+    })) as Agency[]
+  }
+
+  async getTransactionsForDateRange(prisonerId: string, accountCode: string, fromDate: Date, toDate: Date) {
+    return (await this.restClient.get({
+      path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+    })) as OffenderTransactionHistoryDto[]
   }
 }

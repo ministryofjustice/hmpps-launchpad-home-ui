@@ -1,22 +1,24 @@
 import { format } from 'date-fns'
+
+import logger from '../../../logger'
 import {
   HasAdjudicationsResponse,
   PageReportedAdjudicationDto,
   ReportedAdjudicationApiResponse,
-} from '../@types/adjudicationsApiTypes'
-import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
-import { EventsData, TimetableEvents, TimetableRow } from '../@types/launchpad'
-import { ADJUDICATION_STATUSES } from '../constants/adjudications'
+} from '../../@types/adjudicationsApiTypes'
+import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
+import { EventsData, TimetableEvents, TimetableRow } from '../../@types/launchpad'
+import { Location, UserDetail } from '../../@types/prisonApiTypes'
+import { ADJUDICATION_STATUSES } from '../../constants/adjudications'
+import { DateFormats } from '../../constants/date'
 import {
   AdjudicationsApiClient,
   HmppsAuthClient,
   IncentivesApiClient,
   PrisonApiClient,
   RestClientBuilder,
-} from '../data'
-import Timetable from '../data/timetable'
-import { DateFormats } from '../utils/enums'
-import { Location, UserDetail } from '../@types/prisonApiTypes'
+} from '../../data'
+import Timetable from '../../data/timetable'
 
 export default class PrisonerProfileService {
   constructor(
@@ -26,12 +28,8 @@ export default class PrisonerProfileService {
     private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
   ) {}
 
-  private async getToken() {
-    return this.hmppsAuthClient.getSystemClientToken()
-  }
-
   async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
     const eventsSummary = await prisonApiClient.getEventsSummary(user.idToken.booking.id)
     return eventsSummary
@@ -42,7 +40,7 @@ export default class PrisonerProfileService {
     fromDate: Date,
     toDate: Date,
   ): Promise<TimetableEvents> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
     const prisonApiClient = this.prisonApiClientFactory(token)
     const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
     const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
@@ -59,7 +57,7 @@ export default class PrisonerProfileService {
   }
 
   async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
     const incentivesApiClient = this.incentivesApiClientFactory(token)
     const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
 
@@ -69,7 +67,7 @@ export default class PrisonerProfileService {
   async hasAdjudications(user: {
     idToken: { booking: { id: string }; establishment: { agency_id: string } }
   }): Promise<HasAdjudicationsResponse> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
     const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(
       user.idToken.booking.id,
@@ -82,7 +80,7 @@ export default class PrisonerProfileService {
   async getReportedAdjudicationsFor(user: {
     idToken: { booking: { id: string }; establishment: { agency_id: string } }
   }): Promise<PageReportedAdjudicationDto> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
     const statusQueryParam = ADJUDICATION_STATUSES.map(status => `&status=${status}`).join('')
@@ -105,23 +103,75 @@ export default class PrisonerProfileService {
   }
 
   async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
     return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
   }
 
   async getUserByUserId(userId: string): Promise<UserDetail> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
     const user = await prisonApiClient.getUserByUserId(userId)
     return user as UserDetail
   }
 
   async getLocationByLocationId(locationId: number): Promise<Location> {
-    const token = await this.getToken()
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
     const location = await prisonApiClient.getLocationByLocationId(locationId)
     return location as Location
+  }
+
+  async getTransactions(user: { idToken: { sub: string } }, accountCode: string, fromDate: Date, toDate: Date) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getTransactionsForDateRange(user.idToken.sub, accountCode, fromDate, toDate)
+    } catch (e) {
+      logger.error('Failed to get transactions for user', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
+
+  async getBalances(bookingId: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getBalances(bookingId)
+    } catch (e) {
+      logger.error('Failed to get balances for booking', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
+
+  async getPrisonsByAgencyType(type: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getPrisonsByAgencyType(type)
+    } catch (e) {
+      logger.error('Failed to get prisons by type', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
+
+  async getDamageObligations(user: { idToken: { sub: string } }) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getDamageObligations(user.idToken.sub)
+    } catch (e) {
+      logger.error('Failed to get damage obligations for user', e)
+      logger.debug(e.stack)
+      return null
+    }
   }
 }

@@ -1,6 +1,6 @@
-import { IncentiveReviewSummary } from '../@types/incentivesApiTypes'
-import RestClient from './restClient'
-import config, { ApiConfig } from '../config'
+import { IncentiveReviewSummary } from '../../../@types/incentivesApiTypes'
+import RestClient from '../../restClient'
+import config, { ApiConfig } from '../../../config'
 
 export default class IncentivesApiClient {
   private restClient: RestClient

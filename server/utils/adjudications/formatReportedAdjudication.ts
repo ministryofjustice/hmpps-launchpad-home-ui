@@ -7,8 +7,8 @@ import {
   ReportedAdjudicationDto,
 } from '../../@types/adjudicationsApiTypes'
 import type { Services } from '../../services'
-import { DateFormats } from '../enums'
 import { convertToTitleCase } from '../utils'
+import { DateFormats } from '../../constants/date'
 
 // eslint-disable-next-line import/prefer-default-export
 export const formatReportedAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {

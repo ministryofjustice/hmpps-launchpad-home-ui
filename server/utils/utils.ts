@@ -1,3 +1,4 @@
+import { format, formatDate, isValid, parseISO } from 'date-fns'
 import config from '../config'
 
 export const properCase = (word: string): string =>
@@ -24,6 +25,16 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
+export const formatDateTimeString = (from: string, to: string, dateTimeFormat: string): string =>
+  `${formatDate(new Date(from), dateTimeFormat)} to ${formatDate(new Date(to), dateTimeFormat)}`
+
+export const formatDateOrDefault = (placeHolder: string, dateFormat: string, date: string): string => {
+  if (!isValid(parseISO(date))) {
+    return placeHolder
+  }
+  return format(parseISO(date), dateFormat)
+}
+
 export const generateBasicAuthHeader = (clientId: string, clientSecret: string): string => {
   const token = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
   return `Basic ${token}`
@@ -31,11 +42,10 @@ export const generateBasicAuthHeader = (clientId: string, clientSecret: string):
 
 export const getEstablishmentLinksData = (agencyId: string) => {
   try {
-    const { prisonerContentHubURL, selfServiceURL } = config.establishments.find(
-      establishment => establishment.agencyId === agencyId,
-    )
+    const { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile } =
+      config.establishments.find(establishment => establishment.agencyId === agencyId)
 
-    return { prisonerContentHubURL, selfServiceURL }
+    return { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile }
   } catch (err) {
     return null
   }
