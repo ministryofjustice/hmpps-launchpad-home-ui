@@ -42,7 +42,7 @@ const mockFormattedAdjudication: FormattedReportedAdjudication = {
 }
 
 class MockUserService extends UserService {
-  async getUser(token: string): Promise<UserDetails> {
+  async getUser(_token: string): Promise<UserDetails> {
     return { name: 'Mock User', displayName: 'Mock User' }
   }
 }
