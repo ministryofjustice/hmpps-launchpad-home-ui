@@ -30,6 +30,7 @@ export default function routes(services: Services): Router {
         prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
         incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
         moneyReadMoreURL: `${prisonerContentHubURL}/tags/872`,
+        visitsReadMoreURL: `${prisonerContentHubURL}/tags/1133`,
       },
       errors: req.flash('errors'),
       message: req.flash('message'),

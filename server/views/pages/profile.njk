@@ -92,8 +92,28 @@
           </li>
         </ul>
         
-        <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="adjudicationsLink">
+        <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="moneyLink">
           <span>More about money and debt</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="card-background grey">
+      <div class="govuk-width-container" data-test="visits-container">
+        <h2 class="govuk-heading-m">Visits</h2>
+        
+        <ul class="govuk-grid-row card-group">
+          <li class="govuk-grid-column-one-quarter card-group__item">
+            {{ basicCard({ heading: 'Next visit', content: '' }) }}
+          </li>
+
+          <li class="govuk-grid-column-one-quarter card-group__item">
+            {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: "View social visitors" }) }}
+          </li>
+        </ul>
+
+        <a href= '{{ data.visitsReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="visitsLink">
+          <span>More about visits</span>
         </a>
       </div>
     </div>
