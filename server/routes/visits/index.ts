@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 import { getEstablishmentLinksData } from '../../utils/utils'
-import featureFlagMiddleware from '../../middleware/featureFlag'
+import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {

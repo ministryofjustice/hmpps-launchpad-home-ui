@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
-import { featureFlags } from '../constants/featureFlags'
+import { featureFlags } from '../../constants/featureFlags'
 import featureFlagMiddleware from './featureFlag'
-import { user } from '../utils/mocks/user'
+import { user } from '../../utils/mocks/user'
 
-jest.mock('../constants/featureFlags', () => ({
+jest.mock('../../constants/featureFlags', () => ({
   featureFlags: {
     visits: {
       enabled: true,
-      allowedPrisons: ['CKI', 'BWI'],
+      allowedPrisons: ['CKI'],
     },
   },
 }))
@@ -36,7 +36,7 @@ describe(featureFlagMiddleware.name, () => {
   })
 
   it('should redirect to /profile if the feature is not enabled', () => {
-    ;(featureFlags.visits.enabled as boolean) = false
+    featureFlags.visits.enabled = false
     const middleware = featureFlagMiddleware('visits')
     middleware(req as Request, res as Response, next)
 

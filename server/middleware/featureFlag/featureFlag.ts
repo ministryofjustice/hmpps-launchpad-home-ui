@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { featureFlags } from '../constants/featureFlags'
+import { featureFlags } from '../../constants/featureFlags'
 
 // eslint-disable-next-line import/prefer-default-export
 const featureFlagMiddleware = (flag: string) => {
