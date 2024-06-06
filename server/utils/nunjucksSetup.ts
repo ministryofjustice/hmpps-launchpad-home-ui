@@ -40,4 +40,36 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   )
   njkEnv.addGlobal('ga4SiteId', config.analytics.ga4SiteId)
   njkEnv.addFilter('initialiseName', initialiseName)
+
+  njkEnv.addFilter('toPagination', ({ page, totalPages }, query) => {
+    const urlForPage = (n: number): string => {
+      const urlSearchParams = new URLSearchParams(query)
+      urlSearchParams.set('page', n.toString())
+      return `?${urlSearchParams.toString()}`
+    }
+
+    const items = [...Array(totalPages).keys()].map(n => ({
+      number: n + 1,
+      href: urlForPage(n + 1),
+      current: n + 1 === page,
+    }))
+
+    return {
+      previous:
+        page > 1
+          ? {
+              text: 'Previous',
+              href: urlForPage(page - 1),
+            }
+          : null,
+      next:
+        page < totalPages
+          ? {
+              text: 'Next',
+              href: urlForPage(page + 1),
+            }
+          : null,
+      items,
+    }
+  })
 }
