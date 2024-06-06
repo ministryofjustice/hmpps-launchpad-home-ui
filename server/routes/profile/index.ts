@@ -1,9 +1,9 @@
-import { type RequestHandler, Router } from 'express'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { Router, type RequestHandler } from 'express'
 
+import { featureFlags } from '../../constants/featureFlags'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
-import { featureFlags } from '../../constants/featureFlags'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
