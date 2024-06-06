@@ -26,6 +26,8 @@ export default function routes(services: Services): Router {
     const prisonId = res.locals.user.idToken.establishment.agency_id
     const isVisitsEnabled = featureFlags.visits.enabled && featureFlags.visits.allowedPrisons.includes(prisonId)
 
+    console.log(req.user)
+
     return res.render('pages/profile', {
       givenName,
       data: {
