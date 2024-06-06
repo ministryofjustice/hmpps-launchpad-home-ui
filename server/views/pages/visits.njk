@@ -1,0 +1,27 @@
+{% extends "../partials/layout.njk" %}
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
+
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block beforeContent %}
+  {% set breadCrumbList = [{ href: '/profile', title: user.idToken.given_name ~ "'s Profile"}] %}
+  {{ breadCrumb('', breadCrumbList, false) }}
+{% endblock %}
+
+{% block title %}
+  <div class="govuk-body govuk-width-container hub-header visits-header" id="main-content">
+    <h1 class="govuk-heading-l" id="title">{{ data.title }}</h1>
+    <a href='{{ data.readMoreUrl }}'  rel="noreferrer noopener" target="_blank" class="govuk-link govuk-!-font-size-24">More about visits</a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-body govuk-width-container govuk-frontend-supported">
+    {% if error %}
+      <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="social-visitors-error">We can not list your visits at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a>.</p>
+    {% else %}  
+    {% endif %}
+  </div>
+{% endblock %}
