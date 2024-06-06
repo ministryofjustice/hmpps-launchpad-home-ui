@@ -7,7 +7,7 @@ const featureFlagMiddleware = (flag: string) => {
     const feature = featureFlags[flag]
     const prisonId = req.user?.idToken?.establishment?.agency_id
 
-    if (!feature || !feature.enabled || (prisonId && !feature.allowedPrisons.includes(prisonId))) {
+    if (!feature?.enabled || (prisonId && !feature.allowedPrisons.includes(prisonId))) {
       res.redirect('/profile')
       return
     }
