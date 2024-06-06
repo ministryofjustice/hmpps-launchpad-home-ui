@@ -1,10 +1,15 @@
 import { dataAccess } from '../data'
-import UserService from './userService'
-import PrisonerProfileService from './prisonerProfileService'
 import LinksService from './linksService'
+import PrisonerProfileService from './prisonerProfileService'
+import UserService from './userService'
 
 export const services = () => {
-  const { hmppsAuthClient, prisonApiClientBuilder, incentivesApiClientBuilder } = dataAccess()
+  const {
+    hmppsAuthClient,
+    prisonApiClientBuilder,
+    incentivesApiClientBuilder,
+    prisonerContactRegistryApiClientBuilder,
+  } = dataAccess()
 
   const userService = new UserService(hmppsAuthClient)
 
@@ -12,6 +17,7 @@ export const services = () => {
     hmppsAuthClient,
     prisonApiClientBuilder,
     incentivesApiClientBuilder,
+    prisonerContactRegistryApiClientBuilder,
   )
 
   const linksService = new LinksService()
@@ -25,4 +31,4 @@ export const services = () => {
 
 export type Services = ReturnType<typeof services>
 
-export { UserService, PrisonerProfileService, LinksService }
+export { LinksService, PrisonerProfileService, UserService }

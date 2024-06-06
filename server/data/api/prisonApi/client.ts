@@ -6,6 +6,7 @@ import {
   OffenderTransactionHistoryDto,
   ScheduledEvent,
 } from '../../../@types/prisonApiTypes'
+import { PrisonerContact } from '../../../@types/prisonerContactRegistryApiTypes'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
 import { convertToTitleCase, formatDate, formatDateTimeString } from '../../../utils/utils'

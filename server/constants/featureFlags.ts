@@ -12,7 +12,7 @@ interface FeatureFlags {
 // eslint-disable-next-line import/prefer-default-export
 export const featureFlags: FeatureFlags = {
   visits: {
-    enabled: false,
+    enabled: true,
     allowedPrisons: [prisonAgencyIds.CookhamWood],
   },
 }

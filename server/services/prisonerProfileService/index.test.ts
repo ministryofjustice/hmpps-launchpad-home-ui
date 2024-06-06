@@ -1,7 +1,13 @@
 import PrisonerProfileService from '.'
 import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
 import { EventsData } from '../../@types/launchpad'
-import { HmppsAuthClient, IncentivesApiClient, PrisonApiClient, RestClientBuilder } from '../../data'
+import {
+  HmppsAuthClient,
+  IncentivesApiClient,
+  PrisonApiClient,
+  PrisonerContactRegistryApiClient,
+  RestClientBuilder,
+} from '../../data'
 
 jest.mock('../../data')
 
@@ -14,6 +20,9 @@ describe('PrisonerProfileService', () => {
 
   let incentivesApiClientFactory: jest.MockedFunction<RestClientBuilder<IncentivesApiClient>>
   let incentivesApiClient: jest.Mocked<IncentivesApiClient>
+
+  let prisonerContactRegistryClientFactory: jest.MockedFunction<RestClientBuilder<PrisonerContactRegistryApiClient>>
+  let prisonerContactRegistryApiClient: jest.Mocked<PrisonerContactRegistryApiClient>
 
   // let adjudicationsApiClientFactory: jest.MockedFunction<RestClientBuilder<AdjudicationsApiClient>>
   // let adjudicationsApiClient: jest.Mocked<AdjudicationsApiClient>
@@ -29,6 +38,11 @@ describe('PrisonerProfileService', () => {
     incentivesApiClientFactory = jest.fn()
     incentivesApiClient = new IncentivesApiClient(null) as jest.Mocked<IncentivesApiClient>
 
+    prisonerContactRegistryClientFactory = jest.fn()
+    prisonerContactRegistryApiClient = new PrisonerContactRegistryApiClient(
+      null,
+    ) as jest.Mocked<PrisonerContactRegistryApiClient>
+
     // adjudicationsApiClientFactory = jest.fn()
     // adjudicationsApiClient = new AdjudicationsApiClient(null) as jest.Mocked<AdjudicationsApiClient>
 
@@ -36,6 +50,7 @@ describe('PrisonerProfileService', () => {
       hmppsAuthClient,
       prisonApiClientFactory,
       incentivesApiClientFactory,
+      prisonerContactRegistryClientFactory,
       // adjudicationsApiClientFactory,
     )
   })
