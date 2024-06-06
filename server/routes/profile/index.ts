@@ -11,23 +11,18 @@ export default function routes(services: Services): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    const today = new Date()
-
     const timetableEvents = await Promise.all([
-      services.prisonerProfileService.getEventsForToday(res.locals.user, today),
+      services.prisonerProfileService.getEventsForToday(res.locals.user, new Date()),
     ])
 
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
-
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
-
-    const { given_name: givenName } = res.locals.user.idToken
 
     const prisonId = res.locals.user.idToken.establishment.agency_id
     const isVisitsEnabled = featureFlags.visits.enabled && featureFlags.visits.allowedPrisons.includes(prisonId)
 
     return res.render('pages/profile', {
-      givenName,
+      givenName: res.locals.user.idToken.given_name,
       data: {
         incentivesData,
         incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
