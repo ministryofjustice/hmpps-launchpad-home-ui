@@ -13,6 +13,6 @@ interface FeatureFlags {
 export const featureFlags: FeatureFlags = {
   visits: {
     enabled: true,
-    allowedPrisons: [prisons.CKI],
+    allowedPrisons: [prisons.CookhamWood],
   },
 }
