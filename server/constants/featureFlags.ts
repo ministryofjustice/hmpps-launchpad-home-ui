@@ -1,4 +1,4 @@
-import { prisons } from './prisons'
+import { prisonAgencyIds } from './prisons'
 
 interface FeatureFlag {
   enabled: boolean
@@ -12,7 +12,7 @@ interface FeatureFlags {
 // eslint-disable-next-line import/prefer-default-export
 export const featureFlags: FeatureFlags = {
   visits: {
-    enabled: true,
-    allowedPrisons: [prisons.CookhamWood],
+    enabled: false,
+    allowedPrisons: [prisonAgencyIds.CookhamWood],
   },
 }
