@@ -8,6 +8,7 @@ import {
   PrisonerContactRegistryApiClient,
   RestClientBuilder,
 } from '../../data'
+import { prisonerContact } from '../../utils/mocks/visitors'
 
 jest.mock('../../data')
 
@@ -23,9 +24,6 @@ describe('PrisonerProfileService', () => {
 
   let prisonerContactRegistryClientFactory: jest.MockedFunction<RestClientBuilder<PrisonerContactRegistryApiClient>>
   let prisonerContactRegistryApiClient: jest.Mocked<PrisonerContactRegistryApiClient>
-
-  // let adjudicationsApiClientFactory: jest.MockedFunction<RestClientBuilder<AdjudicationsApiClient>>
-  // let adjudicationsApiClient: jest.Mocked<AdjudicationsApiClient>
 
   let prisonerProfileService: PrisonerProfileService
 
@@ -43,15 +41,11 @@ describe('PrisonerProfileService', () => {
       null,
     ) as jest.Mocked<PrisonerContactRegistryApiClient>
 
-    // adjudicationsApiClientFactory = jest.fn()
-    // adjudicationsApiClient = new AdjudicationsApiClient(null) as jest.Mocked<AdjudicationsApiClient>
-
     prisonerProfileService = new PrisonerProfileService(
       hmppsAuthClient,
       prisonApiClientFactory,
       incentivesApiClientFactory,
       prisonerContactRegistryClientFactory,
-      // adjudicationsApiClientFactory,
     )
   })
 
@@ -124,306 +118,20 @@ describe('PrisonerProfileService', () => {
     })
   })
 
-  // describe('hasAdjudications', () => {
-  //   it('should return whether the user has adjudications', async () => {
-  //     const mockUserId = '123456'
-  //     const mockAgencyId = 'ABC'
-  //     const mockHasAdjudicationsResponse: HasAdjudicationsResponse = {
-  //       hasAdjudications: true,
-  //     }
+  describe('getSocialVisitors', () => {
+    it('should return an array of social visitors for a given prisonerId', async () => {
+      const prisonerId = 'prisonerId'
 
-  //     hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-  //     adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
-  //     adjudicationsApiClient.hasAdjudications.mockResolvedValue(mockHasAdjudicationsResponse)
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
+      prisonerContactRegistryClientFactory.mockReturnValue(prisonerContactRegistryApiClient)
+      prisonerContactRegistryApiClient.getSocialVisitors.mockResolvedValue([prisonerContact])
 
-  //     const result = await prisonerProfileService.hasAdjudications({
-  //       idToken: { booking: { id: mockUserId }, establishment: { agency_id: mockAgencyId } },
-  //     })
+      const result = await prisonerProfileService.getSocialVisitors(prisonerId)
 
-  //     expect(result).toEqual(mockHasAdjudicationsResponse)
-  //     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-  //     expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
-  //     expect(adjudicationsApiClient.hasAdjudications).toHaveBeenCalledWith(mockUserId, mockAgencyId)
-  //   })
-  // })
-
-  // describe('getReportedAdjudicationsFor', () => {
-  //   it('should return reported adjudications for the given user', async () => {
-  //     const mockUserId = '123456'
-  //     const mockAgencyId = 'XYZ456'
-  //     const mockStatusQueryParam =
-  //       '&status=ACCEPTED&status=REJECTED&status=AWAITING_REVIEW&status=RETURNED&status=UNSCHEDULED&status=SCHEDULED&status=REFER_POLICE&status=REFER_INAD&status=REFER_GOV&status=PROSECUTION&status=DISMISSED&status=NOT_PROCEED&status=ADJOURNED&status=CHARGE_PROVED&status=QUASHED&status=INVALID_OUTCOME&status=INVALID_SUSPENDED&status=INVALID_ADA'
-
-  //     const mockReportedAdjudicationsData: PageReportedAdjudicationDto = {
-  //       content: [],
-  //     }
-
-  //     hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-  //     adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
-  //     adjudicationsApiClient.getReportedAdjudicationsFor.mockResolvedValue(mockReportedAdjudicationsData)
-
-  //     const result = await prisonerProfileService.getReportedAdjudicationsFor({
-  //       idToken: { booking: { id: mockUserId }, establishment: { agency_id: mockAgencyId } },
-  //     })
-
-  //     expect(result).toEqual(mockReportedAdjudicationsData)
-  //     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-  //     expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
-  //     expect(adjudicationsApiClient.getReportedAdjudicationsFor).toHaveBeenCalledWith(
-  //       mockUserId,
-  //       mockAgencyId,
-  //       mockStatusQueryParam,
-  //     )
-  //   })
-  // })
-
-  // describe('getReportedAdjudication', () => {
-  //   it('should return the reported adjudication for the given charge number and agency ID', async () => {
-  //     const mockChargeNumber = 'ABC123'
-  //     const mockAgencyId = 'XYZ456'
-  //     const mockReportedAdjudication: ReportedAdjudicationApiResponse = {
-  //       reportedAdjudication: {
-  //         chargeNumber: mockChargeNumber,
-  //         prisonerNumber: 'G2996UX',
-  //         gender: 'MALE',
-  //         incidentDetails: {
-  //           locationId: 0,
-  //           dateTimeOfIncident: '2021-07-05T10:35:17',
-  //           dateTimeOfDiscovery: '2021-07-05T10:35:17',
-  //           handoverDeadline: '2021-07-05T10:35:17',
-  //         },
-  //         isYouthOffender: true,
-  //         incidentRole: {
-  //           roleCode: '25a',
-  //           offenceRule: {
-  //             paragraphNumber: '25(a)',
-  //             paragraphDescription: 'Committed an assault',
-  //           },
-  //           associatedPrisonersNumber: 'G2996UX',
-  //           associatedPrisonersName: 'G2996UX',
-  //         },
-  //         offenceDetails: {
-  //           offenceCode: 3,
-  //           offenceRule: {
-  //             paragraphNumber: '25(a)',
-  //             paragraphDescription: 'Committed an assault',
-  //             nomisCode: 'string',
-  //             withOthersNomisCode: 'string',
-  //           },
-  //           victimPrisonersNumber: 'G2996UX',
-  //           victimStaffUsername: 'ABC12D',
-  //           victimOtherPersonsName: 'Bob Hope',
-  //         },
-  //         incidentStatement: {
-  //           statement: 'string',
-  //           completed: true,
-  //         },
-  //         createdByUserId: 'string',
-  //         createdDateTime: '2021-07-05T10:35:17',
-  //         status: 'ACCEPTED',
-  //         reviewedByUserId: 'string',
-  //         statusReason: 'string',
-  //         statusDetails: 'string',
-  //         damages: [
-  //           {
-  //             code: 'CLEANING',
-  //             details: 'the kettle was broken',
-  //             reporter: 'ABC12D',
-  //           },
-  //         ],
-  //         evidence: [
-  //           {
-  //             code: 'PHOTO',
-  //             identifier: 'Tag number or Camera number',
-  //             details: 'ie what does the photo describe',
-  //             reporter: 'ABC12D',
-  //           },
-  //         ],
-  //         witnesses: [
-  //           {
-  //             code: 'OFFICER',
-  //             firstName: 'Fred',
-  //             lastName: 'Kruger',
-  //             reporter: 'ABC12D',
-  //           },
-  //         ],
-  //         hearings: [
-  //           {
-  //             id: 0,
-  //             locationId: 0,
-  //             dateTimeOfHearing: '2021-07-05T10:35:17',
-  //             oicHearingType: 'GOV_ADULT',
-  //             outcome: {
-  //               id: 0,
-  //               adjudicator: 'string',
-  //               code: 'COMPLETE',
-  //               reason: 'LEGAL_ADVICE',
-  //               details: 'string',
-  //               plea: 'UNFIT',
-  //             },
-  //             agencyId: 'string',
-  //           },
-  //         ],
-  //         issuingOfficer: 'string',
-  //         dateTimeOfIssue: '2021-07-05T10:35:17',
-  //         disIssueHistory: [
-  //           {
-  //             issuingOfficer: 'string',
-  //             dateTimeOfIssue: '2021-07-05T10:35:17',
-  //           },
-  //         ],
-  //         dateTimeOfFirstHearing: '2021-07-05T10:35:17',
-  //         outcomes: [
-  //           {
-  //             hearing: {
-  //               id: 0,
-  //               locationId: 0,
-  //               dateTimeOfHearing: '2021-07-05T10:35:17',
-  //               oicHearingType: 'GOV_ADULT',
-  //               outcome: {
-  //                 id: 0,
-  //                 adjudicator: 'string',
-  //                 code: 'COMPLETE',
-  //                 reason: 'LEGAL_ADVICE',
-  //                 details: 'string',
-  //                 plea: 'UNFIT',
-  //               },
-  //               agencyId: 'string',
-  //             },
-  //             outcome: {
-  //               outcome: {
-  //                 id: 0,
-  //                 code: 'REFER_POLICE',
-  //                 details: 'string',
-  //                 reason: 'ANOTHER_WAY',
-  //                 quashedReason: 'FLAWED_CASE',
-  //                 canRemove: true,
-  //               },
-  //               referralOutcome: {
-  //                 id: 0,
-  //                 code: 'REFER_POLICE',
-  //                 details: 'string',
-  //                 reason: 'ANOTHER_WAY',
-  //                 quashedReason: 'FLAWED_CASE',
-  //                 canRemove: true,
-  //               },
-  //             },
-  //           },
-  //         ],
-  //         punishments: [
-  //           {
-  //             id: 0,
-  //             type: 'PRIVILEGE',
-  //             privilegeType: 'CANTEEN',
-  //             otherPrivilege: 'string',
-  //             stoppagePercentage: 0,
-  //             activatedBy: 'string',
-  //             activatedFrom: 'string',
-  //             schedule: {
-  //               days: 0,
-  //               startDate: '2024-05-08',
-  //               endDate: '2024-05-08',
-  //               suspendedUntil: '2024-05-08',
-  //             },
-  //             consecutiveChargeNumber: 'string',
-  //             consecutiveReportAvailable: true,
-  //             damagesOwedAmount: 0,
-  //             canRemove: true,
-  //           },
-  //         ],
-  //         punishmentComments: [
-  //           {
-  //             id: 0,
-  //             comment: 'string',
-  //             reasonForChange: 'APPEAL',
-  //             createdByUserId: 'string',
-  //             dateTime: '2021-07-05T10:35:17',
-  //           },
-  //         ],
-  //         outcomeEnteredInNomis: true,
-  //         overrideAgencyId: 'string',
-  //         originatingAgencyId: 'string',
-  //         transferableActionsAllowed: true,
-  //         createdOnBehalfOfOfficer: 'string',
-  //         createdOnBehalfOfReason: 'string',
-  //         linkedChargeNumbers: ['string'],
-  //         canActionFromHistory: true,
-  //       },
-  //     }
-
-  //     hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-  //     adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
-  //     adjudicationsApiClient.getReportedAdjudication.mockResolvedValue(mockReportedAdjudication)
-
-  //     const result = await prisonerProfileService.getReportedAdjudication(mockChargeNumber, mockAgencyId)
-
-  //     expect(result).toEqual(mockReportedAdjudication)
-  //     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-  //     expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
-  //     expect(adjudicationsApiClient.getReportedAdjudication).toHaveBeenCalledWith(mockChargeNumber, mockAgencyId)
-  //   })
-  // })
-
-  // describe('getUserByUserId', () => {
-  //   it('should return a user by userId', async () => {
-  //     const mockUserId = '123456'
-
-  //     const mockUser: UserDetail = {
-  //       staffId: 231232,
-  //       username: 'DEMO_USER1',
-  //       firstName: 'John',
-  //       lastName: 'Smith',
-  //       thumbnailId: 2342341224,
-  //       activeCaseLoadId: 'MDI',
-  //       accountStatus: 'ACTIVE',
-  //       lockDate: '2021-07-05T10:35:17',
-  //       expiryDate: '2022-07-05T10:35:17',
-  //       lockedFlag: false,
-  //       expiredFlag: false,
-  //       active: true,
-  //     }
-
-  //     hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-  //     prisonApiClientFactory.mockReturnValue(prisonApiClient)
-  //     prisonApiClient.getUserByUserId.mockResolvedValue(mockUser)
-
-  //     const result = await prisonerProfileService.getUserByUserId(mockUserId)
-
-  //     expect(result).toEqual(mockUser)
-  //     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-  //     expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-  //     expect(prisonApiClient.getUserByUserId).toHaveBeenCalledWith(mockUserId)
-  //   })
-  // })
-
-  // describe('getLocationByLocationId', () => {
-  //   it('should return the location by location ID', async () => {
-  //     const mockLocationId = 123
-  //     const mockLocation: Location = {
-  //       locationId: mockLocationId,
-  //       locationType: 'Cell',
-  //       description: 'Cell A1',
-  //       locationUsage: 'Standard',
-  //       agencyId: 'ABC123',
-  //       parentLocationId: 100,
-  //       currentOccupancy: 2,
-  //       locationPrefix: 'A',
-  //       operationalCapacity: 10,
-  //       userDescription: 'Single occupancy cell',
-  //       internalLocationCode: 'A1',
-  //       subLocations: false,
-  //     }
-
-  //     hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-  //     prisonApiClientFactory.mockReturnValue(prisonApiClient)
-  //     prisonApiClient.getLocationByLocationId.mockResolvedValue(mockLocation)
-
-  //     const result = await prisonerProfileService.getLocationByLocationId(mockLocationId)
-
-  //     expect(result).toEqual(mockLocation)
-  //     expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-  //     expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-  //     expect(prisonApiClient.getLocationByLocationId).toHaveBeenCalledWith(mockLocationId)
-  //   })
-  // })
+      expect(result).toEqual([prisonerContact])
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
+      expect(prisonerContactRegistryClientFactory).toHaveBeenCalledWith(mockToken)
+      expect(prisonerContactRegistryApiClient.getSocialVisitors).toHaveBeenCalledWith(prisonerId)
+    })
+  })
 })
