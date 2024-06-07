@@ -25,7 +25,7 @@
     {% if error %}
       <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="social-visitors-error">We can not list your visits at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a>.</p>
     {% else %}  
-      {{ govukTable({ firstCellIsHeader: false, head: [{ text: "Name" }], rows: data.socialVisitors}) }}
+      {{ govukTable({ firstCellIsHeader: false, rows: data.socialVisitors}) }}
 
       {% if data.paginationData.totalPages > 1 %}
         <div class="govuk-!-margin-bottom-9">
