@@ -7,17 +7,15 @@
     <h2 class="govuk-heading-m">Money</h2>
     
     <ul class="govuk-grid-row card-group">
-      <li class="govuk-grid-column-one-quarter card-group__item">
-        {{ transactionsCard({ heading: 'Spends', link: '/transactions/spends' }) }}
-      </li>
-      
-      <li class="govuk-grid-column-one-quarter card-group__item">
-        {{ transactionsCard({ heading: 'Private', link: '/transactions/private' }) }}
-      </li>
-
-      <li class="govuk-grid-column-one-quarter card-group__item">
-        {{ transactionsCard({ heading: 'Savings', link: '/transactions/savings' }) }}
-      </li>
+      {% for transaction in [
+        {'heading': 'Spends', 'link': '/transactions/spends'}, 
+        {'heading': 'Private', 'link': '/transactions/private'}, 
+        {'heading': 'Savings', 'link': '/transactions/savings'}
+      ] %}
+        <li class="govuk-grid-column-one-quarter card-group__item">
+          {{ transactionsCard(transaction) }}
+        </li>
+      {% endfor %}
 
       <li class="govuk-grid-column-one-quarter card-group__item">
         {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
