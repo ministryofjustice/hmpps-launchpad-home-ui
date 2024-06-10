@@ -1,8 +1,8 @@
 import { Router, type RequestHandler } from 'express'
 
-import { featureFlags } from '../../constants/featureFlags'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
+import { isFeatureEnabled } from '../../utils/featureFlagUtils'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,9 +20,8 @@ export default function routes(services: Services): Router {
     const { prisonerContentHubURL } = await getEstablishmentLinksData(agencyId)
     const prisonId = agencyId
 
-    const isTransactionsEnabled =
-      featureFlags.transactions.enabled && featureFlags.transactions.allowedPrisons.includes(prisonId)
-    const isVisitsEnabled = featureFlags.visits.enabled && featureFlags.visits.allowedPrisons.includes(prisonId)
+    const isTransactionsEnabled = isFeatureEnabled('transactions', prisonId)
+    const isVisitsEnabled = isFeatureEnabled('visits', prisonId)
 
     return res.render('pages/profile', {
       givenName: res.locals.user.idToken.given_name,
