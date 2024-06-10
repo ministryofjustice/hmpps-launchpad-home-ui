@@ -15,10 +15,9 @@ export default function routes(services: Services): Router {
       services.prisonerProfileService.getEventsForToday(res.locals.user, new Date()),
     ])
 
-    const agencyId = res.locals.user.idToken.establishment.agency_id
+    const prisonId = res.locals.user.idToken.establishment.agency_id
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
-    const { prisonerContentHubURL } = await getEstablishmentLinksData(agencyId)
-    const prisonId = agencyId
+    const { prisonerContentHubURL } = await getEstablishmentLinksData(prisonId)
 
     const isTransactionsEnabled = isFeatureEnabled('transactions', prisonId)
     const isVisitsEnabled = isFeatureEnabled('visits', prisonId)
