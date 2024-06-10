@@ -5,6 +5,7 @@ import {
   OffenderDamageObligation,
   OffenderTransactionHistoryDto,
   ScheduledEvent,
+  VisitDetails,
 } from '../../../@types/prisonApiTypes'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
@@ -76,5 +77,11 @@ export default class PrisonApiClient {
     return (await this.restClient.get({
       path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
     })) as OffenderTransactionHistoryDto[]
+  }
+
+  async getNextVisit(bookingId: string) {
+    return (await this.restClient.get({
+      path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
+    })) as VisitDetails
   }
 }

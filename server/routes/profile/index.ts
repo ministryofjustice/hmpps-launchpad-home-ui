@@ -1,5 +1,7 @@
+import { format } from 'date-fns'
 import { Router, type RequestHandler } from 'express'
 
+import { DateFormats } from '../../constants/date'
 import { featureFlags } from '../../constants/featureFlags'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
@@ -17,9 +19,20 @@ export default function routes(services: Services): Router {
 
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
     const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
+    const nextVisit = await services.prisonerProfileService.getNextVisit(res.locals.user.idToken.booking.id)
 
     const prisonId = res.locals.user.idToken.establishment.agency_id
     const isVisitsEnabled = featureFlags.visits.enabled && featureFlags.visits.allowedPrisons.includes(prisonId)
+
+    const nextVisitData =
+      nextVisit && Object.keys(nextVisit).length > 0
+        ? {
+            date: format(nextVisit.startTime, DateFormats.LONG_PRETTY_DATE),
+            startTime: format(nextVisit.startTime, DateFormats.PRETTY_TIME),
+            endTime: nextVisit.endTime ? format(nextVisit.endTime, DateFormats.PRETTY_TIME) : '',
+            visitType: nextVisit.visitTypeDescription,
+          }
+        : null
 
     return res.render('pages/profile', {
       givenName: res.locals.user.idToken.given_name,
@@ -27,6 +40,7 @@ export default function routes(services: Services): Router {
         incentivesData,
         incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
         moneyReadMoreURL: `${prisonerContentHubURL}/tags/872`,
+        nextVisit: nextVisitData,
         prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
         timetableEvents: timetableEvents[0],
         visitsReadMoreURL: `${prisonerContentHubURL}/tags/1133`,

@@ -120,4 +120,17 @@ export default class PrisonerProfileService {
       return null
     }
   }
+
+  async getNextVisit(bookingId: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getNextVisit(bookingId)
+    } catch (e) {
+      logger.error('Failed to get next social visitor for user', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
 }
