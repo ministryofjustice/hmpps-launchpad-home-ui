@@ -1,11 +1,5 @@
 import { prisonAgencyIds } from './prisons'
 
-export const Features = {
-  Adjudications: 'adjudications',
-  Transactions: 'transactions',
-  Visits: 'visits',
-} as const
-
 interface FeatureFlag {
   enabled: boolean
   allowedPrisons: string[]
@@ -14,6 +8,12 @@ interface FeatureFlag {
 interface FeatureFlags {
   [key: string]: FeatureFlag
 }
+
+export const Features = {
+  Adjudications: 'adjudications',
+  Transactions: 'transactions',
+  Visits: 'visits',
+} as const
 
 // eslint-disable-next-line import/prefer-default-export
 export const featureFlags: FeatureFlags = {
