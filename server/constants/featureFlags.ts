@@ -1,5 +1,3 @@
-import { prisonAgencyIds } from './prisons'
-
 interface FeatureFlag {
   enabled: boolean
   allowedPrisons: string[]
