@@ -4,6 +4,7 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
 import { isFeatureEnabled } from '../../utils/featureFlagUtils'
 import { getEstablishmentLinksData } from '../../utils/utils'
+import { Features } from '../../constants/featureFlags'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
@@ -19,8 +20,8 @@ export default function routes(services: Services): Router {
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
     const { prisonerContentHubURL } = await getEstablishmentLinksData(prisonId)
 
-    const isTransactionsEnabled = isFeatureEnabled('transactions', prisonId)
-    const isVisitsEnabled = isFeatureEnabled('visits', prisonId)
+    const isTransactionsEnabled = isFeatureEnabled(Features.Transactions, prisonId)
+    const isVisitsEnabled = isFeatureEnabled(Features.Visits, prisonId)
 
     return res.render('pages/profile', {
       givenName: res.locals.user.idToken.given_name,
