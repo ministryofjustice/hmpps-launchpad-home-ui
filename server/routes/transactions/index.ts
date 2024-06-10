@@ -3,13 +3,18 @@ import { Request, Response, Router } from 'express'
 
 import { AgencyType } from '../../constants/agency'
 import { AccountCodes, TransactionTypes } from '../../constants/transactions'
+
 import { asyncHandler } from '../../middleware/asyncHandler'
+import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
+
 import type { Services } from '../../services'
+
 import { createDateSelectionRange } from '../../utils/date'
 import { createDamageObligationsTable } from '../../utils/transactions/createDamageObligationsTable'
 import { createTransactionTable } from '../../utils/transactions/createTransactionTable'
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'
 import { getEstablishmentLinksData } from '../../utils/utils'
+
 import { getConfig } from '../config'
 
 export default function routes(services: Services): Router {
@@ -100,13 +105,18 @@ export default function routes(services: Services): Router {
   transactionRoutes.forEach(({ path, accountCode, transactionType }) => {
     router.get(
       path,
+      featureFlagMiddleware('transactions'),
       asyncHandler((req: Request, res: Response) => {
         return renderTransactions(req, res, accountCode, transactionType)
       }),
     )
   })
 
-  router.get('/damage-obligations', asyncHandler(renderDamageObligationsTransactions))
+  router.get(
+    '/damage-obligations',
+    featureFlagMiddleware('transactions'),
+    asyncHandler(renderDamageObligationsTransactions),
+  )
 
   return router
 }

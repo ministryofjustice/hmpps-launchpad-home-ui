@@ -70,33 +70,35 @@
       </div>
     </div>
 
-    <div class="card-background">
-      <div class="govuk-width-container" data-test="transactions-container">
-        <h2 class="govuk-heading-m">Money</h2>
-        
-        <ul class="govuk-grid-row card-group">
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{ transactionsCard({ heading: 'Spends', link: '/transactions/spends' }) }}
-          </li>
+    {% if features.isTransactionsEnabled %}
+      <div class="card-background">
+        <div class="govuk-width-container" data-test="transactions-container">
+          <h2 class="govuk-heading-m">Money</h2>
           
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{ transactionsCard({ heading: 'Private', link: '/transactions/private' }) }}
-          </li>
+          <ul class="govuk-grid-row card-group">
+            <li class="govuk-grid-column-one-quarter card-group__item">
+              {{ transactionsCard({ heading: 'Spends', link: '/transactions/spends' }) }}
+            </li>
+            
+            <li class="govuk-grid-column-one-quarter card-group__item">
+              {{ transactionsCard({ heading: 'Private', link: '/transactions/private' }) }}
+            </li>
 
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{ transactionsCard({ heading: 'Savings', link: '/transactions/savings' }) }}
-          </li>
+            <li class="govuk-grid-column-one-quarter card-group__item">
+              {{ transactionsCard({ heading: 'Savings', link: '/transactions/savings' }) }}
+            </li>
 
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
-          </li>
-        </ul>
-        
-        <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="moneyLink">
-          <span>More about money and debt</span>
-        </a>
+            <li class="govuk-grid-column-one-quarter card-group__item">
+              {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
+            </li>
+          </ul>
+          
+          <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="moneyLink">
+            <span>More about money and debt</span>
+          </a>
+        </div>
       </div>
-    </div>
+    {% endif %}
 
     {% if features.isVisitsEnabled %}
       <div class="card-background grey">

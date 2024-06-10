@@ -15,10 +15,13 @@ export default function routes(services: Services): Router {
       services.prisonerProfileService.getEventsForToday(res.locals.user, new Date()),
     ])
 
+    const agencyId = res.locals.user.idToken.establishment.agency_id
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
-    const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
+    const { prisonerContentHubURL } = await getEstablishmentLinksData(agencyId)
+    const prisonId = agencyId
 
-    const prisonId = res.locals.user.idToken.establishment.agency_id
+    const isTransactionsEnabled =
+      featureFlags.transactions.enabled && featureFlags.transactions.allowedPrisons.includes(prisonId)
     const isVisitsEnabled = featureFlags.visits.enabled && featureFlags.visits.allowedPrisons.includes(prisonId)
 
     return res.render('pages/profile', {
@@ -32,6 +35,7 @@ export default function routes(services: Services): Router {
         visitsReadMoreURL: `${prisonerContentHubURL}/tags/1133`,
       },
       features: {
+        isTransactionsEnabled,
         isVisitsEnabled,
       },
       errors: req.flash('errors'),
