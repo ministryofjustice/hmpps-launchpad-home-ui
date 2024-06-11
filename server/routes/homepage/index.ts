@@ -19,6 +19,7 @@ export default function routes(services: Services): Router {
       ? establishmentLinksData.hideHomepageEventsSummaryAndProfileLinkTile
       : false
     return res.render('pages/homepage', {
+      title: 'Home',
       errors: req.flash('errors'),
       message: req.flash('message'),
       today: formatDate(new Date(), DateFormats.PRETTY_DATE),

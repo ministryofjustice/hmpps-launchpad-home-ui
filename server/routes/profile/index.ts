@@ -35,6 +35,7 @@ export default function routes(services: Services): Router {
         : null
 
     return res.render('pages/profile', {
+      title: 'Profile',
       givenName: res.locals.user.idToken.given_name,
       data: {
         incentivesData,

@@ -5,7 +5,7 @@
 {% from "../components/image-card/index.njk" import imageCard %}
 {% from "../components/transactions/card.njk" import transactionsCard %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = title + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
   {% block beforeContent %}
@@ -92,7 +92,7 @@
           </li>
         </ul>
         
-        <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="moneyLink">
+        <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="adjudicationsLink">
           <span>More about money and debt</span>
         </a>
       </div>
