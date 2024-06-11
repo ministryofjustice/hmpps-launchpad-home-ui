@@ -43,17 +43,21 @@ export default function routes(services: Services): Router {
       title: 'Profile',
       givenName: res.locals.user.idToken.given_name,
       data: {
-        incentivesData,
-        incentivesReadMoreURL: `${prisonerContentHubURL}/tags/1417`,
-        moneyReadMoreURL: `${prisonerContentHubURL}/tags/872`,
-        nextVisit: nextVisitData,
-        prisonerContentHubURL: `${prisonerContentHubURL}/tags/1341`,
+        incentives: {
+          incentivesData,
+          readMoreUrl: `${prisonerContentHubURL}/tags/1417`,
+        },
+        transactions: {
+          readMoreUrl: `${prisonerContentHubURL}/tags/872`,
+          isEnabled: isTransactionsEnabled,
+        },
+        visits: {
+          nextVisit: nextVisitData,
+          readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
+          isEnabled: isVisitsEnabled,
+        },
+        prisonerContentHubUrl: `${prisonerContentHubURL}/tags/1341`,
         timetableEvents: timetableEvents[0],
-        visitsReadMoreURL: `${prisonerContentHubURL}/tags/1133`,
-      },
-      features: {
-        isTransactionsEnabled,
-        isVisitsEnabled,
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
