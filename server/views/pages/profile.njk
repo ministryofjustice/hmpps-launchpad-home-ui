@@ -24,20 +24,20 @@
     <div class="card-background">
       <div class="govuk-width-container" data-test="timetable-container">
         <h2 class="govuk-heading-m">Today's timetable</h2>
-        {% if timetableEvents.error %}
+        {% if data.timetable.timetableEvents.error %}
           <p class="govuk-!-font-size-24" data-test="timetable-error">We are not able to show your timetable at this time, <a href="{{ params.returnUrl }}" class="govuk-link">try again</a>.</p>
         {% else %}
           <ul class="govuk-grid-row card-group">
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetableEvents.morning.events }) }}
+              {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetable.timetableEvents.morning.events }) }}
             </li>
 
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetableEvents.afternoon.events }) }}
+              {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetable.timetableEvents.afternoon.events }) }}
             </li>
             
             <li class="govuk-grid-column-one-quarter card-group__item">
-                {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetableEvents.evening.events }) }}
+                {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetable.timetableEvents.evening.events }) }}
             </li>
             
             <li class="govuk-grid-column-one-quarter card-group__item">
@@ -45,7 +45,7 @@
             </li>
           </ul>
 
-          <a href= '{{ data.prisonerContentHubUrl }}' data-test="learningSkillsLink" rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
+          <a href= '{{ data.timetable.readMoreUrl }}' data-test="learningSkillsLink" rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
             <span>Read more about learning and skills</span>
           </a>
         {% endif %}

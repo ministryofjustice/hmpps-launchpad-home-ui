@@ -47,6 +47,10 @@ export default function routes(services: Services): Router {
           incentivesData,
           readMoreUrl: `${prisonerContentHubURL}/tags/1417`,
         },
+        timetable: {
+          timetableEvents: timetableEvents[0],
+          readMoreUrl: `${prisonerContentHubURL}/tags/1341`,
+        },
         transactions: {
           readMoreUrl: `${prisonerContentHubURL}/tags/872`,
           isEnabled: isTransactionsEnabled,
@@ -56,8 +60,6 @@ export default function routes(services: Services): Router {
           readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
           isEnabled: isVisitsEnabled,
         },
-        prisonerContentHubUrl: `${prisonerContentHubURL}/tags/1341`,
-        timetableEvents: timetableEvents[0],
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
