@@ -12,8 +12,10 @@ import {
   HmppsAuthClient,
   IncentivesApiClient,
   PrisonApiClient,
+  PrisonerContactRegistryApiClient,
   RestClientBuilder,
 } from '../../data'
+import { prisonerContact } from '../../utils/mocks/visitors'
 
 jest.mock('../../data')
 
@@ -30,6 +32,9 @@ describe('PrisonerProfileService', () => {
   let adjudicationsApiClientFactory: jest.MockedFunction<RestClientBuilder<AdjudicationsApiClient>>
   let adjudicationsApiClient: jest.Mocked<AdjudicationsApiClient>
 
+  let prisonerContactRegistryClientFactory: jest.MockedFunction<RestClientBuilder<PrisonerContactRegistryApiClient>>
+  let prisonerContactRegistryApiClient: jest.Mocked<PrisonerContactRegistryApiClient>
+
   let prisonerProfileService: PrisonerProfileService
 
   beforeEach(() => {
@@ -44,11 +49,17 @@ describe('PrisonerProfileService', () => {
     adjudicationsApiClientFactory = jest.fn()
     adjudicationsApiClient = new AdjudicationsApiClient(null) as jest.Mocked<AdjudicationsApiClient>
 
+    prisonerContactRegistryClientFactory = jest.fn()
+    prisonerContactRegistryApiClient = new PrisonerContactRegistryApiClient(
+      null,
+    ) as jest.Mocked<PrisonerContactRegistryApiClient>
+
     prisonerProfileService = new PrisonerProfileService(
       hmppsAuthClient,
       prisonApiClientFactory,
       incentivesApiClientFactory,
       adjudicationsApiClientFactory,
+      prisonerContactRegistryClientFactory,
     )
   })
 
@@ -421,6 +432,23 @@ describe('PrisonerProfileService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getLocationByLocationId).toHaveBeenCalledWith(mockLocationId)
+    })
+  })
+
+  describe('getSocialVisitors', () => {
+    it('should return an array of social visitors for a given prisonerId', async () => {
+      const prisonerId = 'prisonerId'
+
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
+      prisonerContactRegistryClientFactory.mockReturnValue(prisonerContactRegistryApiClient)
+      prisonerContactRegistryApiClient.getSocialVisitors.mockResolvedValue([prisonerContact])
+
+      const result = await prisonerProfileService.getSocialVisitors(prisonerId)
+
+      expect(result).toEqual([prisonerContact])
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
+      expect(prisonerContactRegistryClientFactory).toHaveBeenCalledWith(mockToken)
+      expect(prisonerContactRegistryApiClient.getSocialVisitors).toHaveBeenCalledWith(prisonerId)
     })
   })
 })

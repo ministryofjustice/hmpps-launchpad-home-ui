@@ -1,11 +1,16 @@
 {% extends "../partials/layout.njk" %}
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
+
 {% from "../components/card/index.njk" import card %}
 {% from "../components/basic-card/index.njk" import basicCard %}
 {% from "../components/image-card/index.njk" import imageCard %}
-{% from "../components/transactions/card.njk" import transactionsCard %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% from "../components/profile/adjudicationsPanel/index.njk" import adjudicationsPanel %}
+{% from "../components/profile/transactionsPanel/index.njk" import transactionsPanel %}
+{% from "../components/profile/visitsPanel/index.njk" import visitsPanel %}
+
+
+{% set pageTitle = title + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
   {% block beforeContent %}
@@ -22,20 +27,20 @@
     <div class="card-background">
       <div class="govuk-width-container" data-test="timetable-container">
         <h2 class="govuk-heading-m">Today's timetable</h2>
-        {% if timetableEvents.error %}
+        {% if data.timetable.timetableEvents.error %}
           <p class="govuk-!-font-size-24" data-test="timetable-error">We are not able to show your timetable at this time, <a href="{{ params.returnUrl }}" class="govuk-link">try again</a>.</p>
         {% else %}
           <ul class="govuk-grid-row card-group">
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetableEvents.morning.events }) }}
+              {{ card({ id: 'morningEvents', heading: 'Morning', events: data.timetable.timetableEvents.morning.events }) }}
             </li>
 
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetableEvents.afternoon.events }) }}
+              {{ card({ id: 'afternoonEvents', heading: 'Afternoon', events: data.timetable.timetableEvents.afternoon.events }) }}
             </li>
             
             <li class="govuk-grid-column-one-quarter card-group__item">
-                {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetableEvents.evening.events }) }}
+                {{ card({ id: 'eveningEvents', heading: 'Evening', events: data.timetable.timetableEvents.evening.events }) }}
             </li>
             
             <li class="govuk-grid-column-one-quarter card-group__item">
@@ -43,7 +48,7 @@
             </li>
           </ul>
 
-          <a href= '{{ data.prisonerContentHubURL }}' data-test="learningSkillsLink" rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
+          <a href= '{{ data.timetable.readMoreUrl }}' data-test="learningSkillsLink" rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state">
             <span>Read more about learning and skills</span>
           </a>
         {% endif %}
@@ -54,91 +59,33 @@
       <div class="govuk-width-container" data-test="incentives-container">
         <h2 class="govuk-heading-m">Incentives (IEP)</h2>
 
-        {% if data.incentivesData.error %}
+        {% if data.incentives.incentivesData.error %}
           <p class="govuk-!-font-size-24" data-test="incentives-error">We are not able to show your incentive level at this time. <a href="{{ params.returnUrl }}" class="govuk-link">Try again</a> or <a href="{{ incentivesSummary.link }}" class="govuk-link">find out more about incentive levels</a>.</p>
         {% else %}
           <ul class="govuk-grid-row card-group">
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: data.incentivesData.iepLevel }) }}
+              {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: data.incentives.incentivesData.iepLevel }) }}
             </li>
           </ul>
 
-          <a href= '{{ data.incentivesReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="incentivesLink">
+          <a href= '{{ data.incentives.readMoreUrl }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="incentivesLink">
             <span>Read more about incentives (IEP)</span>
           </a>
         {% endif %}
       </div>
     </div>
-
-    {% if data.hasAdjudications %}
-        <div class="card-background">
-          <div class="govuk-width-container" data-test="adjudications-container">
-            <h2 class="govuk-heading-m">Adjudications</h2>
-            {% if adjudications.error %}
-              <p class="govuk-!-font-size-24" data-test="visits-error">We are not able to show your adjudications at this time. <a href="{{ params.returnUrl }}" class="govuk-link">Try again</a></p>
-            {% else %}
-              <ul class="govuk-grid-row card-group">
-                <li class="govuk-grid-column-one-quarter card-group__item">
-                  {{imageCard({ id: 'adjudications', src: "/assets/images/image_adjudications.jpg", link: '/adjudications', description: "View my adjudications" }) }}
-                </li>
-              </ul>
-              <a href='{{ data.adjudicationsReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="adjudicationsLink">
-                <span>Read more about adjudications</span>
-              </a>
-            {% endif %}
-          </div>
-        </div>
-      {%- endif %}
       
-    <div class="card-background">
-      <div class="govuk-width-container" data-test="transactions-container">
-        <h2 class="govuk-heading-m">Money</h2>
-        
-        <ul class="govuk-grid-row card-group">
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{ transactionsCard({ heading: 'Spends', link: '/transactions/spends' }) }}
-          </li>
-          
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{ transactionsCard({ heading: 'Private', link: '/transactions/private' }) }}
-          </li>
-
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{ transactionsCard({ heading: 'Savings', link: '/transactions/savings' }) }}
-          </li>
-
-          <li class="govuk-grid-column-one-quarter card-group__item">
-            {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
-          </li>
-        </ul>
-        
-        <a href='{{ data.moneyReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="moneyLink">
-          <span>More about money and debt</span>
-        </a>
-      </div>
-    </div>
-
-    {% if features.isVisitsEnabled %}
-      <div class="card-background grey">
-        <div class="govuk-width-container" data-test="visits-container">
-          <h2 class="govuk-heading-m">Visits</h2>
-          
-          <ul class="govuk-grid-row card-group">
-            <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ basicCard({ heading: 'Next visit', content: '' }) }}
-            </li>
-
-            <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: "View social visitors" }) }}
-            </li>
-          </ul>
-
-          <a href= '{{ data.visitsReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="visitsLink">
-            <span>More about visits</span>
-          </a>
-        </div>
-      </div>
+    {% if data.transactions.isEnabled %}
+      {{ transactionsPanel(data.transactions.readMoreUrl) }}
     {% endif %}
+
+    {% if data.visits.isEnabled %}
+      {{ visitsPanel(data.visits.nextVisit, data.visits.readMoreUrl) }}
+    {% endif %}
+
+    {% if data.adjudications.isEnabled and data.adjudications.hasAdjudications %}
+      {{ adjudicationsPanel(data.adjudications.readMoreUrl) }}
+    {%- endif %}
   </div>
 
 {% endblock %}

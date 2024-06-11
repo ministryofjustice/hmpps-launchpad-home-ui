@@ -1,17 +1,18 @@
-import path from 'path'
-import express, { Express } from 'express'
 import cookieSession from 'cookie-session'
+import express, { Express } from 'express'
 import createError from 'http-errors'
+import path from 'path'
 
+import * as auth from '../../authentication/auth'
+import errorHandler from '../../errorHandler'
+import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
+import { Services } from '../../services'
+import nunjucksSetup from '../../utils/nunjucksSetup'
 import homepageRoutes from '../homepage/index'
 import profileRoutes from '../profile/index'
 import timetableRoutes from '../timetable/index'
-import visitsRoutes from '../visits/index'
 import transactionsRoutes from '../transactions/index'
-import nunjucksSetup from '../../utils/nunjucksSetup'
-import errorHandler from '../../errorHandler'
-import * as auth from '../../authentication/auth'
-import { Services } from '../../services'
+import visitsRoutes from '../visits/index'
 
 export const idToken = {
   name: 'name',
@@ -59,11 +60,13 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+
+  // Apply middleware to specific routes
+  app.use('/transactions', featureFlagMiddleware('transactions'), transactionsRoutes(services))
   app.use('/', homepageRoutes(services))
   app.use('/profile', profileRoutes(services))
   app.use('/timetable', timetableRoutes(services))
-  app.use('/transactions', transactionsRoutes(services))
-  app.use('/visits', visitsRoutes(services))
+  app.use('/visits', featureFlagMiddleware('visits'), visitsRoutes(services))
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
 

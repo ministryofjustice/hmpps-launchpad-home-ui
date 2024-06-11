@@ -7,3 +7,4 @@ export type OffenderTransactionHistoryDto = components['schemas']['OffenderTrans
 export type ScheduledEvent = components['schemas']['ScheduledEvent']
 export type UserDetail = components['schemas']['UserDetail']
 export type Location = components['schemas']['Location']
+export type VisitDetails = components['schemas']['VisitDetails']

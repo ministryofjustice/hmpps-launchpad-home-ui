@@ -59,6 +59,7 @@ export default function routes(services: Services): Router {
 
   get('/', (req, res) => {
     return res.render('pages/settings', {
+      title: 'Settings',
       errors: req.flash('errors'),
       message: req.flash('message'),
       applications,

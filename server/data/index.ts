@@ -3,17 +3,19 @@
  * Do appinsights first as it does some magic instrumentation work, i.e. it affects other 'require's
  * In particular, applicationinsights automatically collects bunyan logs
  */
-import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
+import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureAppInsights'
 
 initialiseAppInsights()
 buildAppInsightsClient()
 
+import AdjudicationsApiClient from './api/adjudicationsApi/client'
 import HmppsAuthClient from './api/hmppsAuth/client'
+import IncentivesApiClient from './api/incentivesApi/client'
+import PrisonApiClient from './api/prisonApi/client'
+import PrisonerContactRegistryApiClient from './api/prisonerContactRegistryApi/client'
+
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
-import PrisonApiClient from './api/prisonApi/client'
-import IncentivesApiClient from './api/incentivesApi/client'
-import AdjudicationsApiClient from './api/adjudicationsApi/client'
 
 type RestClientBuilder<T> = (token: string) => T
 
@@ -24,8 +26,17 @@ export const dataAccess = () => ({
     new IncentivesApiClient(token)) as RestClientBuilder<IncentivesApiClient>,
   adjudicationsApiClientBuilder: ((token: string) =>
     new AdjudicationsApiClient(token)) as RestClientBuilder<AdjudicationsApiClient>,
+  prisonerContactRegistryApiClientBuilder: ((token: string) =>
+    new PrisonerContactRegistryApiClient(token)) as RestClientBuilder<PrisonerContactRegistryApiClient>,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { HmppsAuthClient, RestClientBuilder, PrisonApiClient, IncentivesApiClient, AdjudicationsApiClient }
+export {
+  AdjudicationsApiClient,
+  HmppsAuthClient,
+  IncentivesApiClient,
+  PrisonApiClient,
+  PrisonerContactRegistryApiClient,
+  RestClientBuilder,
+}

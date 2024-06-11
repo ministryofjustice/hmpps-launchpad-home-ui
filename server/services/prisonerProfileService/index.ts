@@ -16,6 +16,7 @@ import {
   HmppsAuthClient,
   IncentivesApiClient,
   PrisonApiClient,
+  PrisonerContactRegistryApiClient,
   RestClientBuilder,
 } from '../../data'
 import Timetable from '../../data/timetable'
@@ -26,6 +27,7 @@ export default class PrisonerProfileService {
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
     private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
     private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
+    private readonly prisonerContactRegistryApiClientFactory: RestClientBuilder<PrisonerContactRegistryApiClient>,
   ) {}
 
   async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
@@ -170,6 +172,32 @@ export default class PrisonerProfileService {
       return prisonApiClient.getDamageObligations(user.idToken.sub)
     } catch (e) {
       logger.error('Failed to get damage obligations for user', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
+
+  async getSocialVisitors(prisonerId: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonerContactRegistryApiClient = this.prisonerContactRegistryApiClientFactory(token)
+
+    try {
+      return prisonerContactRegistryApiClient.getSocialVisitors(prisonerId)
+    } catch (e) {
+      logger.error('Failed to get social visitors for user', e)
+      logger.debug(e.stack)
+      return null
+    }
+  }
+
+  async getNextVisit(bookingId: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return prisonApiClient.getNextVisit(bookingId)
+    } catch (e) {
+      logger.error('Failed to get next social visitor for user', e)
       logger.debug(e.stack)
       return null
     }
