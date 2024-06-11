@@ -25,6 +25,7 @@ const mockToken = 'mockToken'
 
 describe('PrisonerProfileService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
+
   let prisonApiClientFactory: jest.MockedFunction<RestClientBuilder<PrisonApiClient>>
   let prisonApiClient: jest.Mocked<PrisonApiClient>
 
