@@ -1,4 +1,5 @@
 import { format, isValid, parseISO } from 'date-fns'
+
 import config from '../config'
 
 export const properCase = (word: string): string =>

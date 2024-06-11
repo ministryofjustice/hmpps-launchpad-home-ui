@@ -9,10 +9,24 @@ interface FeatureFlags {
   [key: string]: FeatureFlag
 }
 
+export const Features = {
+  Adjudications: 'adjudications',
+  Transactions: 'transactions',
+  Visits: 'visits',
+} as const
+
 // eslint-disable-next-line import/prefer-default-export
 export const featureFlags: FeatureFlags = {
-  visits: {
+  [Features.Adjudications]: {
     enabled: false,
-    allowedPrisons: [prisonAgencyIds.CookhamWood],
+    allowedPrisons: [prisonAgencyIds.Erlestoke],
+  },
+  [Features.Transactions]: {
+    enabled: true,
+    allowedPrisons: [prisonAgencyIds.Erlestoke],
+  },
+  [Features.Visits]: {
+    enabled: false,
+    allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
 }

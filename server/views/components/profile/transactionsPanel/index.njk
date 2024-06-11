@@ -1,0 +1,30 @@
+{% from "../../image-card/index.njk" import imageCard %}
+{% from "../../transactions/card.njk" import transactionsCard %}
+
+{% macro transactionsPanel(readMoreUrl) %}
+<div class="card-background">
+  <div class="govuk-width-container" data-test="transactions-container">
+    <h2 class="govuk-heading-m">Money</h2>
+    
+    <ul class="govuk-grid-row card-group">
+      {% for transaction in [
+        {'heading': 'Spends', 'link': '/transactions/spends'}, 
+        {'heading': 'Private', 'link': '/transactions/private'}, 
+        {'heading': 'Savings', 'link': '/transactions/savings'}
+      ] %}
+        <li class="govuk-grid-column-one-quarter card-group__item">
+          {{ transactionsCard(transaction) }}
+        </li>
+      {% endfor %}
+
+      <li class="govuk-grid-column-one-quarter card-group__item">
+        {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
+      </li>
+    </ul>
+    
+    <a href='{{ readMoreUrl }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="moneyLink">
+      <span>More about money and debt</span>
+    </a>
+  </div>
+</div>
+{% endmacro %} 

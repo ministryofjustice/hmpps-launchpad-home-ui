@@ -1,13 +1,36 @@
-import type { Express } from 'express'
+import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
 import { AgencyType } from '../../constants/agency'
 import { AccountCodes } from '../../constants/transactions'
+
 import { createMockPrisonerProfileService } from '../../services/testutils/mocks'
+
 import { balances } from '../../utils/mocks/balance'
 import { prison } from '../../utils/mocks/prison'
 import { damageObligation, offenderTransaction } from '../../utils/mocks/transactions'
+
 import { appWithAllRoutes } from '../testutils/appSetup'
+
+jest.mock('../../constants/featureFlags', () => ({
+  featureFlags: {
+    transactions: {
+      enabled: true,
+      allowedPrisons: ['MDI'],
+    },
+  },
+}))
+
+jest.mock('../../middleware/featureFlag/featureFlag', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(() => {
+      return (_req: Request, _res: Response, next: NextFunction): void => {
+        next()
+      }
+    }),
+  }
+})
 
 let app: Express
 
