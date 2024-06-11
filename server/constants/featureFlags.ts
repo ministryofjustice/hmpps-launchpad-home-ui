@@ -1,5 +1,3 @@
-import { prisonAgencyIds } from './prisons'
-
 interface FeatureFlag {
   enabled: boolean
   allowedPrisons: string[]
@@ -13,6 +11,6 @@ interface FeatureFlags {
 export const featureFlags: FeatureFlags = {
   visits: {
     enabled: false,
-    allowedPrisons: [prisonAgencyIds.CookhamWood],
+    allowedPrisons: [],
   },
 }

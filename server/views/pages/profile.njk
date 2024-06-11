@@ -97,6 +97,38 @@
         </a>
       </div>
     </div>
+
+    {% if features.isVisitsEnabled %}
+      <div class="card-background grey">
+        <div class="govuk-width-container" data-test="visits-container">
+          <h2 class="govuk-heading-m">Visits</h2>
+          
+          <ul class="govuk-grid-row card-group">
+            <li class="govuk-grid-column-one-quarter card-group__item">
+              <div class="card card__content">
+                <h3 class="govuk-heading-m card__heading">Next visit</h3>
+                <div class="govuk-body card__description">
+                  {% if data.nextVisit %}
+                    <p><strong>{{ data.nextVisit.date }}</strong><br/>{{ data.nextVisit.startTime }} to {{ data.nextVisit.endTime }}</p>
+                    <p>{{ data.nextVisit.visitType }}</p>
+                  {% else %}
+                    <p>No upcoming visits</p>
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+
+            <li class="govuk-grid-column-one-quarter card-group__item">
+              {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: "View social visitors" }) }}
+            </li>
+          </ul>
+
+          <a href='{{ data.visitsReadMoreURL }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="visitsLink">
+            <span>More about visits</span>
+          </a>
+        </div>
+      </div>
+    {% endif %}
   </div>
 
 {% endblock %}

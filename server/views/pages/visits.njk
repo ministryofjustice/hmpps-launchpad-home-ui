@@ -1,3 +1,6 @@
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
 {% extends "../partials/layout.njk" %}
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 
@@ -22,6 +25,13 @@
     {% if error %}
       <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="social-visitors-error">We can not list your visits at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a>.</p>
     {% else %}  
+      {{ govukTable({ firstCellIsHeader: false, rows: data.socialVisitors}) }}
+
+      {% if data.paginationData.totalPages > 1 %}
+        <div class="govuk-!-margin-bottom-9">
+          {{ govukPagination( data.paginationData | toPagination(data.rawQuery) ) }}
+        </div>
+      {% endif %}
     {% endif %}
   </div>
 {% endblock %}
