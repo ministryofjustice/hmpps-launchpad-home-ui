@@ -29,8 +29,8 @@ export const formatReportedAdjudication = async (reportedAdjudication: ReportedA
       ...reportedAdjudication,
       incidentDetails: formattedIncidentDetails,
       hearings: formattedHearings,
-      location: `${location.userDescription} (${location.agencyId})`,
-      reportedBy: `${reportedBy.firstName} ${reportedBy.lastName}`,
+      location: `${location?.userDescription} (${location?.agencyId})`,
+      reportedBy: `${reportedBy?.firstName} ${reportedBy?.lastName}`,
     }
   } catch (error) {
     throw new Error(`Error formatting reported adjudication: ${error}`)
@@ -57,7 +57,7 @@ export const formatHearing = async (
     return {
       ...hearing,
       dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
-      location: `${location.userDescription}`,
+      location: `${location?.userDescription}`,
       adjudicator: hearing.oicHearingType.includes('GOV') ? hearing.oicHearingType : `${hearing.outcome.adjudicator}`,
       outcome: {
         ...hearing.outcome,

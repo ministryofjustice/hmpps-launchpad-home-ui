@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 
 import logger from '../../../logger'
+
 import {
   HasAdjudicationsResponse,
   PageReportedAdjudicationDto,
@@ -9,8 +10,10 @@ import {
 import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
 import { EventsData, TimetableEvents, TimetableRow } from '../../@types/launchpad'
 import { Location, UserDetail } from '../../@types/prisonApiTypes'
+
 import { ADJUDICATION_STATUSES } from '../../constants/adjudications'
 import { DateFormats } from '../../constants/date'
+
 import {
   AdjudicationsApiClient,
   HmppsAuthClient,
@@ -79,28 +82,26 @@ export default class PrisonerProfileService {
     return userHasAdjudications
   }
 
-  async getReportedAdjudicationsFor(user: {
-    idToken: { booking: { id: string }; establishment: { agency_id: string } }
-  }): Promise<PageReportedAdjudicationDto> {
+  async getReportedAdjudicationsFor(bookingId: string, prisonId: string): Promise<PageReportedAdjudicationDto> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
     const statusQueryParam = ADJUDICATION_STATUSES.map(status => `&status=${status}`).join('')
 
-    const reportedAdjudicationsData = await adjudicationsApiClient.getReportedAdjudicationsFor(
-      user.idToken.booking.id,
-      user.idToken.establishment.agency_id,
+    const { content, ...rest } = await adjudicationsApiClient.getReportedAdjudicationsFor(
+      bookingId,
+      prisonId,
       statusQueryParam,
     )
 
-    const formattedAdjudications = reportedAdjudicationsData.content.map(adjudication => ({
+    const formattedContent = content.map(adjudication => ({
       ...adjudication,
       createdDateTime: format(adjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }))
 
     return {
-      ...reportedAdjudicationsData,
-      content: formattedAdjudications,
+      ...rest,
+      content: formattedContent,
     }
   }
 

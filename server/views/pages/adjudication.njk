@@ -25,7 +25,7 @@
       <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="approved-visitors-error">We can not list your adjudication at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a> or <a href="{{ data.adjudicationsReadMoreURL }}" class="govuk-link">read more about adjudications</a>.</p>
     {% else %}  
       <div class="govuk-!-margin-bottom-7">
-        <a href="{{ data.adjudicationsReadMoreURL }}" class="govuk-link govuk-!-font-size-24">More about adjudications</a>
+        <a href="{{ data.readMoreUrl }}" class="govuk-link govuk-!-font-size-24">More about adjudications</a>
       </div>  
 
       <div class="govuk-grid-row">
@@ -33,54 +33,30 @@
           {{ govukSummaryList({
           classes: 'govuk-summary-list--no-border',
           rows: [
-              {
-              key: {
-                  text: "Governor's report number"
-              },
-              value: {
-                  text: data.adjudication.chargeNumber
-              }
-              },
-              {
-              key: {
-                  text: "When"
-              },
-              value: {
-                  text: data.adjudication.incidentDetails.dateTimeOfIncident
-              }
-              },
-              {
-              key: {
-                  text: "Where"
-              },
-              value: {
-                  text: data.adjudication.location
-              }
-              },
-              {
-              key: {
-                  text: "Reported by"
-              },
-              value: {
-                  text: data.adjudication.reportedBy
-              }
-              },
-              {
-              key: {
-                  text: "Report date and time"
-              },
-              value: {
-                  text: data.adjudication.incidentDetails.dateTimeOfDiscovery
-              }
-              },
-              {
-              key: {
-                  text: "What happened"
-              },
-              value: {
-                  text: data.adjudication.incidentStatement.statement
-              }
-              }
+            {
+              key: { text: "Governor's report number" },
+              value: { text: data.adjudication.chargeNumber }
+            },
+            {
+              key: { text: "When" },
+              value: { text: data.adjudication.incidentDetails.dateTimeOfIncident }
+            },
+            {
+              key: { text: "Where" },
+              value: { text: data.adjudication.location }
+            },
+            {
+              key: { text: "Reported by" },
+              value: { text: data.adjudication.reportedBy }
+            },
+            {
+              key: { text: "Report date and time" },
+              value: { text: data.adjudication.incidentDetails.dateTimeOfDiscovery }
+            },
+            {
+              key: { text: "What happened" },
+              value: { text: data.adjudication.incidentStatement.statement }
+            }
           ]
           }) }}
         </div>

@@ -1,6 +1,6 @@
 import { PageReportedAdjudicationDto, ReportedAdjudicationApiResponse } from '../../../@types/adjudicationsApiTypes'
 import { ApiConfig } from '../../../config'
-import { reportedAdjudication } from '../../../routes/testutils/data'
+import { reportedAdjudication } from '../../../utils/mocks/adjudications'
 import RestClient from '../../restClient'
 import AdjudicationsApiClient from './client'
 
