@@ -7,6 +7,7 @@ import type { Services } from '../../services'
 
 import { formatReportedAdjudication } from '../../utils/adjudications/formatReportedAdjudication'
 import { getEstablishmentLinksData } from '../../utils/utils'
+import { getPaginationData } from '../../utils/pagination'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -22,14 +23,17 @@ export default function routes(services: Services): Router {
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
       )
-      const displayPagination = reportedAdjudications.totalPages > 1
+
+      const paginationData = getPaginationData(Number(req.query.page), reportedAdjudications.content.length)
+      const pagedReportedAdjudications = reportedAdjudications.content.slice(paginationData.min - 1, paginationData.max)
 
       res.render('pages/adjudications', {
         givenName: user.idToken.given_name,
-        title: 'Adjudications',
         data: {
-          reportedAdjudications,
-          displayPagination,
+          title: 'Adjudications',
+          paginationData,
+          rawQuery: req.query.page,
+          reportedAdjudications: pagedReportedAdjudications,
           readMoreUrl: `${prisonerContentHubURL}/content/4193`,
         },
         errors: req.flash('errors'),

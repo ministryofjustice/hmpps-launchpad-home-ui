@@ -12,7 +12,7 @@
 
 {% block title %}
   <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content" data-test="main-content">
-    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+    <h1 class="govuk-heading-l" id="title">{{ data.title }}</h1>
   </div>
 {% endblock %}
 
@@ -36,7 +36,7 @@
         </thead>
 
         <tbody class="govuk-table__body">
-          {% for adjudication in data.reportedAdjudications.content %}
+          {% for adjudication in data.reportedAdjudications %}
           <tr class="govuk-table__row">
             <td class="govuk-table__cell"><a href="/adjudications/{{adjudication.chargeNumber}}" class="govuk-link">{{ adjudication.chargeNumber }}</a></td>
             <td class="govuk-table__cell">{{ adjudication.createdDateTime }}</td>
@@ -46,9 +46,9 @@
         </tbody>
       </table>
 
-      {% if data.displayPagination %}
+      {% if data.paginationData.totalPages > 1 %}
         <div class="govuk-!-margin-bottom-9">
-          {{ govukPagination( data ) }}
+          {{ govukPagination( data.paginationData | toPagination(data.rawQuery) ) }}
         </div>
       {% endif %}
   {% endif %}
