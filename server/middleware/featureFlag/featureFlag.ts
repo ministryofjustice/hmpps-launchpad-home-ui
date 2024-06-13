@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
-import { featureFlags } from '../../constants/featureFlags'
+import { NextFunction, Request, Response } from 'express'
+import { ALLOW_ALL_PRISONS, featureFlags } from '../../constants/featureFlags'
 
 // eslint-disable-next-line import/prefer-default-export
 const featureFlagMiddleware = (flag: string) => {
@@ -7,7 +7,10 @@ const featureFlagMiddleware = (flag: string) => {
     const feature = featureFlags[flag]
     const prisonId = req.user?.idToken?.establishment?.agency_id
 
-    if (!feature?.enabled || (prisonId && !feature.allowedPrisons.includes(prisonId))) {
+    if (
+      !feature?.enabled ||
+      (prisonId && feature.allowedPrisons !== ALLOW_ALL_PRISONS && !feature.allowedPrisons.includes(prisonId))
+    ) {
       res.redirect('/profile')
       return
     }
