@@ -7,7 +7,7 @@ import type { Services } from '../../services'
 
 import { formatReportedAdjudication } from '../../utils/adjudications/formatReportedAdjudication'
 import { getEstablishmentLinksData } from '../../utils/utils'
-import { getPaginationData } from '../../utils/pagination'
+import { getPaginationData } from '../../utils/pagination/pagination'
 
 export default function routes(services: Services): Router {
   const router = Router()

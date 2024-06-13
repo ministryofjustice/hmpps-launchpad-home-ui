@@ -5,10 +5,10 @@ import UserService from './userService'
 
 export const services = () => {
   const {
-    adjudicationsApiClientBuilder,
     hmppsAuthClient,
-    prisonApiClientBuilder,
+    adjudicationsApiClientBuilder,
     incentivesApiClientBuilder,
+    prisonApiClientBuilder,
     prisonerContactRegistryApiClientBuilder,
   } = dataAccess()
 
@@ -16,9 +16,9 @@ export const services = () => {
 
   const prisonerProfileService = new PrisonerProfileService(
     hmppsAuthClient,
-    prisonApiClientBuilder,
-    incentivesApiClientBuilder,
     adjudicationsApiClientBuilder,
+    incentivesApiClientBuilder,
+    prisonApiClientBuilder,
     prisonerContactRegistryApiClientBuilder,
   )
 

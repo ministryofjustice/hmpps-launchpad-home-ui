@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import type { Services } from '../../services'
-import { getPaginationData } from '../../utils/pagination'
+import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

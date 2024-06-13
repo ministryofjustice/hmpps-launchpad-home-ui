@@ -56,9 +56,9 @@ describe('PrisonerProfileService', () => {
 
     prisonerProfileService = new PrisonerProfileService(
       hmppsAuthClient,
-      prisonApiClientFactory,
-      incentivesApiClientFactory,
       adjudicationsApiClientFactory,
+      incentivesApiClientFactory,
+      prisonApiClientFactory,
       prisonerContactRegistryClientFactory,
     )
   })
