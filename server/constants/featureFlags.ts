@@ -19,15 +19,15 @@ export const Features = {
 
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
-    enabled: false,
+    enabled: true,
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Transactions]: {
     enabled: true,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Visits]: {
-    enabled: false,
+    enabled: true,
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
 }
