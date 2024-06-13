@@ -1,0 +1,50 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "./offences/macro.njk" import adjudicationHearingOffences %}
+
+<div class="govuk-grid-row">
+  <article class="moj-ticket-panel" aria-label="hearing">
+    <section class="moj-ticket-panel__content moj-ticket-panel__content--blue" aria-label="hearing detail">
+      <h2 class="govuk-heading-l">Hearing on {{hearing.dateTimeOfHearing}}</h2>
+      
+      {{ govukSummaryList({
+        classes: 'govuk-summary-list--no-border',
+        rows: [
+          {
+            key: {
+              text: "What"
+            },
+            value: {
+              text: hearing.oicHearingType
+            }
+          },
+          {
+            key: {
+              text: "Where"
+            },
+            value: {
+              text: hearing.location
+            }
+          },
+          {
+            key: {
+              text: "Heard by"
+            },
+            value: {
+              text: hearing.adjudicator
+            }
+          },
+          {
+            key: {
+              text: "Comments"
+            },
+            value: {
+              text: hearing.outcome.details
+            }
+          }
+        ]
+      }) }}
+
+      {{ adjudicationHearingOffences(hearing) }}
+    </section>
+  </article>
+</div>

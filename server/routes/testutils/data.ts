@@ -1,5 +1,5 @@
-import { TimetableEvents } from '../../@types/launchpad'
 import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
+import { TimetableEvents } from '../../@types/launchpad'
 
 /* eslint-disable import/prefer-default-export */
 export const events: TimetableEvents = {

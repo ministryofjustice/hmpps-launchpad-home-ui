@@ -1,10 +1,10 @@
+import { formatDate } from 'date-fns'
 import { Router, type RequestHandler } from 'express'
 
-import asyncMiddleware from '../../middleware/asyncMiddleware'
-
 import { DateFormats } from '../../constants/date'
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
-import { formatDate, getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
   const router = Router()

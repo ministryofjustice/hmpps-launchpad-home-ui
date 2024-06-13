@@ -1,8 +1,11 @@
 {% extends "../partials/layout.njk" %}
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
+
 {% from "../components/card/index.njk" import card %}
 {% from "../components/basic-card/index.njk" import basicCard %}
 {% from "../components/image-card/index.njk" import imageCard %}
+
+{% from "../components/profile/adjudicationsPanel/index.njk" import adjudicationsPanel %}
 {% from "../components/profile/transactionsPanel/index.njk" import transactionsPanel %}
 {% from "../components/profile/visitsPanel/index.njk" import visitsPanel %}
 
@@ -70,7 +73,7 @@
         {% endif %}
       </div>
     </div>
-
+      
     {% if data.transactions.isEnabled %}
       {{ transactionsPanel(data.transactions.readMoreUrl) }}
     {% endif %}
@@ -78,6 +81,10 @@
     {% if data.visits.isEnabled %}
       {{ visitsPanel(data.visits.nextVisit, data.visits.readMoreUrl) }}
     {% endif %}
+
+    {% if data.adjudications.isEnabled and data.adjudications.hasAdjudications %}
+      {{ adjudicationsPanel(data.adjudications.readMoreUrl) }}
+    {%- endif %}
   </div>
 
 {% endblock %}

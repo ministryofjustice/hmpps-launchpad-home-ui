@@ -5,6 +5,7 @@ import UserService from './userService'
 
 export const services = () => {
   const {
+    adjudicationsApiClientBuilder,
     hmppsAuthClient,
     prisonApiClientBuilder,
     incentivesApiClientBuilder,
@@ -17,6 +18,7 @@ export const services = () => {
     hmppsAuthClient,
     prisonApiClientBuilder,
     incentivesApiClientBuilder,
+    adjudicationsApiClientBuilder,
     prisonerContactRegistryApiClientBuilder,
   )
 

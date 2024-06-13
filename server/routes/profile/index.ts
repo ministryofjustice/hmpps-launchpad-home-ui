@@ -23,9 +23,11 @@ export default function routes(services: Services): Router {
 
     const prisonId = res.locals.user.idToken.establishment.agency_id
     const { prisonerContentHubURL } = await getEstablishmentLinksData(prisonId)
+    const { hasAdjudications } = await services.prisonerProfileService.hasAdjudications(res.locals.user)
     const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
     const nextVisit = await services.prisonerProfileService.getNextVisit(res.locals.user.idToken.booking.id)
 
+    const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
     const isTransactionsEnabled = isFeatureEnabled(Features.Transactions, prisonId)
     const isVisitsEnabled = isFeatureEnabled(Features.Visits, prisonId)
 
@@ -43,6 +45,11 @@ export default function routes(services: Services): Router {
       title: 'Profile',
       givenName: res.locals.user.idToken.given_name,
       data: {
+        adjudications: {
+          hasAdjudications,
+          readMoreUrl: `${prisonerContentHubURL}/content/4193`,
+          isEnabled: isAdjudicationsEnabled,
+        },
         incentives: {
           incentivesData,
           readMoreUrl: `${prisonerContentHubURL}/tags/1417`,

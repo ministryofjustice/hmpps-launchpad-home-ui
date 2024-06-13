@@ -1,3 +1,4 @@
+import { formatDate } from 'date-fns'
 import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
 import {
   Account,
@@ -9,7 +10,7 @@ import {
 } from '../../../@types/prisonApiTypes'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
-import { convertToTitleCase, formatDate, formatDateTimeString } from '../../../utils/utils'
+import { convertToTitleCase, formatDateTimeString } from '../../../utils/utils'
 import RestClient from '../../restClient'
 
 export default class PrisonApiClient {
@@ -53,6 +54,24 @@ export default class PrisonApiClient {
         toDate: formatDate(toDate, DateFormats.ISO_DATE),
       }).toString(),
     })) as ScheduledEvent[]
+  }
+
+  async getReportedAdjudication(offenderNo: string, adjudicationNo: string) {
+    return this.restClient.get({
+      path: `/api/offenders/${offenderNo}/adjudications/${adjudicationNo}`,
+    })
+  }
+
+  async getUserByUserId(userId: string) {
+    return this.restClient.get({
+      path: `/api/users/${userId}`,
+    })
+  }
+
+  async getLocationByLocationId(locationId: number) {
+    return this.restClient.get({
+      path: `/api/locations/${locationId}`,
+    })
   }
 
   async getBalances(bookingId: string) {

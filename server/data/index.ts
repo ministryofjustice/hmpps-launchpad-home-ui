@@ -8,6 +8,7 @@ import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureApp
 initialiseAppInsights()
 buildAppInsightsClient()
 
+import AdjudicationsApiClient from './api/adjudicationsApi/client'
 import HmppsAuthClient from './api/hmppsAuth/client'
 import IncentivesApiClient from './api/incentivesApi/client'
 import PrisonApiClient from './api/prisonApi/client'
@@ -23,10 +24,19 @@ export const dataAccess = () => ({
   prisonApiClientBuilder: ((token: string) => new PrisonApiClient(token)) as RestClientBuilder<PrisonApiClient>,
   incentivesApiClientBuilder: ((token: string) =>
     new IncentivesApiClient(token)) as RestClientBuilder<IncentivesApiClient>,
+  adjudicationsApiClientBuilder: ((token: string) =>
+    new AdjudicationsApiClient(token)) as RestClientBuilder<AdjudicationsApiClient>,
   prisonerContactRegistryApiClientBuilder: ((token: string) =>
     new PrisonerContactRegistryApiClient(token)) as RestClientBuilder<PrisonerContactRegistryApiClient>,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { HmppsAuthClient, IncentivesApiClient, PrisonApiClient, PrisonerContactRegistryApiClient, RestClientBuilder }
+export {
+  AdjudicationsApiClient,
+  HmppsAuthClient,
+  IncentivesApiClient,
+  PrisonApiClient,
+  PrisonerContactRegistryApiClient,
+  RestClientBuilder,
+}

@@ -1,0 +1,49 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "./punishments/macro.njk" import adjudicationHearingOffencePunishments %}
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<h3 class="govuk-heading-m">{{hearing.offenceDetails.offenceRule.paragraphDescription}}</h3>
+
+{{ govukSummaryList({
+    classes: 'govuk-summary-list--no-border',
+    rows: [
+      {
+        key: {
+          text: "Paragraph"
+        },
+        value: {
+          text: hearing.offenceDetails.offenceRule.paragraphNumber
+        }
+      },
+      {
+        key: {
+          text: "Type"
+        },
+        value: {
+          text: "Prison Rule " + hearing.offenceDetails.offenceRule.paragraphNumber.substring(0, 2)
+        }
+      },
+      {
+        key: {
+          text: "Plea"
+        },
+        value: {
+          text: hearing.outcome.plea
+        }
+      },
+      {
+        key: {
+          text: "Status"
+        },
+        value: {
+          text: hearing.outcome.details
+        }
+      }
+    ]
+  }) }}
+
+  {% if hearing.punishments | length %}
+    {{ adjudicationHearingOffencePunishments(hearing.punishments) }}
+  {% endif %}
+  

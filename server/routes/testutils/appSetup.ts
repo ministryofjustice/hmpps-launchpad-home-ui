@@ -8,6 +8,8 @@ import errorHandler from '../../errorHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { Services } from '../../services'
 import nunjucksSetup from '../../utils/nunjucksSetup'
+
+import adjudicationsRoutes from '../adjudications/index'
 import homepageRoutes from '../homepage/index'
 import profileRoutes from '../profile/index'
 import timetableRoutes from '../timetable/index'
@@ -35,6 +37,7 @@ export const idToken = {
   },
   iss: 'iss',
 }
+
 export const user = {
   refreshToken: 'REFRESH_TOKEN',
   idToken,
@@ -61,13 +64,14 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  // Apply middleware to specific routes
-  app.use('/transactions', featureFlagMiddleware('transactions'), transactionsRoutes(services))
   app.use('/', homepageRoutes(services))
+  app.use('/adjudications', featureFlagMiddleware('adjudications'), adjudicationsRoutes(services))
   app.use('/profile', profileRoutes(services))
   app.use('/timetable', timetableRoutes(services))
+  app.use('/transactions', featureFlagMiddleware('transactions'), transactionsRoutes(services))
   app.use('/visits', featureFlagMiddleware('visits'), visitsRoutes(services))
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+
+  app.use((_req, _res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
 
   return app
