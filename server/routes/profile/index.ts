@@ -8,7 +8,7 @@ import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 import type { Services } from '../../services'
 
-import { isFeatureEnabled } from '../../utils/featureFlagUtils'
+import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,12 +1,11 @@
 import PrisonerProfileService from '.'
+
 import {
   HasAdjudicationsResponse,
   PageReportedAdjudicationDto,
   ReportedAdjudicationApiResponse,
 } from '../../@types/adjudicationsApiTypes'
-import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
-import { EventsData } from '../../@types/launchpad'
-import { Location, UserDetail } from '../../@types/prisonApiTypes'
+
 import {
   AdjudicationsApiClient,
   HmppsAuthClient,
@@ -15,6 +14,12 @@ import {
   PrisonerContactRegistryApiClient,
   RestClientBuilder,
 } from '../../data'
+
+import { reportedAdjudication } from '../../utils/mocks/adjudications'
+import { eventsSummary } from '../../utils/mocks/events'
+import { incentivesReviewSummary } from '../../utils/mocks/incentives'
+import { location } from '../../utils/mocks/location'
+import { staffUser } from '../../utils/mocks/user'
 import { prisonerContact } from '../../utils/mocks/visitors'
 
 jest.mock('../../data')
@@ -56,44 +61,22 @@ describe('PrisonerProfileService', () => {
 
     prisonerProfileService = new PrisonerProfileService(
       hmppsAuthClient,
-      prisonApiClientFactory,
-      incentivesApiClientFactory,
       adjudicationsApiClientFactory,
+      incentivesApiClientFactory,
+      prisonApiClientFactory,
       prisonerContactRegistryClientFactory,
     )
   })
 
   describe('getPrisonerEventsSummary', () => {
     it('should return a prisoner events summary', async () => {
-      const mockEventsSummary: EventsData = {
-        isTomorrow: false,
-        error: false,
-        prisonerEvents: [
-          {
-            timeString: '10:00 AM',
-            description: 'Morning Exercise',
-            location: 'Gymnasium',
-          },
-          {
-            timeString: '12:00 PM',
-            description: 'Lunch',
-            location: 'Cafeteria',
-          },
-          {
-            timeString: '2:00 PM',
-            description: 'Educational Program',
-            location: 'Classroom A',
-          },
-        ],
-      }
-
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
-      prisonApiClient.getEventsSummary.mockResolvedValue(mockEventsSummary)
+      prisonApiClient.getEventsSummary.mockResolvedValue(eventsSummary)
 
       const result = await prisonerProfileService.getPrisonerEventsSummary({ idToken: { booking: { id: '123456' } } })
 
-      expect(result).toEqual(mockEventsSummary)
+      expect(result).toEqual(eventsSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith('123456')
@@ -103,29 +86,16 @@ describe('PrisonerProfileService', () => {
   describe('getIncentivesSummaryFor', () => {
     it('should return incentives summary for the given user', async () => {
       const mockUserId = '123456'
-      const mockIncentivesData: IncentiveReviewSummary = {
-        id: 12345,
-        iepCode: 'STD',
-        iepLevel: 'Standard',
-        prisonerNumber: 'A1234BC',
-        bookingId: 1234567,
-        iepDate: '2021-12-31',
-        iepTime: '2021-07-05T10:35:17',
-        locationId: '1-2-003',
-        iepDetails: [],
-        nextReviewDate: '2022-12-31',
-        daysSinceReview: 23,
-      }
 
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       incentivesApiClientFactory.mockReturnValue(incentivesApiClient)
-      incentivesApiClient.getIncentivesSummaryFor.mockResolvedValue(mockIncentivesData)
+      incentivesApiClient.getIncentivesSummaryFor.mockResolvedValue(incentivesReviewSummary)
 
       const result = await prisonerProfileService.getIncentivesSummaryFor({
         idToken: { booking: { id: mockUserId } },
       })
 
-      expect(result).toEqual(mockIncentivesData)
+      expect(result).toEqual(incentivesReviewSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(incentivesApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(incentivesApiClient.getIncentivesSummaryFor).toHaveBeenCalledWith(mockUserId)
@@ -188,173 +158,7 @@ describe('PrisonerProfileService', () => {
       const mockChargeNumber = 'ABC123'
       const mockAgencyId = 'XYZ456'
       const mockReportedAdjudication: ReportedAdjudicationApiResponse = {
-        reportedAdjudication: {
-          chargeNumber: mockChargeNumber,
-          prisonerNumber: 'G2996UX',
-          gender: 'MALE',
-          incidentDetails: {
-            locationId: 0,
-            dateTimeOfIncident: '2021-07-05T10:35:17',
-            dateTimeOfDiscovery: '2021-07-05T10:35:17',
-            handoverDeadline: '2021-07-05T10:35:17',
-          },
-          isYouthOffender: true,
-          incidentRole: {
-            roleCode: '25a',
-            offenceRule: {
-              paragraphNumber: '25(a)',
-              paragraphDescription: 'Committed an assault',
-            },
-            associatedPrisonersNumber: 'G2996UX',
-            associatedPrisonersName: 'G2996UX',
-          },
-          offenceDetails: {
-            offenceCode: 3,
-            offenceRule: {
-              paragraphNumber: '25(a)',
-              paragraphDescription: 'Committed an assault',
-              nomisCode: 'string',
-              withOthersNomisCode: 'string',
-            },
-            victimPrisonersNumber: 'G2996UX',
-            victimStaffUsername: 'ABC12D',
-            victimOtherPersonsName: 'Bob Hope',
-          },
-          incidentStatement: {
-            statement: 'string',
-            completed: true,
-          },
-          createdByUserId: 'string',
-          createdDateTime: '2021-07-05T10:35:17',
-          status: 'ACCEPTED',
-          reviewedByUserId: 'string',
-          statusReason: 'string',
-          statusDetails: 'string',
-          damages: [
-            {
-              code: 'CLEANING',
-              details: 'the kettle was broken',
-              reporter: 'ABC12D',
-            },
-          ],
-          evidence: [
-            {
-              code: 'PHOTO',
-              identifier: 'Tag number or Camera number',
-              details: 'ie what does the photo describe',
-              reporter: 'ABC12D',
-            },
-          ],
-          witnesses: [
-            {
-              code: 'OFFICER',
-              firstName: 'Fred',
-              lastName: 'Kruger',
-              reporter: 'ABC12D',
-            },
-          ],
-          hearings: [
-            {
-              id: 0,
-              locationId: 0,
-              dateTimeOfHearing: '2021-07-05T10:35:17',
-              oicHearingType: 'GOV_ADULT',
-              outcome: {
-                id: 0,
-                adjudicator: 'string',
-                code: 'COMPLETE',
-                reason: 'LEGAL_ADVICE',
-                details: 'string',
-                plea: 'UNFIT',
-              },
-              agencyId: 'string',
-            },
-          ],
-          issuingOfficer: 'string',
-          dateTimeOfIssue: '2021-07-05T10:35:17',
-          disIssueHistory: [
-            {
-              issuingOfficer: 'string',
-              dateTimeOfIssue: '2021-07-05T10:35:17',
-            },
-          ],
-          dateTimeOfFirstHearing: '2021-07-05T10:35:17',
-          outcomes: [
-            {
-              hearing: {
-                id: 0,
-                locationId: 0,
-                dateTimeOfHearing: '2021-07-05T10:35:17',
-                oicHearingType: 'GOV_ADULT',
-                outcome: {
-                  id: 0,
-                  adjudicator: 'string',
-                  code: 'COMPLETE',
-                  reason: 'LEGAL_ADVICE',
-                  details: 'string',
-                  plea: 'UNFIT',
-                },
-                agencyId: 'string',
-              },
-              outcome: {
-                outcome: {
-                  id: 0,
-                  code: 'REFER_POLICE',
-                  details: 'string',
-                  reason: 'ANOTHER_WAY',
-                  quashedReason: 'FLAWED_CASE',
-                  canRemove: true,
-                },
-                referralOutcome: {
-                  id: 0,
-                  code: 'REFER_POLICE',
-                  details: 'string',
-                  reason: 'ANOTHER_WAY',
-                  quashedReason: 'FLAWED_CASE',
-                  canRemove: true,
-                },
-              },
-            },
-          ],
-          punishments: [
-            {
-              id: 0,
-              type: 'PRIVILEGE',
-              privilegeType: 'CANTEEN',
-              otherPrivilege: 'string',
-              stoppagePercentage: 0,
-              activatedBy: 'string',
-              activatedFrom: 'string',
-              schedule: {
-                days: 0,
-                startDate: '2024-05-08',
-                endDate: '2024-05-08',
-                suspendedUntil: '2024-05-08',
-              },
-              consecutiveChargeNumber: 'string',
-              consecutiveReportAvailable: true,
-              damagesOwedAmount: 0,
-              canRemove: true,
-            },
-          ],
-          punishmentComments: [
-            {
-              id: 0,
-              comment: 'string',
-              reasonForChange: 'APPEAL',
-              createdByUserId: 'string',
-              dateTime: '2021-07-05T10:35:17',
-            },
-          ],
-          outcomeEnteredInNomis: true,
-          overrideAgencyId: 'string',
-          originatingAgencyId: 'string',
-          transferableActionsAllowed: true,
-          createdOnBehalfOfOfficer: 'string',
-          createdOnBehalfOfReason: 'string',
-          linkedChargeNumbers: ['string'],
-          canActionFromHistory: true,
-        },
+        reportedAdjudication,
       }
 
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
@@ -374,28 +178,13 @@ describe('PrisonerProfileService', () => {
     it('should return a user by userId', async () => {
       const mockUserId = '123456'
 
-      const mockUser: UserDetail = {
-        staffId: 231232,
-        username: 'DEMO_USER1',
-        firstName: 'John',
-        lastName: 'Smith',
-        thumbnailId: 2342341224,
-        activeCaseLoadId: 'MDI',
-        accountStatus: 'ACTIVE',
-        lockDate: '2021-07-05T10:35:17',
-        expiryDate: '2022-07-05T10:35:17',
-        lockedFlag: false,
-        expiredFlag: false,
-        active: true,
-      }
-
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
-      prisonApiClient.getUserByUserId.mockResolvedValue(mockUser)
+      prisonApiClient.getUserByUserId.mockResolvedValue(staffUser)
 
       const result = await prisonerProfileService.getUserByUserId(mockUserId)
 
-      expect(result).toEqual(mockUser)
+      expect(result).toEqual(staffUser)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getUserByUserId).toHaveBeenCalledWith(mockUserId)
@@ -405,28 +194,14 @@ describe('PrisonerProfileService', () => {
   describe('getLocationByLocationId', () => {
     it('should return the location by location ID', async () => {
       const mockLocationId = 123
-      const mockLocation: Location = {
-        locationId: mockLocationId,
-        locationType: 'Cell',
-        description: 'Cell A1',
-        locationUsage: 'Standard',
-        agencyId: 'ABC123',
-        parentLocationId: 100,
-        currentOccupancy: 2,
-        locationPrefix: 'A',
-        operationalCapacity: 10,
-        userDescription: 'Single occupancy cell',
-        internalLocationCode: 'A1',
-        subLocations: false,
-      }
 
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
-      prisonApiClient.getLocationByLocationId.mockResolvedValue(mockLocation)
+      prisonApiClient.getLocationByLocationId.mockResolvedValue(location)
 
       const result = await prisonerProfileService.getLocationByLocationId(mockLocationId)
 
-      expect(result).toEqual(mockLocation)
+      expect(result).toEqual(location)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getLocationByLocationId).toHaveBeenCalledWith(mockLocationId)

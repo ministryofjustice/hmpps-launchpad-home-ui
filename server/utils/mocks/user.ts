@@ -1,6 +1,6 @@
+import { UserDetail } from '../../@types/prisonApiTypes'
 import { prisonAgencyIds } from '../../constants/prisons'
 
-// eslint-disable-next-line import/prefer-default-export
 export const user: Express.User = {
   idToken: {
     name: 'Name',
@@ -24,4 +24,19 @@ export const user: Express.User = {
   refreshToken: 'refreshToken',
   accessToken: 'accessToken',
   token: 'token',
+}
+
+export const staffUser: UserDetail = {
+  staffId: 231232,
+  username: 'DEMO_USER1',
+  firstName: 'John',
+  lastName: 'Smith',
+  thumbnailId: 2342341224,
+  activeCaseLoadId: 'MDI',
+  accountStatus: 'ACTIVE',
+  lockDate: '2021-07-05T10:35:17',
+  expiryDate: '2021-12-31T23:59:59',
+  lockedFlag: false,
+  expiredFlag: true,
+  active: true,
 }

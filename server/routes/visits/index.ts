@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import type { Services } from '../../services'
-import { getPaginationData } from '../../utils/pagination'
+import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,7 +14,7 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware('visits'),
     asyncHandler(async (req: Request, res: Response) => {
-      const { prisonerContentHubURL } = await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)
+      const { prisonerContentHubURL } = getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id) || {}
       const socialVisitorsRes = await services.prisonerProfileService.getSocialVisitors(req.user.idToken.sub)
 
       const paginationData = getPaginationData(Number(req.query.page), socialVisitorsRes.length)

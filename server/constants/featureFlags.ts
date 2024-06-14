@@ -1,13 +1,13 @@
-import { prisonAgencyIds } from './prisons'
-
 interface FeatureFlag {
   enabled: boolean
-  allowedPrisons: string[]
+  allowedPrisons: string[] | typeof ALLOW_ALL_PRISONS
 }
 
 interface FeatureFlags {
   [key: string]: FeatureFlag
 }
+
+export const ALLOW_ALL_PRISONS = 'ALL'
 
 export const Features = {
   Adjudications: 'adjudications',
@@ -15,18 +15,17 @@ export const Features = {
   Visits: 'visits',
 } as const
 
-// eslint-disable-next-line import/prefer-default-export
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
     enabled: false,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Transactions]: {
     enabled: true,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Visits]: {
     enabled: false,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
 }

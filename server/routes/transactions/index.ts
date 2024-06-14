@@ -9,7 +9,7 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
 import type { Services } from '../../services'
 
-import { createDateSelectionRange } from '../../utils/date'
+import { createDateSelectionRange } from '../../utils/date/date'
 import { createDamageObligationsTable } from '../../utils/transactions/createDamageObligationsTable'
 import { createTransactionTable } from '../../utils/transactions/createTransactionTable'
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'

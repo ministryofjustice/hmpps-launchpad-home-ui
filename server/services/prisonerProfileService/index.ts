@@ -27,9 +27,9 @@ import Timetable from '../../data/timetable'
 export default class PrisonerProfileService {
   constructor(
     private readonly hmppsAuthClient: HmppsAuthClient,
-    private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
-    private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
     private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
+    private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
+    private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
     private readonly prisonerContactRegistryApiClientFactory: RestClientBuilder<PrisonerContactRegistryApiClient>,
   ) {}
 
@@ -45,7 +45,7 @@ export default class PrisonerProfileService {
     fromDate: Date,
     toDate: Date,
   ): Promise<TimetableEvents> {
-    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
     const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
     const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
@@ -62,7 +62,7 @@ export default class PrisonerProfileService {
   }
 
   async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
-    const token = await this.hmppsAuthClient.getSystemClientToken() // dont do this on every request - do it once and store it in session
+    const token = await this.hmppsAuthClient.getSystemClientToken()
     const incentivesApiClient = this.incentivesApiClientFactory(token)
     const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
 

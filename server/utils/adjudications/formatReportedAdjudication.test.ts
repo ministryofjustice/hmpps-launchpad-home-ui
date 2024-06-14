@@ -1,5 +1,4 @@
 import { IncidentDetailsDto } from '../../@types/adjudicationsApiTypes'
-import { Location, UserDetail } from '../../@types/prisonApiTypes'
 
 import { HmppsAuthClient } from '../../data'
 
@@ -8,6 +7,8 @@ import { createMockLinksService, createMockPrisonerProfileService } from '../../
 import { UserDetails } from '../../services/userService'
 
 import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudications'
+import { location } from '../mocks/location'
+import { staffUser } from '../mocks/user'
 
 import { formatHearing, formatIncidentDetails, formatReportedAdjudication } from './formatReportedAdjudication'
 
@@ -17,48 +18,18 @@ class MockUserService extends UserService {
   }
 }
 
-const mockServices = {
+const services = {
   userService: new MockUserService({} as HmppsAuthClient),
   prisonerProfileService: createMockPrisonerProfileService(),
   linksService: createMockLinksService(),
 }
 
-const mockUser: UserDetail = {
-  staffId: 231232,
-  username: 'DEMO_USER1',
-  firstName: 'John',
-  lastName: 'Smith',
-  thumbnailId: 2342341224,
-  activeCaseLoadId: 'MDI',
-  accountStatus: 'ACTIVE',
-  lockDate: '2021-07-05T10:35:17',
-  expiryDate: '2021-12-31T23:59:59',
-  lockedFlag: false,
-  expiredFlag: true,
-  active: true,
-}
-
-const mockLocation: Location = {
-  locationId: 12345,
-  locationType: 'Prison',
-  description: 'Mock Location',
-  locationUsage: 'Cell Block',
-  agencyId: 'ABC',
-  parentLocationId: 67890,
-  currentOccupancy: 100,
-  locationPrefix: 'MB-',
-  operationalCapacity: 120,
-  userDescription: 'Main Building',
-  internalLocationCode: 'MB',
-  subLocations: false,
-}
-
 describe('formatReportedAdjudication', () => {
   it('should format reported adjudication', async () => {
-    mockServices.prisonerProfileService.getUserByUserId.mockResolvedValue(mockUser)
-    mockServices.prisonerProfileService.getLocationByLocationId.mockResolvedValue(mockLocation)
+    services.prisonerProfileService.getUserByUserId.mockResolvedValue(staffUser)
+    services.prisonerProfileService.getLocationByLocationId.mockResolvedValue(location)
 
-    const formattedReportedAdjudication = await formatReportedAdjudication(reportedAdjudication, mockServices)
+    const formattedReportedAdjudication = await formatReportedAdjudication(reportedAdjudication, services)
 
     expect(formattedReportedAdjudication).toEqual(formattedReportedAdjudication)
   })
@@ -85,18 +56,18 @@ describe('formatIncidentDetails', () => {
 
 describe('formatHearing', () => {
   it('should format hearing', async () => {
-    mockServices.prisonerProfileService.getLocationByLocationId.mockResolvedValue(mockLocation)
+    services.prisonerProfileService.getLocationByLocationId.mockResolvedValue(location)
 
     const formattedHearing = await formatHearing(
       reportedAdjudication.hearings[0],
       reportedAdjudication.offenceDetails,
       [],
-      mockServices,
+      services,
     )
 
     expect(formattedHearing).toEqual({
       ...formattedAdjudication.hearings[0],
-      location: mockLocation.userDescription,
+      location: location.userDescription,
       outcome: {
         ...formattedAdjudication.hearings[0].outcome,
         plea: 'Abstain',
