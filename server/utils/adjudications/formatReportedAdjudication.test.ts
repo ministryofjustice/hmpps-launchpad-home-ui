@@ -3,7 +3,13 @@ import { IncidentDetailsDto } from '../../@types/adjudicationsApiTypes'
 import { HmppsAuthClient } from '../../data'
 
 import { UserService } from '../../services'
-import { createMockLinksService, createMockPrisonerProfileService } from '../../services/testutils/mocks'
+import {
+  createMockAdjucationsService,
+  createMockIncentivesService,
+  createMockLinksService,
+  createMockPrisonService,
+  createMockPrisonerContactRegistryService,
+} from '../../services/testutils/mocks'
 import { UserDetails } from '../../services/userService'
 
 import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudications'
@@ -19,15 +25,18 @@ class MockUserService extends UserService {
 }
 
 const services = {
-  userService: new MockUserService({} as HmppsAuthClient),
-  prisonerProfileService: createMockPrisonerProfileService(),
+  adjudicationsService: createMockAdjucationsService(),
+  incentivesService: createMockIncentivesService(),
   linksService: createMockLinksService(),
+  prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
+  prisonService: createMockPrisonService(),
+  userService: new MockUserService({} as HmppsAuthClient),
 }
 
 describe('formatReportedAdjudication', () => {
   it('should format reported adjudication', async () => {
-    services.prisonerProfileService.getUserByUserId.mockResolvedValue(staffUser)
-    services.prisonerProfileService.getLocationByLocationId.mockResolvedValue(location)
+    services.prisonService.getUserByUserId.mockResolvedValue(staffUser)
+    services.prisonService.getLocationByLocationId.mockResolvedValue(location)
 
     const formattedReportedAdjudication = await formatReportedAdjudication(reportedAdjudication, services)
 
@@ -56,7 +65,7 @@ describe('formatIncidentDetails', () => {
 
 describe('formatHearing', () => {
   it('should format hearing', async () => {
-    services.prisonerProfileService.getLocationByLocationId.mockResolvedValue(location)
+    services.prisonService.getLocationByLocationId.mockResolvedValue(location)
 
     const formattedHearing = await formatHearing(
       reportedAdjudication.hearings[0],

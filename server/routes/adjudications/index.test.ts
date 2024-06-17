@@ -1,8 +1,8 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { createMockPrisonerProfileService } from '../../services/testutils/mocks'
-import { reportedAdjudication } from '../../utils/mocks/adjudications'
+import { createMockAdjucationsService } from '../../services/testutils/mocks'
+import { formattedAdjudication, reportedAdjudication } from '../../utils/mocks/adjudications'
 import { appWithAllRoutes } from '../testutils/appSetup'
 
 jest.mock('../../constants/featureFlags', () => ({
@@ -25,12 +25,16 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
   }
 })
 
+jest.mock('../../utils/adjudications/formatReportedAdjudication', () => ({
+  formatReportedAdjudication: jest.fn().mockResolvedValue(formattedAdjudication),
+}))
+
 let app: Express
 
-const prisonerProfileService = createMockPrisonerProfileService()
+const adjudicationsService = createMockAdjucationsService()
 
 const mockServices = {
-  prisonerProfileService,
+  adjudicationsService,
 }
 
 describe('GET /adjudications', () => {
@@ -38,27 +42,27 @@ describe('GET /adjudications', () => {
     jest.clearAllMocks()
 
     app = appWithAllRoutes({
-      services: { prisonerProfileService },
+      services: { adjudicationsService },
     })
   })
 
   it('should render the /adjudications view', async () => {
-    mockServices.prisonerProfileService.getReportedAdjudicationsFor.mockResolvedValue({
+    mockServices.adjudicationsService.getReportedAdjudicationsFor.mockResolvedValue({
       content: [reportedAdjudication],
     })
 
     const res = await request(app).get('/adjudications')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', '12345')
+    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', '12345')
   })
 
   it('should render the /adjudications/:chargeNumber view', async () => {
-    mockServices.prisonerProfileService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
 
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getReportedAdjudication).toHaveBeenCalledWith('12345', '12345')
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', '12345')
   })
 })

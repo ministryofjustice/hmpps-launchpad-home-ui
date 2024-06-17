@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+
 import {
   HearingDto,
   IncidentDetailsDto,
@@ -6,15 +7,15 @@ import {
   PunishmentDto,
   ReportedAdjudicationDto,
 } from '../../@types/adjudicationsApiTypes'
+
+import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
 import { convertToTitleCase } from '../utils'
-import { DateFormats } from '../../constants/date'
 
-// eslint-disable-next-line import/prefer-default-export
 export const formatReportedAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
   try {
-    const reportedBy = await services.prisonerProfileService.getUserByUserId(reportedAdjudication.createdByUserId)
-    const location = await services.prisonerProfileService.getLocationByLocationId(
+    const reportedBy = await services.prisonService?.getUserByUserId(reportedAdjudication.createdByUserId)
+    const location = await services.prisonService?.getLocationByLocationId(
       reportedAdjudication.incidentDetails.locationId,
     )
 
@@ -52,7 +53,7 @@ export const formatHearing = async (
   services: Services,
 ) => {
   try {
-    const location = await services.prisonerProfileService.getLocationByLocationId(hearing.locationId)
+    const location = await services.prisonService.getLocationByLocationId(hearing.locationId)
 
     return {
       ...hearing,

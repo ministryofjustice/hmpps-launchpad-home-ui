@@ -19,7 +19,7 @@ export default function routes(services: Services): Router {
       const { user } = res.locals
 
       const { prisonerContentHubURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id) || {}
-      const reportedAdjudications = await services.prisonerProfileService.getReportedAdjudicationsFor(
+      const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
       )
@@ -49,7 +49,7 @@ export default function routes(services: Services): Router {
       const { user } = res.locals
 
       const { prisonerContentHubURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id) || {}
-      const { reportedAdjudication } = await services.prisonerProfileService.getReportedAdjudication(
+      const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
       )

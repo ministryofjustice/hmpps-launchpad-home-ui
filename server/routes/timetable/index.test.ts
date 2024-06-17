@@ -2,16 +2,16 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { createMockPrisonerProfileService } from '../../services/testutils/mocks'
+import { createMockPrisonService } from '../../services/testutils/mocks'
 import { TimetableEvents } from '../../@types/launchpad'
 
 let app: Express
 
-const prisonerProfileService = createMockPrisonerProfileService()
+const prisonService = createMockPrisonService()
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { prisonerProfileService },
+    services: { prisonService },
   })
 })
 
@@ -421,7 +421,7 @@ describe('GET /timetable', () => {
       },
     }
 
-    prisonerProfileService.getEventsFor.mockResolvedValue(eventsData)
+    prisonService.getEventsFor.mockResolvedValue(eventsData)
   })
 
   afterEach(() => {
