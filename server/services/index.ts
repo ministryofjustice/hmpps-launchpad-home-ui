@@ -1,11 +1,11 @@
 import { dataAccess } from '../data'
 
-import AdjudicationsService from './adjudicationsService'
-import IncentivesService from './incentivesService'
-import LinksService from './linksService'
-import PrisonService from './prisonService'
-import PrisonerContactRegistryService from './prisonerContactRegistryService'
-import UserService from './userService'
+import AdjudicationsService from './adjudications'
+import IncentivesService from './incentives'
+import LinksService from './links'
+import PrisonService from './prison'
+import PrisonerContactRegistryService from './prisonerContactRegistry'
+import UserService from './user'
 
 export type Services = ReturnType<typeof services>
 

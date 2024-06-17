@@ -10,7 +10,7 @@ import {
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
 } from '../../services/testutils/mocks'
-import { UserDetails } from '../../services/userService'
+import { UserDetails } from '../../services/user'
 
 import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudications'
 import { location } from '../mocks/location'
