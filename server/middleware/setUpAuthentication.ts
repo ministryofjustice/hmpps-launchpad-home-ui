@@ -37,10 +37,11 @@ export default function setUpAuth(): Router {
       try {
         logger.debug(`Current cookie expiry is ${new Date(req.session.cookie.expires)}`)
         const parsedRefreshToken = JSON.parse(Buffer.from(req.user.refreshToken?.split('.')[1], 'base64').toString())
-        const cookieExpiresTime = new Date(parsedRefreshToken.exp * 1000)
+        const oneSecondInMillis = 1000
+        const refreshTokenExpInMillis = parsedRefreshToken.exp * oneSecondInMillis
 
-        req.session.cookie.expires = cookieExpiresTime
-        logger.debug(`Updated cookie expiry to ${cookieExpiresTime}`)
+        req.session.cookie.maxAge = refreshTokenExpInMillis - Date.now()
+        logger.debug(`Updated cookie expiry to ${new Date(req.session.cookie.expires)}`)
       } catch (e) {
         logger.error('Failed to parse refresh token')
       }
