@@ -12,12 +12,10 @@ import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
 import { convertToTitleCase } from '../utils'
 
-export const formatReportedAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
+export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
   try {
-    const reportedBy = await services.prisonService.getUserByUserId(reportedAdjudication.createdByUserId)
-    const location = await services.prisonService.getLocationByLocationId(
-      reportedAdjudication.incidentDetails.locationId,
-    )
+    const reportedBy = await services.prisonService.getUserById(reportedAdjudication.createdByUserId)
+    const location = await services.prisonService.getLocationById(reportedAdjudication.incidentDetails.locationId)
 
     const formattedIncidentDetails = formatIncidentDetails(reportedAdjudication.incidentDetails)
     const formattedHearings = await Promise.all(
@@ -53,7 +51,7 @@ export const formatHearing = async (
   services: Services,
 ) => {
   try {
-    const location = await services.prisonService.getLocationByLocationId(hearing.locationId)
+    const location = await services.prisonService.getLocationById(hearing.locationId)
 
     return {
       ...hearing,

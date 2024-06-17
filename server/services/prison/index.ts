@@ -44,17 +44,17 @@ export default class PrisonService {
     return results[format(today, DateFormats.ISO_DATE)]
   }
 
-  async getUserByUserId(userId: string): Promise<UserDetail> {
+  async getUserById(userId: string): Promise<UserDetail> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const user = await prisonApiClient.getUserByUserId(userId)
+    const user = await prisonApiClient.getUserById(userId)
     return user as UserDetail
   }
 
-  async getLocationByLocationId(locationId: number): Promise<Location> {
+  async getLocationById(locationId: number): Promise<Location> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const location = await prisonApiClient.getLocationByLocationId(locationId)
+    const location = await prisonApiClient.getLocationById(locationId)
     return location as Location
   }
 

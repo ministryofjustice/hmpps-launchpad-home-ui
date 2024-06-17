@@ -16,7 +16,7 @@ import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudicati
 import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
-import { formatHearing, formatIncidentDetails, formatReportedAdjudication } from './formatReportedAdjudication'
+import { formatHearing, formatIncidentDetails, formatAdjudication } from './formatAdjudication'
 
 class MockUserService extends UserService {
   async getUser(_token: string): Promise<UserDetails> {
@@ -33,12 +33,12 @@ const services = {
   userService: new MockUserService({} as HmppsAuthClient),
 }
 
-describe('formatReportedAdjudication', () => {
+describe('formatAdjudication', () => {
   it('should format reported adjudication', async () => {
-    services.prisonService.getUserByUserId.mockResolvedValue(staffUser)
-    services.prisonService.getLocationByLocationId.mockResolvedValue(location)
+    services.prisonService.getUserById.mockResolvedValue(staffUser)
+    services.prisonService.getLocationById.mockResolvedValue(location)
 
-    const formattedReportedAdjudication = await formatReportedAdjudication(reportedAdjudication, services)
+    const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
     expect(formattedReportedAdjudication).toEqual(formattedReportedAdjudication)
   })
@@ -65,7 +65,7 @@ describe('formatIncidentDetails', () => {
 
 describe('formatHearing', () => {
   it('should format hearing', async () => {
-    services.prisonService.getLocationByLocationId.mockResolvedValue(location)
+    services.prisonService.getLocationById.mockResolvedValue(location)
 
     const formattedHearing = await formatHearing(
       reportedAdjudication.hearings[0],

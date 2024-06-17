@@ -25,8 +25,8 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
   }
 })
 
-jest.mock('../../utils/adjudications/formatReportedAdjudication', () => ({
-  formatReportedAdjudication: jest.fn().mockResolvedValue(formattedAdjudication),
+jest.mock('../../utils/adjudications/formatAdjudication', () => ({
+  formatAdjudication: jest.fn().mockResolvedValue(formattedAdjudication),
 }))
 
 let app: Express

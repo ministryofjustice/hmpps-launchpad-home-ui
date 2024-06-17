@@ -5,9 +5,9 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
 import type { Services } from '../../services'
 
-import { formatReportedAdjudication } from '../../utils/adjudications/formatReportedAdjudication'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
+import { getEstablishmentLinksData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -53,7 +53,7 @@ export default function routes(services: Services): Router {
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
       )
-      const formattedAdjudication = await formatReportedAdjudication(reportedAdjudication, services)
+      const formattedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
       res.render('pages/adjudication', {
         givenName: user.idToken.given_name,

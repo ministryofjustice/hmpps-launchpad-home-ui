@@ -41,37 +41,37 @@ describe('PrisonerProfileService', () => {
     })
   })
 
-  describe('getUserByUserId', () => {
+  describe('getUserById', () => {
     it('should return a user by userId', async () => {
       const mockUserId = '123456'
 
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
-      prisonApiClient.getUserByUserId.mockResolvedValue(staffUser)
+      prisonApiClient.getUserById.mockResolvedValue(staffUser)
 
-      const result = await prisonService.getUserByUserId(mockUserId)
+      const result = await prisonService.getUserById(mockUserId)
 
       expect(result).toEqual(staffUser)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getUserByUserId).toHaveBeenCalledWith(mockUserId)
+      expect(prisonApiClient.getUserById).toHaveBeenCalledWith(mockUserId)
     })
   })
 
-  describe('getLocationByLocationId', () => {
+  describe('getLocationById', () => {
     it('should return the location by location ID', async () => {
       const mockLocationId = 123
 
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
-      prisonApiClient.getLocationByLocationId.mockResolvedValue(location)
+      prisonApiClient.getLocationById.mockResolvedValue(location)
 
-      const result = await prisonService.getLocationByLocationId(mockLocationId)
+      const result = await prisonService.getLocationById(mockLocationId)
 
       expect(result).toEqual(location)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getLocationByLocationId).toHaveBeenCalledWith(mockLocationId)
+      expect(prisonApiClient.getLocationById).toHaveBeenCalledWith(mockLocationId)
     })
   })
 })
