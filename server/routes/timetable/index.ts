@@ -23,7 +23,7 @@ export default function routes(services: Services): Router {
     const fromDate = new Date()
     const toDate = addDays(fromDate, 6)
 
-    const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
+    const events = await Promise.all([services.prisonService.getEventsFor(res.locals.user, fromDate, toDate)])
     const { prisonerContentHubURL } =
       (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
 
@@ -57,7 +57,7 @@ export default function routes(services: Services): Router {
     const fromDate = subDays(today, 7)
     const toDate = subDays(today, 1)
 
-    const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
+    const events = await Promise.all([services.prisonService.getEventsFor(res.locals.user, fromDate, toDate)])
 
     return res.render('pages/timetable', {
       givenName: res.locals.user.idToken.given_name,
@@ -89,7 +89,7 @@ export default function routes(services: Services): Router {
     const fromDate = addDays(today, 7)
     const toDate = addDays(fromDate, 6)
 
-    const events = await Promise.all([services.prisonerProfileService.getEventsFor(res.locals.user, fromDate, toDate)])
+    const events = await Promise.all([services.prisonService.getEventsFor(res.locals.user, fromDate, toDate)])
 
     return res.render('pages/timetable', {
       givenName: res.locals.user.idToken.given_name,

@@ -4,7 +4,7 @@ import request from 'supertest'
 import { AgencyType } from '../../constants/agency'
 import { AccountCodes } from '../../constants/transactions'
 
-import { createMockPrisonerProfileService } from '../../services/testutils/mocks'
+import { createMockPrisonService } from '../../services/testutils/mocks'
 
 import { balances } from '../../utils/mocks/balance'
 import { prison } from '../../utils/mocks/prison'
@@ -34,10 +34,10 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 
 let app: Express
 
-const prisonerProfileService = createMockPrisonerProfileService()
+const prisonService = createMockPrisonService()
 
 const mockServices = {
-  prisonerProfileService,
+  prisonService,
 }
 
 describe('GET /transactions', () => {
@@ -45,21 +45,21 @@ describe('GET /transactions', () => {
     jest.clearAllMocks()
 
     app = appWithAllRoutes({
-      services: { prisonerProfileService },
+      services: { prisonService },
     })
   })
 
   it('should render spends transactions', async () => {
-    mockServices.prisonerProfileService.getBalances.mockResolvedValue(balances)
-    mockServices.prisonerProfileService.getPrisonsByAgencyType.mockResolvedValue([prison])
-    mockServices.prisonerProfileService.getTransactions.mockResolvedValue([offenderTransaction])
+    mockServices.prisonService.getBalances.mockResolvedValue(balances)
+    mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
+    mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
 
     const res = await request(app).get('/transactions')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonerProfileService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
-    expect(mockServices.prisonerProfileService.getTransactions).toHaveBeenCalledWith(
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getTransactions).toHaveBeenCalledWith(
       expect.any(Object),
       AccountCodes.SPENDS,
       expect.any(Date),
@@ -68,16 +68,16 @@ describe('GET /transactions', () => {
   })
 
   it('should render private transactions', async () => {
-    mockServices.prisonerProfileService.getBalances.mockResolvedValue(balances)
-    mockServices.prisonerProfileService.getPrisonsByAgencyType.mockResolvedValue([prison])
-    mockServices.prisonerProfileService.getTransactions.mockResolvedValue([offenderTransaction])
+    mockServices.prisonService.getBalances.mockResolvedValue(balances)
+    mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
+    mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
 
     const res = await request(app).get('/transactions/private')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonerProfileService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
-    expect(mockServices.prisonerProfileService.getTransactions).toHaveBeenCalledWith(
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getTransactions).toHaveBeenCalledWith(
       expect.any(Object),
       AccountCodes.PRIVATE,
       expect.any(Date),
@@ -86,16 +86,16 @@ describe('GET /transactions', () => {
   })
 
   it('should render savings transactions', async () => {
-    mockServices.prisonerProfileService.getBalances.mockResolvedValue(balances)
-    mockServices.prisonerProfileService.getPrisonsByAgencyType.mockResolvedValue([prison])
-    mockServices.prisonerProfileService.getTransactions.mockResolvedValue([offenderTransaction])
+    mockServices.prisonService.getBalances.mockResolvedValue(balances)
+    mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
+    mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
 
     const res = await request(app).get('/transactions/savings')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonerProfileService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
-    expect(mockServices.prisonerProfileService.getTransactions).toHaveBeenCalledWith(
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getTransactions).toHaveBeenCalledWith(
       expect.any(Object),
       AccountCodes.SAVINGS,
       expect.any(Date),
@@ -104,17 +104,17 @@ describe('GET /transactions', () => {
   })
 
   it('should render damage obligations transactions', async () => {
-    mockServices.prisonerProfileService.getBalances.mockResolvedValue(balances)
-    mockServices.prisonerProfileService.getPrisonsByAgencyType.mockResolvedValue([prison])
-    mockServices.prisonerProfileService.getDamageObligations.mockResolvedValue({
+    mockServices.prisonService.getBalances.mockResolvedValue(balances)
+    mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
+    mockServices.prisonService.getDamageObligations.mockResolvedValue({
       damageObligations: [damageObligation],
     })
 
     const res = await request(app).get('/transactions/damage-obligations')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonerProfileService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
-    expect(mockServices.prisonerProfileService.getDamageObligations).toHaveBeenCalledWith(expect.any(Object))
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getDamageObligations).toHaveBeenCalledWith(expect.any(Object))
   })
 })

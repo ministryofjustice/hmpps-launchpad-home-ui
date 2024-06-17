@@ -12,7 +12,7 @@ export default function routes(services: Services): Router {
 
   get('/', async (req, res) => {
     const { user } = res.locals
-    const eventsData = await services.prisonerProfileService.getPrisonerEventsSummary(user)
+    const eventsData = await services.prisonService.getPrisonerEventsSummary(user)
     const linksData = await services.linksService.getHomepageLinks(user)
     const establishmentLinksData = getEstablishmentLinksData(user.idToken?.establishment?.agency_id)
     const hideHomepageEventsSummaryAndProfileLinkTile = establishmentLinksData
