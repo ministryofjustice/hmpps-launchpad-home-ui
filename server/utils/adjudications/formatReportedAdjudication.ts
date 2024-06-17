@@ -14,8 +14,8 @@ import { convertToTitleCase } from '../utils'
 
 export const formatReportedAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
   try {
-    const reportedBy = await services.prisonService?.getUserByUserId(reportedAdjudication.createdByUserId)
-    const location = await services.prisonService?.getLocationByLocationId(
+    const reportedBy = await services.prisonService.getUserByUserId(reportedAdjudication.createdByUserId)
+    const location = await services.prisonService.getLocationByLocationId(
       reportedAdjudication.incidentDetails.locationId,
     )
 
