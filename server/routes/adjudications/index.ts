@@ -55,6 +55,8 @@ export default function routes(services: Services): Router {
       )
       const formattedAdjudication = await formatReportedAdjudication(reportedAdjudication, services)
 
+      console.log({ formattedAdjudication: JSON.stringify(formattedAdjudication, null, 2) })
+
       res.render('pages/adjudication', {
         givenName: user.idToken.given_name,
         title: `View details of ${reportedAdjudication.chargeNumber}`,

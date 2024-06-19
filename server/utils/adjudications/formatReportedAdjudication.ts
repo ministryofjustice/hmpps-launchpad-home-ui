@@ -7,7 +7,7 @@ import {
   ReportedAdjudicationDto,
 } from '../../@types/adjudicationsApiTypes'
 import type { Services } from '../../services'
-import { convertToTitleCase } from '../utils'
+import { convertToTitleCase, toSentenceCase } from '../utils'
 import { DateFormats } from '../../constants/date'
 
 // eslint-disable-next-line import/prefer-default-export
@@ -58,7 +58,8 @@ export const formatHearing = async (
       ...hearing,
       dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
       location: `${location?.userDescription}`,
-      adjudicator: hearing.oicHearingType.includes('GOV') ? hearing.oicHearingType : `${hearing.outcome.adjudicator}`,
+      adjudicator: hearing.outcome.adjudicator || 'Unavailable',
+      oicHearingType: hearing.oicHearingType === 'GOV_ADULT' ? 'Adult' : 'YOI',
       outcome: {
         ...hearing.outcome,
         plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
@@ -70,6 +71,7 @@ export const formatHearing = async (
           punishment.schedule.suspendedUntil || punishment.schedule.startDate,
           DateFormats.GDS_PRETTY_DATE,
         ),
+        type: toSentenceCase(punishment.type),
       })),
     }
   } catch (error) {

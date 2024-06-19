@@ -17,7 +17,7 @@ export const Features = {
 
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
-    enabled: false,
+    enabled: true,
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Transactions]: {
@@ -25,7 +25,7 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Visits]: {
-    enabled: false,
+    enabled: true,
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
 }
