@@ -36,14 +36,9 @@ export default function routes(services: Services): Router {
     const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
     const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 
-    const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
-    const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
-    const transactions = await services.prisonerProfileService.getTransactions(
-      req.user,
-      accountCode,
-      dateRangeFrom,
-      dateRangeTo,
-    )
+    const balances = await services.prisonService.getBalances(req.user.idToken.booking.id)
+    const prisons = await services.prisonService.getPrisonsByAgencyType(AgencyType.INST)
+    const transactions = await services.prisonService.getTransactions(req.user, accountCode, dateRangeFrom, dateRangeTo)
 
     const transactionsWithPrison = transactions.map(transaction => {
       const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
@@ -72,9 +67,9 @@ export default function routes(services: Services): Router {
     const { prisonerContentHubURL } =
       (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
 
-    const balances = await services.prisonerProfileService.getBalances(req.user.idToken.booking.id)
-    const prisons = await services.prisonerProfileService.getPrisonsByAgencyType(AgencyType.INST)
-    const { damageObligations } = await services.prisonerProfileService.getDamageObligations(req.user)
+    const balances = await services.prisonService.getBalances(req.user.idToken.booking.id)
+    const prisons = await services.prisonService.getPrisonsByAgencyType(AgencyType.INST)
+    const { damageObligations } = await services.prisonService.getDamageObligations(req.user)
 
     const damageObligationsWithPrison = damageObligations.map(damageObligation => {
       const prisonDescription = prisons.find(p => p.agencyId === damageObligation.prisonId)?.description || ''

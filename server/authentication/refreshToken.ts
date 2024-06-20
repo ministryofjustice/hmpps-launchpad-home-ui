@@ -23,7 +23,6 @@ export const millisecondsPlusMinutesInSeconds = (now: number, minutes: number): 
 }
 
 export const tokenHasNotExpired = (token: IdToken | RefreshToken, nowEpochPlusMinutes: number): boolean => {
-  logger.info(`Check if token has not expired given exp is ${token.exp} and current time is ${nowEpochPlusMinutes}`)
   return token.exp >= nowEpochPlusMinutes
 }
 
@@ -81,6 +80,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
     )
   ) {
     try {
+      logger.info(`Refresh token`)
       const updatedTokensResponse: UpdatedTokensResponse = await getUpdatedToken(refreshToken)
 
       // updates req.user for the current request
