@@ -1,4 +1,10 @@
-import { convertToTitleCase, generateBasicAuthHeader, getEstablishmentLinksData, initialiseName } from './utils'
+import {
+  convertToTitleCase,
+  generateBasicAuthHeader,
+  getEstablishmentLinksData,
+  initialiseName,
+  toSentenceCase,
+} from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -108,5 +114,73 @@ describe('get establishment link data', () => {
 
   it('it should return null when an unknown agency id is provided', () => {
     expect(getEstablishmentLinksData('ABC')).toBeNull()
+  })
+})
+
+describe('toSentenceCase', () => {
+  it('should convert an uppercase string to sentence case', () => {
+    const input = 'THIS IS AN UPPERCASE STRING'
+    const expectedOutput = 'This is an uppercase string'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should convert a mixed-case string to sentence case', () => {
+    const input = 'tHiS Is a MiXeD CaSe StRiNg'
+    const expectedOutput = 'This is a mixed case string'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should convert a lowercase string to sentence case', () => {
+    const input = 'this is a lowercase string'
+    const expectedOutput = 'This is a lowercase string'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle an empty string', () => {
+    const input = ''
+    const expectedOutput = ''
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with one character', () => {
+    const input = 'a'
+    const expectedOutput = 'A'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with one uppercase character', () => {
+    const input = 'A'
+    const expectedOutput = 'A'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with special characters', () => {
+    const input = '!@#$%^&*()'
+    const expectedOutput = '!@#$%^&*()'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with numbers', () => {
+    const input = '12345'
+    const expectedOutput = '12345'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with leading spaces', () => {
+    const input = '    leading spaces'
+    const expectedOutput = '    leading spaces'
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with trailing spaces', () => {
+    const input = 'trailing spaces    '
+    const expectedOutput = 'Trailing spaces    '
+    expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+
+  it('should handle a string with leading and trailing spaces', () => {
+    const input = '    leading and trailing spaces    '
+    const expectedOutput = '    leading and trailing spaces    '
+    expect(toSentenceCase(input)).toBe(expectedOutput)
   })
 })
