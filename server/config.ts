@@ -150,6 +150,11 @@ export default {
       hideHomepageEventsSummaryAndProfileLinkTile: true,
     },
     {
+      agencyId: 'CDI',
+      prisonerContentHubURL: 'https://chelmsford.content-hub.prisoner.service.justice.gov.uk',
+      selfServiceURL: 'https://cdiclient.unilink.prisoner.service.justice.gov.uk:1126',
+    },
+    {
       agencyId: 'CKI',
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
