@@ -75,7 +75,7 @@
     </div>
       
     {% if data.transactions.isEnabled %}
-      {{ transactionsPanel(data.transactions.readMoreUrl) }}
+      {{ transactionsPanel(data.transactions.balances, data.transactions.readMoreUrl) }}
     {% endif %}
 
     {% if data.visits.isEnabled %}

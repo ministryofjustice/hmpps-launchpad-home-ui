@@ -1,16 +1,16 @@
 {% from "../../image-card/index.njk" import imageCard %}
 {% from "../../transactions/card.njk" import transactionsCard %}
 
-{% macro transactionsPanel(readMoreUrl) %}
+{% macro transactionsPanel(balances, readMoreUrl) %}
 <div class="card-background">
   <div class="govuk-width-container" data-test="transactions-container">
     <h2 class="govuk-heading-m">Money</h2>
     
     <ul class="govuk-grid-row card-group">
       {% for transaction in [
-        {'heading': 'Spends', 'link': '/transactions/spends'}, 
-        {'heading': 'Private', 'link': '/transactions/private'}, 
-        {'heading': 'Savings', 'link': '/transactions/savings'}
+        {'heading': 'Spends', 'link': '/transactions/spends', 'balance': balances.spends}, 
+        {'heading': 'Private', 'link': '/transactions/private', 'balance': balances.cash}, 
+        {'heading': 'Savings', 'link': '/transactions/savings', 'balance': balances.savings}
       ] %}
         <li class="govuk-grid-column-one-quarter card-group__item">
           {{ transactionsCard(transaction) }}

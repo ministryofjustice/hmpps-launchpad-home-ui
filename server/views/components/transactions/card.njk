@@ -1,7 +1,14 @@
 {% macro transactionsCard(params) %}
-<div class="card card__content card--clickable">
-  <h3 class="govuk-heading-m">
+<div class="card card__content card--clickable toggle-sensitive">
+  <h3 class="govuk-heading-m card__heading card-title">
     <a href="{{ params.link }}" class="govuk-link govuk-link--no-visited-state card_link">{{ params.heading }}</a>
+    <span class="open hidden">-</span><span class="closed">+</span>
   </h3>
+
+  <div class="hidden sensitive">
+    <p>My current balance is:</p>
+    <strong data-test="money-spends">{{ params.balance }}</strong>
+  </div>
 </div>
 {% endmacro %}
+

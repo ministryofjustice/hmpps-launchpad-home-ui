@@ -9,38 +9,10 @@
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
         rows: [
-          {
-            key: {
-              text: "What"
-            },
-            value: {
-              text: hearing.oicHearingType
-            }
-          },
-          {
-            key: {
-              text: "Where"
-            },
-            value: {
-              text: hearing.location
-            }
-          },
-          {
-            key: {
-              text: "Heard by"
-            },
-            value: {
-              text: hearing.adjudicator
-            }
-          },
-          {
-            key: {
-              text: "Comments"
-            },
-            value: {
-              text: hearing.outcome.details
-            }
-          }
+          { key: { text: "What" }, value: { text: "Governor's Hearing " + hearing.oicHearingType } },
+          { key: { text: "Where" }, value: { text: hearing.location } },
+          { key: { text: "Heard by" }, value: { text: hearing.adjudicator } },
+          { key: { text: "Comments" }, value: { text: hearing.outcome.details } }
         ]
       }) }}
 
