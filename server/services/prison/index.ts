@@ -2,35 +2,18 @@ import { format } from 'date-fns'
 
 import logger from '../../../logger'
 
-import {
-  HasAdjudicationsResponse,
-  PageReportedAdjudicationDto,
-  ReportedAdjudicationApiResponse,
-} from '../../@types/adjudicationsApiTypes'
-import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
 import { EventsData, TimetableEvents, TimetableRow } from '../../@types/launchpad'
 import { Location, UserDetail } from '../../@types/prisonApiTypes'
 
-import { ADJUDICATION_STATUSES } from '../../constants/adjudications'
 import { DateFormats } from '../../constants/date'
 
-import {
-  AdjudicationsApiClient,
-  HmppsAuthClient,
-  IncentivesApiClient,
-  PrisonApiClient,
-  PrisonerContactRegistryApiClient,
-  RestClientBuilder,
-} from '../../data'
+import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 import Timetable from '../../data/timetable'
 
-export default class PrisonerProfileService {
+export default class PrisonService {
   constructor(
     private readonly hmppsAuthClient: HmppsAuthClient,
-    private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
-    private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
-    private readonly prisonerContactRegistryApiClientFactory: RestClientBuilder<PrisonerContactRegistryApiClient>,
   ) {}
 
   async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
@@ -61,68 +44,17 @@ export default class PrisonerProfileService {
     return results[format(today, DateFormats.ISO_DATE)]
   }
 
-  async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const incentivesApiClient = this.incentivesApiClientFactory(token)
-    const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
-
-    return incentivesData
-  }
-
-  async hasAdjudications(user: {
-    idToken: { booking: { id: string }; establishment: { agency_id: string } }
-  }): Promise<HasAdjudicationsResponse> {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
-    const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(
-      user.idToken.booking.id,
-      user.idToken.establishment.agency_id,
-    )
-
-    return userHasAdjudications
-  }
-
-  async getReportedAdjudicationsFor(bookingId: string, prisonId: string): Promise<PageReportedAdjudicationDto> {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
-
-    const statusQueryParam = ADJUDICATION_STATUSES.map(status => `&status=${status}`).join('')
-
-    const { content, ...rest } = await adjudicationsApiClient.getReportedAdjudicationsFor(
-      bookingId,
-      prisonId,
-      statusQueryParam,
-    )
-
-    const formattedContent = content.map(adjudication => ({
-      ...adjudication,
-      createdDateTime: format(adjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
-    }))
-
-    return {
-      ...rest,
-      content: formattedContent,
-    }
-  }
-
-  async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
-
-    return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
-  }
-
-  async getUserByUserId(userId: string): Promise<UserDetail> {
+  async getUserById(userId: string): Promise<UserDetail> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const user = await prisonApiClient.getUserByUserId(userId)
+    const user = await prisonApiClient.getUserById(userId)
     return user as UserDetail
   }
 
-  async getLocationByLocationId(locationId: number): Promise<Location> {
+  async getLocationById(locationId: number): Promise<Location> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const location = await prisonApiClient.getLocationByLocationId(locationId)
+    const location = await prisonApiClient.getLocationById(locationId)
     return location as Location
   }
 
@@ -173,19 +105,6 @@ export default class PrisonerProfileService {
       return prisonApiClient.getDamageObligations(user.idToken.sub)
     } catch (e) {
       logger.error('Failed to get damage obligations for user', e)
-      logger.debug(e.stack)
-      return null
-    }
-  }
-
-  async getSocialVisitors(prisonerId: string) {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const prisonerContactRegistryApiClient = this.prisonerContactRegistryApiClientFactory(token)
-
-    try {
-      return prisonerContactRegistryApiClient.getSocialVisitors(prisonerId)
-    } catch (e) {
-      logger.error('Failed to get social visitors for user', e)
       logger.debug(e.stack)
       return null
     }

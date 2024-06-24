@@ -1,7 +1,7 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { createMockPrisonerProfileService } from '../../services/testutils/mocks'
+import { createMockPrisonerContactRegistryService } from '../../services/testutils/mocks'
 import { prisonerContact } from '../../utils/mocks/visitors'
 import { appWithAllRoutes } from '../testutils/appSetup'
 
@@ -28,10 +28,10 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 
 let app: Express
 
-const prisonerProfileService = createMockPrisonerProfileService()
+const prisonerContactRegistryService = createMockPrisonerContactRegistryService()
 
 const mockServices = {
-  prisonerProfileService,
+  prisonerContactRegistryService,
 }
 
 describe('GET /visits', () => {
@@ -39,16 +39,16 @@ describe('GET /visits', () => {
     jest.clearAllMocks()
 
     app = appWithAllRoutes({
-      services: { prisonerProfileService },
+      services: { prisonerContactRegistryService },
     })
   })
 
   it('should render the /visits view', async () => {
-    mockServices.prisonerProfileService.getSocialVisitors.mockResolvedValue([prisonerContact])
+    mockServices.prisonerContactRegistryService.getSocialVisitors.mockResolvedValue([prisonerContact])
 
     const res = await request(app).get('/visits')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerProfileService.getSocialVisitors).toHaveBeenCalledWith('sub')
+    expect(mockServices.prisonerContactRegistryService.getSocialVisitors).toHaveBeenCalledWith('sub')
   })
 })

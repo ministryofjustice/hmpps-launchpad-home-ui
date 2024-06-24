@@ -17,15 +17,16 @@ export default function routes(services: Services): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
-    const timetableEvents = await Promise.all([
-      services.prisonerProfileService.getEventsForToday(res.locals.user, new Date()),
-    ])
+    const timetableEvents = await Promise.all([services.prisonService.getEventsForToday(res.locals.user, new Date())])
 
     const prisonId = res.locals.user.idToken.establishment.agency_id
+
     const { prisonerContentHubURL } = await getEstablishmentLinksData(prisonId)
-    const { hasAdjudications } = await services.prisonerProfileService.hasAdjudications(res.locals.user)
-    const incentivesData = await services.prisonerProfileService.getIncentivesSummaryFor(res.locals.user)
-    const nextVisit = await services.prisonerProfileService.getNextVisit(res.locals.user.idToken.booking.id)
+    const { hasAdjudications } = await services.adjudicationsService.hasAdjudications(res.locals.user)
+
+    const incentivesData = await services.incentivesService.getIncentivesSummaryFor(res.locals.user)
+    const nextVisit = await services.prisonService.getNextVisit(res.locals.user.idToken.booking.id)
+    const transactionsBalances = await services.prisonService.getBalances(req.user.idToken.booking.id)
 
     const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
     const isTransactionsEnabled = isFeatureEnabled(Features.Transactions, prisonId)
@@ -59,6 +60,7 @@ export default function routes(services: Services): Router {
           readMoreUrl: `${prisonerContentHubURL}/tags/1341`,
         },
         transactions: {
+          balances: transactionsBalances,
           readMoreUrl: `${prisonerContentHubURL}/tags/872`,
           isEnabled: isTransactionsEnabled,
         },
