@@ -62,13 +62,13 @@ export default class PrisonApiClient {
     })
   }
 
-  async getUserByUserId(userId: string) {
+  async getUserById(userId: string) {
     return this.restClient.get({
       path: `/api/users/${userId}`,
     })
   }
 
-  async getLocationByLocationId(locationId: number) {
+  async getLocationById(locationId: number) {
     return this.restClient.get({
       path: `/api/locations/${locationId}`,
     })

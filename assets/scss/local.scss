@@ -3,5 +3,9 @@
 }
 
 .container-background-black {
-  background-color:  govuk-colour("black");
+  background-color: govuk-colour('black');
+}
+
+.hidden {
+  display: none;
 }

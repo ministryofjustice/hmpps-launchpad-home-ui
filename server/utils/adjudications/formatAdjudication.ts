@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+
 import {
   HearingDto,
   IncidentDetailsDto,
@@ -6,17 +7,15 @@ import {
   PunishmentDto,
   ReportedAdjudicationDto,
 } from '../../@types/adjudicationsApiTypes'
-import type { Services } from '../../services'
-import { convertToTitleCase } from '../utils'
-import { DateFormats } from '../../constants/date'
 
-// eslint-disable-next-line import/prefer-default-export
-export const formatReportedAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
+import { DateFormats } from '../../constants/date'
+import type { Services } from '../../services'
+import { convertToTitleCase, toSentenceCase } from '../utils'
+
+export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
   try {
-    const reportedBy = await services.prisonerProfileService.getUserByUserId(reportedAdjudication.createdByUserId)
-    const location = await services.prisonerProfileService.getLocationByLocationId(
-      reportedAdjudication.incidentDetails.locationId,
-    )
+    const reportedBy = await services.prisonService.getUserById(reportedAdjudication.createdByUserId)
+    const location = await services.prisonService.getLocationById(reportedAdjudication.incidentDetails.locationId)
 
     const formattedIncidentDetails = formatIncidentDetails(reportedAdjudication.incidentDetails)
     const formattedHearings = await Promise.all(
@@ -52,13 +51,14 @@ export const formatHearing = async (
   services: Services,
 ) => {
   try {
-    const location = await services.prisonerProfileService.getLocationByLocationId(hearing.locationId)
+    const location = await services.prisonService.getLocationById(hearing.locationId)
 
     return {
       ...hearing,
       dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
       location: `${location?.userDescription}`,
-      adjudicator: hearing.oicHearingType.includes('GOV') ? hearing.oicHearingType : `${hearing.outcome.adjudicator}`,
+      adjudicator: hearing.outcome.adjudicator || 'Unavailable',
+      oicHearingType: hearing.oicHearingType === 'GOV_ADULT' ? 'Adult' : 'YOI',
       outcome: {
         ...hearing.outcome,
         plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
@@ -70,6 +70,7 @@ export const formatHearing = async (
           punishment.schedule.suspendedUntil || punishment.schedule.startDate,
           DateFormats.GDS_PRETTY_DATE,
         ),
+        type: toSentenceCase(punishment.type),
       })),
     }
   } catch (error) {

@@ -2,13 +2,13 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { createMockPrisonerProfileService, createMockLinksService } from '../../services/testutils/mocks'
+import { createMockPrisonService, createMockLinksService } from '../../services/testutils/mocks'
 import { EventsData, PrisonerEvent, Link, LinksData } from '../../@types/launchpad'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 let app: Express
 
-const prisonerProfileService = createMockPrisonerProfileService()
+const prisonService = createMockPrisonService()
 const linksService = createMockLinksService()
 jest.mock('../../utils/utils', () => ({
   ...jest.requireActual('../../utils/utils'),
@@ -17,7 +17,7 @@ jest.mock('../../utils/utils', () => ({
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { prisonerProfileService, linksService },
+    services: { prisonService, linksService },
   })
 })
 
@@ -68,7 +68,7 @@ describe('GET /', () => {
       prisonerEvents,
     }
 
-    prisonerProfileService.getPrisonerEventsSummary.mockResolvedValue(eventsData)
+    prisonService.getPrisonerEventsSummary.mockResolvedValue(eventsData)
 
     links = [
       {
