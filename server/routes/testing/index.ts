@@ -10,12 +10,14 @@ import { formatAdjudication } from '../../utils/adjudications/formatAdjudication
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
+const testUrlPrefix = '/ib48d19u'
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
   const router = Router()
 
   router.get(
-    '/ib48d19u/profile',
+    `${testUrlPrefix}/profile`,
     asyncHandler(async (req: Request, res: Response) => {
       const timetableEvents = await Promise.all([services.prisonService.getEventsForToday(res.locals.user, new Date())])
 
@@ -73,7 +75,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/ib48d19u/adjudications',
+    `${testUrlPrefix}/adjudications`,
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 
@@ -102,7 +104,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/ib48d19u/adjudications/:chargeNumber',
+    `${testUrlPrefix}/adjudications/:chargeNumber`,
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 
@@ -125,7 +127,7 @@ export default function routes(services: Services): Router {
   )
 
   router.get(
-    '/ib48d19u/visits',
+    `${testUrlPrefix}/visits`,
     asyncHandler(async (req: Request, res: Response) => {
       const { prisonerContentHubURL } = getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id) || {}
       const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(req.user.idToken.sub)
