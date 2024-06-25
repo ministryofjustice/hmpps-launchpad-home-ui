@@ -18,6 +18,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import adjudicationsRoutes from './routes/adjudications'
 import indexRoutes from './routes/homepage'
 import profileRoutes from './routes/profile'
+import testingRoutes from './routes/testing'
 import timetableRoutes from './routes/timetable'
 import transactionsRoutes from './routes/transactions'
 import visitsRoutes from './routes/visits'
@@ -50,6 +51,8 @@ export default function createApp(services: Services): express.Application {
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', transactionsRoutes(services))
   app.use('/visits', visitsRoutes(services))
+
+  app.use('/testing', testingRoutes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
