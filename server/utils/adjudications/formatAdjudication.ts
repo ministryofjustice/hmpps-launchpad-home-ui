@@ -66,10 +66,10 @@ export const formatHearing = async (
       offenceDetails,
       punishments: punishments.map(punishment => ({
         ...punishment,
-        effectiveDate: format(
-          punishment.schedule.suspendedUntil || punishment.schedule.startDate,
-          DateFormats.GDS_PRETTY_DATE,
-        ),
+        effectiveDate:
+          punishment.schedule.suspendedUntil || punishment.schedule.startDate
+            ? format(punishment.schedule.suspendedUntil || punishment.schedule.startDate, DateFormats.GDS_PRETTY_DATE)
+            : 'Unavailable',
         type: toSentenceCase(punishment.type),
       })),
     }
