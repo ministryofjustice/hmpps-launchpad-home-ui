@@ -11,18 +11,19 @@ generic-service:
     enabled: true
 
   env:
-    INGRESS_URL: "https://launchpad-home-dev.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-    NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-    PRISON_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
-    INCENTIVES_API_URL: "https://incentives-api-dev.hmpps.service.justice.gov.uk"
-    PRISONER_CONTACT_REGISTRY_API_URL: "https://prisoner-contact-registry-dev.prison.service.justice.gov.uk"
-    ADJUDICATIONS_API_URL: "https://manage-adjudications-api-dev.hmpps.service.justice.gov.uk"
-    LAUNCHPAD_AUTH_URL: "https://launchpad-auth-dev.hmpps.service.justice.gov.uk"
-    GA4_SITE_ID: "G-EJVJ26SLFY"
+    INGRESS_URL: 'https://launchpad-home-dev.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    NOMIS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
+    PRISON_API_URL: 'https://prison-api-dev.prison.service.justice.gov.uk'
+    INCENTIVES_API_URL: 'https://incentives-api-dev.hmpps.service.justice.gov.uk'
+    PRISONER_CONTACT_REGISTRY_API_URL: 'https://prisoner-contact-registry-dev.prison.service.justice.gov.uk'
+    ADJUDICATIONS_API_URL: 'https://manage-adjudications-api-dev.hmpps.service.justice.gov.uk'
+    LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-dev.hmpps.service.justice.gov.uk'
+    GA4_SITE_ID: 'G-EJVJ26SLFY'
 
   allowlist:
+    uservision-accessibility-testers: 5.181.59.114/32
     groups:
       - internal
 
