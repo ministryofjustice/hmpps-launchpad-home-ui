@@ -144,6 +144,11 @@ export default {
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   establishments: [
     {
+      agencyId: 'BNI',
+      prisonerContentHubURL: 'https://bullingdon.content-hub.prisoner.service.justice.gov.uk',
+      selfServiceURL: 'https://bniclient.unilink.prisoner.service.justice.gov.uk:1128',
+    },
+    {
       agencyId: 'BWI',
       prisonerContentHubURL: 'https://berwyn.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bwiclient.unilink.prisoner.service.justice.gov.uk:1108',
