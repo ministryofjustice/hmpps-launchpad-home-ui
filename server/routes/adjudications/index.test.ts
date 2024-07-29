@@ -6,6 +6,12 @@ import { formattedAdjudication, reportedAdjudication } from '../../utils/mocks/a
 import { appWithAllRoutes } from '../testutils/appSetup'
 
 jest.mock('../../constants/featureFlags', () => ({
+  Features: {
+    Adjudications: 'adjudications',
+    Settings: 'settings',
+    Transactions: 'transactions',
+    Visits: 'visits',
+  },
   featureFlags: {
     adjudications: {
       enabled: true,

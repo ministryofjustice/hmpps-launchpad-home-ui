@@ -1,8 +1,12 @@
 import { Request, Response, Router } from 'express'
 
+import { Features } from '../../constants/featureFlags'
+
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
+
 import type { Services } from '../../services'
+
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
@@ -12,7 +16,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/',
-    featureFlagMiddleware('visits'),
+    featureFlagMiddleware(Features.Visits),
     asyncHandler(async (req: Request, res: Response) => {
       const { prisonerContentHubURL } = getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id) || {}
       const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(req.user.idToken.sub)

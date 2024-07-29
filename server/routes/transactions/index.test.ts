@@ -13,6 +13,12 @@ import { damageObligation, offenderTransaction } from '../../utils/mocks/transac
 import { appWithAllRoutes } from '../testutils/appSetup'
 
 jest.mock('../../constants/featureFlags', () => ({
+  Features: {
+    Adjudications: 'adjudications',
+    Settings: 'settings',
+    Transactions: 'transactions',
+    Visits: 'visits',
+  },
   featureFlags: {
     transactions: {
       enabled: true,

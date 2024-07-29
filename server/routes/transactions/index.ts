@@ -16,6 +16,7 @@ import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAc
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 import { getConfig } from '../config'
+import { Features } from '../../constants/featureFlags'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -109,7 +110,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/damage-obligations',
-    featureFlagMiddleware('transactions'),
+    featureFlagMiddleware(Features.Transactions),
     asyncHandler(renderDamageObligationsTransactions),
   )
 

@@ -7,6 +7,12 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 
 jest.mock('../../constants/featureFlags', () => ({
   ALLOW_ALL_PRISONS: 'ALL',
+  Features: {
+    Adjudications: 'adjudications',
+    Settings: 'settings',
+    Transactions: 'transactions',
+    Visits: 'visits',
+  },
   featureFlags: {
     visits: {
       enabled: true,
