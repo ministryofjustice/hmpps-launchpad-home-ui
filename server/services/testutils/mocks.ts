@@ -1,9 +1,10 @@
 import {
   AdjudicationsService,
   IncentivesService,
+  LaunchpadAuthService,
   LinksService,
-  PrisonerContactRegistryService,
   PrisonService,
+  PrisonerContactRegistryService,
 } from '..'
 
 jest.mock('..')
@@ -19,3 +20,6 @@ export const createMockPrisonService = () => new PrisonService(null, null) as je
 
 export const createMockPrisonerContactRegistryService = () =>
   new PrisonerContactRegistryService(null, null) as jest.Mocked<PrisonerContactRegistryService>
+
+export const createMockLaunchadAuthService = () =>
+  new LaunchpadAuthService(null, null) as jest.Mocked<LaunchpadAuthService>
