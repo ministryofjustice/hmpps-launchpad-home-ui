@@ -1,5 +1,7 @@
 import { Request, Response, Router } from 'express'
 
+import { Features } from '../../constants/featureFlags'
+
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
@@ -14,7 +16,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/',
-    featureFlagMiddleware('adjudications'),
+    featureFlagMiddleware(Features.Adjudications),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 

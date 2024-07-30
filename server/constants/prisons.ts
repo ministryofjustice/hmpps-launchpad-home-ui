@@ -1,7 +1,9 @@
 // eslint-disable-next-line import/prefer-default-export
 export const prisonAgencyIds = {
   Berwyn: 'BWI',
+  Bullingdon: 'BNI',
   CookhamWood: 'CKI',
+  Chelmsford: 'CDI',
   Erlestoke: 'EEI',
   FelthamA: 'FYI',
   FelthamB: 'FMI',
