@@ -10,8 +10,8 @@ import { formatDate } from '../../utils/date/date'
 
 import { ApprovedClients } from '../../@types/launchpad'
 import type { Services } from '../../services'
+import { getPaginationData } from '../../utils/pagination/pagination'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
   const router = Router()
 
@@ -22,23 +22,25 @@ export default function routes(services: Services): Router {
       const { user } = res.locals
       const approvedClients = await services.launchpadAuthService.getApprovedClients(user.idToken.sub, user.accessToken)
 
-      const createClientsArray = (data: ApprovedClients) =>
-        data.content.flatMap(({ logoUri, name, createdDate, scopes, autoApprove }) =>
-          Array(5).fill({
-            logoUri,
-            name,
-            accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
-            permissions: scopes.map(scope => scope.humanReadable),
-            autoApprove,
-          }),
-        )
+      const formatApprovedClients = (clients: ApprovedClients) =>
+        clients.content.map(({ logoUri, name, createdDate, scopes, autoApprove }) => ({
+          logoUri,
+          name,
+          accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
+          permissions: scopes.map(scope => scope.humanReadable),
+          autoApprove,
+        }))
 
-      return res.render('pages/settings', {
+      const formattedClients = formatApprovedClients(approvedClients)
+      const paginationData = getPaginationData(Number(req.query.page), formattedClients.length, 3)
+      const paginatedClients = formattedClients.slice(paginationData.min - 1, paginationData.max)
+
+      res.render('pages/settings', {
         title: 'Settings',
         data: {
-          approvedClients: createClientsArray(approvedClients),
-          // paginationData,
-          // rawQuery: req.query.page,
+          approvedClients: paginatedClients,
+          paginationData,
+          rawQuery: req.query.page,
         },
         errors: req.flash('errors'),
         message: req.flash('message'),
