@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: maintenance-page-launchpad-home-svc
+  labels:
+    app: maintenance-page-launchpad-home-svc
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8080
+  selector:
+    app: maintenance-page-launchpad-home
