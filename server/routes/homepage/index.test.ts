@@ -210,7 +210,7 @@ describe('GET /', () => {
         expect($('#events-summary-wrapper h2').text()).toBe("Today's events")
         expect($('#events-summary-wrapper a').attr('href')).toBe(`/timetable`)
         expect($('#events-summary-wrapper a').text()).toBe('View my timetable')
-        expect($('#internal-link-tile-profile a').attr('href')).toBe(`${CONTENT_HUB_URL}/profile`)
+        expect($('#internal-link-tile-profile a').attr('href')).toBe(`/profile`)
         expect($('#internal-link-tile-profile a h2').text()).toBe('Profile')
         expect($('#internal-link-tile-profile a p').text()).toBe(
           'Check money, visits, IEP, adjudications and timetable',
