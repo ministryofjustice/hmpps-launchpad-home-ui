@@ -3,18 +3,27 @@ import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
 
 export default class LaunchpadAuthClient {
-  public restClient: RestClient
+  public readonly restClient: RestClient
 
   constructor(token: string) {
     this.restClient = new RestClient('launchpadAuthClient', config.apis.launchpadAuth as ApiConfig, token)
   }
 
-  async getApprovedClients(prisonId: string, accessToken: string) {
-    return (await this.restClient.get({
+  async getApprovedClients(prisonId: string, accessToken: string): Promise<ApprovedClients> {
+    return this.restClient.get<ApprovedClients>({
       path: `/v1/users/${prisonId}/clients`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    })) as ApprovedClients
+    })
+  }
+
+  async removeClientAccess(clientId: string, userId: string, accessToken: string): Promise<void> {
+    return this.restClient.delete<void>({
+      path: `/v1/users/${userId}/clients/${clientId}`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
   }
 }

@@ -23,7 +23,8 @@ export default function routes(services: Services): Router {
       const approvedClients = await services.launchpadAuthService.getApprovedClients(user.idToken.sub, user.accessToken)
 
       const formatApprovedClients = (clients: ApprovedClients) =>
-        clients.content.map(({ logoUri, name, createdDate, scopes, autoApprove }) => ({
+        clients.content.map(({ id, logoUri, name, createdDate, scopes, autoApprove }) => ({
+          id,
           logoUri,
           name,
           accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
