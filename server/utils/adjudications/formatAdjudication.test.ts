@@ -6,6 +6,7 @@ import { UserService } from '../../services'
 import {
   createMockAdjucationsService,
   createMockIncentivesService,
+  createMockLaunchpadAuthService,
   createMockLinksService,
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
@@ -16,7 +17,7 @@ import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudicati
 import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
-import { formatHearing, formatIncidentDetails, formatAdjudication } from './formatAdjudication'
+import { formatAdjudication, formatHearing, formatIncidentDetails } from './formatAdjudication'
 
 class MockUserService extends UserService {
   async getUser(_token: string): Promise<UserDetails> {
@@ -27,6 +28,7 @@ class MockUserService extends UserService {
 const services = {
   adjudicationsService: createMockAdjucationsService(),
   incentivesService: createMockIncentivesService(),
+  launchpadAuthService: createMockLaunchpadAuthService(),
   linksService: createMockLinksService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),

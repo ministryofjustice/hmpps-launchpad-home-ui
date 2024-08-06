@@ -1,7 +1,9 @@
 {% extends "../partials/layout.njk" %}
 
-{% from "../partials/breadCrumb.njk" import breadCrumb %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+{% from "../partials/breadCrumb.njk" import breadCrumb %}
 
 {% set pageTitle = title + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -10,22 +12,18 @@
   {{ breadCrumb('Settings') }}
 {% endblock %}
 
-{% block content %}
-
-<div class="govuk-!-padding-left-3 govuk-!-padding-right-3">
-
-  <div class="govuk-grid-row govuk-!-margin-bottom-8">
-
-    <h1>Settings</h1>
-    <p class="govuk-body govuk-!-font-size-24 govuk-grid-column-two-thirds govuk-!-padding-left-0">
-      You control who sees your data. You have given data access to these applications. This is where you can take that access away.
-    </p>
-
+{% block title %}
+  <div class="govuk-body govuk-width-container hub-header settings-header">
+    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+    <p class="govuk-!-font-size-24">You’ve given access to these applications (services).<br/>This is where you can take that access away in some cases.</p>
   </div>
+{% endblock %}
 
-  <div class="govuk-grid-row">  
-    <table class="govuk-table govuk-grid-column-full" id="settings-table">
+{% block content %}
+  <div class="govuk-body govuk-width-container govuk-frontend-supported">
+    <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--m">Access to applications</caption>
+      
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Application</th>
@@ -34,46 +32,56 @@
           <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Status</th>
         </tr>
       </thead>
-      <tbody class="govuk-table__body table-cell-vertical-align">
-        {% for application in applications %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-            <span class="two-column-cell govuk-!-margin-left-0">
-              <img 
-                src="{{ application.details.image }}" 
-                max-width="104px"
-                alt="application logo"
-                loading="lazy">
-              <p class="govuk-!-font-weight-bold">{{ application.details.name }}</p>
-            </span>
-          </td>
-          <td class="govuk-table__cell vertical-align ">
-            <ul class="govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-!-padding-left-4 ">
-              {% for item in application.sharing %}
-                <li>{{ item }}</li>
-              {% endfor %}
-            </ul>
-          </td>
-          <td class="govuk-table__cell vertical-align ">
-            {{ application.sharedOn }}
-          </td>
-          <td class="govuk-table__cell vertical-align ">
-            {% if application.status|length %}
-              {{ govukButton({
-                text: "Remove access",
-                classes: "govuk-button--secondary govuk-!-margin-bottom-0"
-              }) }}
-            {% else %}
-              You share data with {{ application.details.name }} so it can be displayed on your tablets. You cannot remove access.
-            {% endif %}
-          </td>
-        </tr>
+
+      <tbody class="govuk-table__body">
+        {% for client in data.approvedClients %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-table__cell--valign-middle govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+              <span class="two-column-cell govuk-!-margin-left-0">
+                {% if client.logoUri %}
+                  <img 
+                    src="{{ client.logoUri }}" 
+                    max-width="104px"
+                    alt="client logo"
+                    loading="lazy">
+                {% endif %}
+
+                <p class="govuk-!-font-weight-bold">{{ client.name }}</p>
+              </span>
+            </td>
+
+            <td class="govuk-table__cell govuk-table__cell--valign-middle">
+              <ul class="govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-!-padding-left-4 ">
+                {% for item in client.permissions %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+
+            <td class="govuk-table__cell govuk-table__cell--valign-middle">
+              {{ client.accessSharedDate }}
+            </td>
+
+            <td class="govuk-table__cell govuk-table__cell--valign-middle">
+              {% if client.autoApprove %}
+                You share data with {{ client.name }} so it can be displayed on your tablets. You cannot remove access.
+              {% else %}
+                {{ govukButton({
+                  text: "Remove access",
+                  classes: "govuk-button--secondary govuk-!-margin-bottom-0",
+                  href: "/remove-access?client-id=" + client.id
+                }) }}
+              {% endif %}
+            </td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
 
+    {% if data.paginationData.totalPages > 1 %}
+      <div class="govuk-!-margin-bottom-9">
+        {{ govukPagination( data.paginationData | toPagination(data.rawQuery) ) }}
+      </div>
+    {% endif %}
   </div>
-
-</div>
-
 {% endblock %}

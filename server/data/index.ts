@@ -11,6 +11,7 @@ buildAppInsightsClient()
 import AdjudicationsApiClient from './api/adjudicationsApi/client'
 import HmppsAuthClient from './api/hmppsAuth/client'
 import IncentivesApiClient from './api/incentivesApi/client'
+import LaunchpadAuthClient from './api/launchpadAuth/client'
 import PrisonApiClient from './api/prisonApi/client'
 import PrisonerContactRegistryApiClient from './api/prisonerContactRegistryApi/client'
 
@@ -28,6 +29,8 @@ export const dataAccess = () => ({
     new AdjudicationsApiClient(token)) as RestClientBuilder<AdjudicationsApiClient>,
   prisonerContactRegistryApiClientBuilder: ((token: string) =>
     new PrisonerContactRegistryApiClient(token)) as RestClientBuilder<PrisonerContactRegistryApiClient>,
+  launchpadAuthClientBuilder: ((token: string) =>
+    new LaunchpadAuthClient(token)) as RestClientBuilder<LaunchpadAuthClient>,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
@@ -36,6 +39,7 @@ export {
   AdjudicationsApiClient,
   HmppsAuthClient,
   IncentivesApiClient,
+  LaunchpadAuthClient,
   PrisonApiClient,
   PrisonerContactRegistryApiClient,
   RestClientBuilder,
