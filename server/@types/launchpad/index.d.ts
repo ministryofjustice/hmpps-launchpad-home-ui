@@ -34,16 +34,6 @@ export type LinksData = {
   prisonerContentHubURL: string
 }
 
-export type Application = {
-  details: {
-    image: string
-    name: string
-  }
-  sharing: string[]
-  sharedOn: string
-  status: string
-}
-
 export type RefreshToken = {
   jti: string
   ati: string
@@ -118,4 +108,26 @@ export type NewTableRowOptions = {
 export type TimetableState = {
   events: TimetableEvents
   hasEvents: boolean
+}
+
+export type Scope = {
+  type: string
+  humanReadable: string
+}
+
+export type Client = {
+  id: string
+  name: string
+  logoUri?: string
+  description: string
+  autoApprove: boolean
+  createdDate: string
+  scopes: Scope[]
+}
+
+export type ApprovedClients = {
+  page: number
+  exhausted: boolean
+  totalElements: number
+  content: Client[]
 }

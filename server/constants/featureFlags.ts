@@ -22,7 +22,7 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Settings]: {
-    enabled: true,
+    enabled: false,
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Transactions]: {
