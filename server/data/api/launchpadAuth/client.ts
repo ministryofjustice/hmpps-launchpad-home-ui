@@ -9,9 +9,9 @@ export default class LaunchpadAuthClient {
     this.restClient = new RestClient('launchpadAuthClient', config.apis.launchpadAuth as ApiConfig, token)
   }
 
-  async getApprovedClients(prisonId: string, accessToken: string): Promise<ApprovedClients> {
+  async getApprovedClients(userId: string, accessToken: string): Promise<ApprovedClients> {
     return this.restClient.get<ApprovedClients>({
-      path: `/v1/users/${prisonId}/clients`,
+      path: `/v1/users/${userId}/clients`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

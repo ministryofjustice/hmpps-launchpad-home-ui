@@ -115,10 +115,10 @@ export type Scope = {
   humanReadable: string
 }
 
-export type ClientContent = {
+export type Client = {
   id: string
   name: string
-  logoUri: string
+  logoUri?: string
   description: string
   autoApprove: boolean
   createdDate: string
@@ -129,5 +129,5 @@ export type ApprovedClients = {
   page: number
   exhausted: boolean
   totalElements: number
-  content: ClientContent[]
+  content: Client[]
 }

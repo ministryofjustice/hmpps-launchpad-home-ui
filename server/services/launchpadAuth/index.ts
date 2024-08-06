@@ -1,3 +1,4 @@
+import { ApprovedClients } from '../../@types/launchpad'
 import { HmppsAuthClient, RestClientBuilder } from '../../data'
 import LaunchpadAuthClient from '../../data/api/launchpadAuth/client'
 
@@ -12,19 +13,12 @@ export default class LaunchpadAuthService {
     return this.launchpadAuthClientFactory(token)
   }
 
-  async getApprovedClients(
-    prisonId: string,
-    accessToken: string,
-  ): Promise<ReturnType<LaunchpadAuthClient['getApprovedClients']>> {
+  async getApprovedClients(userId: string, accessToken: string): Promise<ApprovedClients> {
     const launchpadAuthClient = await this.getLaunchpadAuthClient()
-    return launchpadAuthClient.getApprovedClients(prisonId, accessToken)
+    return launchpadAuthClient.getApprovedClients(userId, accessToken)
   }
 
-  async removeClientAccess(
-    clientId: string,
-    userId: string,
-    accessToken: string,
-  ): Promise<ReturnType<LaunchpadAuthClient['removeClientAccess']>> {
+  async removeClientAccess(clientId: string, userId: string, accessToken: string): Promise<void> {
     const launchpadAuthClient = await this.getLaunchpadAuthClient()
     return launchpadAuthClient.removeClientAccess(clientId, userId, accessToken)
   }
