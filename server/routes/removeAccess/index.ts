@@ -13,7 +13,8 @@ export default function routes(services: Services): Router {
     asyncHandler(async (req: Request, res: Response) => {
       return res.render('pages/remove-access', {
         data: {
-          title: 'Remove Client Access',
+          userId: res.locals.user.idToken.sub,
+          clientId: req.query.clientId,
         },
         errors: req.flash('errors'),
         message: req.flash('message'),

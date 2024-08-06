@@ -2,52 +2,32 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  <div class="govuk-width-container">
-    <form id="delete-access-form">
-      <div>
-        Remove access?
-        Are you sure you want to remove the access you gave to Example App?
+  <div class="govuk-body govuk-width-container">
+    <div>
+      <div class="govuk-heading-m">Remove access?</div>
+      <div>Are you sure you want to remove the access you gave to Example App?</div>
+    </div>
+    
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column">
+        <form id="delete-access-form">
+          <div id="data-container" data-user-id="{{ data.userId }}" data-client-id="{{ data.clientId }}"></div>
+          {{ govukButton({
+            text: "Yes",
+            id: "delete-access-button",
+            attributes: {
+              type: "button"
+            }
+          }) }}
+        </form>
       </div>
-      
-      {{ govukButton({
-        text: "Yes",
-        classes: "govuk-button--delete",
-        attributes: {
-          id: "delete-access-button",
-          type: "button"
-        }
-      }) }}
 
-      {{ govukButton({
-        text: "No",
-        href: "/settings"
-      }) }}
-    </form>
+      <div class="govuk-grid-column">
+        {{ govukButton({
+          text: "No",
+          href: "/settings"
+        }) }}
+      </div>
+    </div>
   </div>
-
-  <script>
-    document.getElementById('delete-access-button').addEventListener('click', function() {
-      const userId = '{{data.userId}}';
-      const clientId = '{{data.clientId}}';
-      const url = `/v1/users/${userId}/clients/${clientId}`;
-
-      fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          window.location.href = '/settings';
-        } else {
-          alert('Failed to remove access.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while removing access.');
-      });
-    });
-  </script>
 {% endblock %}
