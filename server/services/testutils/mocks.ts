@@ -21,5 +21,5 @@ export const createMockPrisonService = () => new PrisonService(null, null) as je
 export const createMockPrisonerContactRegistryService = () =>
   new PrisonerContactRegistryService(null, null) as jest.Mocked<PrisonerContactRegistryService>
 
-export const createMockLaunchadAuthService = () =>
+export const createMockLaunchpadAuthService = () =>
   new LaunchpadAuthService(null, null) as jest.Mocked<LaunchpadAuthService>

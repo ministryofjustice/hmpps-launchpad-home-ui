@@ -6,7 +6,7 @@ import { UserService } from '../../services'
 import {
   createMockAdjucationsService,
   createMockIncentivesService,
-  createMockLaunchadAuthService,
+  createMockLaunchpadAuthService,
   createMockLinksService,
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
@@ -28,7 +28,7 @@ class MockUserService extends UserService {
 const services = {
   adjudicationsService: createMockAdjucationsService(),
   incentivesService: createMockIncentivesService(),
-  launchpadAuthService: createMockLaunchadAuthService(),
+  launchpadAuthService: createMockLaunchpadAuthService(),
   linksService: createMockLinksService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),
