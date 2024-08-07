@@ -26,43 +26,19 @@ function handleCardClick(event) {
 }
 
 function initializeDeleteButtonHandler() {
-  const deleteButton = document.getElementById('remove-access__button')
+  const yesButton = document.getElementById('remove-access__button-yes')
+  const noButton = document.getElementById('remove-access__button-no')
+  const actionInput = document.getElementById('action-input')
 
-  if (deleteButton) {
-    deleteButton.addEventListener('click', handleDeleteButtonClick)
-  }
-}
-
-function handleDeleteButtonClick() {
-  const deleteButton = document.getElementById('remove-access__button')
-  const userId = deleteButton.getAttribute('data-user-id')
-  const clientId = deleteButton.getAttribute('data-client-id')
-  const accessToken = deleteButton.getAttribute('data-access-token')
-
-  if (!userId || !clientId || !accessToken) {
-    console.error('User ID, Client ID or Access Token is missing.')
-    return
+  if (yesButton) {
+    yesButton.addEventListener('click', () => {
+      actionInput.value = 'remove'
+    })
   }
 
-  const actionUrl = `/v1/users/${userId}/clients/${clientId}`
-  console.log('Action URL:', actionUrl)
-
-  fetch(actionUrl, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: accessToken,
-    },
-  })
-    .then(response => {
-      if (response.ok) {
-        window.location.href = '/settings?success=true'
-      } else {
-        alert('Failed to remove access.')
-      }
+  if (noButton) {
+    noButton.addEventListener('click', () => {
+      actionInput.value = 'cancel'
     })
-    .catch(error => {
-      console.error('Error:', error)
-      alert('An error occurred while removing access.')
-    })
+  }
 }

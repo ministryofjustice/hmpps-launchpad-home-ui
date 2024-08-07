@@ -13,24 +13,32 @@
       {% endif %}
 
       <div class="govuk-heading-m">Remove access?</div>
-      <div>Are you sure you want to remove the access you gave to Example App?</div>
+      <div>Are you sure you want to remove the access you gave to {{ data.client }}</div>
     
       <div class="remove-access__buttons">
-        {{ govukButton({
-          text: "Yes",
-          id: "remove-access__button",
-          attributes: {
-            type: "button",
-            "data-user-id": data.userId,
-            "data-client-id": data.clientId,
-            "data-access-token": data.accessToken
-          }
-        }) }}
+        <form action="/remove-access" method="POST">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="userId" value="{{ data.userId }}">
+          <input type="hidden" name="clientId" value="{{ data.clientId }}">
+          <input type="hidden" name="client" value="{{ data.client }}">
+          <input type="hidden" id="action-input" name="action" value="remove">
+          
+          {{ govukButton({
+            text: "Yes",
+            id: "remove-access__button-yes",
+            attributes: {
+              type: "submit"
+            }
+          }) }}
 
-        {{ govukButton({
-          text: "No",
-          href: "/settings"
-        }) }}
+          {{ govukButton({
+            text: "No",
+            id: "remove-access__button-no",
+            attributes: {
+              type: "submit"
+            }
+          }) }}
+        </form>
       </div>
     </div>
   </div>

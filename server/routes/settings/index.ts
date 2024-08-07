@@ -29,12 +29,14 @@ export default function routes(services: Services): Router {
           name,
           accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
           permissions: scopes.map(scope => scope.humanReadable),
-          autoApprove,
+          autoApprove: false,
         }))
 
       const formattedClients = formatApprovedClients(approvedClients)
       const paginationData = getPaginationData(Number(req.query.page), formattedClients.length, 3)
       const paginatedClients = formattedClients.slice(paginationData.min - 1, paginationData.max)
+
+      const { client, success } = req.query
 
       res.render('pages/settings', {
         title: 'Settings',
@@ -42,6 +44,10 @@ export default function routes(services: Services): Router {
           approvedClients: paginatedClients,
           paginationData,
           rawQuery: req.query.page,
+        },
+        response: {
+          client,
+          success: success === 'true',
         },
         errors: req.flash('errors'),
         message: req.flash('message'),

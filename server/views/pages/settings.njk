@@ -2,6 +2,7 @@
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 
@@ -9,6 +10,16 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
+  {% if response.success %}
+    <div class="govuk-width-container govuk-!-margin-top-6">
+      {{ mojBanner({
+        type: 'success',
+        text: 'You have removed the data access you gave to ' + response.client,
+        iconFallbackText: 'Success'
+      }) }}
+    </div>
+  {% endif %}
+
   {{ breadCrumb('Settings') }}
 {% endblock %}
 
@@ -69,7 +80,7 @@
                 {{ govukButton({
                   text: "Remove access",
                   classes: "govuk-button--secondary govuk-!-margin-bottom-0",
-                  href: "/remove-access?clientId=" + client.id + "&clientLogoUri=" + client.logoUri
+                  href: "/remove-access?clientId=" + client.id + "&clientLogoUri=" + client.logoUri + "&client=" + client.name
                 }) }}
               {% endif %}
             </td>
