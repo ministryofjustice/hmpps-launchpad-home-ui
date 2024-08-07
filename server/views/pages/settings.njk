@@ -69,7 +69,7 @@
                 {{ govukButton({
                   text: "Remove access",
                   classes: "govuk-button--secondary govuk-!-margin-bottom-0",
-                  href: "/remove-access?clientId=" + client.id
+                  href: "/remove-access?clientId=" + client.id + "&clientLogoUri=" + client.logoUri
                 }) }}
               {% endif %}
             </td>

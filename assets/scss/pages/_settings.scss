@@ -1,3 +1,28 @@
 .govuk-table__cell--valign-middle {
   vertical-align: middle;
 }
+
+.remove-access {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__container {
+    width: 501px;
+    border: 1px solid #000; /* Change #000 to your desired border color */
+    padding: 20px; /* Optional: Add some padding for better spacing */
+    box-sizing: border-box; /* Ensure padding doesn't increase element width */
+    background-color: #fff; /* Optional: Add background color if needed */
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 60px;
+
+    .govuk-button {
+      margin-right: 10px;
+    }
+  }
+}

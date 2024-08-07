@@ -2,27 +2,31 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  <div class="govuk-body govuk-width-container">
-    <div>
+  <div class="govuk-body govuk-width-container remove-access">
+    <div class="remove-access__container">
+      {% if data.clientLogoUri %}
+        <img 
+          src="{{ data.clientLogoUri }}" 
+          max-width="104px"
+          alt="Client logo"
+          loading="lazy">
+      {% endif %}
+
       <div class="govuk-heading-m">Remove access?</div>
       <div>Are you sure you want to remove the access you gave to Example App?</div>
-    </div>
     
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column">
-        <form id="delete-access-form">
-          <div id="data-container" data-user-id="{{ data.userId }}" data-client-id="{{ data.clientId }}"></div>
-          {{ govukButton({
-            text: "Yes",
-            id: "delete-access-button",
-            attributes: {
-              type: "button"
-            }
-          }) }}
-        </form>
-      </div>
+      <div class="remove-access__buttons">
+        {{ govukButton({
+          text: "Yes",
+          id: "remove-access__button",
+          attributes: {
+            type: "button",
+            "data-user-id": data.userId,
+            "data-client-id": data.clientId,
+            "data-access-token": data.accessToken
+          }
+        }) }}
 
-      <div class="govuk-grid-column">
         {{ govukButton({
           text: "No",
           href: "/settings"

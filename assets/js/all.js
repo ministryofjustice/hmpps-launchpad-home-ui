@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeDeleteButtonHandler()
 })
 
-// Initialize click handlers for cards
 function initializeCardClickHandlers() {
   const cards = document.querySelectorAll('.card--clickable.toggle-sensitive')
   cards.forEach(card => {
@@ -11,7 +10,6 @@ function initializeCardClickHandlers() {
   })
 }
 
-// Handle card click events
 function handleCardClick(event) {
   event.preventDefault()
 
@@ -27,28 +25,24 @@ function handleCardClick(event) {
   }
 }
 
-// Initialize click handler for the delete button
 function initializeDeleteButtonHandler() {
-  const deleteButton = document.getElementById('delete-access-button')
+  const deleteButton = document.getElementById('remove-access__button')
 
   if (deleteButton) {
     deleteButton.addEventListener('click', handleDeleteButtonClick)
   }
 }
 
-// Handle delete button click events
 function handleDeleteButtonClick() {
-  const dataContainer = document.getElementById('data-container')
-  const userId = dataContainer?.getAttribute('data-user-id')
-  const clientId = dataContainer?.getAttribute('data-client-id')
+  const deleteButton = document.getElementById('remove-access__button')
+  const userId = deleteButton.getAttribute('data-user-id')
+  const clientId = deleteButton.getAttribute('data-client-id')
+  const accessToken = deleteButton.getAttribute('data-access-token')
 
-  if (!userId || !clientId) {
-    console.error('User ID or Client ID is missing.')
+  if (!userId || !clientId || !accessToken) {
+    console.error('User ID, Client ID or Access Token is missing.')
     return
   }
-
-  console.log('User ID:', userId)
-  console.log('Client ID:', clientId)
 
   const actionUrl = `/v1/users/${userId}/clients/${clientId}`
   console.log('Action URL:', actionUrl)
@@ -57,6 +51,7 @@ function handleDeleteButtonClick() {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: accessToken,
     },
   })
     .then(response => {

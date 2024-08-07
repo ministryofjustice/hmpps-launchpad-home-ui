@@ -15,6 +15,8 @@ export default function routes(services: Services): Router {
         data: {
           userId: res.locals.user.idToken.sub,
           clientId: req.query.clientId,
+          clientLogoUri: req.query.clientLogoUri,
+          accessToken: res.locals.user.accessToken,
         },
         errors: req.flash('errors'),
         message: req.flash('message'),
