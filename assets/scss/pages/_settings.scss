@@ -1,3 +1,29 @@
 .govuk-table__cell--valign-middle {
   vertical-align: middle;
 }
+
+.remove-access {
+  &__wrapper {
+    display: flex;
+    min-height: 600px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__container {
+    width: 501px;
+    border: 1px solid govuk-colour('black');
+    padding: 40px;
+    box-sizing: border-box;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 70px;
+
+    .govuk-button {
+      margin-right: 10px;
+    }
+  }
+}
