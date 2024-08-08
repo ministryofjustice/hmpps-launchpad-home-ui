@@ -3,23 +3,24 @@
 }
 
 .remove-access {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  &__wrapper {
+    display: flex;
+    min-height: 600px;
+    justify-content: center;
+    align-items: center;
+  }
 
   &__container {
     width: 501px;
-    border: 1px solid #000; /* Change #000 to your desired border color */
-    padding: 20px; /* Optional: Add some padding for better spacing */
-    box-sizing: border-box; /* Ensure padding doesn't increase element width */
-    background-color: #fff; /* Optional: Add background color if needed */
+    border: 1px solid govuk-colour('black');
+    padding: 40px;
+    box-sizing: border-box;
   }
 
   &__buttons {
     display: flex;
     justify-content: flex-start;
-    margin-top: 60px;
+    margin-top: 70px;
 
     .govuk-button {
       margin-right: 10px;

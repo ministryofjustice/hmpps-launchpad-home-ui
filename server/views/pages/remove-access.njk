@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  <div class="govuk-body govuk-width-container remove-access">
+  <div class="govuk-body remove-access__wrapper">
     <div class="remove-access__container">
       {% if data.clientLogoUri %}
         <img 
@@ -13,7 +13,7 @@
       {% endif %}
 
       <div class="govuk-heading-m">Remove access?</div>
-      <div>Are you sure you want to remove the access you gave to {{ data.client }}</div>
+      <p class="govuk-!-margin-top-6">Are you sure you want to remove the access you gave to {{ data.client }}</p>
     
       <div class="remove-access__buttons">
         <form action="/remove-access" method="POST">

@@ -46,6 +46,12 @@
 
       <tbody class="govuk-table__body">
         {% for client in data.approvedClients %}
+          {% set removeAccessUrl = "/remove-access?clientId=" + client.id + "&client=" + client.name %}
+          
+          {% if client.logoUri %}
+            {% set removeAccessUrl = removeAccessUrl + "&clientLogoUri=" + client.logoUri %}
+          {% endif %}
+
           <tr class="govuk-table__row">
             <td class="govuk-table__cell govuk-table__cell--valign-middle govuk-!-margin-top-0 govuk-!-margin-bottom-0">
               <span class="two-column-cell govuk-!-margin-left-0">
@@ -80,7 +86,7 @@
                 {{ govukButton({
                   text: "Remove access",
                   classes: "govuk-button--secondary govuk-!-margin-bottom-0",
-                  href: "/remove-access?clientId=" + client.id + "&clientLogoUri=" + client.logoUri + "&client=" + client.name
+                  href: removeAccessUrl
                 }) }}
               {% endif %}
             </td>
