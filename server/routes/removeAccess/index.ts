@@ -9,8 +9,17 @@ export default function routes(services: Services): Router {
     '/',
     asyncHandler(async (req: Request, res: Response) => {
       const { clientId, clientLogoUri, client } = req.query
+      const { user } = res.locals
 
-      res.render('pages/remove-access', {
+      const approvedClients = await services.launchpadAuthService.getApprovedClients(user.idToken.sub, user.accessToken)
+      const validClient = approvedClients.content.find(c => c.id === clientId)
+
+      if (!validClient) {
+        req.flash('errors', 'Invalid client ID.')
+        return res.redirect('/settings')
+      }
+
+      return res.render('pages/remove-access', {
         data: {
           userId: res.locals.user.idToken.sub,
           clientId,
@@ -30,6 +39,14 @@ export default function routes(services: Services): Router {
     asyncHandler(async (req: Request, res: Response) => {
       const { userId, clientId, client, action } = req.body
       const { accessToken } = res.locals.user
+
+      const approvedClients = await services.launchpadAuthService.getApprovedClients(userId, accessToken)
+      const validClient = approvedClients.content.find(c => c.id === clientId)
+
+      if (!validClient) {
+        req.flash('errors', 'Invalid client ID.')
+        return res.redirect('/settings')
+      }
 
       if (action === 'remove') {
         try {

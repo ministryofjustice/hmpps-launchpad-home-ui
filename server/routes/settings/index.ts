@@ -29,7 +29,7 @@ export default function routes(services: Services): Router {
           name,
           accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
           permissions: scopes.map(scope => scope.humanReadable),
-          autoApprove: false,
+          autoApprove,
         }))
 
       const formattedClients = formatApprovedClients(approvedClients)
