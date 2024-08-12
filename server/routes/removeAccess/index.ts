@@ -1,5 +1,7 @@
 import { Request, Response, Router } from 'express'
+import { Features } from '../../constants/featureFlags'
 import { asyncHandler } from '../../middleware/asyncHandler'
+import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { Services } from '../../services'
 
 export default function routes(services: Services): Router {
@@ -7,6 +9,7 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/',
+    featureFlagMiddleware(Features.Settings),
     asyncHandler(async (req: Request, res: Response) => {
       const { clientId, clientLogoUri, client } = req.query
       const { user } = res.locals
@@ -36,6 +39,7 @@ export default function routes(services: Services): Router {
 
   router.post(
     '/',
+    featureFlagMiddleware(Features.Settings),
     asyncHandler(async (req: Request, res: Response) => {
       const { userId, clientId, client, action } = req.body
       const { accessToken } = res.locals.user
