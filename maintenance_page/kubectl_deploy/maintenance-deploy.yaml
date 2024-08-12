@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: maintenance-page-launchpad-home
-        image:  ministryofjustice/launchpad-home-maintenance-page:0.0.1
+        image:  ministryofjustice/launchpad-home-maintenance-page:0.0.3
         ports:
         - containerPort: 8080
