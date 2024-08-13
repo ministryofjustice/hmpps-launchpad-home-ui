@@ -14,6 +14,7 @@ export const ALLOW_ALL_PRISONS = 'ALL'
 export const Features = {
   Adjudications: 'adjudications',
   Settings: 'settings',
+  SocialVisitors: 'socialVisitors',
   Transactions: 'transactions',
   Visits: 'visits',
 } as const
@@ -24,15 +25,19 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
   [Features.Settings]: {
-    enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    enabled: false,
+    allowedPrisons: [],
+  },
+  [Features.SocialVisitors]: {
+    enabled: false,
+    allowedPrisons: [],
   },
   [Features.Transactions]: {
     enabled: true,
     allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
   [Features.Visits]: {
-    enabled: false,
+    enabled: true,
     allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
 }
