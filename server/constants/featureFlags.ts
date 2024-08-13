@@ -22,7 +22,15 @@ export const Features = {
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
     enabled: true,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: [
+      prisonAgencyIds.Erlestoke,
+      prisonAgencyIds.FelthamA,
+      prisonAgencyIds.FelthamB,
+      prisonAgencyIds.NewHall,
+      prisonAgencyIds.Styal,
+      prisonAgencyIds.Werrington,
+      prisonAgencyIds.Wetherby,
+    ],
   },
   [Features.Settings]: {
     enabled: false,
@@ -34,10 +42,26 @@ export const featureFlags: FeatureFlags = {
   },
   [Features.Transactions]: {
     enabled: true,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: [
+      prisonAgencyIds.Erlestoke,
+      prisonAgencyIds.FelthamA,
+      prisonAgencyIds.FelthamB,
+      prisonAgencyIds.NewHall,
+      prisonAgencyIds.Styal,
+      prisonAgencyIds.Werrington,
+      prisonAgencyIds.Wetherby,
+    ],
   },
   [Features.Visits]: {
     enabled: true,
-    allowedPrisons: [prisonAgencyIds.Erlestoke],
+    allowedPrisons: [
+      prisonAgencyIds.Erlestoke,
+      prisonAgencyIds.FelthamA,
+      prisonAgencyIds.FelthamB,
+      prisonAgencyIds.NewHall,
+      prisonAgencyIds.Styal,
+      prisonAgencyIds.Werrington,
+      prisonAgencyIds.Wetherby,
+    ],
   },
 }
