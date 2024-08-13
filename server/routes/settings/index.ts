@@ -38,6 +38,14 @@ export default function routes(services: Services): Router {
 
       const { client, success } = req.query
 
+      let successStatus: string | null = null
+
+      if (success === 'true') {
+        successStatus = 'success'
+      } else if (success === 'false') {
+        successStatus = 'warning'
+      }
+
       res.render('pages/settings', {
         title: 'Settings',
         data: {
@@ -47,7 +55,7 @@ export default function routes(services: Services): Router {
         },
         response: {
           client,
-          success: success === 'true',
+          success: successStatus,
         },
         errors: req.flash('errors'),
         message: req.flash('message'),

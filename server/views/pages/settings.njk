@@ -10,7 +10,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
-  {% if response.success %}
+  {% if response.success == 'success' %}
     <div class="govuk-width-container govuk-!-margin-top-6">
       {{ mojBanner({
         type: 'success',
@@ -18,10 +18,19 @@
         iconFallbackText: 'Success'
       }) }}
     </div>
+  {% elseif response.success == 'warning' %}
+    <div class="govuk-width-container govuk-!-margin-top-6">
+      {{ mojBanner({
+        type: 'warning',
+        text: 'Error',
+        iconFallbackText: 'Warning'
+      }) }}
+    </div>
   {% endif %}
 
   {{ breadCrumb('Settings') }}
 {% endblock %}
+
 
 {% block title %}
   <div class="govuk-width-container">
