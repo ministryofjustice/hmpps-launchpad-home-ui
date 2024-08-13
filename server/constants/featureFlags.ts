@@ -32,7 +32,7 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
   [Features.Visits]: {
-    enabled: true,
+    enabled: false,
     allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
 }
