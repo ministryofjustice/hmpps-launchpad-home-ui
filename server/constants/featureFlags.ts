@@ -1,3 +1,5 @@
+import { prisonAgencyIds } from './prisons'
+
 interface FeatureFlag {
   enabled: boolean
   allowedPrisons: string[] | typeof ALLOW_ALL_PRISONS
@@ -19,7 +21,7 @@ export const Features = {
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
     enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
   [Features.Settings]: {
     enabled: false,
@@ -27,10 +29,10 @@ export const featureFlags: FeatureFlags = {
   },
   [Features.Transactions]: {
     enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
   [Features.Visits]: {
     enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    allowedPrisons: [prisonAgencyIds.Erlestoke],
   },
 }
