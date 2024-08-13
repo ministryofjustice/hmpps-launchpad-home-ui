@@ -29,6 +29,7 @@ export default function routes(services: Services): Router {
     const transactionsBalances = await services.prisonService.getBalances(req.user.idToken.booking.id)
 
     const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
+    const isSocialVisitorsEnabled = isFeatureEnabled(Features.SocialVisitors, prisonId)
     const isTransactionsEnabled = isFeatureEnabled(Features.Transactions, prisonId)
     const isVisitsEnabled = isFeatureEnabled(Features.Visits, prisonId)
 
@@ -54,6 +55,9 @@ export default function routes(services: Services): Router {
         incentives: {
           incentivesData,
           readMoreUrl: `${prisonerContentHubURL}/tags/1417`,
+        },
+        socialVisitors: {
+          isEnabled: isSocialVisitorsEnabled,
         },
         timetable: {
           timetableEvents: timetableEvents[0],
