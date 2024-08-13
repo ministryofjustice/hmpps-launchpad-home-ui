@@ -28,7 +28,7 @@ export default function routes(services: Services): Router {
           logoUri,
           name,
           accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
-          permissions: scopes.map(scope => scope.humanReadable),
+          permissions: scopes.filter(scope => scope && scope.humanReadable).map(scope => scope.humanReadable),
           autoApprove,
         }))
 
