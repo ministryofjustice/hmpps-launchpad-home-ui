@@ -1,0 +1,45 @@
+{% extends "../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-body remove-access__wrapper">
+    <div class="remove-access__container">
+      {% if data.clientLogoUri %}
+        <img 
+          src="{{ data.clientLogoUri }}" 
+          max-width="104px"
+          alt="Client logo"
+          loading="lazy">
+      {% endif %}
+
+      <div class="govuk-heading-m">Remove access?</div>
+      <p class="govuk-!-margin-top-6">Are you sure you want to remove the access you gave to {{ data.client }}</p>
+    
+      <div class="remove-access__buttons">
+        <form action="/remove-access" method="POST">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="userId" value="{{ data.userId }}">
+          <input type="hidden" name="clientId" value="{{ data.clientId }}">
+          <input type="hidden" name="client" value="{{ data.client }}">
+          <input type="hidden" id="action-input" name="action" value="remove">
+          
+          {{ govukButton({
+            text: "Yes",
+            id: "remove-access__button-yes",
+            attributes: {
+              type: "submit"
+            }
+          }) }}
+
+          {{ govukButton({
+            text: "No",
+            id: "remove-access__button-no",
+            attributes: {
+              type: "submit"
+            }
+          }) }}
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

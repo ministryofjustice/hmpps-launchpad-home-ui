@@ -3,6 +3,7 @@ import express, { Express } from 'express'
 import createError from 'http-errors'
 import path from 'path'
 
+import csrf from 'csurf'
 import * as auth from '../../authentication/auth'
 import errorHandler from '../../errorHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
@@ -12,6 +13,7 @@ import nunjucksSetup from '../../utils/nunjucksSetup'
 import adjudicationsRoutes from '../adjudications/index'
 import homepageRoutes from '../homepage/index'
 import profileRoutes from '../profile/index'
+import removeAccessRoutes from '../removeAccess/index'
 import settingsRoutes from '../settings/index'
 import timetableRoutes from '../timetable/index'
 import transactionsRoutes from '../transactions/index'
@@ -48,7 +50,12 @@ export const user = {
 
 export const flashProvider = jest.fn()
 
-function appSetup(services: Services, production: boolean, userSupplier: () => Express.User): Express {
+function appSetup(
+  services: Services,
+  production: boolean,
+  userSupplier: () => Express.User,
+  disableCsrf: boolean,
+): Express {
   const app = express()
 
   app.set('view engine', 'njk')
@@ -65,9 +72,20 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
+  if (!disableCsrf) {
+    const csrfProtection = csrf()
+    app.use(csrfProtection)
+
+    app.use((req, res, next) => {
+      res.locals.csrfToken = req.csrfToken()
+      next()
+    })
+  }
+
   app.use('/', homepageRoutes(services))
   app.use('/adjudications', featureFlagMiddleware('adjudications'), adjudicationsRoutes(services))
   app.use('/profile', profileRoutes(services))
+  app.use('/remove-access', removeAccessRoutes(services))
   app.use('/settings', settingsRoutes(services))
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', featureFlagMiddleware('transactions'), transactionsRoutes(services))
@@ -83,11 +101,13 @@ export function appWithAllRoutes({
   production = false,
   services = {},
   userSupplier = () => user,
+  disableCsrf = false,
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => Express.User
+  disableCsrf?: boolean
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(services as Services, production, userSupplier)
+  return appSetup(services as Services, production, userSupplier, disableCsrf)
 }

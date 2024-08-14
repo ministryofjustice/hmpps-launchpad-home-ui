@@ -18,6 +18,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import adjudicationsRoutes from './routes/adjudications'
 import indexRoutes from './routes/homepage'
 import profileRoutes from './routes/profile'
+import removeAccessRoutes from './routes/removeAccess'
 import settingsRoutes from './routes/settings'
 import timetableRoutes from './routes/timetable'
 import transactionsRoutes from './routes/transactions'
@@ -48,6 +49,7 @@ export default function createApp(services: Services): express.Application {
   app.use('/', indexRoutes(services))
   app.use('/adjudications', adjudicationsRoutes(services))
   app.use('/profile', profileRoutes(services))
+  app.use('/remove-access', removeAccessRoutes(services))
   app.use('/settings', settingsRoutes(services))
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', transactionsRoutes(services))
