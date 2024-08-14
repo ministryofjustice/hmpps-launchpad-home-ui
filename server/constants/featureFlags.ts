@@ -33,8 +33,8 @@ export const featureFlags: FeatureFlags = {
     ],
   },
   [Features.Settings]: {
-    enabled: false,
-    allowedPrisons: [],
+    enabled: true,
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.SocialVisitors]: {
     enabled: false,

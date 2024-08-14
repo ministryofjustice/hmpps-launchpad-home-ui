@@ -18,7 +18,7 @@
         iconFallbackText: 'Success'
       }) }}
     </div>
-  {% elseif response.success == 'warning' %}
+  {% elseif response.success == 'error' %}
     <div class="govuk-width-container govuk-!-margin-top-6">
       {{ mojBanner({
         type: 'warning',
