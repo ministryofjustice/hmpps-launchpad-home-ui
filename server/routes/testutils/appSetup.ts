@@ -12,6 +12,7 @@ import nunjucksSetup from '../../utils/nunjucksSetup'
 import adjudicationsRoutes from '../adjudications/index'
 import homepageRoutes from '../homepage/index'
 import profileRoutes from '../profile/index'
+import settingsRoutes from '../settings/index'
 import timetableRoutes from '../timetable/index'
 import transactionsRoutes from '../transactions/index'
 import visitsRoutes from '../visits/index'
@@ -67,6 +68,7 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   app.use('/', homepageRoutes(services))
   app.use('/adjudications', featureFlagMiddleware('adjudications'), adjudicationsRoutes(services))
   app.use('/profile', profileRoutes(services))
+  app.use('/settings', settingsRoutes(services))
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', featureFlagMiddleware('transactions'), transactionsRoutes(services))
   app.use('/visits', featureFlagMiddleware('visits'), visitsRoutes(services))

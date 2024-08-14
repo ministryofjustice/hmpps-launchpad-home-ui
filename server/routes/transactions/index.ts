@@ -2,6 +2,7 @@ import { endOfMonth, isFuture, startOfMonth } from 'date-fns'
 import { Request, Response, Router } from 'express'
 
 import { AgencyType } from '../../constants/agency'
+import { Features } from '../../constants/featureFlags'
 import { AccountCodes, TransactionTypes } from '../../constants/transactions'
 
 import { asyncHandler } from '../../middleware/asyncHandler'
@@ -16,7 +17,6 @@ import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAc
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 import { getConfig } from '../config'
-import { Features } from '../../constants/featureFlags'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -101,7 +101,7 @@ export default function routes(services: Services): Router {
   transactionRoutes.forEach(({ path, accountCode, transactionType }) => {
     router.get(
       path,
-      featureFlagMiddleware('transactions'),
+      featureFlagMiddleware(Features.Transactions),
       asyncHandler((req: Request, res: Response) => {
         return renderTransactions(req, res, accountCode, transactionType)
       }),
