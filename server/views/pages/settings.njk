@@ -2,6 +2,7 @@
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{%- from "moj/components/banner/macro.njk" import mojBanner -%}
 
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 
@@ -9,18 +10,37 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
+  {% if response.success == 'success' %}
+    <div class="govuk-width-container govuk-!-margin-top-6">
+      {{ mojBanner({
+        type: 'success',
+        text: 'You have removed the data access you gave to ' + response.client,
+        iconFallbackText: 'Success'
+      }) }}
+    </div>
+  {% elseif response.success == 'error' %}
+    <div class="govuk-width-container govuk-!-margin-top-6">
+      {{ mojBanner({
+        type: 'warning',
+        text: 'Error',
+        iconFallbackText: 'Warning'
+      }) }}
+    </div>
+  {% endif %}
+
   {{ breadCrumb('Settings') }}
 {% endblock %}
 
+
 {% block title %}
-  <div class="govuk-body govuk-width-container hub-header settings-header">
+  <div class="govuk-width-container">
     <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
     <p class="govuk-!-font-size-24">You’ve given access to these applications (services).<br/>This is where you can take that access away in some cases.</p>
   </div>
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-body govuk-width-container govuk-frontend-supported">
+  <div class="govuk-width-container govuk-frontend-supported govuk-!-margin-top-8">
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--m">Access to applications</caption>
       
@@ -35,6 +55,12 @@
 
       <tbody class="govuk-table__body">
         {% for client in data.approvedClients %}
+          {% set removeAccessUrl = "/remove-access?clientId=" + client.id + "&client=" + client.name %}
+          
+          {% if client.logoUri %}
+            {% set removeAccessUrl = removeAccessUrl + "&clientLogoUri=" + client.logoUri %}
+          {% endif %}
+
           <tr class="govuk-table__row">
             <td class="govuk-table__cell govuk-table__cell--valign-middle govuk-!-margin-top-0 govuk-!-margin-bottom-0">
               <span class="two-column-cell govuk-!-margin-left-0">
@@ -69,7 +95,7 @@
                 {{ govukButton({
                   text: "Remove access",
                   classes: "govuk-button--secondary govuk-!-margin-bottom-0",
-                  href: "/remove-access?client-id=" + client.id
+                  href: removeAccessUrl
                 }) }}
               {% endif %}
             </td>
