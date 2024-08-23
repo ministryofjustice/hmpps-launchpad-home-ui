@@ -56,3 +56,6 @@ Or run tests with the cypress UI:
 
 The template project has implemented some scheduled checks to ensure that key dependencies are kept up to date.
 If these are not desired in the cloned project, remove references to `check_outdated` job from `.circleci/config.yml`
+
+## Maintenance page
+See the [maintenance page README](./maintenance_page/README.md) for how to turn this on/off and update the content.
