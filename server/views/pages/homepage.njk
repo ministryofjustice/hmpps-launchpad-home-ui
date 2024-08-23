@@ -6,6 +6,9 @@
 {% set pageTitle = title + " - " + applicationName %}
 {% set hideHomepageEventsSummaryAndProfileLinkTile = hideHomepageEventsSummaryAndProfileLinkTile %}
 {% set mainClasses = "govuk-body govuk-!-margin-bottom-0 govuk-!-padding-bottom-0" %}
+{% if hideHomepageEventsSummaryAndProfileLinkTile %}
+    {% set mainClasses = mainClasses + " hidden-tiles" %}
+{% endif %}    
 
 {% block content %}
 
