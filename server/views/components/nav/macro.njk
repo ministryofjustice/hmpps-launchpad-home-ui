@@ -1,0 +1,26 @@
+{% macro govukNav(user, userSvg) %}
+  {% if user %}
+    <nav aria-label="Launchpad Home Account Navigation">
+      <div class="launchpad-home-header__navigation">
+        <h2 id="launchpad-home-header__navigation-heading" class="govuk-visually-hidden">
+          Launchpad Home Navigation Menu
+        </h2>
+        <div class="launchpad-home-header__navigation__item">
+          <button class="launchpad-home-header__menu-toggle launchpad-home-header__user-menu-toggle" aria-controls="launchpad-home-header-user-menu" aria-expanded="false" type="button">
+            <span>
+              {{ userSvg | safe }}
+              <span data-qa="launchpad-home-header-user-name">{{ user.idToken.name }}</span>
+              <span class="govuk-visually-hidden">Account menu</span>
+            </span>
+          </button>
+          <ul id="launchpad-home-header-user-menu" class="govuk-list launchpad-home-header__user-menu" hidden="hidden">
+            <li>
+              <a class="launchpad-home-header__submenu-link" href="/settings">Settings</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  {% endif %}
+{% endmacro %}
+
