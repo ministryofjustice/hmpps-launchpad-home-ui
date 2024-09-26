@@ -15,7 +15,7 @@ export default class PrisonerContactRegistryApiClient {
 
   async getSocialVisitors(prisonerId: string) {
     return (await this.restClient.get({
-      path: `/prisoners/${prisonerId}/contacts?type=S`,
+      path: `/prisoners/${prisonerId}/contacts/social`,
     })) as PrisonerContact[]
   }
 }
