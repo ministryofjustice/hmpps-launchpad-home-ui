@@ -23,7 +23,6 @@ generic-service:
     GA4_SITE_ID: 'G-EJVJ26SLFY'
 
   allowlist:
-    uservision-accessibility-testers: 5.181.59.114/32
     groups:
       - internal
 
