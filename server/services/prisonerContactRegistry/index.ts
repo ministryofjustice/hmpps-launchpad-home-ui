@@ -8,15 +8,13 @@ export default class PrisonerContactRegistryService {
   ) {}
 
   async getSocialVisitors(prisonerId: string) {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const prisonerContactRegistryApiClient = this.prisonerContactRegistryApiClientFactory(token)
-
     try {
-      return prisonerContactRegistryApiClient.getSocialVisitors(prisonerId)
-    } catch (e) {
-      logger.error('Failed to get social visitors for user', e)
-      logger.debug(e.stack)
-      return null
+      const token = await this.hmppsAuthClient.getSystemClientToken()
+      const prisonerContactRegistryApiClient = this.prisonerContactRegistryApiClientFactory(token)
+      return await prisonerContactRegistryApiClient.getSocialVisitors(prisonerId)
+    } catch (error) {
+      logger.error(`Error fetching social visitors for prisonerId: ${prisonerId}`, error)
+      throw new Error('Unable to fetch social visitors')
     }
   }
 }
