@@ -1,14 +1,7 @@
 import { format } from 'date-fns'
 
-import {
-  HasAdjudicationsResponse,
-  PageReportedAdjudicationDto,
-  ReportedAdjudicationApiResponse,
-} from '../../@types/adjudicationsApiTypes'
-
 import { ADJUDICATION_STATUSES } from '../../constants/adjudications'
 import { DateFormats } from '../../constants/date'
-
 import { AdjudicationsApiClient, HmppsAuthClient, RestClientBuilder } from '../../data'
 
 export default class AdjudicationsService {
@@ -17,20 +10,13 @@ export default class AdjudicationsService {
     private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
   ) {}
 
-  async hasAdjudications(user: {
-    idToken: { booking: { id: string }; establishment: { agency_id: string } }
-  }): Promise<HasAdjudicationsResponse> {
+  async hasAdjudications(bookingId: string, prisonId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
-    const userHasAdjudications = await adjudicationsApiClient.hasAdjudications(
-      user.idToken.booking.id,
-      user.idToken.establishment.agency_id,
-    )
-
-    return userHasAdjudications
+    return adjudicationsApiClient.hasAdjudications(bookingId, prisonId)
   }
 
-  async getReportedAdjudicationsFor(bookingId: string, prisonId: string): Promise<PageReportedAdjudicationDto> {
+  async getReportedAdjudicationsFor(bookingId: string, prisonId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
@@ -53,7 +39,7 @@ export default class AdjudicationsService {
     }
   }
 
-  async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
+  async getReportedAdjudication(chargeNumber: string, agencyId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 

@@ -31,9 +31,7 @@ describe('PrisonerProfileService', () => {
       incentivesApiClientFactory.mockReturnValue(incentivesApiClient)
       incentivesApiClient.getIncentivesSummaryFor.mockResolvedValue(incentivesReviewSummary)
 
-      const result = await incentivesService.getIncentivesSummaryFor({
-        idToken: { booking: { id: mockUserId } },
-      })
+      const result = await incentivesService.getIncentivesSummaryFor(mockUserId)
 
       expect(result).toEqual(incentivesReviewSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()

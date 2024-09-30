@@ -2,9 +2,6 @@ import { format } from 'date-fns'
 
 import logger from '../../../logger'
 
-import { EventsData, TimetableEvents, TimetableRow } from '../../@types/launchpad'
-import { Location, UserDetail } from '../../@types/prisonApiTypes'
-
 import { DateFormats } from '../../constants/date'
 
 import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
@@ -16,46 +13,37 @@ export default class PrisonService {
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
   ) {}
 
-  async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
+  async getPrisonerEventsSummary(bookingId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const eventsSummary = await prisonApiClient.getEventsSummary(user.idToken.booking.id)
+    const eventsSummary = await prisonApiClient.getEventsSummary(bookingId)
     return eventsSummary
   }
 
-  async getEventsFor(
-    user: { idToken: { booking: { id: string } } },
-    fromDate: Date,
-    toDate: Date,
-  ): Promise<TimetableEvents> {
+  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
+    const eventsData = await prisonApiClient.getEventsFor(bookingId, fromDate, toDate)
     const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
 
     return timetableData.events
   }
 
-  async getEventsForToday(
-    user: { idToken: { booking: { id: string } } },
-    today: Date = new Date(),
-  ): Promise<TimetableRow> {
-    const results = await this.getEventsFor(user, today, today)
+  async getEventsForToday(bookingId: string, today: Date = new Date()) {
+    const results = await this.getEventsFor(bookingId, today, today)
     return results[format(today, DateFormats.ISO_DATE)]
   }
 
-  async getUserById(userId: string): Promise<UserDetail> {
+  async getUserById(userId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const user = await prisonApiClient.getUserById(userId)
-    return user as UserDetail
+    return prisonApiClient.getUserById(userId)
   }
 
-  async getLocationById(locationId: number): Promise<Location> {
+  async getLocationById(locationId: number) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const location = await prisonApiClient.getLocationById(locationId)
-    return location as Location
+    return prisonApiClient.getLocationById(locationId)
   }
 
   async getTransactions(user: { idToken: { sub: string } }, accountCode: string, fromDate: Date, toDate: Date) {

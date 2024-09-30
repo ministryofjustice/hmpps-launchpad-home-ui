@@ -3,11 +3,14 @@ import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
 import {
   Account,
   Agency,
+  Location,
   OffenderDamageObligation,
   OffenderTransactionHistoryDto,
   ScheduledEvent,
+  UserDetail,
   VisitDetails,
 } from '../../../@types/prisonApiTypes'
+
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
 import { convertToTitleCase, formatDateTimeString } from '../../../utils/utils'
@@ -62,13 +65,13 @@ export default class PrisonApiClient {
     })
   }
 
-  async getUserById(userId: string) {
+  async getUserById(userId: string): Promise<UserDetail> {
     return this.restClient.get({
       path: `/api/users/${userId}`,
     })
   }
 
-  async getLocationById(locationId: number) {
+  async getLocationById(locationId: number): Promise<Location> {
     return this.restClient.get({
       path: `/api/locations/${locationId}`,
     })
