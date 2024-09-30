@@ -21,10 +21,10 @@ export default class PrisonApiClient {
   }
 
   async getEventsSummary(bookingId: string): Promise<EventsData> {
-    const scheduledEvents = (await this.restClient.get({
+    const scheduledEvents: ScheduledEvent[] = await this.restClient.get({
       path: `/api/bookings/${bookingId}/events/today`,
       query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
-    })) as ScheduledEvent[]
+    })
 
     const prisonerEvents: PrisonerEvent[] = []
 
@@ -47,13 +47,13 @@ export default class PrisonApiClient {
   }
 
   async getEventsFor(bookingId: string, fromDate: Date, toDate: Date): Promise<ScheduledEvent[]> {
-    return (await this.restClient.get({
+    return this.restClient.get({
       path: `/api/bookings/${bookingId}/events`,
       query: new URLSearchParams({
         fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
         toDate: formatDate(toDate, DateFormats.ISO_DATE),
       }).toString(),
-    })) as ScheduledEvent[]
+    })
   }
 
   async getReportedAdjudication(offenderNo: string, adjudicationNo: string) {
@@ -74,33 +74,38 @@ export default class PrisonApiClient {
     })
   }
 
-  async getBalances(bookingId: string) {
-    return (await this.restClient.get({
+  async getBalances(bookingId: string): Promise<Account> {
+    return this.restClient.get({
       path: `/api/bookings/${bookingId}/balances`,
-    })) as Account
+    })
   }
 
-  async getDamageObligations(prisonerId: string) {
-    return (await this.restClient.get({
+  async getDamageObligations(prisonerId: string): Promise<{ damageObligations: OffenderDamageObligation[] }> {
+    return this.restClient.get({
       path: `/api/offenders/${prisonerId}/damage-obligations`,
-    })) as { damageObligations: OffenderDamageObligation[] }
+    })
   }
 
-  async getPrisonsByAgencyType(type: string) {
-    return (await this.restClient.get({
+  async getPrisonsByAgencyType(type: string): Promise<Agency[]> {
+    return this.restClient.get({
       path: `/api/agencies/type/${type}`,
-    })) as Agency[]
+    })
   }
 
-  async getTransactionsForDateRange(prisonerId: string, accountCode: string, fromDate: Date, toDate: Date) {
-    return (await this.restClient.get({
+  async getTransactionsForDateRange(
+    prisonerId: string,
+    accountCode: string,
+    fromDate: Date,
+    toDate: Date,
+  ): Promise<OffenderTransactionHistoryDto[]> {
+    return this.restClient.get({
       path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
-    })) as OffenderTransactionHistoryDto[]
+    })
   }
 
-  async getNextVisit(bookingId: string) {
-    return (await this.restClient.get({
+  async getNextVisit(bookingId: string): Promise<VisitDetails> {
+    return this.restClient.get({
       path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
-    })) as VisitDetails
+    })
   }
 }

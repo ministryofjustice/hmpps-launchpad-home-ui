@@ -14,12 +14,12 @@ export default class AdjudicationsApiClient {
   }
 
   async hasAdjudications(bookingId: string, agencyId: string): Promise<HasAdjudicationsResponse> {
-    return (await this.restClient.get({
+    return this.restClient.get({
       path: `/adjudications/booking/${bookingId}/exists`,
       headers: {
         'Active-Caseload': agencyId,
       },
-    })) as HasAdjudicationsResponse
+    })
   }
 
   async getReportedAdjudicationsFor(
@@ -27,20 +27,20 @@ export default class AdjudicationsApiClient {
     agencyId: string,
     status: string,
   ): Promise<PageReportedAdjudicationDto> {
-    return (await this.restClient.get({
+    return this.restClient.get({
       path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}`,
       headers: {
         'Active-Caseload': agencyId,
       },
-    })) as PageReportedAdjudicationDto
+    })
   }
 
   async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
-    return (await this.restClient.get({
+    return this.restClient.get({
       path: `/reported-adjudications/${chargeNumber}/v2`,
       headers: {
         'Active-Caseload': agencyId,
       },
-    })) as ReportedAdjudicationApiResponse
+    })
   }
 }
