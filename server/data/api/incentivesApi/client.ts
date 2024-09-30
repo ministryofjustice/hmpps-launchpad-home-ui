@@ -1,6 +1,7 @@
+import logger from '../../../../logger'
 import { IncentiveReviewSummary } from '../../../@types/incentivesApiTypes'
-import RestClient from '../../restClient'
 import config, { ApiConfig } from '../../../config'
+import RestClient from '../../restClient'
 
 export default class IncentivesApiClient {
   public restClient: RestClient
@@ -10,8 +11,13 @@ export default class IncentivesApiClient {
   }
 
   async getIncentivesSummaryFor(bookingId: string): Promise<IncentiveReviewSummary> {
-    return this.restClient.get({
-      path: `/incentive-reviews/booking/${bookingId}`,
-    })
+    try {
+      return await this.restClient.get({
+        path: `/incentive-reviews/booking/${bookingId}`,
+      })
+    } catch (error) {
+      logger.error(`Error fetching incentive summary for bookingId: ${bookingId}`, error)
+      throw new Error('Failed to fetch incentive summary data')
+    }
   }
 }
