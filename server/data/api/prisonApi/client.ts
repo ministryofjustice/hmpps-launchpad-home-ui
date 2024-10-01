@@ -1,4 +1,5 @@
 import { formatDate } from 'date-fns'
+
 import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
 import {
   Account,
@@ -44,7 +45,7 @@ export default class PrisonApiClient {
       return { isTomorrow: false, error: false, prisonerEvents }
     } catch (error) {
       logger.error(`Error fetching events summary for bookingId: ${bookingId}`, error)
-      throw new Error('Unable to fetch events summary')
+      throw new Error('Failed to fetch events summary')
     }
   }
 
@@ -59,7 +60,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, error)
-      throw new Error('Unable to fetch events data')
+      throw new Error('Failed to fetch events data')
     }
   }
 
@@ -73,7 +74,7 @@ export default class PrisonApiClient {
         `Error fetching adjudication for offenderNo: ${offenderNo}, adjudicationNo: ${adjudicationNo}`,
         error,
       )
-      throw new Error('Unable to fetch reported adjudication')
+      throw new Error('Failed to fetch reported adjudication')
     }
   }
 
@@ -84,7 +85,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching user for userId: ${userId}`, error)
-      throw new Error('Unable to fetch user')
+      throw new Error('Failed to fetch user')
     }
   }
 
@@ -95,7 +96,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching location for locationId: ${locationId}`, error)
-      throw new Error('Unable to fetch location')
+      throw new Error('Failed to fetch location')
     }
   }
 
@@ -106,7 +107,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error('Error fetching balances for booking', { bookingId, error })
-      throw new Error('Unable to fetch balances')
+      throw new Error('Failed to fetch balances')
     }
   }
 
@@ -117,7 +118,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error('Error fetching damage obligations for prisoner', { prisonerId, error })
-      throw new Error('Unable to fetch damage obligations')
+      throw new Error('Failed to fetch damage obligations')
     }
   }
 
@@ -128,7 +129,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error('Error fetching prisons by agency type', { type, error })
-      throw new Error('Unable to fetch prisons')
+      throw new Error('Failed to fetch prisons')
     }
   }
 
@@ -144,7 +145,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error('Error fetching transactions for prisoner', { prisonerId, accountCode, fromDate, toDate, error })
-      throw new Error('Unable to fetch transactions')
+      throw new Error('Failed to fetch transactions')
     }
   }
 
@@ -155,7 +156,7 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
-      throw new Error('Unable to fetch next visit')
+      throw new Error('Failed to fetch next visit')
     }
   }
 }
