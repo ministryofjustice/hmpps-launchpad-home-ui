@@ -11,6 +11,7 @@ import {
   VisitDetails,
 } from '../../../@types/prisonApiTypes'
 
+import logger from '../../../../logger'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
 import { convertToTitleCase, formatDateTimeString } from '../../../utils/utils'
@@ -24,75 +25,111 @@ export default class PrisonApiClient {
   }
 
   async getEventsSummary(bookingId: string): Promise<EventsData> {
-    const scheduledEvents: ScheduledEvent[] = await this.restClient.get({
-      path: `/api/bookings/${bookingId}/events/today`,
-      query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
-    })
+    try {
+      const scheduledEvents: ScheduledEvent[] = await this.restClient.get({
+        path: `/api/bookings/${bookingId}/events/today`,
+        query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
+      })
 
-    const prisonerEvents: PrisonerEvent[] = []
+      const prisonerEvents: PrisonerEvent[] = []
+      scheduledEvents.forEach(scheduledEvent => {
+        const prisonerEvent: PrisonerEvent = {
+          timeString: formatDateTimeString(scheduledEvent.startTime, scheduledEvent.endTime, DateFormats.PRETTY_TIME),
+          description: convertToTitleCase(scheduledEvent.eventSourceDesc),
+          location: convertToTitleCase(scheduledEvent.eventLocation),
+        }
+        prisonerEvents.push(prisonerEvent)
+      })
 
-    scheduledEvents.forEach(scheduledEvent => {
-      const prisonerEvent: PrisonerEvent = {
-        timeString: formatDateTimeString(scheduledEvent.startTime, scheduledEvent.endTime, DateFormats.PRETTY_TIME),
-        description: convertToTitleCase(scheduledEvent.eventSourceDesc),
-        location: convertToTitleCase(scheduledEvent.eventLocation),
-      }
-      prisonerEvents.push(prisonerEvent)
-    })
-
-    const eventsData: EventsData = {
-      isTomorrow: false,
-      error: false,
-      prisonerEvents,
+      return { isTomorrow: false, error: false, prisonerEvents }
+    } catch (error) {
+      logger.error(`Error fetching events summary for bookingId: ${bookingId}`, error)
+      throw new Error('Unable to fetch events summary')
     }
-
-    return eventsData
   }
 
   async getEventsFor(bookingId: string, fromDate: Date, toDate: Date): Promise<ScheduledEvent[]> {
-    return this.restClient.get({
-      path: `/api/bookings/${bookingId}/events`,
-      query: new URLSearchParams({
-        fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
-        toDate: formatDate(toDate, DateFormats.ISO_DATE),
-      }).toString(),
-    })
+    try {
+      return await this.restClient.get({
+        path: `/api/bookings/${bookingId}/events`,
+        query: new URLSearchParams({
+          fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
+          toDate: formatDate(toDate, DateFormats.ISO_DATE),
+        }).toString(),
+      })
+    } catch (error) {
+      logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, error)
+      throw new Error('Unable to fetch events data')
+    }
   }
 
   async getReportedAdjudication(offenderNo: string, adjudicationNo: string) {
-    return this.restClient.get({
-      path: `/api/offenders/${offenderNo}/adjudications/${adjudicationNo}`,
-    })
+    try {
+      return await this.restClient.get({
+        path: `/api/offenders/${offenderNo}/adjudications/${adjudicationNo}`,
+      })
+    } catch (error) {
+      logger.error(
+        `Error fetching adjudication for offenderNo: ${offenderNo}, adjudicationNo: ${adjudicationNo}`,
+        error,
+      )
+      throw new Error('Unable to fetch reported adjudication')
+    }
   }
 
   async getUserById(userId: string): Promise<UserDetail> {
-    return this.restClient.get({
-      path: `/api/users/${userId}`,
-    })
+    try {
+      return await this.restClient.get({
+        path: `/api/users/${userId}`,
+      })
+    } catch (error) {
+      logger.error(`Error fetching user for userId: ${userId}`, error)
+      throw new Error('Unable to fetch user')
+    }
   }
 
   async getLocationById(locationId: number): Promise<Location> {
-    return this.restClient.get({
-      path: `/api/locations/${locationId}`,
-    })
+    try {
+      return await this.restClient.get({
+        path: `/api/locations/${locationId}`,
+      })
+    } catch (error) {
+      logger.error(`Error fetching location for locationId: ${locationId}`, error)
+      throw new Error('Unable to fetch location')
+    }
   }
 
-  async getBalances(bookingId: string): Promise<Account> {
-    return this.restClient.get({
-      path: `/api/bookings/${bookingId}/balances`,
-    })
+  async getBalances(bookingId: string): Promise<Account | null> {
+    try {
+      return await this.restClient.get({
+        path: `/api/bookings/${bookingId}/balances`,
+      })
+    } catch (error) {
+      logger.error('Error fetching balances for booking', { bookingId, error })
+      throw new Error('Unable to fetch balances')
+    }
   }
 
-  async getDamageObligations(prisonerId: string): Promise<{ damageObligations: OffenderDamageObligation[] }> {
-    return this.restClient.get({
-      path: `/api/offenders/${prisonerId}/damage-obligations`,
-    })
+  async getDamageObligations(prisonerId: string): Promise<{ damageObligations: OffenderDamageObligation[] } | null> {
+    try {
+      return await this.restClient.get({
+        path: `/api/offenders/${prisonerId}/damage-obligations`,
+      })
+    } catch (error) {
+      logger.error('Error fetching damage obligations for prisoner', { prisonerId, error })
+      throw new Error('Unable to fetch damage obligations')
+    }
   }
 
-  async getPrisonsByAgencyType(type: string): Promise<Agency[]> {
-    return this.restClient.get({
-      path: `/api/agencies/type/${type}`,
-    })
+  async getPrisonsByAgencyType(type: string): Promise<Agency[] | null> {
+    try {
+      return await this.restClient.get({
+        path: `/api/agencies/type/${type}`,
+      })
+    } catch (error) {
+      logger.error('Error fetching prisons by agency type', { type, error })
+      throw new Error('Unable to fetch prisons')
+    }
   }
 
   async getTransactionsForDateRange(
@@ -100,15 +137,25 @@ export default class PrisonApiClient {
     accountCode: string,
     fromDate: Date,
     toDate: Date,
-  ): Promise<OffenderTransactionHistoryDto[]> {
-    return this.restClient.get({
-      path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
-    })
+  ): Promise<OffenderTransactionHistoryDto[] | null> {
+    try {
+      return await this.restClient.get({
+        path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+      })
+    } catch (error) {
+      logger.error('Error fetching transactions for prisoner', { prisonerId, accountCode, fromDate, toDate, error })
+      throw new Error('Unable to fetch transactions')
+    }
   }
 
   async getNextVisit(bookingId: string): Promise<VisitDetails> {
-    return this.restClient.get({
-      path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
-    })
+    try {
+      return await this.restClient.get({
+        path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
+      })
+    } catch (error) {
+      logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
+      throw new Error('Unable to fetch next visit')
+    }
   }
 }
