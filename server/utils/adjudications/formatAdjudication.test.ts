@@ -1,8 +1,5 @@
 import { IncidentDetailsDto } from '../../@types/adjudicationsApiTypes'
 
-import { HmppsAuthClient } from '../../data'
-
-import { UserService } from '../../services'
 import {
   createMockAdjucationsService,
   createMockIncentivesService,
@@ -11,19 +8,12 @@ import {
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
 } from '../../services/testutils/mocks'
-import { UserDetails } from '../../services/user'
 
 import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudications'
 import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
 import { formatAdjudication, formatHearing, formatIncidentDetails } from './formatAdjudication'
-
-class MockUserService extends UserService {
-  async getUser(_token: string): Promise<UserDetails> {
-    return { name: 'Mock User', displayName: 'Mock User' }
-  }
-}
 
 const services = {
   adjudicationsService: createMockAdjucationsService(),
@@ -32,7 +22,6 @@ const services = {
   linksService: createMockLinksService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),
-  userService: new MockUserService({} as HmppsAuthClient),
 }
 
 describe('formatAdjudication', () => {
