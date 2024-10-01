@@ -14,7 +14,7 @@ export default class IncentivesService {
       return await incentivesApiClient.getIncentivesSummaryFor(bookingId)
     } catch (error) {
       logger.error(`Error fetching incentive summary for bookingId: ${bookingId}`, error)
-      throw new Error('Unable to fetch incentive summary')
+      throw new Error('Failed to fetch incentive summary')
     }
   }
 }

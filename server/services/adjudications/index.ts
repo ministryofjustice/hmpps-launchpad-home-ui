@@ -17,7 +17,7 @@ export default class AdjudicationsService {
       return await adjudicationsApiClient.hasAdjudications(bookingId, prisonId)
     } catch (error) {
       logger.error(`Error checking adjudications for bookingId: ${bookingId}, prisonId: ${prisonId}`, error)
-      throw new Error('Unable to check adjudications')
+      throw new Error('Failed to check adjudications')
     }
   }
 
@@ -45,7 +45,7 @@ export default class AdjudicationsService {
       }
     } catch (error) {
       logger.error(`Error fetching reported adjudications for bookingId: ${bookingId}, prisonId: ${prisonId}`, error)
-      throw new Error('Unable to fetch reported adjudications')
+      throw new Error('Failed to fetch reported adjudications')
     }
   }
 
@@ -59,7 +59,7 @@ export default class AdjudicationsService {
         `Error fetching reported adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`,
         error,
       )
-      throw new Error('Unable to fetch reported adjudication')
+      throw new Error('Failed to fetch reported adjudication')
     }
   }
 }

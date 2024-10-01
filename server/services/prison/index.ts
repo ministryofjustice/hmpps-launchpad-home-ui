@@ -21,7 +21,7 @@ export default class PrisonService {
       return await prisonApiClient.getEventsSummary(bookingId)
     } catch (error) {
       logger.error(`Error fetching prisoner events summary for bookingId: ${bookingId}`, error)
-      throw new Error('Unable to fetch prisoner events summary')
+      throw new Error('Failed to fetch prisoner events summary')
     }
   }
 
@@ -35,7 +35,7 @@ export default class PrisonService {
       return timetableData.events
     } catch (error) {
       logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, error)
-      throw new Error('Unable to fetch events data')
+      throw new Error('Failed to fetch events data')
     }
   }
 
@@ -45,7 +45,7 @@ export default class PrisonService {
       return results[format(today, DateFormats.ISO_DATE)]
     } catch (error) {
       logger.error(`Error fetching today's events for bookingId: ${bookingId} on ${today}`, error)
-      throw new Error("Unable to fetch today's events")
+      throw new Error("Failed to fetch today's events")
     }
   }
 
@@ -57,7 +57,7 @@ export default class PrisonService {
       return await prisonApiClient.getUserById(userId)
     } catch (error) {
       logger.error(`Error fetching user by ID: ${userId}`, error)
-      throw new Error('Unable to fetch user data')
+      throw new Error('Failed to fetch user data')
     }
   }
 
@@ -69,7 +69,7 @@ export default class PrisonService {
       return await prisonApiClient.getLocationById(locationId)
     } catch (error) {
       logger.error(`Error fetching location by ID: ${locationId}`, error)
-      throw new Error('Unable to fetch location data')
+      throw new Error('Failed to fetch location data')
     }
   }
 
@@ -84,7 +84,7 @@ export default class PrisonService {
         `Error fetching transactions for userId: ${user.idToken.sub}, accountCode: ${accountCode}, fromDate: ${fromDate}, toDate: ${toDate}`,
         error,
       )
-      throw new Error('Unable to fetch transactions')
+      throw new Error('Failed to fetch transactions')
     }
   }
 
@@ -96,7 +96,7 @@ export default class PrisonService {
       return await prisonApiClient.getBalances(bookingId)
     } catch (error) {
       logger.error(`Error fetching balances for bookingId: ${bookingId}`, error)
-      throw new Error('Unable to fetch balances')
+      throw new Error('Failed to fetch balances')
     }
   }
 
@@ -108,7 +108,7 @@ export default class PrisonService {
       return await prisonApiClient.getPrisonsByAgencyType(type)
     } catch (error) {
       logger.error(`Error fetching prisons by agency type: ${type}`, error)
-      throw new Error('Unable to fetch prisons by agency type')
+      throw new Error('Failed to fetch prisons by agency type')
     }
   }
 
@@ -120,7 +120,7 @@ export default class PrisonService {
       return await prisonApiClient.getDamageObligations(user.idToken.sub)
     } catch (error) {
       logger.error(`Error fetching damage obligations for userId: ${user.idToken.sub}`, error)
-      throw new Error('Unable to fetch damage obligations')
+      throw new Error('Failed to fetch damage obligations')
     }
   }
 
@@ -132,7 +132,7 @@ export default class PrisonService {
       return await prisonApiClient.getNextVisit(bookingId)
     } catch (error) {
       logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
-      throw new Error('Unable to fetch next visit data')
+      throw new Error('Failed to fetch next visit data')
     }
   }
 }

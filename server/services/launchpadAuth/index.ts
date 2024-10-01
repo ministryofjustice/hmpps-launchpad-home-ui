@@ -20,7 +20,7 @@ export default class LaunchpadAuthService {
       return await launchpadAuthClient.getApprovedClients(userId, accessToken)
     } catch (error) {
       logger.error(`Error fetching approved clients for userId: ${userId}`, error)
-      throw new Error('Unable to fetch approved clients')
+      throw new Error('Failed to fetch approved clients')
     }
   }
 
@@ -30,7 +30,7 @@ export default class LaunchpadAuthService {
       return await launchpadAuthClient.removeClientAccess(clientId, userId, accessToken)
     } catch (error) {
       logger.error(`Error removing client access for clientId: ${clientId}, userId: ${userId}`, error)
-      throw new Error('Unable to remove client access')
+      throw new Error('Failed to remove client access')
     }
   }
 }
