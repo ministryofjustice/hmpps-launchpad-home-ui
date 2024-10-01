@@ -1,3 +1,4 @@
+import logger from '../../../logger'
 import { ApprovedClients } from '../../@types/launchpad'
 import { HmppsAuthClient, RestClientBuilder } from '../../data'
 import LaunchpadAuthClient from '../../data/api/launchpadAuth/client'
@@ -14,12 +15,22 @@ export default class LaunchpadAuthService {
   }
 
   async getApprovedClients(userId: string, accessToken: string): Promise<ApprovedClients> {
-    const launchpadAuthClient = await this.getLaunchpadAuthClient()
-    return launchpadAuthClient.getApprovedClients(userId, accessToken)
+    try {
+      const launchpadAuthClient = await this.getLaunchpadAuthClient()
+      return await launchpadAuthClient.getApprovedClients(userId, accessToken)
+    } catch (error) {
+      logger.error(`Error fetching approved clients for userId: ${userId}`, error)
+      throw new Error('Unable to fetch approved clients')
+    }
   }
 
   async removeClientAccess(clientId: string, userId: string, accessToken: string): Promise<void> {
-    const launchpadAuthClient = await this.getLaunchpadAuthClient()
-    return launchpadAuthClient.removeClientAccess(clientId, userId, accessToken)
+    try {
+      const launchpadAuthClient = await this.getLaunchpadAuthClient()
+      return await launchpadAuthClient.removeClientAccess(clientId, userId, accessToken)
+    } catch (error) {
+      logger.error(`Error removing client access for clientId: ${clientId}, userId: ${userId}`, error)
+      throw new Error('Unable to remove client access')
+    }
   }
 }
