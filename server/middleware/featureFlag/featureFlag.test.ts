@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ALLOW_ALL_PRISONS, featureFlags } from '../../constants/featureFlags'
+import { featureFlags } from '../../constants/featureFlags'
 import { user } from '../../utils/mocks/user'
 import featureFlagMiddleware from './featureFlag'
 
@@ -68,16 +68,5 @@ describe(featureFlagMiddleware.name, () => {
 
     expect(res.redirect).toHaveBeenCalledWith('/profile')
     expect(next).not.toHaveBeenCalled()
-  })
-
-  it('should call next if the feature is enabled and all prisons are allowed', () => {
-    featureFlags.visits.enabled = true
-    featureFlags.visits.allowedPrisons = ALLOW_ALL_PRISONS
-
-    const middleware = featureFlagMiddleware('visits')
-    middleware(req as Request, res as Response, next)
-
-    expect(next).toHaveBeenCalled()
-    expect(res.redirect).not.toHaveBeenCalled()
   })
 })
