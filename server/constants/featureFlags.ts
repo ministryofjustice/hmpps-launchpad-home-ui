@@ -10,6 +10,7 @@ interface FeatureFlags {
 }
 
 const ALLOW_ALL_PRISONS = [
+  prisonAgencyIds.CookhamWood,
   prisonAgencyIds.Erlestoke,
   prisonAgencyIds.FelthamA,
   prisonAgencyIds.FelthamB,
