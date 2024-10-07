@@ -17,7 +17,7 @@ export default class PrisonerContactRegistryApiClient {
   async getSocialVisitors(prisonerId: string): Promise<PrisonerContact[]> {
     try {
       return await this.restClient.get({
-        path: `/prisoners/${prisonerId}/contacts?type=S`,
+        path: `/prisoners/${prisonerId}/contacts/social`,
       })
     } catch (error) {
       logger.error(`Error fetching social visitors for prisonerId: ${prisonerId}`, error)

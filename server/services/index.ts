@@ -6,7 +6,6 @@ import LaunchpadAuthService from './launchpadAuth'
 import LinksService from './links'
 import PrisonService from './prison'
 import PrisonerContactRegistryService from './prisonerContactRegistry'
-import UserService from './user'
 
 export type Services = ReturnType<typeof services>
 
@@ -28,7 +27,6 @@ export const services = () => {
     hmppsAuthClient,
     prisonerContactRegistryApiClientBuilder,
   )
-  const userService = new UserService(hmppsAuthClient)
 
   const linksService = new LinksService()
 
@@ -39,7 +37,6 @@ export const services = () => {
     linksService,
     prisonerContactRegistryService,
     prisonService,
-    userService,
   }
 }
 
@@ -50,5 +47,4 @@ export {
   LinksService,
   PrisonerContactRegistryService,
   PrisonService,
-  UserService,
 }
