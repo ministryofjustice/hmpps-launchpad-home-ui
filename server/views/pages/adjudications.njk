@@ -2,7 +2,7 @@
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = data.title + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
