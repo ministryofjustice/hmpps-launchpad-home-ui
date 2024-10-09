@@ -2,9 +2,6 @@ import { format } from 'date-fns'
 
 import logger from '../../../logger'
 
-import { EventsData, TimetableEvents, TimetableRow } from '../../@types/launchpad'
-import { Location, UserDetail } from '../../@types/prisonApiTypes'
-
 import { DateFormats } from '../../constants/date'
 
 import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
@@ -16,46 +13,64 @@ export default class PrisonService {
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
   ) {}
 
-  async getPrisonerEventsSummary(user: { idToken: { booking: { id: string } } }): Promise<EventsData> {
+  async getPrisonerEventsSummary(bookingId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const eventsSummary = await prisonApiClient.getEventsSummary(user.idToken.booking.id)
-    return eventsSummary
+
+    try {
+      return await prisonApiClient.getEventsSummary(bookingId)
+    } catch (error) {
+      logger.error(`Error fetching prisoner events summary for bookingId: ${bookingId}`, error)
+      throw new Error('Failed to fetch prisoner events summary')
+    }
   }
 
-  async getEventsFor(
-    user: { idToken: { booking: { id: string } } },
-    fromDate: Date,
-    toDate: Date,
-  ): Promise<TimetableEvents> {
+  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const eventsData = await prisonApiClient.getEventsFor(user.idToken.booking.id, fromDate, toDate)
-    const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
 
-    return timetableData.events
+    try {
+      const eventsData = await prisonApiClient.getEventsFor(bookingId, fromDate, toDate)
+      const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
+      return timetableData.events
+    } catch (error) {
+      logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, error)
+      throw new Error('Failed to fetch events data')
+    }
   }
 
-  async getEventsForToday(
-    user: { idToken: { booking: { id: string } } },
-    today: Date = new Date(),
-  ): Promise<TimetableRow> {
-    const results = await this.getEventsFor(user, today, today)
-    return results[format(today, DateFormats.ISO_DATE)]
+  async getEventsForToday(bookingId: string, today: Date = new Date()) {
+    try {
+      const results = await this.getEventsFor(bookingId, today, today)
+      return results[format(today, DateFormats.ISO_DATE)]
+    } catch (error) {
+      logger.error(`Error fetching today's events for bookingId: ${bookingId} on ${today}`, error)
+      throw new Error("Failed to fetch today's events")
+    }
   }
 
-  async getUserById(userId: string): Promise<UserDetail> {
+  async getUserById(userId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const user = await prisonApiClient.getUserById(userId)
-    return user as UserDetail
+
+    try {
+      return await prisonApiClient.getUserById(userId)
+    } catch (error) {
+      logger.error(`Error fetching user by ID: ${userId}`, error)
+      throw new Error('Failed to fetch user data')
+    }
   }
 
-  async getLocationById(locationId: number): Promise<Location> {
+  async getLocationById(locationId: number) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
-    const location = await prisonApiClient.getLocationById(locationId)
-    return location as Location
+
+    try {
+      return await prisonApiClient.getLocationById(locationId)
+    } catch (error) {
+      logger.error(`Error fetching location by ID: ${locationId}`, error)
+      throw new Error('Failed to fetch location data')
+    }
   }
 
   async getTransactions(user: { idToken: { sub: string } }, accountCode: string, fromDate: Date, toDate: Date) {
@@ -63,11 +78,13 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return prisonApiClient.getTransactionsForDateRange(user.idToken.sub, accountCode, fromDate, toDate)
-    } catch (e) {
-      logger.error('Failed to get transactions for user', e)
-      logger.debug(e.stack)
-      return null
+      return await prisonApiClient.getTransactionsForDateRange(user.idToken.sub, accountCode, fromDate, toDate)
+    } catch (error) {
+      logger.error(
+        `Error fetching transactions for userId: ${user.idToken.sub}, accountCode: ${accountCode}, fromDate: ${fromDate}, toDate: ${toDate}`,
+        error,
+      )
+      throw new Error('Failed to fetch transactions')
     }
   }
 
@@ -76,11 +93,10 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return prisonApiClient.getBalances(bookingId)
-    } catch (e) {
-      logger.error('Failed to get balances for booking', e)
-      logger.debug(e.stack)
-      return null
+      return await prisonApiClient.getBalances(bookingId)
+    } catch (error) {
+      logger.error(`Error fetching balances for bookingId: ${bookingId}`, error)
+      throw new Error('Failed to fetch balances')
     }
   }
 
@@ -89,11 +105,10 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return prisonApiClient.getPrisonsByAgencyType(type)
-    } catch (e) {
-      logger.error('Failed to get prisons by type', e)
-      logger.debug(e.stack)
-      return null
+      return await prisonApiClient.getPrisonsByAgencyType(type)
+    } catch (error) {
+      logger.error(`Error fetching prisons by agency type: ${type}`, error)
+      throw new Error('Failed to fetch prisons by agency type')
     }
   }
 
@@ -102,11 +117,10 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return prisonApiClient.getDamageObligations(user.idToken.sub)
-    } catch (e) {
-      logger.error('Failed to get damage obligations for user', e)
-      logger.debug(e.stack)
-      return null
+      return await prisonApiClient.getDamageObligations(user.idToken.sub)
+    } catch (error) {
+      logger.error(`Error fetching damage obligations for userId: ${user.idToken.sub}`, error)
+      throw new Error('Failed to fetch damage obligations')
     }
   }
 
@@ -115,11 +129,10 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return prisonApiClient.getNextVisit(bookingId)
-    } catch (e) {
-      logger.error('Failed to get next social visitor for user', e)
-      logger.debug(e.stack)
-      return null
+      return await prisonApiClient.getNextVisit(bookingId)
+    } catch (error) {
+      logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
+      throw new Error('Failed to fetch next visit data')
     }
   }
 }

@@ -1,4 +1,4 @@
-import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
+import logger from '../../../logger'
 import { HmppsAuthClient, IncentivesApiClient, RestClientBuilder } from '../../data'
 
 export default class IncentivesService {
@@ -7,11 +7,14 @@ export default class IncentivesService {
     private readonly incentivesApiClientFactory: RestClientBuilder<IncentivesApiClient>,
   ) {}
 
-  async getIncentivesSummaryFor(user: { idToken: { booking: { id: string } } }): Promise<IncentiveReviewSummary> {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const incentivesApiClient = this.incentivesApiClientFactory(token)
-    const incentivesData = await incentivesApiClient.getIncentivesSummaryFor(user.idToken.booking.id)
-
-    return incentivesData
+  async getIncentivesSummaryFor(bookingId: string) {
+    try {
+      const token = await this.hmppsAuthClient.getSystemClientToken()
+      const incentivesApiClient = this.incentivesApiClientFactory(token)
+      return await incentivesApiClient.getIncentivesSummaryFor(bookingId)
+    } catch (error) {
+      logger.error(`Error fetching incentive summary for bookingId: ${bookingId}`, error)
+      throw new Error('Failed to fetch incentive summary')
+    }
   }
 }

@@ -32,7 +32,7 @@ describe('PrisonerProfileService', () => {
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
       prisonApiClient.getEventsSummary.mockResolvedValue(eventsSummary)
 
-      const result = await prisonService.getPrisonerEventsSummary({ idToken: { booking: { id: '123456' } } })
+      const result = await prisonService.getPrisonerEventsSummary('123456')
 
       expect(result).toEqual(eventsSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()

@@ -2,14 +2,22 @@ import { prisonAgencyIds } from './prisons'
 
 interface FeatureFlag {
   enabled: boolean
-  allowedPrisons: string[] | typeof ALLOW_ALL_PRISONS
+  allowedPrisons: string[]
 }
 
 interface FeatureFlags {
   [key: string]: FeatureFlag
 }
 
-export const ALLOW_ALL_PRISONS = 'ALL'
+const ALLOW_ALL_PRISONS = [
+  prisonAgencyIds.Erlestoke,
+  prisonAgencyIds.FelthamA,
+  prisonAgencyIds.FelthamB,
+  prisonAgencyIds.NewHall,
+  prisonAgencyIds.Styal,
+  prisonAgencyIds.Werrington,
+  prisonAgencyIds.Wetherby,
+]
 
 export const Features = {
   Adjudications: 'adjudications',
@@ -22,15 +30,7 @@ export const Features = {
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
     enabled: true,
-    allowedPrisons: [
-      prisonAgencyIds.Erlestoke,
-      prisonAgencyIds.FelthamA,
-      prisonAgencyIds.FelthamB,
-      prisonAgencyIds.NewHall,
-      prisonAgencyIds.Styal,
-      prisonAgencyIds.Werrington,
-      prisonAgencyIds.Wetherby,
-    ],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Settings]: {
     enabled: false,
@@ -42,26 +42,10 @@ export const featureFlags: FeatureFlags = {
   },
   [Features.Transactions]: {
     enabled: true,
-    allowedPrisons: [
-      prisonAgencyIds.Erlestoke,
-      prisonAgencyIds.FelthamA,
-      prisonAgencyIds.FelthamB,
-      prisonAgencyIds.NewHall,
-      prisonAgencyIds.Styal,
-      prisonAgencyIds.Werrington,
-      prisonAgencyIds.Wetherby,
-    ],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Visits]: {
     enabled: true,
-    allowedPrisons: [
-      prisonAgencyIds.Erlestoke,
-      prisonAgencyIds.FelthamA,
-      prisonAgencyIds.FelthamB,
-      prisonAgencyIds.NewHall,
-      prisonAgencyIds.Styal,
-      prisonAgencyIds.Werrington,
-      prisonAgencyIds.Wetherby,
-    ],
+    allowedPrisons: ALLOW_ALL_PRISONS,
   },
 }
