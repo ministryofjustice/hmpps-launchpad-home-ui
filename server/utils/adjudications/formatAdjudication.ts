@@ -30,6 +30,7 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
       hearings: formattedHearings,
       location: `${location?.userDescription} (${location?.agencyId})`,
       reportedBy: `${reportedBy?.firstName} ${reportedBy?.lastName}`,
+      reportDateTime: format(reportedAdjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }
   } catch (error) {
     throw new Error(`Error formatting reported adjudication: ${error}`)
@@ -40,7 +41,6 @@ export const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): Inci
   return {
     ...incidentDetails,
     dateTimeOfIncident: format(incidentDetails.dateTimeOfIncident, DateFormats.GDS_PRETTY_DATE_TIME),
-    dateTimeOfDiscovery: format(incidentDetails.dateTimeOfDiscovery, DateFormats.GDS_PRETTY_DATE_TIME),
   }
 }
 

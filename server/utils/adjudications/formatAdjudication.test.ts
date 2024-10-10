@@ -31,7 +31,7 @@ describe('formatAdjudication', () => {
 
     const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
-    expect(formattedReportedAdjudication).toEqual(formattedReportedAdjudication)
+    expect(formattedReportedAdjudication).toEqual(formattedAdjudication)
   })
 })
 
@@ -49,7 +49,6 @@ describe('formatIncidentDetails', () => {
     expect(formattedDetails).toEqual({
       ...incidentDetails,
       dateTimeOfIncident: '1 January 2021, 12.00am',
-      dateTimeOfDiscovery: '2 January 2021, 12.00am',
     })
   })
 })

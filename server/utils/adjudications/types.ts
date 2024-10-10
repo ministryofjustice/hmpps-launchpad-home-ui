@@ -14,11 +14,12 @@ import {
   ReportedWitnessDto,
 } from '../../@types/adjudicationsApiTypes'
 
-type ExtendedHearingDto = BaseHearingDto & {
+type ExtendedHearingDto = Omit<BaseHearingDto, 'oicHearingType' | 'outcome'> & {
   location: string
   adjudicator: string
   offenceDetails: OffenceDto
   punishments: PunishmentDto[]
+  oicHearingType: string
   outcome: Omit<HearingOutcomeDto, 'plea'> & { plea: string }
 }
 
@@ -76,4 +77,5 @@ export type FormattedReportedAdjudication = {
   hearings: ExtendedHearingDto[]
   location: string
   reportedBy: string
+  reportDateTime: string
 }
