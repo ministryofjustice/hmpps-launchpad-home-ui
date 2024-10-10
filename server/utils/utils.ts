@@ -25,9 +25,6 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
-export const formatDateTimeString = (from: string, to: string, dateTimeFormat: string): string =>
-  `${formatDate(new Date(from), dateTimeFormat)} to ${formatDate(new Date(to), dateTimeFormat)}`
-
 export const formatDateOrDefault = (placeHolder: string, dateFormat: string, date: string): string => {
   if (!isValid(parseISO(date))) {
     return placeHolder

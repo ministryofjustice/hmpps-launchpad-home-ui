@@ -15,7 +15,7 @@ import {
 import logger from '../../../../logger'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
-import { convertToTitleCase, formatDateTimeString } from '../../../utils/utils'
+import { convertToTitleCase } from '../../../utils/utils'
 import RestClient from '../../restClient'
 
 export default class PrisonApiClient {
@@ -34,8 +34,18 @@ export default class PrisonApiClient {
 
       const prisonerEvents: PrisonerEvent[] = []
       scheduledEvents.forEach(scheduledEvent => {
+        const dateTimeFormat = DateFormats.PRETTY_TIME
+
+        const formattedFrom = scheduledEvent.startTime
+          ? formatDate(new Date(scheduledEvent.startTime), dateTimeFormat)
+          : 'N/A'
+        const formattedTo = scheduledEvent.endTime
+          ? formatDate(new Date(scheduledEvent.endTime), dateTimeFormat)
+          : 'N/A'
+        const timeString = `${formattedFrom} to ${formattedTo}`
+
         const prisonerEvent: PrisonerEvent = {
-          timeString: formatDateTimeString(scheduledEvent.startTime, scheduledEvent.endTime, DateFormats.PRETTY_TIME),
+          timeString,
           description: convertToTitleCase(scheduledEvent.eventSourceDesc),
           location: convertToTitleCase(scheduledEvent.eventLocation),
         }
