@@ -105,17 +105,17 @@ export const formattedAdjudication: FormattedReportedAdjudication = {
       id: 294486,
       locationId: 78703,
       dateTimeOfHearing: '18 February 2011, 10.00am',
-      oicHearingType: 'GOV_ADULT',
+      oicHearingType: 'Adult',
       outcome: {
         id: 284319,
         adjudicator: 'IQS13Z',
         code: 'COMPLETE',
         details: '',
-        plea: 'ABSTAIN',
+        plea: 'Abstain',
       },
       agencyId: 'GHI',
-      location: 'Seg Adj. Room',
-      adjudicator: 'GOV_ADULT',
+      location: 'Main Building',
+      adjudicator: 'IQS13Z',
       offenceDetails: {
         offenceCode: 0,
         offenceRule: {
@@ -127,6 +127,11 @@ export const formattedAdjudication: FormattedReportedAdjudication = {
       punishments: [],
     },
   ],
-  location: 'Reception (GHI)',
-  reportedBy: 'Iclquens Hannista',
+  incidentDetails: {
+    ...reportedAdjudication.incidentDetails,
+    dateTimeOfIncident: '28 January 2011, 11.52am',
+  },
+  location: 'Main Building (ABC)',
+  reportedBy: 'John Smith',
+  reportDateTime: '28 January 2011, 11.52am',
 }
