@@ -74,20 +74,6 @@ export default class PrisonApiClient {
     }
   }
 
-  async getReportedAdjudication(offenderNo: string, adjudicationNo: string) {
-    try {
-      return await this.restClient.get({
-        path: `/api/offenders/${offenderNo}/adjudications/${adjudicationNo}`,
-      })
-    } catch (error) {
-      logger.error(
-        `Error fetching adjudication for offenderNo: ${offenderNo}, adjudicationNo: ${adjudicationNo}`,
-        error,
-      )
-      throw new Error('Failed to fetch reported adjudication')
-    }
-  }
-
   async getUserById(userId: string): Promise<UserDetail> {
     try {
       return await this.restClient.get({
