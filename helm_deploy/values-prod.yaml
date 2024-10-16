@@ -16,7 +16,6 @@ generic-service:
     ADJUDICATIONS_API_URL: 'https://manage-adjudications-api.hmpps.service.justice.gov.uk'
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth.hmpps.service.justice.gov.uk'
     GA4_SITE_ID: 'G-7M5BW140G4'
-    SENTRY_DSN: 'https://f36188d0543b13fa07be85212df8e953@o345774.ingest.us.sentry.io/4508126598594560'
 
   allowlist:
     groups:
