@@ -1,3 +1,6 @@
+import * as Sentry from '@sentry/node'
+import { nodeProfilingIntegration } from '@sentry/profiling-node'
+
 import express from 'express'
 import createError from 'http-errors'
 import path from 'path'
@@ -26,8 +29,21 @@ import visitsRoutes from './routes/visits'
 
 import type { Services } from './services'
 
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [nodeProfilingIntegration()],
+    tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
+  })
+}
+
 export default function createApp(services: Services): express.Application {
   const app = express()
+
+  if (process.env.NODE_ENV === 'production') {
+    app.use(Sentry.expressErrorHandler())
+  }
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
