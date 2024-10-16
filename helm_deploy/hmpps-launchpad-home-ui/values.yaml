@@ -43,7 +43,6 @@ generic-service:
     REDIS_TLS_ENABLED: 'true'
     TOKEN_VERIFICATION_ENABLED: 'true'
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/'
-    SENTRY_DSN: 'https://f36188d0543b13fa07be85212df8e953@o345774.ingest.us.sentry.io/4508126598594560'
     REFRESH_CHECK_TIMEOUT_IN_MINUTES: 1
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
@@ -59,6 +58,7 @@ generic-service:
       SYSTEM_CLIENT_ID: 'SYSTEM_CLIENT_ID'
       SYSTEM_CLIENT_SECRET: 'SYSTEM_CLIENT_SECRET'
       SESSION_SECRET: 'SESSION_SECRET'
+      SENTRY_DSN: 'SENTRY_DSN'
     elasticache-redis:
       REDIS_HOST: 'primary_endpoint_address'
       REDIS_AUTH_TOKEN: 'auth_token'
