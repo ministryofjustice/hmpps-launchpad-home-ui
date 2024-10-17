@@ -22,6 +22,10 @@ generic-service:
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-dev.hmpps.service.justice.gov.uk'
     GA4_SITE_ID: 'G-EJVJ26SLFY'
 
+  namespace_secrets:
+    hmpps-launchpad-home-ui:
+      SENTRY_DSN: null # disable Sentry for dev
+
   allowlist:
     groups:
       - internal
