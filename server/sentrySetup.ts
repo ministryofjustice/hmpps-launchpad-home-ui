@@ -6,12 +6,14 @@ import { Request, Response, NextFunction } from 'express'
 const isProductionEnv = process.env.NODE_ENV === 'production'
 
 export function initSentry() {
-  Sentry.init({
-    dsn: isProductionEnv ? process.env.SENTRY_DSN : null,
-    integrations: [nodeProfilingIntegration()],
-    tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
-  })
+  if (isProductionEnv) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      integrations: [nodeProfilingIntegration()],
+      tracesSampleRate: 1.0,
+      profilesSampleRate: 1.0,
+    })
+  }
 }
 
 export function sentryErrorHandler() {
