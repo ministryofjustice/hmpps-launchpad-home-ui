@@ -135,4 +135,16 @@ export default class PrisonService {
       throw new Error('Failed to fetch next visit data')
     }
   }
+
+  async getVisitBalances(prisonerId: string) {
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const prisonApiClient = this.prisonApiClientFactory(token)
+
+    try {
+      return await prisonApiClient.getVisitBalances(prisonerId)
+    } catch (error) {
+      logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
+      throw new Error('Failed to fetch visit balances data')
+    }
+  }
 }

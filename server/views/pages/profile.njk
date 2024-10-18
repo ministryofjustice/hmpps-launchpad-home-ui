@@ -79,7 +79,7 @@
     {% endif %}
 
     {% if data.visits.isEnabled %}
-      {{ visitsPanel(data.visits.nextVisit, data.visits.readMoreUrl, data.socialVisitors.isEnabled) }}
+      {{ visitsPanel(data.visits, data.socialVisitors.isEnabled) }}
     {% endif %}
 
     {% if data.adjudications.isEnabled and data.adjudications.hasAdjudications %}

@@ -23,7 +23,7 @@ describe('PrisonApiClient', () => {
   afterEach(() => jest.clearAllMocks())
 
   describe('getBalances', () => {
-    it('should call restClient.get with correct parameters', async () => {
+    it('should retrieve account balances for a specific booking using the correct API endpoint', async () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -38,7 +38,7 @@ describe('PrisonApiClient', () => {
   })
 
   describe('getDamageObligations', () => {
-    it('should call restClient.get with correct parameters', async () => {
+    it('should retrieve damage obligations for a specific prisoner using the correct API endpoint', async () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -53,7 +53,7 @@ describe('PrisonApiClient', () => {
   })
 
   describe('getPrisonsByAgencyType', () => {
-    it('should call restClient.get with correct parameters', async () => {
+    it('should retrieve a list of prisons filtered by agency type using the correct API endpoint', async () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -68,7 +68,7 @@ describe('PrisonApiClient', () => {
   })
 
   describe('getTransactionsForDateRange', () => {
-    it('should call restClient.get with correct parameters', async () => {
+    it('should retrieve transaction history for a prisoner within a specific date range using the correct API endpoint', async () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
@@ -80,6 +80,21 @@ describe('PrisonApiClient', () => {
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
         path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+      })
+      expect(response).toEqual(mockResponse)
+    })
+  })
+
+  describe('getVisitBalances', () => {
+    it('should fetch visit balances for a specific prisoner using the correct API endpoint', async () => {
+      const mockResponse = true
+      ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
+
+      const prisonerId = 'prisonerId'
+      const response = await prisonApiClient.getVisitBalances(prisonerId)
+
+      expect(mockRestClient.get).toHaveBeenCalledWith({
+        path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
       })
       expect(response).toEqual(mockResponse)
     })
