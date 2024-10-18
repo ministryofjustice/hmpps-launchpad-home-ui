@@ -30,8 +30,10 @@ export default function routes(services: Services): Router {
       const { hasAdjudications } = await services.adjudicationsService.hasAdjudications(booking.id, prisonId)
 
       const incentivesData = await services.incentivesService.getIncentivesSummaryFor(user.idToken.booking.id)
+
       const nextVisit = await services.prisonService.getNextVisit(booking.id)
       const transactionsBalances = await services.prisonService.getBalances(booking.id)
+      const { remainingVo, remainingPvo } = await services.prisonService.getVisitBalances(req.user.idToken.sub)
 
       const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
       const isSocialVisitorsEnabled = isFeatureEnabled(Features.SocialVisitors, prisonId)
@@ -76,6 +78,7 @@ export default function routes(services: Services): Router {
           visits: {
             nextVisit: nextVisitData,
             readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
+            visitsRemaining: remainingPvo + remainingVo,
             isEnabled: isVisitsEnabled,
           },
         },

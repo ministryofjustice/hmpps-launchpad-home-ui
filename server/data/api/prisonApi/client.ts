@@ -9,6 +9,7 @@ import {
   OffenderTransactionHistoryDto,
   ScheduledEvent,
   UserDetail,
+  VisitBalances,
   VisitDetails,
 } from '../../../@types/prisonApiTypes'
 
@@ -153,6 +154,17 @@ export default class PrisonApiClient {
     } catch (error) {
       logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
       throw new Error('Failed to fetch next visit')
+    }
+  }
+
+  async getVisitBalances(prisonerId: string): Promise<VisitBalances> {
+    try {
+      return await this.restClient.get({
+        path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
+      })
+    } catch (error) {
+      logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
+      throw new Error('Failed to fetch visit balances')
     }
   }
 }
