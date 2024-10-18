@@ -22,9 +22,5 @@ generic-service:
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-preprod.hmpps.service.justice.gov.uk'
     GA4_SITE_ID: 'G-4VW039LBEF'
 
-  namespace_secrets:
-    hmpps-launchpad-home-ui:
-      SENTRY_DSN: null # disable Sentry for pre-prod
-
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev

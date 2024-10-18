@@ -26,7 +26,6 @@ generic-service:
   namespace_secrets:
     hmpps-launchpad-home-ui:
       APPINSIGHTS_INSTRUMENTATIONKEY: null # disable App Insights for staging
-      SENTRY_DSN: null # disable Sentry for staging
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
