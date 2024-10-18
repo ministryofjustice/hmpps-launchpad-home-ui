@@ -9,6 +9,7 @@ import { asyncHandler } from '../../middleware/asyncHandler'
 
 import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
 import { getEstablishmentLinksData } from '../../utils/utils'
+import { VisitDetails } from '../../@types/prisonApiTypes'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
@@ -47,6 +48,7 @@ export default function routes(services: Services): Router {
               startTime: format(nextVisit.startTime, DateFormats.PRETTY_TIME),
               endTime: nextVisit.endTime ? format(nextVisit.endTime, DateFormats.PRETTY_TIME) : '',
               visitType: nextVisit.visitTypeDescription,
+              visitors: nextVisit.visitors,
             }
           : null
 
