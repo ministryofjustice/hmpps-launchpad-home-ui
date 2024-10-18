@@ -4,12 +4,11 @@ import { Request, Response, Router } from 'express'
 import { DateFormats } from '../../constants/date'
 import { Features } from '../../constants/featureFlags'
 
-import type { Services } from '../../services'
 import { asyncHandler } from '../../middleware/asyncHandler'
+import type { Services } from '../../services'
 
 import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
 import { getEstablishmentLinksData } from '../../utils/utils'
-import { VisitDetails } from '../../@types/prisonApiTypes'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
