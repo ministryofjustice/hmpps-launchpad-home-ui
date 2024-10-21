@@ -5,6 +5,7 @@ import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 import { eventsSummary } from '../../utils/mocks/events'
 import { location } from '../../utils/mocks/location'
 import { staffUser } from '../../utils/mocks/user'
+import { visitBalances } from '../../utils/mocks/visitors'
 
 jest.mock('../../data')
 
@@ -72,6 +73,23 @@ describe('PrisonerProfileService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getLocationById).toHaveBeenCalledWith(mockLocationId)
+    })
+  })
+
+  describe('getVisitBalances', () => {
+    it('should return the visit balances for the prisoner', async () => {
+      const prisonerId = '12345'
+
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
+      prisonApiClientFactory.mockReturnValue(prisonApiClient)
+      prisonApiClient.getVisitBalances.mockResolvedValue(visitBalances)
+
+      const result = await prisonService.getVisitBalances(prisonerId)
+
+      expect(result).toEqual(visitBalances)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
+      expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
+      expect(prisonApiClient.getVisitBalances).toHaveBeenCalledWith(prisonerId)
     })
   })
 })
