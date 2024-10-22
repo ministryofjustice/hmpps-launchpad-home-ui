@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/order
-import { initSentry, sentryErrorHandler } from './sentrySetup'
-
 import express from 'express'
 import createError from 'http-errors'
 import path from 'path'
+
+import { initSentry, sentryErrorHandler } from './sentrySetup'
 
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
