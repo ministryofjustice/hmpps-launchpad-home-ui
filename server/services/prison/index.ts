@@ -4,6 +4,7 @@ import logger from '../../../logger'
 
 import { DateFormats } from '../../constants/date'
 
+import { VisitBalances } from '../../@types/prisonApiTypes'
 import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 import Timetable from '../../data/timetable'
 
@@ -136,15 +137,16 @@ export default class PrisonService {
     }
   }
 
-  async getVisitBalances(prisonerId: string) {
+  async getVisitBalances(prisonerId: string): Promise<VisitBalances | null> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return await prisonApiClient.getVisitBalances(prisonerId)
+      const visitBalances = await prisonApiClient.getVisitBalances(prisonerId)
+      return visitBalances ?? null
     } catch (error) {
       logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
-      throw new Error('Failed to fetch visit balances data')
+      return null
     }
   }
 }

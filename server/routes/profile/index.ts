@@ -33,7 +33,9 @@ export default function routes(services: Services): Router {
 
       const nextVisit = await services.prisonService.getNextVisit(booking.id)
       const transactionsBalances = await services.prisonService.getBalances(booking.id)
-      const { remainingVo, remainingPvo } = await services.prisonService.getVisitBalances(req.user.idToken.sub)
+
+      const visitBalances = await services.prisonService.getVisitBalances(req.user.idToken.sub)
+      const visitsRemaining = visitBalances ? visitBalances.remainingPvo + visitBalances.remainingVo : 'N/A'
 
       const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
       const isSocialVisitorsEnabled = isFeatureEnabled(Features.SocialVisitors, prisonId)
@@ -79,7 +81,7 @@ export default function routes(services: Services): Router {
           visits: {
             nextVisit: nextVisitData,
             readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
-            visitsRemaining: remainingPvo + remainingVo,
+            visitsRemaining,
             isEnabled: isVisitsEnabled,
           },
         },
