@@ -16,7 +16,6 @@ import {
 
 type ExtendedHearingDto = Omit<BaseHearingDto, 'oicHearingType' | 'outcome'> & {
   location: string
-  adjudicator: string
   offenceDetails: OffenceDto
   punishments: PunishmentDto[]
   oicHearingType: string

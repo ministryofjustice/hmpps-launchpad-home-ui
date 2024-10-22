@@ -28,8 +28,8 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
       ...reportedAdjudication,
       incidentDetails: formattedIncidentDetails,
       hearings: formattedHearings,
-      location: `${location?.userDescription} (${location?.agencyId})`,
-      reportedBy: `${reportedBy?.firstName} ${reportedBy?.lastName}`,
+      location: location ? `${location?.userDescription} (${location?.agencyId})` : 'N/A',
+      reportedBy: reportedBy ? `${reportedBy?.firstName} ${reportedBy?.lastName}` : 'N/A',
       reportDateTime: format(reportedAdjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }
   } catch (error) {
@@ -56,8 +56,7 @@ export const formatHearing = async (
     return {
       ...hearing,
       dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
-      location: `${location?.userDescription}`,
-      adjudicator: hearing.outcome.adjudicator || 'Unavailable',
+      location: location ? `${location?.userDescription}` : 'N/A',
       oicHearingType: hearing.oicHearingType === 'GOV_ADULT' ? 'Adult' : 'YOI',
       outcome: {
         ...hearing.outcome,
@@ -69,7 +68,7 @@ export const formatHearing = async (
         effectiveDate:
           punishment.schedule.suspendedUntil || punishment.schedule.startDate
             ? format(punishment.schedule.suspendedUntil || punishment.schedule.startDate, DateFormats.GDS_PRETTY_DATE)
-            : 'Unavailable',
+            : 'N/A',
         type: toSentenceCase(punishment.type),
       })),
     }

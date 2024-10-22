@@ -64,15 +64,6 @@ describe('formatHearing', () => {
       services,
     )
 
-    expect(formattedHearing).toEqual({
-      ...formattedAdjudication.hearings[0],
-      adjudicator: 'IQS13Z',
-      oicHearingType: 'Adult',
-      location: location.userDescription,
-      outcome: {
-        ...formattedAdjudication.hearings[0].outcome,
-        plea: 'Abstain',
-      },
-    })
+    expect(formattedHearing).toEqual(formattedAdjudication.hearings[0])
   })
 })
