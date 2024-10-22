@@ -164,7 +164,10 @@ export default class PrisonApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
-      throw new Error('Failed to fetch visit balances')
+      return Promise.resolve({
+        remainingVo: null,
+        remainingPvo: null,
+      } as VisitBalances)
     }
   }
 }
