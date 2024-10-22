@@ -81,7 +81,7 @@ export default function routes(services: Services): Router {
           visits: {
             nextVisit: nextVisitData,
             readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
-            visitsRemaining, // Display "N/A" if visitBalances is null
+            visitsRemaining,
             isEnabled: isVisitsEnabled,
           },
         },
