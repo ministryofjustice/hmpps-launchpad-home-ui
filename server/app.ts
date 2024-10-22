@@ -2,6 +2,8 @@ import express from 'express'
 import createError from 'http-errors'
 import path from 'path'
 
+import { initSentry, sentryErrorHandler } from './sentrySetup'
+
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
@@ -25,6 +27,8 @@ import transactionsRoutes from './routes/transactions'
 import visitsRoutes from './routes/visits'
 
 import type { Services } from './services'
+
+initSentry()
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -54,6 +58,8 @@ export default function createApp(services: Services): express.Application {
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', transactionsRoutes(services))
   app.use('/visits', visitsRoutes(services))
+
+  app.use(sentryErrorHandler())
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
