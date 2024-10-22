@@ -35,10 +35,7 @@ export default function routes(services: Services): Router {
       const transactionsBalances = await services.prisonService.getBalances(booking.id)
 
       const visitBalances = await services.prisonService.getVisitBalances(req.user.idToken.sub)
-      const remainingVo = visitBalances?.remainingVo ?? 0
-      const remainingPvo = visitBalances?.remainingPvo ?? 0
-
-      const visitsRemaining = visitBalances ? remainingPvo + remainingVo : 'N/A'
+      const visitsRemaining = visitBalances ? visitBalances.remainingPvo + visitBalances.remainingVo : 'N/A'
 
       const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
       const isSocialVisitorsEnabled = isFeatureEnabled(Features.SocialVisitors, prisonId)
