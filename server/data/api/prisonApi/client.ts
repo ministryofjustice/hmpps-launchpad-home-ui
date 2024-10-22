@@ -157,14 +157,14 @@ export default class PrisonApiClient {
     }
   }
 
-  async getVisitBalances(prisonerId: string): Promise<VisitBalances> {
+  async getVisitBalances(prisonerId: string): Promise<VisitBalances | null> {
     try {
       return await this.restClient.get({
         path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
       })
     } catch (error) {
       logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
-      throw new Error('Failed to fetch visit balances')
+      return null
     }
   }
 }
