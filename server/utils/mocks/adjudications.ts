@@ -115,7 +115,6 @@ export const formattedAdjudication: FormattedReportedAdjudication = {
       },
       agencyId: 'GHI',
       location: 'Main Building',
-      adjudicator: 'IQS13Z',
       offenceDetails: {
         offenceCode: 0,
         offenceRule: {
