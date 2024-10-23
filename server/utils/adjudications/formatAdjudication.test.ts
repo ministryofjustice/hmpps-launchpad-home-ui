@@ -1,5 +1,3 @@
-import { IncidentDetailsDto } from '../../@types/adjudicationsApiTypes'
-
 import {
   createMockAdjucationsService,
   createMockIncentivesService,
