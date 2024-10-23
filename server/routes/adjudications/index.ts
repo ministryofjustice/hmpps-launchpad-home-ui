@@ -55,11 +55,14 @@ export default function routes(services: Services): Router {
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
       )
-      const formattedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
-      res.render('pages/adjudication', {
+      const formattedAdjudication = reportedAdjudication
+        ? await formatAdjudication(reportedAdjudication, services)
+        : null
+
+      return res.render('pages/adjudication', {
         givenName: user.idToken.given_name,
-        title: `View details of ${reportedAdjudication.chargeNumber}`,
+        title: `View details of ${req.params.chargeNumber}`,
         data: {
           adjudication: formattedAdjudication,
           readMoreUrl: `${prisonerContentHubURL}/content/4193`,

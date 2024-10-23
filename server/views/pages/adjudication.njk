@@ -21,39 +21,37 @@
 
 {% block content %}
   <div class="govuk-width-container">
-    {% if error %}
-      <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="approved-visitors-error">We can not list your adjudication at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a> or <a href="{{ data.adjudicationsReadMoreURL }}" class="govuk-link">read more about adjudications</a>.</p>
-    {% else %}  
+    {% if data.adjudication %}
       <div class="govuk-!-margin-bottom-7">
         <a href="{{ data.readMoreUrl }}" class="govuk-link govuk-!-font-size-24">More about adjudications</a>
-      </div>  
+      </div>
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
           {{ govukSummaryList({
-          classes: 'govuk-summary-list--no-border',
-          rows: [
-            {
-              key: { text: "Governor's report number" },
-              value: { text: data.adjudication.chargeNumber }
-            },
-            {
-              key: { text: "When" },
-              value: { text: data.adjudication.incidentDetails.dateTimeOfIncident }
-            },
-            {
-              key: { text: "Where" },
-              value: { text: data.adjudication.location }
-            },
-            {
-              key: { text: "Report date and time" },
-              value: { text: data.adjudication.reportDateTime }
-            },
-            {
-              key: { text: "What happened" },
-              value: { text: data.adjudication.incidentStatement.statement }
-            }
-          ]
+            classes: 'govuk-summary-list--no-border',
+            rows: [
+              {
+                key: { text: "Governor's report number" },
+                value: { text: data.adjudication.chargeNumber }
+              },
+              {
+                key: { text: "When" },
+                value: { text: data.adjudication.incidentDetails.dateTimeOfIncident }
+              },
+              {
+                key: { text: "Where" },
+                value: { text: data.adjudication.location }
+              },
+              {
+                key: { text: "Report date and time" },
+                value: { text: data.adjudication.reportDateTime }
+              },
+              {
+                key: { text: "What happened" },
+                value: { text: data.adjudication.incidentStatement.statement }
+              }
+            ]
           }) }}
         </div>
       </div>
@@ -65,7 +63,11 @@
               {{ adjudicationHearing(hearing) }}
             {% endfor %}
           </div>
-        {% endif %}  
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="govuk-error-summary__body">
+        <p>Unable to display adjudication details at this time. Please try again later.</p>
       </div>
     {% endif %}
   </div>

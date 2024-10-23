@@ -17,4 +17,4 @@ export type ReportedEvidenceDto = components['schemas']['ReportedEvidenceDto']
 export type ReportedWitnessDto = components['schemas']['ReportedWitnessDto']
 
 export type HasAdjudicationsResponse = components['schemas']['HasAdjudicationsResponse']
-export type ReportedAdjudicationApiResponse = { reportedAdjudication: ReportedAdjudicationDto }
+export type ReportedAdjudicationApiResponse = { reportedAdjudication: ReportedAdjudicationDto | null }

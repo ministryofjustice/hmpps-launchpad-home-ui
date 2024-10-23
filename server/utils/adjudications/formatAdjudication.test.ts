@@ -13,7 +13,7 @@ import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudicati
 import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
-import { formatAdjudication, formatHearing, formatIncidentDetails } from './formatAdjudication'
+import { formatAdjudication, formatHearing } from './formatAdjudication'
 
 const services = {
   adjudicationsService: createMockAdjucationsService(),
@@ -32,24 +32,6 @@ describe('formatAdjudication', () => {
     const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
     expect(formattedReportedAdjudication).toEqual(formattedAdjudication)
-  })
-})
-
-describe('formatIncidentDetails', () => {
-  it('should format incident details', () => {
-    const incidentDetails: IncidentDetailsDto = {
-      locationId: 1,
-      handoverDeadline: '',
-      dateTimeOfIncident: '2021-01-01',
-      dateTimeOfDiscovery: '2021-01-02',
-    }
-
-    const formattedDetails = formatIncidentDetails(incidentDetails)
-
-    expect(formattedDetails).toEqual({
-      ...incidentDetails,
-      dateTimeOfIncident: '1 January 2021, 12.00am',
-    })
   })
 })
 

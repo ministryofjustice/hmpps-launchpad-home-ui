@@ -42,7 +42,7 @@ export default class AdjudicationsApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, error)
-      throw new Error('Failed to fetch reported adjudications data')
+      return null
     }
   }
 
@@ -56,7 +56,7 @@ export default class AdjudicationsApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`, error)
-      throw new Error('Failed to fetch adjudication data')
+      return { reportedAdjudication: null }
     }
   }
 }
