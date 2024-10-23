@@ -97,14 +97,20 @@ export default class PrisonApiClient {
     }
   }
 
-  async getBalances(bookingId: string): Promise<Account | null> {
+  async getBalances(bookingId: string): Promise<Account> {
     try {
       return await this.restClient.get({
         path: `/api/bookings/${bookingId}/balances`,
       })
     } catch (error) {
-      logger.error('Error fetching balances for booking', { bookingId, error })
-      throw new Error('Failed to fetch balances')
+      logger.error('Error fetching account data:', error)
+      return {
+        spends: null,
+        cash: null,
+        savings: null,
+        damageObligations: null,
+        currency: null,
+      }
     }
   }
 
@@ -146,14 +152,14 @@ export default class PrisonApiClient {
     }
   }
 
-  async getNextVisit(bookingId: string): Promise<VisitDetails> {
+  async getNextVisit(bookingId: string): Promise<VisitDetails | null> {
     try {
       return await this.restClient.get({
         path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
       })
     } catch (error) {
       logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
-      throw new Error('Failed to fetch next visit')
+      return null
     }
   }
 

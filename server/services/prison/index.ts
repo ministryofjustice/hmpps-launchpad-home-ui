@@ -4,7 +4,7 @@ import logger from '../../../logger'
 
 import { DateFormats } from '../../constants/date'
 
-import { VisitBalances } from '../../@types/prisonApiTypes'
+import { Account, VisitBalances } from '../../@types/prisonApiTypes'
 import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 import Timetable from '../../data/timetable'
 
@@ -89,16 +89,11 @@ export default class PrisonService {
     }
   }
 
-  async getBalances(bookingId: string) {
+  async getBalances(bookingId: string): Promise<Account> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
-    try {
-      return await prisonApiClient.getBalances(bookingId)
-    } catch (error) {
-      logger.error(`Error fetching balances for bookingId: ${bookingId}`, error)
-      throw new Error('Failed to fetch balances')
-    }
+    return prisonApiClient.getBalances(bookingId)
   }
 
   async getPrisonsByAgencyType(type: string) {
@@ -129,24 +124,13 @@ export default class PrisonService {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
-    try {
-      return await prisonApiClient.getNextVisit(bookingId)
-    } catch (error) {
-      logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
-      throw new Error('Failed to fetch next visit data')
-    }
+    return prisonApiClient.getNextVisit(bookingId)
   }
 
   async getVisitBalances(prisonerId: string): Promise<VisitBalances | null> {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
-    try {
-      const visitBalances = await prisonApiClient.getVisitBalances(prisonerId)
-      return visitBalances ?? null
-    } catch (error) {
-      logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
-      return null
-    }
+    return prisonApiClient.getVisitBalances(prisonerId)
   }
 }

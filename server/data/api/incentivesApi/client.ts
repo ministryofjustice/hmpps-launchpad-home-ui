@@ -10,14 +10,14 @@ export default class IncentivesApiClient {
     this.restClient = new RestClient('incentivesApiClient', config.apis.incentives as ApiConfig, token)
   }
 
-  async getIncentivesSummaryFor(bookingId: string): Promise<IncentiveReviewSummary> {
+  async getIncentivesSummaryFor(bookingId: string): Promise<IncentiveReviewSummary | null> {
     try {
       return await this.restClient.get({
         path: `/incentive-reviews/booking/${bookingId}`,
       })
     } catch (error) {
       logger.error(`Error fetching incentive summary for bookingId: ${bookingId}`, error)
-      throw new Error('Failed to fetch incentive summary data')
+      return null
     }
   }
 }

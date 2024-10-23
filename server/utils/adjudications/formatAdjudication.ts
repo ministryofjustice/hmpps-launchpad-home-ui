@@ -1,13 +1,8 @@
 import { format } from 'date-fns'
 
-import {
-  HearingDto,
-  IncidentDetailsDto,
-  OffenceDto,
-  PunishmentDto,
-  ReportedAdjudicationDto,
-} from '../../@types/adjudicationsApiTypes'
+import { HearingDto, OffenceDto, PunishmentDto, ReportedAdjudicationDto } from '../../@types/adjudicationsApiTypes'
 
+import logger from '../../../logger'
 import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
 import { convertToTitleCase, toSentenceCase } from '../utils'
@@ -17,7 +12,14 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
     const reportedBy = await services.prisonService.getUserById(reportedAdjudication.createdByUserId)
     const location = await services.prisonService.getLocationById(reportedAdjudication.incidentDetails.locationId)
 
-    const formattedIncidentDetails = formatIncidentDetails(reportedAdjudication.incidentDetails)
+    const formattedIncidentDetails = {
+      ...reportedAdjudication.incidentDetails,
+      dateTimeOfIncident: format(
+        reportedAdjudication.incidentDetails.dateTimeOfIncident,
+        DateFormats.GDS_PRETTY_DATE_TIME,
+      ),
+    }
+
     const formattedHearings = await Promise.all(
       reportedAdjudication.hearings.map(hearing =>
         formatHearing(hearing, reportedAdjudication.offenceDetails, reportedAdjudication.punishments, services),
@@ -28,19 +30,13 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
       ...reportedAdjudication,
       incidentDetails: formattedIncidentDetails,
       hearings: formattedHearings,
-      location: location ? `${location?.userDescription} (${location?.agencyId})` : 'N/A',
-      reportedBy: reportedBy ? `${reportedBy?.firstName} ${reportedBy?.lastName}` : 'N/A',
+      location: location ? `${location.userDescription} (${location.agencyId})` : 'N/A',
+      reportedBy: reportedBy ? `${reportedBy.firstName} ${reportedBy.lastName}` : 'N/A',
       reportDateTime: format(reportedAdjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }
   } catch (error) {
-    throw new Error(`Error formatting reported adjudication: ${error}`)
-  }
-}
-
-export const formatIncidentDetails = (incidentDetails: IncidentDetailsDto): IncidentDetailsDto => {
-  return {
-    ...incidentDetails,
-    dateTimeOfIncident: format(incidentDetails.dateTimeOfIncident, DateFormats.GDS_PRETTY_DATE_TIME),
+    logger.error('Error formatting reported adjudication:', error)
+    return null
   }
 }
 
@@ -56,11 +52,11 @@ export const formatHearing = async (
     return {
       ...hearing,
       dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
-      location: location ? `${location?.userDescription}` : 'N/A',
+      location: location ? `${location.userDescription}` : 'N/A',
       oicHearingType: hearing.oicHearingType === 'GOV_ADULT' ? 'Adult' : 'YOI',
       outcome: {
         ...hearing.outcome,
-        plea: convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' '),
+        plea: hearing.outcome.plea ? convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' ') : 'N/A',
       },
       offenceDetails,
       punishments: punishments.map(punishment => ({
@@ -73,6 +69,7 @@ export const formatHearing = async (
       })),
     }
   } catch (error) {
-    throw new Error(`Error formatting hearing: ${error}`)
+    logger.error('Error formatting hearing:', error)
+    return null
   }
 }

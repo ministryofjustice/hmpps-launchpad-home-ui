@@ -3,38 +3,44 @@ import { AccountCodes } from '../../constants/transactions'
 import { getBalanceByAccountCode } from './getBalanceByAccountCode'
 
 describe('getBalanceByAccountCode', () => {
-  const balances: Account = {
-    cash: 200,
+  const mockAccount: Account = {
+    spends: 100.25,
+    cash: 200.5,
+    savings: 300.75,
+    damageObligations: 0,
     currency: 'GBP',
-    damageObligations: 400,
-    savings: 300,
-    spends: 100,
   }
 
-  it('should return the balance for spends account', () => {
-    const result = getBalanceByAccountCode(balances, AccountCodes.SPENDS)
-    expect(result).toBe('100.00')
+  it('should return "N/A" when balances is null', () => {
+    expect(getBalanceByAccountCode(null, AccountCodes.SPENDS)).toBe('N/A')
   })
 
-  it('should return the balance for private (cash) account', () => {
-    const result = getBalanceByAccountCode(balances, AccountCodes.PRIVATE)
-    expect(result).toBe('200.00')
+  it('should return the correct formatted balance for SPENDS', () => {
+    expect(getBalanceByAccountCode(mockAccount, AccountCodes.SPENDS)).toBe('100.25')
   })
 
-  it('should return the balance for savings account', () => {
-    const result = getBalanceByAccountCode(balances, AccountCodes.SAVINGS)
-    expect(result).toBe('300.00')
+  it('should return the correct formatted balance for PRIVATE', () => {
+    expect(getBalanceByAccountCode(mockAccount, AccountCodes.PRIVATE)).toBe('200.50')
   })
 
-  it('should throw an error for an unknown account code', () => {
-    expect(() => {
-      getBalanceByAccountCode(balances, 'unknown-account-code')
-    }).toThrowError('Unknown account code: unknown-account-code')
+  it('should return the correct formatted balance for SAVINGS', () => {
+    expect(getBalanceByAccountCode(mockAccount, AccountCodes.SAVINGS)).toBe('300.75')
   })
 
-  it('should throw an error for DAMAGE_OBLIGATIONS account code', () => {
-    expect(() => {
-      getBalanceByAccountCode(balances, AccountCodes.DAMAGE_OBLIGATIONS)
-    }).toThrowError(`Unknown account code: ${AccountCodes.DAMAGE_OBLIGATIONS}`)
+  it('should return "N/A" for unknown account codes', () => {
+    expect(getBalanceByAccountCode(mockAccount, 'UNKNOWN_CODE')).toBe('N/A')
+  })
+
+  it('should return "N/A" if the balance is null for a valid account code', () => {
+    const accountWithNullBalance: Account = {
+      spends: null,
+      cash: null,
+      savings: null,
+      damageObligations: 0,
+      currency: 'GBP',
+    }
+    expect(getBalanceByAccountCode(accountWithNullBalance, AccountCodes.SPENDS)).toBe('N/A')
+    expect(getBalanceByAccountCode(accountWithNullBalance, AccountCodes.PRIVATE)).toBe('N/A')
+    expect(getBalanceByAccountCode(accountWithNullBalance, AccountCodes.SAVINGS)).toBe('N/A')
   })
 })
