@@ -130,10 +130,10 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return await prisonApiClient.getNextVisit(bookingId)
+      return (await prisonApiClient.getNextVisit(bookingId)) ?? null
     } catch (error) {
-      logger.error(`Error fetching next visit for bookingId: ${bookingId}`, error)
-      throw new Error('Failed to fetch next visit data')
+      logger.error(`Error fetching token or next visit for bookingId: ${bookingId}`, error)
+      return null
     }
   }
 
@@ -142,10 +142,9 @@ export default class PrisonService {
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      const visitBalances = await prisonApiClient.getVisitBalances(prisonerId)
-      return visitBalances ?? null
+      return (await prisonApiClient.getVisitBalances(prisonerId)) ?? null
     } catch (error) {
-      logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, error)
+      logger.error(`Error fetching token or visit balances for prisonerId: ${prisonerId}`, error)
       return null
     }
   }
