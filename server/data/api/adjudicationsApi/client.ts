@@ -24,7 +24,7 @@ export default class AdjudicationsApiClient {
       })
     } catch (error) {
       logger.error(`Error fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, error)
-      throw new Error('Failed to fetch adjudications data')
+      return { hasAdjudications: false }
     }
   }
 

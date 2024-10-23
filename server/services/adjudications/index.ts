@@ -11,14 +11,10 @@ export default class AdjudicationsService {
   ) {}
 
   async hasAdjudications(bookingId: string, prisonId: string) {
-    try {
-      const token = await this.hmppsAuthClient.getSystemClientToken()
-      const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
-      return await adjudicationsApiClient.hasAdjudications(bookingId, prisonId)
-    } catch (error) {
-      logger.error(`Error checking adjudications for bookingId: ${bookingId}, prisonId: ${prisonId}`, error)
-      throw new Error('Failed to check adjudications')
-    }
+    const token = await this.hmppsAuthClient.getSystemClientToken()
+    const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
+
+    return adjudicationsApiClient.hasAdjudications(bookingId, prisonId)
   }
 
   async getReportedAdjudicationsFor(bookingId: string, prisonId: string) {

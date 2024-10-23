@@ -63,9 +63,15 @@
         {% else %}
           <ul class="govuk-grid-row card-group">
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: data.incentives.incentivesData.iepLevel }) }}
+              {% if data.incentives.incentivesData %}
+                {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: data.incentives.incentivesData.iepLevel }) }}
+              {% else %}
+                {{ basicCard({ id: 'currentLevel', heading: 'My current level:', content: 'N/A' }) }}
+              {% endif %}
             </li>
           </ul>
+
+
 
           <a href= '{{ data.incentives.readMoreUrl }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="incentivesLink">
             <span>Read more about incentives (IEP)</span>
