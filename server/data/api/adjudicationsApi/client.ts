@@ -35,7 +35,7 @@ export default class AdjudicationsApiClient {
   ): Promise<PageReportedAdjudicationDto> {
     try {
       return await this.restClient.get({
-        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}`,
+        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}&size=50`,
         headers: {
           'Active-Caseload': agencyId,
         },
