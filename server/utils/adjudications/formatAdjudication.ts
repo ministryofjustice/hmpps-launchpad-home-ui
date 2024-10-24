@@ -56,7 +56,7 @@ export const formatHearing = async (
       oicHearingType: hearing.oicHearingType === 'GOV_ADULT' ? 'Adult' : 'YOI',
       outcome: {
         ...hearing.outcome,
-        plea: hearing.outcome.plea ? convertToTitleCase(hearing.outcome.plea).replace(/_/g, ' ') : 'N/A',
+        plea: hearing.outcome?.plea ? convertToTitleCase(hearing.outcome?.plea).replace(/_/g, ' ') : 'N/A',
       },
       offenceDetails,
       punishments: punishments.map(punishment => ({
