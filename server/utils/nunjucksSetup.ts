@@ -5,13 +5,15 @@ import express from 'express'
 import { initialiseName } from './utils'
 import config from '../config'
 
-const production = process.env.NODE_ENV === 'production'
-
 export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Launchpad'
+
+  app.locals.environment = process.env.NODE_ENV
+
+  const production = app.locals.environment === 'production'
 
   // Cachebusting version string
   if (production) {
