@@ -28,7 +28,9 @@
       Sentry.onLoad(function() {
         Sentry.init({
           integrations: [
-            Sentry.replayIntegration(),
+            Sentry.replayIntegration({
+              maskAllText: false
+            }),
           ],
           replaysSessionSampleRate: 0.1,
           replaysOnErrorSampleRate: 1.0,
@@ -36,6 +38,7 @@
       });
     </script>
   {% endif %}
+
   <script type="module" src="/assets/js/govukFrontendInit.js"></script>
   <script src="/assets/js/all.js"></script>
   <script src="/assets/js/mojFrontendInit.js"></script>
