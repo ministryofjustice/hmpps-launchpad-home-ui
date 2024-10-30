@@ -10,8 +10,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Launchpad'
-
-  app.locals.environment = process.env.NODE_ENV
+  app.locals.isProduction = config.production
 
   // Cachebusting version string
   if (config.production) {
