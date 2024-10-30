@@ -18,27 +18,8 @@
 {% set homepage = true %}
 
 {% block bodyEnd %}
-  {% if environment == 'production' %}
-    <script
-      nonce="{{ cspNonce }}" 
-      src="https://js.sentry-cdn.com/f36188d0543b13fa07be85212df8e953.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script nonce="{{ cspNonce }}">
-      Sentry.onLoad(function() {
-        Sentry.init({
-          integrations: [
-            Sentry.replayIntegration({
-              maskAllText: false
-            }),
-          ],
-          replaysSessionSampleRate: 0.1,
-          replaysOnErrorSampleRate: 1.0,
-        });
-      });
-    </script>
-  {% endif %}
-
+  {% include "../sentryScript.njk" %}
+  
   <script type="module" src="/assets/js/govukFrontendInit.js"></script>
   <script src="/assets/js/all.js"></script>
   <script src="/assets/js/mojFrontendInit.js"></script>

@@ -13,10 +13,8 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
 
   app.locals.environment = process.env.NODE_ENV
 
-  const production = app.locals.environment === 'production'
-
   // Cachebusting version string
-  if (production) {
+  if (config.production) {
     // Version only changes on reboot
     app.locals.version = Date.now().toString()
   } else {
