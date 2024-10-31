@@ -49,8 +49,7 @@
               },
               {
                 key: { text: "What happened" },
-                value: { text: data.adjudication.incidentStatement.statement },
-                classes: 'sentry-mask'
+                value: { html: '<span data-sentry-mask>' + data.adjudication.incidentStatement.statement + '</span>' }
               }
             ]
           }) }}
