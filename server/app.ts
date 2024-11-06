@@ -1,9 +1,12 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import express from 'express'
 import createError from 'http-errors'
 import path from 'path'
+import i18next from 'i18next'
+import middleware from 'i18next-http-middleware'
+import FilesystemBackend from 'i18next-fs-backend'
 
 import { initSentry, sentryErrorHandler } from './sentrySetup'
-
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
@@ -30,12 +33,29 @@ import type { Services } from './services'
 
 initSentry()
 
+i18next
+  .use(middleware.LanguageDetector)
+  .use(FilesystemBackend)
+  .init({
+    preload: ['en', 'cy'],
+    backend: {
+      loadPath: path.join(__dirname, 'locales/{{lng}}.json'),
+    },
+  })
+
 export default function createApp(services: Services): express.Application {
   const app = express()
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
+
+  app.use(
+    middleware.handle(i18next, {
+      ignoreRoutes: ['/foo'],
+      removeLngFromUrl: false,
+    }),
+  )
 
   app.use(metricsMiddleware)
   app.use(setUpHealthChecks())

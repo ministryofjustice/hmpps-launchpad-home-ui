@@ -2,6 +2,8 @@
 import * as pathModule from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
+import i18next from 'i18next'
+
 import { initialiseName } from './utils'
 import config from '../config'
 
@@ -25,6 +27,7 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     })
   }
 
+  // Configure Nunjucks
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
@@ -38,6 +41,12 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       express: app,
     },
   )
+
+  njkEnv.addGlobal('t', (key: string) => {
+    return i18next.t(key) // Use i18next's t function for translations
+  })
+
+  // Add additional global variables and filters
   njkEnv.addGlobal('ga4SiteId', config.analytics.ga4SiteId)
   njkEnv.addFilter('initialiseName', initialiseName)
 
