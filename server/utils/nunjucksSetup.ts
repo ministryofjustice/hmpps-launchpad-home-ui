@@ -27,7 +27,6 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
     })
   }
 
-  // Configure Nunjucks
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
@@ -43,10 +42,9 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   )
 
   njkEnv.addGlobal('t', (key: string) => {
-    return i18next.t(key) // Use i18next's t function for translations
+    return i18next.t(key)
   })
 
-  // Add additional global variables and filters
   njkEnv.addGlobal('ga4SiteId', config.analytics.ga4SiteId)
   njkEnv.addFilter('initialiseName', initialiseName)
 
