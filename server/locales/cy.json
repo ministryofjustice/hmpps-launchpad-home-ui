@@ -1,1 +1,210 @@
-{}
+{
+  "launchpad": {
+    "home": "Launchpad",
+    "home_button": "Hafan",
+    "days": {
+      "monday": "Dydd Llun",
+      "tuesday": "Dydd Mawrth",
+      "wednesday": "Dydd Mercher",
+      "thursday": "Dydd Iau",
+      "friday": "Dydd Gwener",
+      "saturday": "Dydd Sadwrn",
+      "sunday": "Dydd Sul"
+    },
+    "months": {
+      "january": "Ionawr",
+      "february": "Chwefror",
+      "march": "Mawrth",
+      "april": "Ebrill",
+      "may": "Mai",
+      "june": "Mehefin",
+      "july": "Gorffennaf",
+      "august": "Awst",
+      "september": "Medi",
+      "october": "Hydref",
+      "november": "Tachwedd",
+      "december": "Rhagfyr"
+    },
+    "today_events": "Digwyddiadau heddiw",
+    "time_range": "tan",
+    "time_period": {
+      "am": "am",
+      "pm": "pm"
+    },
+    "view_timetable": "Gweld fy amserlen",
+    "no_events": "Nid oes gennych chi ddigwyddiadau heddiw",
+    "self_service": "Hunan-wasanaeth",
+    "kiosk_access": "Mynediad at y rhaglenni ciosg",
+    "content_hub": "Hwb Cynnwys",
+    "content_hub_desc": "Gwylio, darllen a gwrando ar gynnwys lleol a chenedlaethol.",
+    "national_prison_radio": "National Prison Radio",
+    "national_prison_radio_desc": "Gwrando ar sgyrsiau, ceisiadau, rhaglenni wedi’u recordio, a cherddoriaeth 24/7",
+    "inside_time": "Inside Time",
+    "inside_time_desc": "Darllen y papur newydd cenedlaethol ar gyfer carcharorion a’r rhai a gedwir yn y ddalfa.",
+    "example_app": "Rhaglen enghreifftiol",
+    "example_app_desc": "Mae'r ddolen hon yn agor rhaglen a ganiateir ac a gynhelir yn allanol i Launchpad.",
+    "profile": "Proffil",
+    "profile_desc": "Gwirio arian, ymweliadau, cymhellion (IEP), dyfarniadau ac amserlenni."
+  },
+  "settings": {
+    "settings": "Gosodiadau",
+    "next": "Nesaf",
+    "privacy_policy": "Polisi preifatrwydd",
+    "app_access": {
+      "desc": "Rydych chi wedi rhoi mynediad at y rhaglenni hyn (gwasanaethau). Dyma lle gallwch chi dynnu’r mynediad yn ôl mewn rhai achosion.",
+      "removed_access": "Rydych chi wedi tynnu’r mynediad yn ôl at ddata a roesoch i [Rhaglen Enghreifftiol]",
+      "access": "Mynediad at raglenni",
+      "app": "Rhaglen",
+      "can": "Gall y rhaglen hon wneud y canlynol:",
+      "permissions": {
+        "basic_info": "Darllen gwybodaeth sylfaenol, fel eich enw",
+        "prison_info": "Darllen gwybodaeth am y carchar, fel enw eich carchar",
+        "app_list": "Darllen y rhestr o raglenni rydych chi'n eu defnyddio",
+        "remove_access": "Tynnu mynediad at raglenni rydych chi’n eu defnyddio"
+      },
+      "given_on": "Rhoddwyd ar",
+      "status": "Statws",
+      "remove_access": "Tynnu mynediad",
+      "non_removable": {
+        "content_hub": "Rydych chi’n rhannu data â’r Hwb Cynnwys er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl",
+        "launchpad": "Rydych chi’n rhannu data â Launchpad er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl"
+      }
+    }
+  },
+  "permissions_screen": {
+    "app_name": "Gall enw’r rhaglen",
+    "permissions": {
+      "basic_info": "Darllen gwybodaeth sylfaenol, fel eich enw",
+      "prison_info": "Darllen gwybodaeth am y carchar, fel enw eich carchar",
+      "app_list": "Darllen y rhestr o raglenni rydych chi'n eu defnyddio",
+      "remove_access": "Tynnu mynediad at raglenni rydych chi’n eu defnyddio"
+    },
+    "confirmation": "Ydy hyn yn iawn?",
+    "yes": "Ydy",
+    "no": "Nac ydy"
+  },
+  "remove_access_screen": {
+    "remove_access": "Tynnu mynediad",
+    "confirmation": "Ydych chi’n siŵr eich bod chi am dynnu’r mynediad a roesoch i [Rhaglen Enghreifftiol]?"
+  },
+  "error_screen": {
+    "error": "GWALL!",
+    "something_went_wrong": "Aeth rhywbeth o’i le.",
+    "no_redirect": "Allwn ni ddim eich cyfeirio at y safle hwn.",
+    "try_later": "Rhowch gynnig arall arni yn nes ymlaen.",
+    "get_started": "Dechrau arni"
+  },
+  "profile_pages": {
+    "profile_name": "Proffil [Enw]",
+    "today_timetable": "Amserlen heddiw",
+    "periods": {
+      "morning": "Bore",
+      "afternoon": "Prynhawn",
+      "evening": "Fin nos"
+    },
+    "no_activities": "Dim gweithgareddau",
+    "incentives": "Cymhellion (IEP)",
+    "current_level": "Lefel cyfredol:",
+    "money": "Arian",
+    "open_all": "Agor popeth",
+    "accounts": {
+      "spends": "Gwariant",
+      "private": "Preifat",
+      "savings": "Cynilion"
+    },
+    "view_transactions": "Gweld trafodion",
+    "visits": {
+      "next_visit": "Ymweliad nesaf",
+      "social_visit": "Ymweliad cymdeithasol",
+      "no_upcoming": "Dim ymweliad ar y gweill",
+      "view_visitors": "Gweld ymwelwyr cymdeithasol",
+      "more_about_visits": "Rhagor o wybodaeth am ymweliadau"
+    },
+    "adjudications": {
+      "view_adjudications": "Gweld dyfarniadau",
+      "more_about_adjudications": "Rhagor o wybodaeth am ddyfarniadau"
+    }
+  },
+  "timetable": {
+    "timetable": "Amserlen",
+    "this_week": "Yr wythnos hon",
+    "last_week": "Yr wythnos ddiwethaf",
+    "next_week": "Yr wythnos nesaf",
+    "today": "Heddiw",
+    "tomorrow": "Yfory"
+  },
+  "transactions": {
+    "transactions": "Trafodion",
+    "help": "Cymorth gyda thrafodion",
+    "help_options": {
+      "read_more": "darllen mwy am ystyr y dudalen hon",
+      "in_app": "ei roi mewn cais",
+      "ask_staff": "gofyn i aelod o staff"
+    },
+    "current_balance": "Balans cyfredol",
+    "view_by_month_year": "Gweld yn ôl mis a blwyddyn",
+    "view": "Gweld",
+    "details": {
+      "payment_date": "Dyddiad y taliad",
+      "money_in": "Arian i mewn",
+      "money_out": "Arian allan",
+      "balance": "Balans",
+      "payment_description": "Disgrifiad o’r taliad",
+      "prison": "Carchar"
+    },
+    "damage_obligations": {
+      "owes": "Y swm sy’n ddyledus gennych yw",
+      "adjudication_number": "Rhif y dyfarniad",
+      "payment_start_end": "Dechrau / gorffen y taliad",
+      "total_amount": "Cyfanswm",
+      "amount_paid": "Swm a dalwyd",
+      "damage_description": "Disgrifiad o’r difrod"
+    }
+  },
+  "visits": {
+    "social_visitors": "Ymwelwyr cymdeithasol",
+    "more_about_visits": "Rhagor o wybodaeth am ymweliadau"
+  },
+  "adjudications": {
+    "adjudications": "Dyfarniadau",
+    "adjudication_note": "Dangosir hyd at 50 dyfarniad yma, yn nhrefn dyddiad, gyda’r mwyaf newydd yn gyntaf.",
+    "more_about_adjudications": "Rhagor o wybodaeth am ddyfarniadau.",
+    "report": {
+      "number": "Rhif yr adroddiad",
+      "date_time": "Dyddiad ac amser yr adroddiad",
+      "view_details": "Gweld manylion [XXXX]",
+      "gov_report_number": "Rhif adroddiad y Llywodraethwr",
+      "when": "Pryd",
+      "where": "Ble",
+      "reported_by": "Adroddwyd gan",
+      "what_happened": "Beth ddigwyddodd"
+    },
+    "hearing": {
+      "on_date_time": "Gwrandawiad ar [dyddiad ac amser]",
+      "what": "Beth",
+      "where": "Ble",
+      "heard_by": "Gwrandewir gan",
+      "comments": "Sylwadau"
+    },
+    "charges": {
+      "example_charge": "Cyflawni unrhyw ymosodiad - ymosod ar swyddog carchar",
+      "paragraph": "Paragraff",
+      "type": "Math",
+      "plea": "Ple",
+      "status": "Statws",
+      "awards": {
+        "type": "Math",
+        "how_long": "Am ba hyd",
+        "effective_date": "Dyddiad dod i rym",
+        "status_date": "Dyddiad y statws"
+      }
+    },
+    "comments": "Ymosodiad ar garcharor",
+    "help_with_comments": "Cymorth gyda sylwadau"
+  },
+  "error_page": {
+    "error": "Aeth rhywbeth o’i le",
+    "problem_loading": "Roedd problem wrth lwytho’r dudalen.",
+    "go_back_home": "Mynd yn ôl i'r hafan"
+  }
+}
