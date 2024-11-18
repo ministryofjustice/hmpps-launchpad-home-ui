@@ -114,6 +114,7 @@
     },
     "view_transactions": "View transactions",
     "visits": {
+      "visits": "Visits",
       "next_visit": "Next visit",
       "social_visit": "Social visit",
       "no_upcoming": "No upcoming visit",
@@ -137,8 +138,9 @@
     "transactions": "Transactions",
     "help": "Help with transactions",
     "help_options": {
+      "for_more_help": "For more help:",
       "read_more": "read more about what this page means",
-      "in_app": "put it in an application",
+      "application": "put it in an application",
       "ask_staff": "ask a member of staff"
     },
     "current_balance": "Current balance",
@@ -153,6 +155,7 @@
       "prison": "Prison"
     },
     "damage_obligations": {
+      "damage_obligations": "Damage obligations",
       "owes": "You currently owe",
       "adjudication_number": "Adjudication number",
       "payment_start_end": "Payment start / end",

@@ -114,6 +114,7 @@
     },
     "view_transactions": "Gweld trafodion",
     "visits": {
+      "visits": "Ymweliadau",
       "next_visit": "Ymweliad nesaf",
       "social_visit": "Ymweliad cymdeithasol",
       "no_upcoming": "Dim ymweliad ar y gweill",
@@ -137,8 +138,9 @@
     "transactions": "Trafodion",
     "help": "Cymorth gyda thrafodion",
     "help_options": {
+      "for_more_help": "I gael rhagor o gymorth:",
       "read_more": "darllen mwy am ystyr y dudalen hon",
-      "in_app": "ei roi mewn cais",
+      "application": "ei roi mewn cais",
       "ask_staff": "gofyn i aelod o staff"
     },
     "current_balance": "Balans cyfredol",
@@ -153,6 +155,7 @@
       "prison": "Carchar"
     },
     "damage_obligations": {
+      "damage_obligations": "Rhwymedigaethau difrod",
       "owes": "Y swm sy’n ddyledus gennych yw",
       "adjudication_number": "Rhif y dyfarniad",
       "payment_start_end": "Dechrau / gorffen y taliad",
