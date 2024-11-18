@@ -1,7 +1,7 @@
 {
   "launchpad": {
-    "home": "Launchpad",
-    "home_button": "Home",
+    "launchpad": "Launchpad",
+    "home": "Home",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",

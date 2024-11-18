@@ -1,7 +1,7 @@
 {
   "launchpad": {
-    "home": "Launchpad",
-    "home_button": "Hafan",
+    "launchpad": "Launchpad",
+    "home": "Hafan",
     "days": {
       "monday": "Dydd Llun",
       "tuesday": "Dydd Mawrth",
