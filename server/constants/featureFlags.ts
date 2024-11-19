@@ -24,6 +24,7 @@ export const Features = {
   Settings: 'settings',
   SocialVisitors: 'socialVisitors',
   Transactions: 'transactions',
+  Translations: 'translations',
   Visits: 'visits',
 } as const
 
@@ -43,6 +44,10 @@ export const featureFlags: FeatureFlags = {
   [Features.Transactions]: {
     enabled: true,
     allowedPrisons: ALLOW_ALL_PRISONS,
+  },
+  [Features.Translations]: {
+    enabled: false,
+    allowedPrisons: [],
   },
   [Features.Visits]: {
     enabled: true,
