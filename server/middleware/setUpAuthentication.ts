@@ -1,10 +1,10 @@
-import type { Router, Request, Response, NextFunction } from 'express'
+import flash from 'connect-flash'
+import type { NextFunction, Request, Response, Router } from 'express'
 import express from 'express'
 import passport from 'passport'
-import flash from 'connect-flash'
+import logger from '../../logger'
 import auth from '../authentication/auth'
 import { checkTokenValidityAndUpdate } from '../authentication/refreshToken'
-import logger from '../../logger'
 
 const router = express.Router()
 

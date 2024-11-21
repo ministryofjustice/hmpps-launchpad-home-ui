@@ -1,17 +1,18 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import express from 'express'
 import createError from 'http-errors'
-import path from 'path'
 import i18next from 'i18next'
-import middleware from 'i18next-http-middleware'
 import FilesystemBackend from 'i18next-fs-backend'
+import middleware from 'i18next-http-middleware'
+import path from 'path'
 
-import { initSentry, sentryErrorHandler } from './sentrySetup'
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
+import { initSentry, sentryErrorHandler } from './sentrySetup'
 import nunjucksSetup from './utils/nunjucksSetup'
 
+import { setTranslationsEnabled } from './middleware/setTranslationsEnabled'
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
@@ -70,6 +71,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
+  app.use(setTranslationsEnabled)
 
   app.use('/', indexRoutes(services))
   app.use('/adjudications', adjudicationsRoutes(services))

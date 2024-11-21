@@ -1,0 +1,56 @@
+{% macro govukNav(user, userSvg, isTranslationsEnabled, currentLng) %}
+  {% if user %}
+    <nav aria-label="Launchpad Home Account Navigation">
+      <div class="launchpad-home-header__navigation">
+        <h2 id="launchpad-home-header__navigation-heading" class="govuk-visually-hidden">
+          Launchpad Home Navigation Menu
+        </h2>
+
+        <div class="launchpad-home-header__navigation__items">
+          {{ translationsNav(isTranslationsEnabled, currentLng) }}
+          {{ userMenu(user, userSvg) }}
+        </div>
+      </div>
+    </nav>
+  {% endif %}
+{% endmacro %}
+
+{% macro translationsNav(isTranslationsEnabled, currentLng) %}
+  {% if isTranslationsEnabled %}
+    <div class="launchpad-home-header__navigation__item launchpad-home-header__navigation__item__translations">
+      {% set translations = [
+        { href: '/?lng=en', lang: 'en', text: 'English' },
+        { href: '/?lng=cy', lang: 'cy', text: 'Cymraeg' }
+      ] %}
+
+      {% for translation in translations %}
+        <div class="launchpad-home-header__link">
+          <a 
+            href="{{ translation.href }}" 
+            lang="{{ translation.lang }}" 
+            class="{% if translation.lang == currentLng %}active{% endif %}">
+            {{ translation.text }}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro userMenu(user, userSvg) %}
+  <div class="launchpad-home-header__navigation__item">
+    <button 
+      class="launchpad-home-header__menu-toggle launchpad-home-header__user-menu-toggle" 
+      aria-controls="launchpad-home-header-user-menu" 
+      aria-expanded="false" 
+      type="button"
+    >
+      <span>
+        {{ userSvg | safe }}
+        <span data-qa="launchpad-home-header-user-name">{{ user.idToken.name }}</span>
+        <span class="govuk-visually-hidden">Account menu</span>
+      </span>
+    </button>
+  </div>
+{% endmacro %}
