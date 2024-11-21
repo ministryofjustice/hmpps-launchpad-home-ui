@@ -39,7 +39,7 @@
 
 
 {% macro userMenu(user, userSvg) %}
-  <div class="launchpad-home-header__navigation__item">
+  <div class="launchpad-home-header__navigation__item launchpad-home-header__navigation__item__user-menu">
     <button 
       class="launchpad-home-header__menu-toggle launchpad-home-header__user-menu-toggle" 
       aria-controls="launchpad-home-header-user-menu" 
@@ -52,5 +52,11 @@
         <span class="govuk-visually-hidden">Account menu</span>
       </span>
     </button>
+
+    <ul id="launchpad-home-header-user-menu" class="govuk-list launchpad-home-header__user-menu" hidden="hidden">
+      <li>
+        <a class="launchpad-home-header__submenu-link" href="/settings">Settings</a>
+      </li>
+    </ul>
   </div>
 {% endmacro %}
