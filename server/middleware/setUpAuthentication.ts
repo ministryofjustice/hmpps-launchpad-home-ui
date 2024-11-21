@@ -42,7 +42,8 @@ export default function setUpAuth(): Router {
 
         req.session.cookie.maxAge = refreshTokenExpInMillis - Date.now()
         logger.debug(`Updated cookie expiry to ${new Date(req.session.cookie.expires)}`)
-      } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
         logger.error('Failed to parse refresh token')
       }
     }

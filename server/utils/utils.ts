@@ -43,6 +43,7 @@ export const getEstablishmentLinksData = (agencyId: string) => {
       config.establishments.find(establishment => establishment.agencyId === agencyId)
 
     return { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return null
   }
