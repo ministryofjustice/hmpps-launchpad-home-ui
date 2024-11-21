@@ -1,12 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as Sentry from '@sentry/node'
 import { nodeProfilingIntegration } from '@sentry/profiling-node'
-import { Request, Response, NextFunction } from 'express'
-
-const isProductionEnv = process.env.NODE_ENV === 'production'
+import { NextFunction, Request, Response } from 'express'
+import config from './config'
 
 export function initSentry() {
-  if (isProductionEnv) {
+  if (config.production) {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
       integrations: [nodeProfilingIntegration()],
@@ -17,7 +16,7 @@ export function initSentry() {
 }
 
 export function sentryErrorHandler() {
-  if (isProductionEnv) {
+  if (config.production) {
     return Sentry.expressErrorHandler()
   }
 

@@ -18,8 +18,8 @@
 {% set homepage = true %}
 
 {% block bodyEnd %}
-  {# Run JavaScript at end of the
-  <body>, to avoid blocking the initial render. #}
+  {% include "../sentryScript.njk" %}
+  
   <script type="module" src="/assets/js/govukFrontendInit.js"></script>
   <script src="/assets/js/all.js"></script>
   <script src="/assets/js/mojFrontendInit.js"></script>

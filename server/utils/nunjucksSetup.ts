@@ -7,16 +7,15 @@ import i18next from 'i18next'
 import { initialiseName } from './utils'
 import config from '../config'
 
-const production = process.env.NODE_ENV === 'production'
-
 export default function nunjucksSetup(app: express.Express, path: pathModule.PlatformPath): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Launchpad'
+  app.locals.isProduction = config.production
 
   // Cachebusting version string
-  if (production) {
+  if (config.production) {
     // Version only changes on reboot
     app.locals.version = Date.now().toString()
   } else {

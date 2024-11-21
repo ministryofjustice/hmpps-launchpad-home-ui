@@ -18,6 +18,8 @@
 {% set homepage = false %}
 
 {% block bodyEnd %}
+  {% include "../sentryScript.njk" %}
+
   <script type="module" src="/assets/js/govukFrontendInit.js"></script>
   <script src="/assets/js/all.js"></script>
   <script src="/assets/js/mojFrontendInit.js"></script>

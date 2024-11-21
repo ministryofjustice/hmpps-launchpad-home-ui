@@ -32,7 +32,7 @@
             {% if visits.nextVisit.visitors.length %}
               <ol>
                 {% for visitor in visits.nextVisit.visitors %}
-                  <li class="govuk-!-padding-bottom-2">{{ visitor.firstName }} {{ visitor.lastName }}</li>
+                  <li class="govuk-!-padding-bottom-2" data-sentry-mask>{{ visitor.firstName }} {{ visitor.lastName }}</li>
                 {% endfor %}
               </ol>
             {% else %}

@@ -12,6 +12,7 @@ export default function setUpWebSecurity(): Router {
     res.locals.cspNonce = crypto.randomBytes(16).toString('hex')
     next()
   })
+
   router.use(
     helmet({
       contentSecurityPolicy: {
@@ -27,6 +28,8 @@ export default function setUpWebSecurity(): Router {
             "'self'",
             (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
             'https://*.googletagmanager.com',
+            'https://js.sentry-cdn.com',
+            'https://browser.sentry-cdn.com',
           ],
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
@@ -36,11 +39,13 @@ export default function setUpWebSecurity(): Router {
             'https://*.googletagmanager.com',
             'https://*.google-analytics.com',
             'https://*.analytics.google.com',
+            'https://*.ingest.us.sentry.io',
           ],
         },
       },
       crossOriginEmbedderPolicy: true,
     }),
   )
+
   return router
 }
