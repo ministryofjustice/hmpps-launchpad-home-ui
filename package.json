@@ -113,7 +113,7 @@
     "helmet": "^8.0.0",
     "http-errors": "^2.0.0",
     "i18next": "^23.16.8",
-    "i18next-fs-backend": "^2.4.0",
+    "i18next-fs-backend": "^2.5.0",
     "i18next-http-middleware": "^3.6.0",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
