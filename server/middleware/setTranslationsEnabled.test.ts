@@ -35,11 +35,22 @@ describe('setTranslationsEnabled middleware', () => {
         accessToken: '',
         token: '',
       },
+      language: 'en',
+      get: jest.fn().mockImplementation((header: string) => {
+        if (header === 'accept-language') {
+          return 'en'
+        }
+        return null
+      }),
     }
     res = {
       locals: {},
     }
     next = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   it('should set isTranslationsEnabled to true when feature is enabled', () => {
@@ -61,7 +72,7 @@ describe('setTranslationsEnabled middleware', () => {
   })
 
   it('should set currentLng to the value from the query string if provided', () => {
-    req.query.lng = 'cy'
+    req.language = 'cy'
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(true)
 
     setTranslationsEnabled(req as Request, res as Response, next)
@@ -72,7 +83,7 @@ describe('setTranslationsEnabled middleware', () => {
   })
 
   it('should set currentLng to "en" if no query string is provided', () => {
-    req.query.lng = undefined
+    req.language = undefined
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(true)
 
     setTranslationsEnabled(req as Request, res as Response, next)
