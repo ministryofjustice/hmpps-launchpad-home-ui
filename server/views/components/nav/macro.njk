@@ -1,4 +1,4 @@
-{% macro govukNav(user, userSvg, isTranslationsEnabled, currentLng) %}
+{% macro govukNav(user, userSvg, isTranslationsEnabled, currentLng, translations) %}
   {% if user %}
     <nav aria-label="Launchpad Home Account Navigation">
       <div class="launchpad-home-header__navigation">
@@ -7,7 +7,7 @@
         </h2>
 
         <div class="launchpad-home-header__navigation__items">
-          {{ translationsNav(isTranslationsEnabled, currentLng) }}
+          {{ translationsNav(isTranslationsEnabled, currentLng, translations) }}
           {{ userMenu(user, userSvg) }}
         </div>
       </div>
@@ -15,14 +15,9 @@
   {% endif %}
 {% endmacro %}
 
-{% macro translationsNav(isTranslationsEnabled, currentLng) %}
+{% macro translationsNav(isTranslationsEnabled, currentLng, translations) %}
   {% if isTranslationsEnabled %}
     <div class="launchpad-home-header__navigation__item launchpad-home-header__navigation__item__translations">
-      {% set translations = [
-        { href: '/?lng=en', lang: 'en', text: 'English' },
-        { href: '/?lng=cy', lang: 'cy', text: 'Cymraeg' }
-      ] %}
-
       {% for translation in translations %}
         <div class="launchpad-home-header__link">
           <a 
