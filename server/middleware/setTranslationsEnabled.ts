@@ -4,7 +4,7 @@ import { Features } from '../constants/featureFlags'
 
 // eslint-disable-next-line import/prefer-default-export
 export const setTranslationsEnabled = (req: Request, res: Response, next: NextFunction) => {
-  const isTranslationsEnabled = isFeatureEnabled(Features.Translations, req.user.idToken.establishment.agency_id)
+  const isTranslationsEnabled = isFeatureEnabled(Features.Translations, req.user?.idToken.establishment.agency_id)
   const currentLng = req.language?.split('-')[0] || 'en'
 
   const buildHref = (lng: string) => {
