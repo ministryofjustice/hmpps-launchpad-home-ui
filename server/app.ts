@@ -43,6 +43,9 @@ i18next
     backend: {
       loadPath: path.join(__dirname, 'locales/{{lng}}.json'),
     },
+    detection: {
+      caches: ['cookie'],
+    },
   })
 
 export default function createApp(services: Services): express.Application {
