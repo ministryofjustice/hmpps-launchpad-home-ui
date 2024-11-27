@@ -26,8 +26,6 @@ export default function routes(services: Services): Router {
     const events = await Promise.all([
       services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate),
     ])
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
 
     return res.render('pages/timetable', {
       givenName: res.locals.user.idToken.given_name,
@@ -40,9 +38,6 @@ export default function routes(services: Services): Router {
   })
 
   get('/last-week', async (req, res) => {
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
-
     const config = {
       content: false,
       header: false,
@@ -71,9 +66,6 @@ export default function routes(services: Services): Router {
   })
 
   get('/next-week', async (req, res) => {
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
-
     const config = {
       content: false,
       header: false,
