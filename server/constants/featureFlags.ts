@@ -10,7 +10,6 @@ interface FeatureFlags {
 }
 
 const ALLOW_ALL_PRISONS = [
-  prisonAgencyIds.CookhamWood,
   prisonAgencyIds.Erlestoke,
   prisonAgencyIds.FelthamA,
   prisonAgencyIds.FelthamB,
@@ -47,8 +46,8 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: ALLOW_ALL_PRISONS,
   },
   [Features.Translations]: {
-    enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    enabled: false,
+    allowedPrisons: [],
   },
   [Features.Visits]: {
     enabled: true,
