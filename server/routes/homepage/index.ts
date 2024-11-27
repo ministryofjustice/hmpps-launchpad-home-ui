@@ -1,5 +1,4 @@
 import { Request, Response, Router } from 'express'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import i18next from 'i18next'
 
 import { DateFormats } from '../../constants/date'
