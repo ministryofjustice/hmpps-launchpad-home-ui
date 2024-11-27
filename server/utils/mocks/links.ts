@@ -1,5 +1,7 @@
+import { Link } from '../../@types/launchpad'
+
 // eslint-disable-next-line import/prefer-default-export
-export const links = [
+export const links: Link[] = [
   {
     image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
     title: 'Self-service',
