@@ -14,12 +14,12 @@ export default class PrisonService {
     private readonly prisonApiClientFactory: RestClientBuilder<PrisonApiClient>,
   ) {}
 
-  async getPrisonerEventsSummary(bookingId: string) {
+  async getPrisonerEventsSummary(bookingId: string, language: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
-      return await prisonApiClient.getEventsSummary(bookingId)
+      return await prisonApiClient.getEventsSummary(bookingId, language)
     } catch (error) {
       logger.error(`Error fetching prisoner events summary for bookingId: ${bookingId}`, error)
       throw new Error('Failed to fetch prisoner events summary')

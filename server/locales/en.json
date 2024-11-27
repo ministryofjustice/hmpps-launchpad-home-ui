@@ -1,50 +1,63 @@
 {
-  "launchpad": {
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "homepage": {
     "launchpad": "Launchpad",
     "home": "Home",
-    "days": {
-      "monday": "Monday",
-      "tuesday": "Tuesday",
-      "wednesday": "Wednesday",
-      "thursday": "Thursday",
-      "friday": "Friday",
-      "saturday": "Saturday",
-      "sunday": "Sunday"
+    "eventsSummary": {
+      "today": "Today's events",
+      "tomorrow": "Tomorrow's events",
+      "viewTimetable": "View my timetable"
     },
-    "months": {
-      "january": "January",
-      "february": "February",
-      "march": "March",
-      "april": "April",
-      "may": "May",
-      "june": "June",
-      "july": "July",
-      "august": "August",
-      "september": "September",
-      "october": "October",
-      "november": "November",
-      "december": "December"
-    },
-    "today_events": "Today's events",
+    "links": {
+      "contentHub": "Content Hub",
+      "contentHubDesc": "Watch, read and listen to local and national content.",
+      "exampleApp": "Example application",
+      "exampleAppAesc": "This link opens an allow-listed application which is hosted externally to Launchpad.",
+      "insideTime": "Inside Time",
+      "insideTimeDesc": "Read the national newspaper for prisoners and detainees.",
+      "nationalPrisonRadio": "National Prison Radio",
+      "nationalPrisonRadioDesc": "Listen to 24/7 music, talk, requests and playback",
+      "profile": "Profile",
+      "profileDesc": "Check money, visits, incentives (IEP), adjudications and timetable.",
+      "selfService": "Self-service",
+      "selfServiceDesc": "Access the kiosk applications"
+    }
+  },
+  "timetable": {
+    "no_events": "You have no events today",
+    "timetable": "Timetable",
+    "this_week": "This week",
+    "last_week": "Last week",
+    "next_week": "Next week",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
     "time_range": "to",
     "time_period": {
       "am": "am",
       "pm": "pm"
-    },
-    "view_timetable": "View my timetable",
-    "no_events": "You have no events today",
-    "self_service": "Self-service",
-    "kiosk_access": "Access the kiosk applications",
-    "content_hub": "Content Hub",
-    "content_hub_desc": "Watch, read and listen to local and national content.",
-    "national_prison_radio": "National Prison Radio",
-    "national_prison_radio_desc": "Listen to 24/7 music, talk, requests and playback",
-    "inside_time": "Inside Time",
-    "inside_time_desc": "Read the national newspaper for prisoners and detainees.",
-    "example_app": "Example application",
-    "example_app_desc": "This link opens an allow-listed application which is hosted externally to Launchpad.",
-    "profile": "Profile",
-    "profile_desc": "Check money, visits, incentives (IEP), adjudications and timetable."
+    }
   },
   "settings": {
     "settings": "Settings",
@@ -125,14 +138,6 @@
       "view_adjudications": "View adjudications",
       "more_about_adjudications": "More about adjudications"
     }
-  },
-  "timetable": {
-    "timetable": "Timetable",
-    "this_week": "This week",
-    "last_week": "Last week",
-    "next_week": "Next week",
-    "today": "Today",
-    "tomorrow": "Tomorrow"
   },
   "transactions": {
     "transactions": "Transactions",

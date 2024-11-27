@@ -30,6 +30,7 @@ import timetableRoutes from './routes/timetable'
 import transactionsRoutes from './routes/transactions'
 import visitsRoutes from './routes/visits'
 
+import { setPrisonerContentHubUrl } from './middleware/setPrisonerContentHubUrl'
 import type { Services } from './services'
 
 initSentry()
@@ -75,6 +76,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setTranslationsEnabled)
+  app.use(setPrisonerContentHubUrl)
 
   app.use('/', indexRoutes(services))
   app.use('/adjudications', adjudicationsRoutes(services))

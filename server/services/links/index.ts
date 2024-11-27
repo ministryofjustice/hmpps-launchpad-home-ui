@@ -1,52 +1,57 @@
-import { Link, LinksData } from '../../@types/launchpad'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import i18next from 'i18next'
+
+import { Link } from '../../@types/launchpad'
 import { getEstablishmentLinksData } from '../../utils/utils'
+
+export type LinksData = {
+  links: Link[]
+  title?: string
+}
 
 export default class Linkservice {
   constructor() {}
 
-  async getHomepageLinks(user: { idToken: { establishment: { agency_id: string } } }): Promise<LinksData> {
+  async getHomepageLinks(
+    user: { idToken: { establishment: { agency_id: string } } },
+    language: string,
+  ): Promise<LinksData> {
     const { prisonerContentHubURL, selfServiceURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id)
 
-    const links: Link[] = [
+    const links = [
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',
-        title: 'Self-service',
+        title: i18next.t('homepage.links.selfService', { lng: language }),
         url: selfServiceURL,
-        description: 'Access to kiosk apps',
+        description: i18next.t('homepage.links.selfServiceDesc', { lng: language }),
         openInNewTab: true,
         hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
-        title: 'Content Hub',
+        title: i18next.t('homepage.links.contentHub', { lng: language }),
         url: prisonerContentHubURL,
-        description: 'Watch, read and listen to local and national content',
+        description: i18next.t('homepage.links.contentHubDesc', { lng: language }),
         openInNewTab: true,
         hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.jpg',
-        title: 'NPR',
+        title: i18next.t('homepage.links.nationalPrisonRadio', { lng: language }),
         url: `${prisonerContentHubURL}/tags/785`,
-        description: 'Listen to 24/7 music, talk, requests and playbacks',
+        description: i18next.t('homepage.links.nationalPrisonRadioDesc', { lng: language }),
         openInNewTab: true,
         hidden: false,
       },
       {
         image: '/assets/images/link-tile-images/inside-time-link-tile-image.jpg',
-        title: 'Inside Time',
+        title: i18next.t('homepage.links.insideTime', { lng: language }),
         url: 'https://insidetimeprison.org/',
-        description: 'Read the national newspaper for prisoners and detainees',
+        description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
         hidden: true,
       },
     ]
-
-    const linksData: LinksData = {
-      links,
-      prisonerContentHubURL,
-    }
-
-    return linksData
+    return { links }
   }
 }

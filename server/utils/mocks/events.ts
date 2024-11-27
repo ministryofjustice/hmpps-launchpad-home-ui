@@ -6,17 +6,17 @@ export const eventsSummary: EventsData = {
   error: false,
   prisonerEvents: [
     {
-      timeString: '10:00 AM',
+      timeString: '8:30am to 11:45am',
       description: 'Morning Exercise',
       location: 'Gymnasium',
     },
     {
-      timeString: '12:00 PM',
+      timeString: '1:45pm to 4:45pm',
       description: 'Lunch',
       location: 'Cafeteria',
     },
     {
-      timeString: '2:00 PM',
+      timeString: '6:30pm to 7:45pm',
       description: 'Educational Program',
       location: 'Classroom A',
     },
