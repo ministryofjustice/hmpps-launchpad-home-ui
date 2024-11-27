@@ -5,7 +5,7 @@ import { getEstablishmentLinksData } from '../utils/utils'
 export async function setPrisonerContentHubUrl(req: Request, res: Response, next: NextFunction) {
   const { user } = res.locals
 
-  if (user?.idToken?.establishment?.agency_id) {
+  if (user) {
     const { prisonerContentHubURL } = (await getEstablishmentLinksData(user.idToken.establishment.agency_id)) || {}
 
     res.locals.prisonerContentHubUrl = prisonerContentHubURL
