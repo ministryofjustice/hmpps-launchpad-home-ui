@@ -1,9 +1,8 @@
-import { type RequestHandler, Router } from 'express'
 import { addDays, subDays } from 'date-fns'
+import { type RequestHandler, Router } from 'express'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
-import { getEstablishmentLinksData } from '../../utils/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes(services: Services): Router {
@@ -26,8 +25,6 @@ export default function routes(services: Services): Router {
     const events = await Promise.all([
       services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate),
     ])
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
 
     return res.render('pages/timetable', {
       givenName: res.locals.user.idToken.given_name,
@@ -36,16 +33,10 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
-      linksData: {
-        prisonerContentHubURL,
-      },
     })
   })
 
   get('/last-week', async (req, res) => {
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
-
     const config = {
       content: false,
       header: false,
@@ -70,16 +61,10 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
-      linksData: {
-        prisonerContentHubURL,
-      },
     })
   })
 
   get('/next-week', async (req, res) => {
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
-
     const config = {
       content: false,
       header: false,
@@ -104,9 +89,6 @@ export default function routes(services: Services): Router {
       events,
       errors: req.flash('errors'),
       message: req.flash('message'),
-      linksData: {
-        prisonerContentHubURL,
-      },
     })
   })
 

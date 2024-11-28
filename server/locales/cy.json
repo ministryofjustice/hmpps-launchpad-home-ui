@@ -1,50 +1,63 @@
 {
-  "launchpad": {
+  "days": {
+    "monday": "Dydd Llun",
+    "tuesday": "Dydd Mawrth",
+    "wednesday": "Dydd Mercher",
+    "thursday": "Dydd Iau",
+    "friday": "Dydd Gwener",
+    "saturday": "Dydd Sadwrn",
+    "sunday": "Dydd Sul"
+  },
+  "months": {
+    "january": "Ionawr",
+    "february": "Chwefror",
+    "march": "Mawrth",
+    "april": "Ebrill",
+    "may": "Mai",
+    "june": "Mehefin",
+    "july": "Gorffennaf",
+    "august": "Awst",
+    "september": "Medi",
+    "october": "Hydref",
+    "november": "Tachwedd",
+    "december": "Rhagfyr"
+  },
+  "homepage": {
     "launchpad": "Launchpad",
     "home": "Hafan",
-    "days": {
-      "monday": "Dydd Llun",
-      "tuesday": "Dydd Mawrth",
-      "wednesday": "Dydd Mercher",
-      "thursday": "Dydd Iau",
-      "friday": "Dydd Gwener",
-      "saturday": "Dydd Sadwrn",
-      "sunday": "Dydd Sul"
+    "eventsSummary": {
+      "today": "Digwyddiadau heddiw",
+      "tomorrow": "Digwyddiadau yfory",
+      "viewTimetable": "Gweld fy amserlen"
     },
-    "months": {
-      "january": "Ionawr",
-      "february": "Chwefror",
-      "march": "Mawrth",
-      "april": "Ebrill",
-      "may": "Mai",
-      "june": "Mehefin",
-      "july": "Gorffennaf",
-      "august": "Awst",
-      "september": "Medi",
-      "october": "Hydref",
-      "november": "Tachwedd",
-      "december": "Rhagfyr"
-    },
-    "today_events": "Digwyddiadau heddiw",
+    "links": {
+      "contentHub": "Hwb Cynnwys",
+      "contentHubDesc": "Gwylio, darllen a gwrando ar gynnwys lleol a chenedlaethol.",
+      "exampleApp": "Rhaglen enghreifftiol",
+      "exampleAppDesc": "Mae'r ddolen hon yn agor rhaglen a ganiateir ac a gynhelir yn allanol i Launchpad.",
+      "insideTime": "Inside Time",
+      "insideTimeDesc": "Darllen y papur newydd cenedlaethol ar gyfer carcharorion a’r rhai a gedwir yn y ddalfa.",
+      "nationalPrisonRadio": "National Prison Radio",
+      "nationalPrisonRadioDesc": "Gwrando ar sgyrsiau, ceisiadau, rhaglenni wedi’u recordio, a cherddoriaeth 24/7",
+      "profile": "Proffil",
+      "profileDesc": "Gwirio arian, ymweliadau, cymhellion (IEP), dyfarniadau ac amserlenni.",
+      "selfService": "Hunan-wasanaeth",
+      "selfServiceDesc": "Mynediad at y rhaglenni ciosg"
+    }
+  },
+  "timetable": {
+    "no_events": "Nid oes gennych chi ddigwyddiadau heddiw",
+    "timetable": "Amserlen",
+    "this_week": "Yr wythnos hon",
+    "last_week": "Yr wythnos ddiwethaf",
+    "next_week": "Yr wythnos nesaf",
+    "today": "Heddiw",
+    "tomorrow": "Yfory",
     "time_range": "tan",
     "time_period": {
       "am": "am",
       "pm": "pm"
-    },
-    "view_timetable": "Gweld fy amserlen",
-    "no_events": "Nid oes gennych chi ddigwyddiadau heddiw",
-    "self_service": "Hunan-wasanaeth",
-    "kiosk_access": "Mynediad at y rhaglenni ciosg",
-    "content_hub": "Hwb Cynnwys",
-    "content_hub_desc": "Gwylio, darllen a gwrando ar gynnwys lleol a chenedlaethol.",
-    "national_prison_radio": "National Prison Radio",
-    "national_prison_radio_desc": "Gwrando ar sgyrsiau, ceisiadau, rhaglenni wedi’u recordio, a cherddoriaeth 24/7",
-    "inside_time": "Inside Time",
-    "inside_time_desc": "Darllen y papur newydd cenedlaethol ar gyfer carcharorion a’r rhai a gedwir yn y ddalfa.",
-    "example_app": "Rhaglen enghreifftiol",
-    "example_app_desc": "Mae'r ddolen hon yn agor rhaglen a ganiateir ac a gynhelir yn allanol i Launchpad.",
-    "profile": "Proffil",
-    "profile_desc": "Gwirio arian, ymweliadau, cymhellion (IEP), dyfarniadau ac amserlenni."
+    }
   },
   "settings": {
     "settings": "Gosodiadau",
@@ -125,14 +138,6 @@
       "view_adjudications": "Gweld dyfarniadau",
       "more_about_adjudications": "Rhagor o wybodaeth am ddyfarniadau"
     }
-  },
-  "timetable": {
-    "timetable": "Amserlen",
-    "this_week": "Yr wythnos hon",
-    "last_week": "Yr wythnos ddiwethaf",
-    "next_week": "Yr wythnos nesaf",
-    "today": "Heddiw",
-    "tomorrow": "Yfory"
   },
   "transactions": {
     "transactions": "Trafodion",

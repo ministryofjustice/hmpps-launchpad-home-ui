@@ -1,4 +1,5 @@
 import { formatDate } from 'date-fns'
+import i18next from 'i18next'
 
 import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
 import {
@@ -26,7 +27,7 @@ export default class PrisonApiClient {
     this.restClient = new RestClient('prisonApiClient', config.apis.prison as ApiConfig, token)
   }
 
-  async getEventsSummary(bookingId: string): Promise<EventsData> {
+  async getEventsSummary(bookingId: string, language: string): Promise<EventsData> {
     try {
       const scheduledEvents: ScheduledEvent[] = await this.restClient.get({
         path: `/api/bookings/${bookingId}/events/today`,
@@ -43,7 +44,7 @@ export default class PrisonApiClient {
         const formattedTo = scheduledEvent.endTime
           ? formatDate(new Date(scheduledEvent.endTime), dateTimeFormat)
           : 'N/A'
-        const timeString = `${formattedFrom} to ${formattedTo}`
+        const timeString = `${formattedFrom} ${i18next.t('timetable.time_range', { lng: language })} ${formattedTo}`
 
         const prisonerEvent: PrisonerEvent = {
           timeString,

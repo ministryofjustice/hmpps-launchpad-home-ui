@@ -10,6 +10,7 @@ import { visitBalances } from '../../utils/mocks/visitors'
 jest.mock('../../data')
 
 const mockToken = 'mockToken'
+const defaultLanguage = 'en'
 
 describe('PrisonerProfileService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -33,12 +34,12 @@ describe('PrisonerProfileService', () => {
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
       prisonApiClient.getEventsSummary.mockResolvedValue(eventsSummary)
 
-      const result = await prisonService.getPrisonerEventsSummary('123456')
+      const result = await prisonService.getPrisonerEventsSummary('123456', defaultLanguage)
 
       expect(result).toEqual(eventsSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith('123456')
+      expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith('123456', defaultLanguage)
     })
   })
 
