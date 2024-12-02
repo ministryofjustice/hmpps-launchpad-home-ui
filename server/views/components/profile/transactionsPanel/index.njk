@@ -1,16 +1,16 @@
 {% from "../../image-card/index.njk" import imageCard %}
 {% from "../../transactions/card.njk" import transactionsCard %}
 
-{% macro transactionsPanel(balances, readMoreUrl) %}
+{% macro transactionsPanel(balances, readMoreUrl, t) %}
 <div class="card-background">
   <div class="govuk-width-container" data-test="transactions-container">
-    <h2 class="govuk-heading-m">Money</h2>
+    <h2 class="govuk-heading-m">{{ t('profile.transactions.money') }}</h2>
     
     <ul class="govuk-grid-row card-group">
       {% for transaction in [
-        {'heading': 'Spends', 'link': '/transactions/spends', 'balance': balances.spends}, 
-        {'heading': 'Private', 'link': '/transactions/private', 'balance': balances.cash}, 
-        {'heading': 'Savings', 'link': '/transactions/savings', 'balance': balances.savings}
+        {'heading': t('profile.transactions.spends'), 'link': '/transactions/spends', 'balance': balances.spends}, 
+        {'heading': t('profile.transactions.private'), 'link': '/transactions/private', 'balance': balances.cash}, 
+        {'heading': t('profile.transactions.savings'), 'link': '/transactions/savings', 'balance': balances.savings}
       ] %}
         <li class="govuk-grid-column-one-quarter card-group__item">
           {{ transactionsCard(transaction) }}
@@ -18,7 +18,7 @@
       {% endfor %}
 
       <li class="govuk-grid-column-one-quarter card-group__item">
-        {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: "View transactions" }) }}
+        {{imageCard({ id: 'transactions', src: "/assets/images/transactions-tile.jpg", link: '/transactions', description: t('profile.transactions.viewTransactions') }) }}
       </li>
     </ul>
     
