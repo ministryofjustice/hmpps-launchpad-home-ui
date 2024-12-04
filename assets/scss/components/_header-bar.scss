@@ -71,6 +71,11 @@
     }
   }
 
+  &__submenu-link {
+    @include govuk-link-common;
+    @include govuk-link-style-no-visited-state;
+  }
+
   &__navigation {
     height: 50px;
     display: flex;
@@ -238,6 +243,19 @@
           border-left: 1px solid transparent;
         }
       }
+    }
+  }
+
+  &__user-menu {
+    position: relative;
+    z-index: 10000000;
+    padding: 15px;
+    background: govuk-colour('light-grey');
+
+    a {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 15px;
     }
   }
 
