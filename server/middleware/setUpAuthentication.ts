@@ -1,10 +1,10 @@
-import type { Router, Request, Response, NextFunction } from 'express'
+import flash from 'connect-flash'
+import type { NextFunction, Request, Response, Router } from 'express'
 import express from 'express'
 import passport from 'passport'
-import flash from 'connect-flash'
+import logger from '../../logger'
 import auth from '../authentication/auth'
 import { checkTokenValidityAndUpdate } from '../authentication/refreshToken'
-import logger from '../../logger'
 
 const router = express.Router()
 
@@ -42,7 +42,8 @@ export default function setUpAuth(): Router {
 
         req.session.cookie.maxAge = refreshTokenExpInMillis - Date.now()
         logger.debug(`Updated cookie expiry to ${new Date(req.session.cookie.expires)}`)
-      } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
         logger.error('Failed to parse refresh token')
       }
     }

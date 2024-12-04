@@ -1,26 +1,57 @@
-{% macro govukNav(user, userSvg) %}
+{% macro govukNav(user, userSvg, isTranslationsEnabled, currentLng, translations) %}
   {% if user %}
     <nav aria-label="Launchpad Home Account Navigation">
       <div class="launchpad-home-header__navigation">
         <h2 id="launchpad-home-header__navigation-heading" class="govuk-visually-hidden">
           Launchpad Home Navigation Menu
         </h2>
-        <div class="launchpad-home-header__navigation__item">
-          <button class="launchpad-home-header__menu-toggle launchpad-home-header__user-menu-toggle" aria-controls="launchpad-home-header-user-menu" aria-expanded="false" type="button">
-            <span>
-              {{ userSvg | safe }}
-              <span data-qa="launchpad-home-header-user-name">{{ user.idToken.name }}</span>
-              <span class="govuk-visually-hidden">Account menu</span>
-            </span>
-          </button>
-          <ul id="launchpad-home-header-user-menu" class="govuk-list launchpad-home-header__user-menu" hidden="hidden">
-            <li>
-              <a class="launchpad-home-header__submenu-link" href="/settings">Settings</a>
-            </li>
-          </ul>
+
+        <div class="launchpad-home-header__navigation__items">
+          {{ translationsNav(isTranslationsEnabled, currentLng, translations) }}
+          {{ userMenu(user, userSvg) }}
         </div>
       </div>
     </nav>
   {% endif %}
 {% endmacro %}
 
+{% macro translationsNav(isTranslationsEnabled, currentLng, translations) %}
+  {% if isTranslationsEnabled %}
+    <div class="launchpad-home-header__navigation__item launchpad-home-header__navigation__item__translations">
+      {% for translation in translations %}
+        <div class="launchpad-home-header__link">
+          <a 
+            href="{{ translation.href }}" 
+            lang="{{ translation.lang }}" 
+            class="{% if translation.lang == currentLng %}active{% endif %}">
+            {{ translation.text }}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro userMenu(user, userSvg) %}
+  <div class="launchpad-home-header__navigation__item launchpad-home-header__navigation__item__user-menu">
+    <button 
+      class="launchpad-home-header__menu-toggle launchpad-home-header__user-menu-toggle" 
+      aria-controls="launchpad-home-header-user-menu" 
+      aria-expanded="false" 
+      type="button"
+    >
+      <span>
+        {{ userSvg | safe }}
+        <span data-qa="launchpad-home-header-user-name">{{ user.idToken.name }}</span>
+        <span class="govuk-visually-hidden">Account menu</span>
+      </span>
+    </button>
+
+    <ul id="launchpad-home-header-user-menu" class="govuk-list launchpad-home-header__user-menu" hidden="hidden">
+      <li>
+        <a class="launchpad-home-header__submenu-link" href="/settings">Settings</a>
+      </li>
+    </ul>
+  </div>
+{% endmacro %}

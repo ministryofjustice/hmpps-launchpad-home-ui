@@ -5,10 +5,12 @@ import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 import { eventsSummary } from '../../utils/mocks/events'
 import { location } from '../../utils/mocks/location'
 import { staffUser } from '../../utils/mocks/user'
+import { visitBalances } from '../../utils/mocks/visitors'
 
 jest.mock('../../data')
 
 const mockToken = 'mockToken'
+const defaultLanguage = 'en'
 
 describe('PrisonerProfileService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -32,12 +34,12 @@ describe('PrisonerProfileService', () => {
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
       prisonApiClient.getEventsSummary.mockResolvedValue(eventsSummary)
 
-      const result = await prisonService.getPrisonerEventsSummary({ idToken: { booking: { id: '123456' } } })
+      const result = await prisonService.getPrisonerEventsSummary('123456', defaultLanguage)
 
       expect(result).toEqual(eventsSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith('123456')
+      expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith('123456', defaultLanguage)
     })
   })
 
@@ -72,6 +74,23 @@ describe('PrisonerProfileService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getLocationById).toHaveBeenCalledWith(mockLocationId)
+    })
+  })
+
+  describe('getVisitBalances', () => {
+    it('should return the visit balances for the prisoner', async () => {
+      const prisonerId = '12345'
+
+      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
+      prisonApiClientFactory.mockReturnValue(prisonApiClient)
+      prisonApiClient.getVisitBalances.mockResolvedValue(visitBalances)
+
+      const result = await prisonService.getVisitBalances(prisonerId)
+
+      expect(result).toEqual(visitBalances)
+      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
+      expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
+      expect(prisonApiClient.getVisitBalances).toHaveBeenCalledWith(prisonerId)
     })
   })
 })

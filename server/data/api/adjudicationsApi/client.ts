@@ -1,3 +1,4 @@
+import logger from '../../../../logger'
 import {
   HasAdjudicationsResponse,
   PageReportedAdjudicationDto,
@@ -14,12 +15,17 @@ export default class AdjudicationsApiClient {
   }
 
   async hasAdjudications(bookingId: string, agencyId: string): Promise<HasAdjudicationsResponse> {
-    return (await this.restClient.get({
-      path: `/adjudications/booking/${bookingId}/exists`,
-      headers: {
-        'Active-Caseload': agencyId,
-      },
-    })) as HasAdjudicationsResponse
+    try {
+      return await this.restClient.get({
+        path: `/adjudications/booking/${bookingId}/exists`,
+        headers: {
+          'Active-Caseload': agencyId,
+        },
+      })
+    } catch (error) {
+      logger.error(`Error fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, error)
+      return { hasAdjudications: false }
+    }
   }
 
   async getReportedAdjudicationsFor(
@@ -27,20 +33,30 @@ export default class AdjudicationsApiClient {
     agencyId: string,
     status: string,
   ): Promise<PageReportedAdjudicationDto> {
-    return (await this.restClient.get({
-      path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}`,
-      headers: {
-        'Active-Caseload': agencyId,
-      },
-    })) as PageReportedAdjudicationDto
+    try {
+      return await this.restClient.get({
+        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}&size=50`,
+        headers: {
+          'Active-Caseload': agencyId,
+        },
+      })
+    } catch (error) {
+      logger.error(`Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, error)
+      return null
+    }
   }
 
   async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
-    return (await this.restClient.get({
-      path: `/reported-adjudications/${chargeNumber}/v2`,
-      headers: {
-        'Active-Caseload': agencyId,
-      },
-    })) as ReportedAdjudicationApiResponse
+    try {
+      return await this.restClient.get({
+        path: `/reported-adjudications/${chargeNumber}/v2`,
+        headers: {
+          'Active-Caseload': agencyId,
+        },
+      })
+    } catch (error) {
+      logger.error(`Error fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`, error)
+      return { reportedAdjudication: null }
+    }
   }
 }

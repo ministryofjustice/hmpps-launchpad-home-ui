@@ -1,22 +1,22 @@
 {% from "../link-tile/index.njk" import linkTile %}
 
 {% macro tilesPanel(params, user) %}
-    <section class="govuk-width-container">
-        {% if params.title %}
-            <h2 data-test="tiles-panel-title">{{ params.title }}</h2>
-        {% endif %}
+  <section class="govuk-width-container">
+    {% if params.title %}
+      <h2 data-test="tiles-panel-title">{{ params.title }}</h2>
+    {% endif %}
 
-        <div id="tiles">
-            {% for link in params.links %}
-                {{ linkTile ({
-                    image: link.image,
-                    title: link.title,
-                    url: link.url,
-                    description: link.description,
-                    openInNewTab: link.openInNewTab,
-                    hidden: link.hidden
-                }) }}
-            {% endfor %}
-        </div>
-    </section>
+    <div id="tiles">
+      {% for link in params.links %}
+        {{ linkTile ({
+          image: link.image,
+          title: link.title,
+          url: link.url,
+          description: link.description,
+          openInNewTab: link.openInNewTab,
+          hidden: link.hidden
+        }) }}
+      {% endfor %}
+    </div>
+  </section>
 {% endmacro %}

@@ -28,12 +28,6 @@ export type Link = {
   hidden: boolean
 }
 
-export type LinksData = {
-  title?: string
-  links: Link[]
-  prisonerContentHubURL: string
-}
-
 export type RefreshToken = {
   jti: string
   ati: string

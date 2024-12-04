@@ -37,7 +37,8 @@
     }
   }
 
-  &__link {
+  &__link,
+  &__submenu-link {
     @include govuk-link-common;
     @include govuk-link-style-default;
 
@@ -59,14 +60,14 @@
         fill: govuk-colour('black');
       }
     }
+  }
 
-    &__sub-text {
-      @include govuk-font(16);
-      display: none;
+  &__link__sub-text {
+    @include govuk-font(16);
+    display: none;
 
-      @include govuk-media-query($from: tablet) {
-        display: block;
-      }
+    @include govuk-media-query($from: tablet) {
+      display: block;
     }
   }
 
@@ -76,16 +77,69 @@
   }
 
   &__navigation {
-    height: 70px;
+    height: 50px;
     display: flex;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 10px 0;
     align-items: center;
 
-    &__item {
+    &__items {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
       height: 100%;
+
+      &:has(> .launchpad-home-header__navigation__item:nth-child(2)) {
+        border-left: 1px solid white;
+        border-right: 1px solid white;
+      }
+    }
+
+    &__item {
       position: relative;
+
+      &:not(:first-child) {
+        border-left: 1px solid white;
+      }
+
+      &__user-menu {
+        height: 100%;
+      }
+
+      &__translations {
+        display: flex;
+        padding: 0 15px;
+        border-left: 0;
+
+        .launchpad-home-header__link {
+          padding: 0 10px;
+          border-left: 1px solid white;
+
+          &:first-child {
+            padding-left: 0;
+            border-left: none;
+          }
+
+          &:last-child {
+            padding-right: 0;
+            border-right: none;
+          }
+
+          a {
+            text-decoration: none;
+
+            &:hover,
+            &.active {
+              text-decoration: underline;
+            }
+
+            &:visited {
+              color: white;
+            }
+          }
+        }
+      }
 
       > button,
       > a {
@@ -122,18 +176,6 @@
             padding: 0 15px;
             display: flex;
             align-items: center;
-
-            &:before {
-              transform: translateY(-35%) rotate(45deg) scale(1);
-              border-bottom: 2px solid govuk-colour('white');
-              border-right: 2px solid govuk-colour('white');
-              content: '';
-              display: inline-block;
-              height: 8px;
-              margin: 3px 15px 0 3px;
-              vertical-align: middle;
-              width: 8px;
-            }
           }
 
           svg {
@@ -201,6 +243,19 @@
           border-left: 1px solid transparent;
         }
       }
+    }
+  }
+
+  &__user-menu {
+    position: relative;
+    z-index: 10000000;
+    padding: 15px;
+    background: govuk-colour('light-grey');
+
+    a {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 15px;
     }
   }
 

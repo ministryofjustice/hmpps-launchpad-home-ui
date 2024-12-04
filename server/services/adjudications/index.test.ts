@@ -43,9 +43,7 @@ describe('PrisonerProfileService', () => {
       adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
       adjudicationsApiClient.hasAdjudications.mockResolvedValue(mockHasAdjudicationsResponse)
 
-      const result = await adjudicationsService.hasAdjudications({
-        idToken: { booking: { id: mockUserId }, establishment: { agency_id: mockAgencyId } },
-      })
+      const result = await adjudicationsService.hasAdjudications(mockUserId, mockAgencyId)
 
       expect(result).toEqual(mockHasAdjudicationsResponse)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()

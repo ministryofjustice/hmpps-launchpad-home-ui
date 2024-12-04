@@ -1,3 +1,4 @@
+import { VisitBalances } from '../../@types/prisonApiTypes'
 import { PrisonerContact } from '../../@types/prisonerContactRegistryApiTypes'
 
 // eslint-disable-next-line import/prefer-default-export
@@ -30,4 +31,11 @@ export const prisonerContact: PrisonerContact = {
       addressUsages: [],
     },
   ],
+}
+
+export const visitBalances: VisitBalances = {
+  remainingVo: 26,
+  remainingPvo: 0,
+  latestIepAdjustDate: '2017-03-31',
+  latestPrivIepAdjustDate: '2024-10-01',
 }

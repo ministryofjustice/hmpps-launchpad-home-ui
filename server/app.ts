@@ -1,12 +1,18 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import express from 'express'
 import createError from 'http-errors'
+import i18next from 'i18next'
+import FilesystemBackend from 'i18next-fs-backend'
+import middleware from 'i18next-http-middleware'
 import path from 'path'
 
 import errorHandler from './errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { metricsMiddleware } from './monitoring/metricsApp'
+import { initSentry, sentryErrorHandler } from './sentrySetup'
 import nunjucksSetup from './utils/nunjucksSetup'
 
+import { setTranslationsEnabled } from './middleware/setTranslationsEnabled'
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
@@ -24,7 +30,24 @@ import timetableRoutes from './routes/timetable'
 import transactionsRoutes from './routes/transactions'
 import visitsRoutes from './routes/visits'
 
+import { setPrisonerContentHubUrl } from './middleware/setPrisonerContentHubUrl'
 import type { Services } from './services'
+
+initSentry()
+
+i18next
+  .use(middleware.LanguageDetector)
+  .use(FilesystemBackend)
+  .init({
+    preload: ['en', 'cy'],
+    fallbackLng: 'en',
+    backend: {
+      loadPath: path.join(__dirname, 'locales/{{lng}}.json'),
+    },
+    detection: {
+      caches: ['cookie'],
+    },
+  })
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -32,6 +55,13 @@ export default function createApp(services: Services): express.Application {
   app.set('json spaces', 2)
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
+
+  app.use(
+    middleware.handle(i18next, {
+      ignoreRoutes: ['/foo'],
+      removeLngFromUrl: false,
+    }),
+  )
 
   app.use(metricsMiddleware)
   app.use(setUpHealthChecks())
@@ -45,6 +75,8 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
+  app.use(setTranslationsEnabled)
+  app.use(setPrisonerContentHubUrl)
 
   app.use('/', indexRoutes(services))
   app.use('/adjudications', adjudicationsRoutes(services))
@@ -54,6 +86,8 @@ export default function createApp(services: Services): express.Application {
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', transactionsRoutes(services))
   app.use('/visits', visitsRoutes(services))
+
+  app.use(sentryErrorHandler())
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

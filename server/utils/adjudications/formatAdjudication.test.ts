@@ -1,8 +1,3 @@
-import { IncidentDetailsDto } from '../../@types/adjudicationsApiTypes'
-
-import { HmppsAuthClient } from '../../data'
-
-import { UserService } from '../../services'
 import {
   createMockAdjucationsService,
   createMockIncentivesService,
@@ -11,19 +6,12 @@ import {
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
 } from '../../services/testutils/mocks'
-import { UserDetails } from '../../services/user'
 
 import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudications'
 import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
-import { formatAdjudication, formatHearing, formatIncidentDetails } from './formatAdjudication'
-
-class MockUserService extends UserService {
-  async getUser(_token: string): Promise<UserDetails> {
-    return { name: 'Mock User', displayName: 'Mock User' }
-  }
-}
+import { formatAdjudication, formatHearing } from './formatAdjudication'
 
 const services = {
   adjudicationsService: createMockAdjucationsService(),
@@ -32,7 +20,6 @@ const services = {
   linksService: createMockLinksService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),
-  userService: new MockUserService({} as HmppsAuthClient),
 }
 
 describe('formatAdjudication', () => {
@@ -42,26 +29,7 @@ describe('formatAdjudication', () => {
 
     const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
-    expect(formattedReportedAdjudication).toEqual(formattedReportedAdjudication)
-  })
-})
-
-describe('formatIncidentDetails', () => {
-  it('should format incident details', () => {
-    const incidentDetails: IncidentDetailsDto = {
-      locationId: 1,
-      handoverDeadline: '',
-      dateTimeOfIncident: '2021-01-01',
-      dateTimeOfDiscovery: '2021-01-02',
-    }
-
-    const formattedDetails = formatIncidentDetails(incidentDetails)
-
-    expect(formattedDetails).toEqual({
-      ...incidentDetails,
-      dateTimeOfIncident: '1 January 2021, 12.00am',
-      dateTimeOfDiscovery: '2 January 2021, 12.00am',
-    })
+    expect(formattedReportedAdjudication).toEqual(formattedAdjudication)
   })
 })
 
@@ -76,15 +44,6 @@ describe('formatHearing', () => {
       services,
     )
 
-    expect(formattedHearing).toEqual({
-      ...formattedAdjudication.hearings[0],
-      adjudicator: 'IQS13Z',
-      oicHearingType: 'Adult',
-      location: location.userDescription,
-      outcome: {
-        ...formattedAdjudication.hearings[0].outcome,
-        plea: 'Abstain',
-      },
-    })
+    expect(formattedHearing).toEqual(formattedAdjudication.hearings[0])
   })
 })

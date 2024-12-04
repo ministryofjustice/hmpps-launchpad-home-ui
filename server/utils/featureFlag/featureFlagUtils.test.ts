@@ -1,11 +1,10 @@
 import { isFeatureEnabled } from './featureFlagUtils'
 
 jest.mock('../../constants/featureFlags', () => ({
-  ALLOW_ALL_PRISONS: 'ALL',
   featureFlags: {
     adjudications: {
       enabled: true,
-      allowedPrisons: 'ALL',
+      allowedPrisons: ['prison1'],
     },
     transactions: {
       enabled: true,
@@ -13,16 +12,12 @@ jest.mock('../../constants/featureFlags', () => ({
     },
     visits: {
       enabled: false,
-      allowedPrisons: ['prison1'],
+      allowedPrisons: ['prison1', 'prison2'],
     },
   },
 }))
 
 describe(isFeatureEnabled.name, () => {
-  it('should return true if the feature is enabled for all prisons', () => {
-    expect(isFeatureEnabled('adjudications', 'prison1')).toBe(true)
-  })
-
   it('should return true if the feature is enabled for the specified prison', () => {
     expect(isFeatureEnabled('transactions', 'prison1')).toBe(true)
   })

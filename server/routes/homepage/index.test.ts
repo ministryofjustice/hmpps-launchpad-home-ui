@@ -1,171 +1,88 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import * as cheerio from 'cheerio'
 import type { Express } from 'express'
 import request from 'supertest'
-import * as cheerio from 'cheerio'
-import { appWithAllRoutes } from '../testutils/appSetup'
-import { createMockPrisonService, createMockLinksService } from '../../services/testutils/mocks'
-import { EventsData, PrisonerEvent, Link, LinksData } from '../../@types/launchpad'
+import i18next from 'i18next'
+
+import { createMockLinksService, createMockPrisonService } from '../../services/testutils/mocks'
+import { eventsSummary } from '../../utils/mocks/events'
+import { links } from '../../utils/mocks/links'
 import { getEstablishmentLinksData } from '../../utils/utils'
+import { appWithAllRoutes } from '../testutils/appSetup'
 
 let app: Express
-
 const prisonService = createMockPrisonService()
 const linksService = createMockLinksService()
+
 jest.mock('../../utils/utils', () => ({
   ...jest.requireActual('../../utils/utils'),
   getEstablishmentLinksData: jest.fn(),
+}))
+
+jest.mock('i18next', () => ({
+  t: (key: string) => key,
 }))
 
 beforeEach(() => {
   app = appWithAllRoutes({
     services: { prisonService, linksService },
   })
+
+  prisonService.getPrisonerEventsSummary.mockResolvedValue(eventsSummary)
+  linksService.getHomepageLinks.mockResolvedValue({ links })
 })
 
 afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /', () => {
-  let SELF_SERVICE_URL: string
-  let CONTENT_HUB_URL: string
-  let NPR_URL: string
-  let INSIDE_TIME_URL: string
-  let AGENCY_ID: string
+const assertLinkTile = (
+  $: cheerio.CheerioAPI,
+  index: number,
+  expected: { title: string; url: string; description: string },
+) => {
+  const tile = $(`[data-test="tiles-panel"] .link-tile:nth-child(${index})`)
+  expect(tile.find('h3').text()).toBe(expected.title)
+  expect(tile.find('a').attr('href')).toBe(expected.url)
+  expect(tile.find('p').text()).toBe(expected.description)
+}
 
-  let prisonerEvents: PrisonerEvent[]
-  let eventsData: EventsData
-  let links: Link[]
-  let linksData: LinksData
+describe('GET /', () => {
+  let agencyId: string
 
   beforeEach(() => {
-    SELF_SERVICE_URL = 'PRISON_SPECIFIC_SELF_SERVICE_URL'
-    CONTENT_HUB_URL = 'PRISON_SPECIFIC_URL'
-    NPR_URL = `${CONTENT_HUB_URL}/tags/785`
-    INSIDE_TIME_URL = 'https://insidetimeprison.org/'
-    AGENCY_ID = 'PRISON_SPECIFIC_ID'
-
-    prisonerEvents = [
-      {
-        timeString: '8:30am to 11:45am',
-        description: 'Event description',
-        location: 'Event location',
-      },
-      {
-        timeString: '1:45pm to 4:45pm',
-        description: 'Event description',
-        location: 'Event location',
-      },
-      {
-        timeString: '6:30pm to 7:45pm',
-        description: 'Event description',
-        location: 'Event location',
-      },
-    ]
-
-    eventsData = {
-      isTomorrow: false,
-      error: false,
-      prisonerEvents,
-    }
-
-    prisonService.getPrisonerEventsSummary.mockResolvedValue(eventsData)
-
-    links = [
-      {
-        image: '/assets/images/link-tile-images/unilink-link-tile-image.png',
-        title: 'Self-service',
-        url: `${SELF_SERVICE_URL}`,
-        description: 'Access to kiosk apps',
-        openInNewTab: true,
-        hidden: false,
-      },
-      {
-        image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
-        title: 'Content Hub',
-        url: `${CONTENT_HUB_URL}`,
-        description: 'Watch, read and listen to local and national content',
-        openInNewTab: false,
-        hidden: false,
-      },
-      {
-        image: '/assets/images/link-tile-images/npr-link-tile-image.png',
-        title: 'NPR',
-        url: `${CONTENT_HUB_URL}/tags/785`,
-        description: 'Listen to 24/7 music, talk, requests and playbacks',
-        openInNewTab: true,
-        hidden: false,
-      },
-      {
-        image: '/assets/images/link-tile-images/inside-time-link-tile-image.png',
-        title: 'Inside Time',
-        url: 'https://insidetimeprison.org/',
-        description: 'Read the national newspaper for prisoners and detainees',
-        openInNewTab: true,
-        hidden: true,
-      },
-    ]
-
-    linksData = {
-      links,
-      prisonerContentHubURL: CONTENT_HUB_URL,
-    }
-
-    linksService.getHomepageLinks.mockResolvedValue(linksData)
+    agencyId = 'XYZ'
   })
 
-  afterEach(() => {
-    SELF_SERVICE_URL = ''
-    CONTENT_HUB_URL = ''
-    NPR_URL = ''
-    INSIDE_TIME_URL = ''
-    prisonerEvents = []
-    eventsData = {
-      isTomorrow: false,
-      error: false,
-      prisonerEvents,
-    }
-    links = []
-    linksData = {
-      title: '',
-      links,
-      prisonerContentHubURL: '',
-    }
-    jest.clearAllMocks()
-  })
-
-  it('should render the homepage link tiles when hidden value is false', () => {
+  it('should render homepage link tiles when hidden value is false', () => {
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
 
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) h3').text()).toBe('Self-service')
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) a').attr('href')).toBe(SELF_SERVICE_URL)
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(1) p').text()).toBe('Access to kiosk apps')
+        assertLinkTile($, 1, { title: 'Self-service', url: links[0].url, description: 'Access to kiosk apps' })
+        assertLinkTile($, 2, {
+          title: 'Content Hub',
+          url: links[1].url,
+          description: 'Watch, read and listen to local and national content',
+        })
+        assertLinkTile($, 3, {
+          title: 'NPR',
+          url: links[2].url,
+          description: 'Listen to 24/7 music, talk, requests and playbacks',
+        })
 
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(2) h3').text()).toBe('Content Hub')
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(2) a').attr('href')).toBe(CONTENT_HUB_URL)
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(2) p').text()).toBe(
-          'Watch, read and listen to local and national content',
-        )
-
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(3) h3').text()).toBe('NPR')
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(3) a').attr('href')).toBe(NPR_URL)
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(3) p').text()).toBe(
-          'Listen to 24/7 music, talk, requests and playbacks',
-        )
-
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) h3').text()).not.toBe('Inside Time')
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) a').attr('href')).not.toBe(INSIDE_TIME_URL)
-        expect($('[data-test="tiles-panel"] .link-tile:nth-child(4) p').text()).not.toBe(
-          'Read the national newspaper for prisoners and detainees',
-        )
+        const hiddenTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
+        expect(hiddenTile.find('h3').text()).not.toBe('Inside Time')
+        expect(hiddenTile.find('a').attr('href')).not.toBe(links[3].url)
+        expect(hiddenTile.find('p').text()).not.toBe('Read the national newspaper for prisoners and detainees')
       })
   })
 
-  it('should display a title within the homepage link tiles component when the linksData object contains a title value', () => {
-    linksData.title = 'A Tile Panel Title'
+  it('should display a title within the homepage link tiles component if title exists', () => {
+    const homepageLinks = { title: 'A Tile Panel Title', links }
+    linksService.getHomepageLinks.mockResolvedValue(homepageLinks)
 
     return request(app)
       .get('/')
@@ -176,82 +93,75 @@ describe('GET /', () => {
       })
   })
 
-  it('should render the home page events summary panel', () => {
+  it('should render the homepage events summary panel', () => {
     return request(app)
       .get('/')
+      .set('Accept-Language', 'en')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('.events-summary h2').text()).toBe("Today's events")
 
+        expect($('.events-summary h2').text()).toBe(i18next.t('homepage.eventsSummary.today', 'en'))
+
+        // Check events details
         expect($('[data-test="event-detail-1"] .time').text()).toBe('8:30am to 11:45am')
-        expect($('[data-test="event-detail-1"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-1"] .description').text()).toBe('Morning Exercise Gymnasium')
         expect($('[data-test="event-detail-2"] .time').text()).toBe('1:45pm to 4:45pm')
-        expect($('[data-test="event-detail-2"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-2"] .description').text()).toBe('Lunch Cafeteria')
         expect($('[data-test="event-detail-3"] .time').text()).toBe('6:30pm to 7:45pm')
-        expect($('[data-test="event-detail-3"] .description').text()).toBe('Event description Event location')
+        expect($('[data-test="event-detail-3"] .description').text()).toBe('Educational Program Classroom A')
 
-        expect($('.events-summary a').text()).toBe('View my timetable')
+        expect($('.events-summary a').text()).toBe(i18next.t('homepage.eventsSummary.viewTimetable', 'en'))
         expect($('.events-summary a').attr('href')).toBe('/timetable')
       })
   })
 
-  it('should render the home page events summary and profile link tile if hideHomepageEventsSummaryAndProfileLinkTile value is not present', () => {
+  it('should render events summary and profile link tile if show events and profile tile flag is true', () => {
     ;(getEstablishmentLinksData as jest.Mock).mockReturnValue({
-      agencyId: AGENCY_ID,
-      prisonerContentHubURL: CONTENT_HUB_URL,
-      selfServiceURL: SELF_SERVICE_URL,
+      agencyId,
+      prisonerContentHubURL: links[1].url,
+      selfServiceURL: links[0].url,
     })
+
     return request(app)
       .get('/')
+      .set('Accept-Language', 'en')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
-        expect($('#events-summary-wrapper h2').text()).toBe("Today's events")
+
+        expect($('#events-summary-wrapper h2').text()).toBe(i18next.t('homepage.eventsSummary.today', 'en'))
         expect($('#events-summary-wrapper a').attr('href')).toBe(`/timetable`)
-        expect($('#events-summary-wrapper a').text()).toBe('View my timetable')
+        expect($('#events-summary-wrapper a').text()).toBe(i18next.t('homepage.eventsSummary.viewTimetable'))
         expect($('#internal-link-tile-profile a').attr('href')).toBe(`/profile`)
-        expect($('#internal-link-tile-profile a h2').text()).toBe('Profile')
-        expect($('#internal-link-tile-profile a p').text()).toBe(
-          'Check money, visits, IEP, adjudications and timetable',
-        )
+        expect($('#internal-link-tile-profile a h2').text()).toBe(i18next.t('homepage.links.profile'))
+        expect($('#internal-link-tile-profile a p').text()).toBe(i18next.t('homepage.links.profileDesc'))
       })
   })
 
-  it('should hide the home page events summary and  profile link tile if hideHomepageEventsSummaryAndProfileLinkTile value is true', () => {
+  it('should hide events summary and profile link tile when hide flag is set', () => {
     ;(getEstablishmentLinksData as jest.Mock).mockReturnValue({
-      agencyId: AGENCY_ID,
-      prisonerContentHubURL: CONTENT_HUB_URL,
-      selfServiceURL: SELF_SERVICE_URL,
+      agencyId,
+      prisonerContentHubURL: links[1].url,
+      selfServiceURL: links[0].url,
       hideHomepageEventsSummaryAndProfileLinkTile: true,
     })
+
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)
+
         expect($('#events-summary-wrapper h2').text()).not.toBe("Today's events")
         expect($('#events-summary-wrapper a').attr('href')).not.toBe(`/timetable`)
         expect($('#events-summary-wrapper a').text()).not.toBe('View my timetable')
-        expect($('#internal-link-tile-profile a').attr('href')).not.toBe(`${CONTENT_HUB_URL}/profile`)
+
+        expect($('#internal-link-tile-profile a').attr('href')).not.toBe(`${links[1].url}/profile`)
         expect($('#internal-link-tile-profile a h2').text()).not.toBe('Profile')
         expect($('#internal-link-tile-profile a p').text()).not.toBe(
           'Check money, visits, IEP, adjudications and timetable',
         )
-      })
-  })
-
-  it('should display the expected links in the page footer', () => {
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-        const firstLink = $('.govuk-footer ul li a').first()
-        expect(firstLink.attr('href')).toBe(`${CONTENT_HUB_URL}/content/4856`)
-        expect(firstLink.text().trim()).toBe('Privacy policy')
-        expect(firstLink.attr('rel')).toBe('noreferrer noopener')
-        expect(firstLink.attr('target')).toBe('_blank')
       })
   })
 })

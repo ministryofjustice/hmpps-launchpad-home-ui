@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maintenance-page-launchpad-home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  maintenance-page-launchpad-home
+  template:
+    metadata:
+      labels:
+        app: maintenance-page-launchpad-home
+    spec:
+      containers:
+      - name: maintenance-page-launchpad-home
+        image:  ministryofjustice/launchpad-home-maintenance-page:0.0.3
+        ports:
+        - containerPort: 8080

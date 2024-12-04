@@ -94,6 +94,7 @@ export const checkTokenValidityAndUpdate = async (req: Request, res: Response, n
       req.session.passport.user = req.user
 
       return next()
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       logger.error(`Token refresh error`)
       // Handle the error here

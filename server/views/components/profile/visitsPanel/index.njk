@@ -1,34 +1,64 @@
 {% from "../../image-card/index.njk" import imageCard %}
 
-{% macro visitsPanel(nextVisit, readMoreUrl, isSocialVisitorsEnabled) %}
+{% macro visitsPanel(visits, isSocialVisitorsEnabled, t) %}
 <div class="card-background grey">
   <div class="govuk-width-container" data-test="visits-container">
-    <h2 class="govuk-heading-m">Visits</h2>
+    <h2 class="govuk-heading-m">{{ t('profile.visits.visits') }}</h2>
     
     <ul class="govuk-grid-row card-group">
       <li class="govuk-grid-column-one-quarter card-group__item">
         <div class="card card__content">
-          <h3 class="govuk-heading-m card__heading">Next visit</h3>
+          <h3 class="govuk-heading-m card__heading">{{ t('profile.visits.nextVisit') }}</h3>
           <div class="govuk-body card__description">
-            {% if nextVisit %}
-              <p><strong>{{ nextVisit.date }}</strong><br/>{{ nextVisit.startTime }} to {{ nextVisit.endTime }}</p>
-              <p>{{ nextVisit.visitType }}</p>
+            {% if visits.nextVisit %}
+              <p><strong>{{ visits.nextVisit.date }}</strong><br/>{{ visits.nextVisit.startTime }} to {{ visits.nextVisit.endTime }}</p>
+              <p>{{ visits.nextVisit.visitType }}</p>
             {% else %}
-              <p>No upcoming visits</p>
+              <p>{{ t('profile.visits.noUpcoming') }}</p>
             {% endif %}
           </div>
         </div>
       </li>
 
+      {% if visits.nextVisit %}
+      <li class="govuk-grid-column-one-quarter card-group__item">
+        <div class="card card__content card--clickable toggle-sensitive">
+          <h3 class="govuk-heading-m card__heading card-title">
+            <a href="" class="govuk-link govuk-link--no-visited-state card_link">Who is coming to my next visit?</a>
+            <span class="open hidden">-</span><span class="closed">+</span>
+          </h3>
+
+          <div class="hidden sensitive">
+            {% if visits.nextVisit.visitors.length %}
+              <ol>
+                {% for visitor in visits.nextVisit.visitors %}
+                  <li class="govuk-!-padding-bottom-2">{{ visitor.firstName }} {{ visitor.lastName }}</li>
+                {% endfor %}
+              </ol>
+            {% else %}
+              <strong>No visitors</strong>
+            {% endif %}
+          </div>
+        </div>
+      </li>
+      {% endif %}
+
+      <li class="govuk-grid-column-one-quarter card-group__item">
+        <div class="card card__content"  data-test="{{ params.id }}">
+          <h3 class="govuk-heading-m card__heading">Visits I've got left</h3>
+          <p class="govuk-body card__description" data-hj-suppress>{{ visits.visitsRemaining}}</p>
+        </div>
+      </li>
+
       {% if isSocialVisitorsEnabled %}
       <li class="govuk-grid-column-one-quarter card-group__item">
-        {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: "View social visitors" }) }}
+        {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: t('profile.visits.viewVisitors') }) }}
       </li>
       {% endif %}
     </ul>
 
-    <a href='{{ readMoreUrl }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="visitsLink">
-      <span>More about visits</span>
+    <a href='{{ visits.readMoreUrl }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="visitsLink">
+      <span>{{ t('profile.visits.moreAboutVisits') }}</span>
     </a>
   </div>
 </div>

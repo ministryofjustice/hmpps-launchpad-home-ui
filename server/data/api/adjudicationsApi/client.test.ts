@@ -52,7 +52,7 @@ describe('AdjudicationsApiClient', () => {
       const response = await adjudicationsApiClient.getReportedAdjudicationsFor(bookingId, agencyId, status)
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}`,
+        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}&size=50`,
         headers: {
           'Active-Caseload': agencyId,
         },
