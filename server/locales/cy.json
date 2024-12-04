@@ -45,6 +45,42 @@
       "selfServiceDesc": "Mynediad at y rhaglenni ciosg"
     }
   },
+  "profile": {
+    "profile": "Proffil",
+    "timetable": {
+      "afternoon": "Prynhawn",
+      "evening": "Fin nos",
+      "morning": "Bore",
+      "noActivities": "Dim gweithgareddau",
+      "todayTimetable": "Amserlen heddiw",
+      "viewTimetable": "Gweld fy amserlen"
+    },
+    "incentives": {
+      "incentivesIep": "Cymhellion (IEP)",
+      "currentLevel": "Lefel cyfredol:"
+    },
+    "transactions": {
+      "money": "Arian",
+      "openAll": "Agor popeth",
+      "spends": "Gwariant",
+      "private": "Preifat",
+      "savings": "Cynilion",
+      "viewTransactions": "Gweld trafodion"
+    },
+    "visits": {
+      "visits": "Ymweliadau",
+      "nextVisit": "Ymweliad nesaf",
+      "socialVisit": "Ymweliad cymdeithasol",
+      "noUpcoming": "Dim ymweliad ar y gweill",
+      "viewVisitors": "Gweld ymwelwyr cymdeithasol",
+      "moreAboutVisits": "Rhagor o wybodaeth am ymweliadau"
+    },
+    "adjudications": {
+      "adjudications": "Dyfarniadau",
+      "viewAdjudications": "Gweld dyfarniadau",
+      "moreAboutAdjudications": "Rhagor o wybodaeth am ddyfarniadau"
+    }
+  },
   "timetable": {
     "no_events": "Nid oes gennych chi ddigwyddiadau heddiw",
     "timetable": "Amserlen",
@@ -106,38 +142,6 @@
     "no_redirect": "Allwn ni ddim eich cyfeirio at y safle hwn.",
     "try_later": "Rhowch gynnig arall arni yn nes ymlaen.",
     "get_started": "Dechrau arni"
-  },
-  "profile_pages": {
-    "profile_name": "Proffil [Enw]",
-    "today_timetable": "Amserlen heddiw",
-    "periods": {
-      "morning": "Bore",
-      "afternoon": "Prynhawn",
-      "evening": "Fin nos"
-    },
-    "no_activities": "Dim gweithgareddau",
-    "incentives": "Cymhellion (IEP)",
-    "current_level": "Lefel cyfredol:",
-    "money": "Arian",
-    "open_all": "Agor popeth",
-    "accounts": {
-      "spends": "Gwariant",
-      "private": "Preifat",
-      "savings": "Cynilion"
-    },
-    "view_transactions": "Gweld trafodion",
-    "visits": {
-      "visits": "Ymweliadau",
-      "next_visit": "Ymweliad nesaf",
-      "social_visit": "Ymweliad cymdeithasol",
-      "no_upcoming": "Dim ymweliad ar y gweill",
-      "view_visitors": "Gweld ymwelwyr cymdeithasol",
-      "more_about_visits": "Rhagor o wybodaeth am ymweliadau"
-    },
-    "adjudications": {
-      "view_adjudications": "Gweld dyfarniadau",
-      "more_about_adjudications": "Rhagor o wybodaeth am ddyfarniadau"
-    }
   },
   "transactions": {
     "transactions": "Trafodion",

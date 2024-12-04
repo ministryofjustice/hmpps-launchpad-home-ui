@@ -45,6 +45,42 @@
       "selfServiceDesc": "Access the kiosk applications"
     }
   },
+  "profile": {
+    "profile": "Profile",
+    "timetable": {
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "morning": "Morning",
+      "noActivities": "No activities",
+      "todayTimetable": "Today's timetable",
+      "viewTimetable": "View my timetable"
+    },
+    "incentives": {
+      "incentivesIep": "Incentives (IEP)",
+      "currentLevel": "Current level:"
+    },
+    "transactions": {
+      "money": "Money",
+      "openAll": "Open all",
+      "spends": "Spends",
+      "private": "Private",
+      "savings": "Savings",
+      "viewTransactions": "View transactions"
+    },
+    "visits": {
+      "visits": "Visits",
+      "nextVisit": "Next visit",
+      "socialVisit": "Social visit",
+      "noUpcoming": "No upcoming visit",
+      "viewVisitors": "View social visitors",
+      "moreAboutVisits": "More about visits"
+    },
+    "adjudications": {
+      "adjudications": "Adjudications",
+      "viewAdjudications": "View adjudications",
+      "moreAboutAdjudications": "More about adjudications"
+    }
+  },
   "timetable": {
     "no_events": "You have no events today",
     "timetable": "Timetable",
@@ -106,38 +142,6 @@
     "no_redirect": "We can not direct you to this site.",
     "try_later": "Please try again later.",
     "get_started": "Get started"
-  },
-  "profile_pages": {
-    "profile_name": "[Name's] profile",
-    "today_timetable": "Today's timetable",
-    "periods": {
-      "morning": "Morning",
-      "afternoon": "Afternoon",
-      "evening": "Evening"
-    },
-    "no_activities": "No activities",
-    "incentives": "Incentives (IEP)",
-    "current_level": "Current level:",
-    "money": "Money",
-    "open_all": "Open all",
-    "accounts": {
-      "spends": "Spends",
-      "private": "Private",
-      "savings": "Savings"
-    },
-    "view_transactions": "View transactions",
-    "visits": {
-      "visits": "Visits",
-      "next_visit": "Next visit",
-      "social_visit": "Social visit",
-      "no_upcoming": "No upcoming visit",
-      "view_visitors": "View social visitors",
-      "more_about_visits": "More about visits"
-    },
-    "adjudications": {
-      "view_adjudications": "View adjudications",
-      "more_about_adjudications": "More about adjudications"
-    }
   },
   "transactions": {
     "transactions": "Transactions",

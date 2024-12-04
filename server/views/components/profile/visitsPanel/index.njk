@@ -1,20 +1,20 @@
 {% from "../../image-card/index.njk" import imageCard %}
 
-{% macro visitsPanel(visits, isSocialVisitorsEnabled) %}
+{% macro visitsPanel(visits, isSocialVisitorsEnabled, t) %}
 <div class="card-background grey">
   <div class="govuk-width-container" data-test="visits-container">
-    <h2 class="govuk-heading-m">Visits</h2>
+    <h2 class="govuk-heading-m">{{ t('profile.visits.visits') }}</h2>
     
     <ul class="govuk-grid-row card-group">
       <li class="govuk-grid-column-one-quarter card-group__item">
         <div class="card card__content">
-          <h3 class="govuk-heading-m card__heading">Next visit</h3>
+          <h3 class="govuk-heading-m card__heading">{{ t('profile.visits.nextVisit') }}</h3>
           <div class="govuk-body card__description">
             {% if visits.nextVisit %}
               <p><strong>{{ visits.nextVisit.date }}</strong><br/>{{ visits.nextVisit.startTime }} to {{ visits.nextVisit.endTime }}</p>
               <p>{{ visits.nextVisit.visitType }}</p>
             {% else %}
-              <p>No upcoming visits</p>
+              <p>{{ t('profile.visits.noUpcoming') }}</p>
             {% endif %}
           </div>
         </div>
@@ -52,13 +52,13 @@
 
       {% if isSocialVisitorsEnabled %}
       <li class="govuk-grid-column-one-quarter card-group__item">
-        {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: "View social visitors" }) }}
+        {{ imageCard({ id: 'visitsLink', src: "/assets/images/visits.jpg", link: "/visits", description: t('profile.visits.viewVisitors') }) }}
       </li>
       {% endif %}
     </ul>
 
     <a href='{{ visits.readMoreUrl }}' rel="noreferrer noopener" target="_blank" class="govuk-!-font-size-24 card-title govuk-link govuk-!-font-weight-regular govuk-link--no-visited-state" data-test="visitsLink">
-      <span>More about visits</span>
+      <span>{{ t('profile.visits.moreAboutVisits') }}</span>
     </a>
   </div>
 </div>
