@@ -173,9 +173,9 @@
       "damage_description": "Description of damage"
     }
   },
-  "visits": {
-    "social_visitors": "Social visitors",
-    "more_about_visits": "More about visits"
+  "socialVisitors": {
+    "title": "Social visitors",
+    "moreAboutVisits": "More about visits"
   },
   "adjudications": {
     "adjudications": "Adjudications",
