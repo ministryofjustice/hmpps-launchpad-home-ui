@@ -9,15 +9,31 @@ interface FeatureFlags {
   [key: string]: FeatureFlag
 }
 
-const ALLOW_ALL_PRISONS = [
+const COMMON_PRISON_LIST = [
+  prisonAgencyIds.Bullingdon,
+  prisonAgencyIds.Cardiff,
+  prisonAgencyIds.Chelmsford,
+  prisonAgencyIds.CookhamWood,
   prisonAgencyIds.Erlestoke,
   prisonAgencyIds.FelthamA,
   prisonAgencyIds.FelthamB,
+  prisonAgencyIds.Garth,
+  prisonAgencyIds.Lindholme,
   prisonAgencyIds.NewHall,
+  prisonAgencyIds.Ranby,
+  prisonAgencyIds.StokeHeath,
   prisonAgencyIds.Styal,
+  prisonAgencyIds.Swaleside,
+  prisonAgencyIds.TheMount,
+  prisonAgencyIds.Wayland,
   prisonAgencyIds.Werrington,
   prisonAgencyIds.Wetherby,
+  prisonAgencyIds.Woodhill,
 ]
+
+const ADJUDICATIONS_PRISON_LIST = COMMON_PRISON_LIST.filter(
+  prison => ![prisonAgencyIds.Bullingdon, prisonAgencyIds.Chelmsford, prisonAgencyIds.Woodhill].includes(prison),
+)
 
 export const Features = {
   Adjudications: 'adjudications',
@@ -31,7 +47,7 @@ export const Features = {
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
     enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    allowedPrisons: ADJUDICATIONS_PRISON_LIST,
   },
   [Features.Settings]: {
     enabled: false,
@@ -43,7 +59,7 @@ export const featureFlags: FeatureFlags = {
   },
   [Features.Transactions]: {
     enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    allowedPrisons: COMMON_PRISON_LIST,
   },
   [Features.Translations]: {
     enabled: false,
@@ -51,6 +67,6 @@ export const featureFlags: FeatureFlags = {
   },
   [Features.Visits]: {
     enabled: true,
-    allowedPrisons: ALLOW_ALL_PRISONS,
+    allowedPrisons: COMMON_PRISON_LIST,
   },
 }
