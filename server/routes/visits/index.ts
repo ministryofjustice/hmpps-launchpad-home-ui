@@ -28,7 +28,6 @@ export default function routes(services: Services): Router {
 
       return res.render('pages/visits', {
         data: {
-          title: 'Social visitors',
           paginationData,
           rawQuery: req.query.page,
           readMoreUrl: `${prisonerContentHubURL}/tags/1133`,

@@ -173,9 +173,9 @@
       "damage_description": "Disgrifiad o’r difrod"
     }
   },
-  "visits": {
-    "social_visitors": "Ymwelwyr cymdeithasol",
-    "more_about_visits": "Rhagor o wybodaeth am ymweliadau"
+  "socialVisitors": {
+    "title": "Ymwelwyr cymdeithasol",
+    "moreAboutVisits": "Rhagor o wybodaeth am ymweliadau"
   },
   "adjudications": {
     "adjudications": "Dyfarniadau",

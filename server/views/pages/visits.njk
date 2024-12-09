@@ -5,7 +5,7 @@
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 
 
-{% set pageTitle = data.title + " - " + applicationName %}
+{% set pageTitle = t('socialVisitors.title') + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
@@ -15,8 +15,8 @@
 
 {% block title %}
   <div class="govuk-body govuk-width-container hub-header visits-header">
-    <h1 class="govuk-heading-l" id="title">{{ data.title }}</h1>
-    <a href='{{ data.readMoreUrl }}'  rel="noreferrer noopener" target="_blank" class="govuk-link govuk-!-font-size-24">More about visits</a>
+    <h1 class="govuk-heading-l" id="title">{{ t('socialVisitors.title') }}</h1>
+    <a href='{{ data.readMoreUrl }}'  rel="noreferrer noopener" target="_blank" class="govuk-link govuk-!-font-size-24">{{ t('socialVisitors.moreAboutVisits') }}</a>
   </div>
 {% endblock %}
 
