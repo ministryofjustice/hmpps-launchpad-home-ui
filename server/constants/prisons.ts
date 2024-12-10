@@ -2,6 +2,7 @@
 export const prisonAgencyIds = {
   Berwyn: 'BWI',
   Bullingdon: 'BNI',
+  Cardiff: 'CFI',
   CookhamWood: 'CKI',
   Chelmsford: 'CDI',
   Erlestoke: 'EEI',
