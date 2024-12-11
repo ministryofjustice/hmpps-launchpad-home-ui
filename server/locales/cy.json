@@ -96,11 +96,11 @@
     }
   },
   "transactions": {
-    "title": "Trafodion",
-    "help": "Cymorth gyda thrafodion",
     "currentBalance": "Balans cyfredol",
-    "viewByMonthYear": "Gweld yn ôl mis a blwyddyn",
+    "help": "Cymorth gyda thrafodion",
+    "title": "Trafodion",
     "view": "Gweld",
+    "viewByMonthYear": "Gweld yn ôl mis a blwyddyn",
     "helpOptions": {
       "application": "ei roi mewn cais",
       "askStaff": "gofyn i aelod o staff",
