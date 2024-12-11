@@ -51,7 +51,7 @@ export default function routes(services: Services): Router {
         balance: getBalanceByAccountCode(balances, accountCode),
         contentHubTransactionsHelpLinkUrl: `/content/8534`,
         dateSelectionRange,
-        hasDamageObligations: true,
+        hasDamageObligations: balances.damageObligations > 0,
         selectedDate,
         selectedTab,
         transactions: createTransactionTable(transactionsWithPrison, language),
