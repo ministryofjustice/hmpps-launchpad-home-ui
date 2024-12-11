@@ -1,9 +1,22 @@
 import { offenderTransactionWithPrison } from '../mocks/transactions'
 import { createTransactionTable } from './createTransactionTable'
 
+const mockTranslations: Record<string, string> = {
+  'transactions.details.paymentDate': 'Payment date',
+  'transactions.details.moneyIn': 'Money in',
+  'transactions.details.moneyOut': 'Money out',
+  'transactions.details.balance': 'Balance',
+  'transactions.details.paymentDescription': 'Payment description',
+  'transactions.details.prison': 'Prison',
+}
+
+jest.mock('i18next', () => ({
+  t: (key: string) => mockTranslations[key] || key,
+}))
+
 describe(createTransactionTable.name, () => {
   it('should return a table with the correct data', () => {
-    const transactionTable = createTransactionTable([offenderTransactionWithPrison])
+    const transactionTable = createTransactionTable([offenderTransactionWithPrison], 'en')
 
     expect(transactionTable).toEqual({
       head: [

@@ -1,11 +1,13 @@
 import { formatDate, parseISO } from 'date-fns'
+import i18next from 'i18next'
+
 import { OffenderTransactionHistoryDto } from '../../@types/prisonApiTypes'
 import { DateFormats } from '../../constants/date'
 import { formatCurrency } from '../currency/currency'
 
 export type ExtendedOffenderTransaction = OffenderTransactionHistoryDto & { prison: string }
 
-export const createTransactionTable = (transactions: ExtendedOffenderTransaction[]) => {
+export const createTransactionTable = (transactions: ExtendedOffenderTransaction[], language: string) => {
   const hasRelatedOffenderTransactions = (transaction: ExtendedOffenderTransaction) =>
     transaction.relatedOffenderTransactions.length > 0
 
@@ -34,11 +36,16 @@ export const createTransactionTable = (transactions: ExtendedOffenderTransaction
 
   const nonRelatedTransactions = transactions.filter(transaction => !hasRelatedOffenderTransactions(transaction))
 
-  const head = ['Payment date', 'Money in', 'Money out', 'Balance', 'Payment description', 'Prison'].map(
-    columnName => ({
-      text: columnName,
-    }),
-  )
+  const head = [
+    'transactions.details.paymentDate',
+    'transactions.details.moneyIn',
+    'transactions.details.moneyOut',
+    'transactions.details.balance',
+    'transactions.details.paymentDescription',
+    'transactions.details.prison',
+  ].map(columnName => ({
+    text: i18next.t(columnName, { lng: language }),
+  }))
 
   const rows = [...nonRelatedTransactions, ...relatedTransactions]
     .sort(sortByEntryDate)

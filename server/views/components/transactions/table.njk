@@ -1,14 +1,14 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "./date-selection.njk" import transactionsDateSelection %}
 
-{% macro transactionsTable(balance, dateSelectionRange, selectedDate, transactions) %}
+{% macro transactionsTable(balance, dateSelectionRange, selectedDate, transactions, t) %}
 <div class="govuk-tabs__panel">
   <div class="transaction__balances">
-    <h2 class="govuk-heading-l govuk-!-margin-bottom-1">Current balance</h2>
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-1">{{ t('transactions.currentBalance') }}</h2>
     <p class="govuk-body govuk-!-margin-top-5">£{{ balance }}</p>
   </div>
 
-  {{ transactionsDateSelection(dateSelectionRange, selectedDate) }}
+  {{ transactionsDateSelection(dateSelectionRange, selectedDate, t) }}
 
   <div class="transactions">
     {{ govukTable({ head: transactions.head, rows: transactions.rows }) }}

@@ -6,7 +6,7 @@
 {% from "../components/transactions/table.njk" import transactionsTable %}
 
 
-{% set pageTitle = title + " - " + applicationName %}
+{% set pageTitle = t('transactions.title') + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
@@ -16,14 +16,14 @@
 
 {% block title %}
   <div class="govuk-body govuk-width-container hub-header timetable-header" id="main-content">
-    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
+    <h1 class="govuk-heading-l" id="title">{{ t('transactions.title') }}</h1>
   </div>
 {% endblock %}
 
 {% block content %}
   <div class="govuk-body govuk-width-container govuk-frontend-supported">
-    {{ transactionsHelp(data.contentHubTransactionsHelpLinkUrl) }}
-    {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations) }}
-    {{ transactionsTable(data.balance, data.dateSelectionRange, data.selectedDate, data.transactions) }}
+    {{ transactionsHelp(prisonerContentHubUrl, data.contentHubTransactionsHelpLinkUrl, t) }}
+    {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations, t) }}
+    {{ transactionsTable(data.balance, data.dateSelectionRange, data.selectedDate, data.transactions, t) }}
   </div>
 {% endblock %}

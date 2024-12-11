@@ -1,17 +1,23 @@
-{% macro transactionsHelp(contentHubTransactionsHelpLinkUrl) %}
+{% macro transactionsHelp(prisonerContentHubUrl, contentHubTransactionsHelpLinkUrl, t) %}
   <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
-      <span class="govuk-details__summary-text">Help with transactions</span>
+      <span class="govuk-details__summary-text">{{ t('transactions.help') }}</span>
     </summary>
 
     <div class="govuk-details__text">
-      <p class="govuk-body">For more help:</p>
+      <p class="govuk-body">{{ t('transactions.helpOptions.forMoreHelp') }}</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>
-          <a href="{{contentHubTransactionsHelpLinkUrl}}" class="govuk-link" rel="noreferrer noopener" target="_blank">read more about what this page means</a>
+          <a 
+            href="{{ prisonerContentHubUrl }}{{ contentHubTransactionsHelpLinkUrl }}" 
+            class="govuk-link" 
+            rel="noreferrer noopener" 
+            target="_blank">
+            {{ t('transactions.helpOptions.readMore') }}
+          </a>
         </li>
-        <li>put in an app</li>
-        <li>ask a member of staff</li>
+        <li>{{ t('transactions.helpOptions.application') }}</li>
+        <li>{{ t('transactions.helpOptions.askStaff') }}</li>
       </ul> 
     </div>
   </details>
