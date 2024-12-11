@@ -1,7 +1,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro transactionsDateSelection(dateSelectionRange, selectedDate) %}
+{% macro transactionsDateSelection(dateSelectionRange, selectedDate, t) %}
 <div class="transactions__selection_wrapper card-background grey govuk-!-padding-4 govuk-!-margin-bottom-2">
   <form method="GET">
     <div class="transactions__selection__form">
@@ -9,7 +9,7 @@
         id: "selected-date",
         name: "selectedDate",
         label: {
-          text: "View by month and year"
+          text: t('transactions.viewByMonthYear')
         },
         items: dateSelectionRange,
         value: selectedDate,

@@ -22,8 +22,8 @@
 
 {% block content %}
   <div class="govuk-body govuk-width-container govuk-frontend-supported">
-    {{ transactionsHelp(data.contentHubTransactionsHelpLinkUrl) }}
-    {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations) }}
-    {{ damageObligationsTable(data.balance, data.damageObligations)}}
+    {{ transactionsHelp(prisonerContentHubUrl, data.contentHubTransactionsHelpLinkUrl, t) }}
+    {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations, t) }}
+    {{ damageObligationsTable(data.balance, data.damageObligations, t)}}
   </div>
 {% endblock %}

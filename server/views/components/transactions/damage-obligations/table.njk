@@ -1,9 +1,9 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% macro damageObligationsTable(balance, damageObligations) %}
+{% macro damageObligationsTable(balance, damageObligations, t) %}
 <div class="govuk-tabs__panel">
   <div class="transaction__balances">
-    <h2 class="govuk-heading-l govuk-!-margin-bottom-1">You currently owe</h2>
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-1">{{ t('transactions.damageObligations.owes') }}</h2>
     <p class="govuk-body govuk-!-margin-top-5">£{{ balance }}</p>
   </div>
 

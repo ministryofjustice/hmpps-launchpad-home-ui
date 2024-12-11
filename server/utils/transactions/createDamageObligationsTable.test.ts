@@ -1,9 +1,23 @@
 import { damageObligationWithPrison } from '../mocks/transactions'
 import { createDamageObligationsTable } from './createDamageObligationsTable'
 
+const mockTranslations: Record<string, string> = {
+  'transactions.damageObligations.adjudicationNumber': 'Adjudication number',
+  'transactions.damageObligations.paymentStartEnd': 'Payment start and end date',
+  'transactions.damageObligations.totalAmount': 'Total amount',
+  'transactions.damageObligations.amountPaid': 'Amount paid',
+  'transactions.damageObligations.owes': 'Your currently owe',
+  'transactions.details.prison': 'Prison',
+  'transactions.damageObligations.damageDescription': 'Description',
+}
+
+jest.mock('i18next', () => ({
+  t: (key: string) => mockTranslations[key] || key,
+}))
+
 describe(createDamageObligationsTable.name, () => {
   it('should return a table with the correct data', () => {
-    const damageObligationsTable = createDamageObligationsTable([damageObligationWithPrison])
+    const damageObligationsTable = createDamageObligationsTable([damageObligationWithPrison], 'en')
 
     expect(damageObligationsTable).toEqual({
       head: [
@@ -11,7 +25,7 @@ describe(createDamageObligationsTable.name, () => {
         { text: 'Payment start and end date' },
         { text: 'Total amount' },
         { text: 'Amount paid' },
-        { text: 'Amount owed' },
+        { text: 'Your currently owe' },
         { text: 'Prison' },
         { text: 'Description' },
       ],

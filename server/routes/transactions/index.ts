@@ -1,9 +1,10 @@
 import { endOfMonth, isFuture, startOfMonth } from 'date-fns'
 import { Request, Response, Router } from 'express'
+import i18next from 'i18next'
 
 import { AgencyType } from '../../constants/agency'
 import { Features } from '../../constants/featureFlags'
-import { AccountCodes, TransactionTypes } from '../../constants/transactions'
+import { AccountCodes, AccountTypes, TransactionTypes } from '../../constants/transactions'
 
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
@@ -14,14 +15,11 @@ import { createDateSelectionRange } from '../../utils/date/date'
 import { createDamageObligationsTable } from '../../utils/transactions/createDamageObligationsTable'
 import { createTransactionTable } from '../../utils/transactions/createTransactionTable'
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'
-import { getEstablishmentLinksData } from '../../utils/utils'
 
 import { getConfig } from '../config'
 
 export default function routes(services: Services): Router {
   const router = Router()
-
-  const accountTypes = [TransactionTypes.SPENDS, TransactionTypes.PRIVATE, TransactionTypes.SAVINGS]
 
   const renderTransactions = async (
     req: Request,
@@ -29,8 +27,7 @@ export default function routes(services: Services): Router {
     accountCode: string,
     selectedTab: (typeof TransactionTypes)[keyof typeof TransactionTypes],
   ) => {
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
+    const language = req.language || i18next.language
 
     const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
     const dateSelectionRange = createDateSelectionRange(selectedDate)
@@ -50,14 +47,14 @@ export default function routes(services: Services): Router {
       title: 'Transactions',
       config: getConfig(),
       data: {
-        accountTypes,
+        accountTypes: AccountTypes,
         balance: getBalanceByAccountCode(balances, accountCode),
-        contentHubTransactionsHelpLinkUrl: `${prisonerContentHubURL}/content/8534`,
+        contentHubTransactionsHelpLinkUrl: `/content/8534`,
         dateSelectionRange,
-        hasDamageObligations: balances.damageObligations > 0,
+        hasDamageObligations: true,
         selectedDate,
         selectedTab,
-        transactions: createTransactionTable(transactionsWithPrison),
+        transactions: createTransactionTable(transactionsWithPrison, language),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
@@ -65,8 +62,7 @@ export default function routes(services: Services): Router {
   }
 
   const renderDamageObligationsTransactions = async (req: Request, res: Response) => {
-    const { prisonerContentHubURL } =
-      (await getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id)) || {}
+    const language = req.language || i18next.language
 
     const balances = await services.prisonService.getBalances(req.user.idToken.booking.id)
     const prisons = await services.prisonService.getPrisonsByAgencyType(AgencyType.INST)
@@ -81,10 +77,10 @@ export default function routes(services: Services): Router {
       title: 'Transactions',
       config: getConfig(),
       data: {
-        accountTypes,
+        accountTypes: AccountTypes,
         balance: balances.damageObligations,
-        contentHubTransactionsHelpLinkUrl: `${prisonerContentHubURL}/content/8534`,
-        damageObligations: createDamageObligationsTable(damageObligationsWithPrison),
+        contentHubTransactionsHelpLinkUrl: `/content/8534`,
+        damageObligations: createDamageObligationsTable(damageObligationsWithPrison, language),
         selectedTab: TransactionTypes.DAMAGE_OBLIGATIONS,
       },
       errors: req.flash('errors'),

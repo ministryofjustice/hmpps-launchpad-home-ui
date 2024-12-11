@@ -1,4 +1,6 @@
 import { formatDate } from 'date-fns'
+import i18next from 'i18next'
+
 import { OffenderDamageObligation } from '../../@types/prisonApiTypes'
 import { DateFormats } from '../../constants/date'
 import { formatCurrency } from '../currency/currency'
@@ -6,7 +8,7 @@ import { sortByDateTime } from '../date/date'
 
 export type ExtendedDamageObligation = OffenderDamageObligation & { prison: string }
 
-export const createDamageObligationsTable = (damageObligations: ExtendedDamageObligation[]) => {
+export const createDamageObligationsTable = (damageObligations: ExtendedDamageObligation[], language: string) => {
   const activeDamageObligations = damageObligations.filter(damageObligation => damageObligation.status === 'ACTIVE')
 
   const totalRemainingAmount = activeDamageObligations
@@ -52,15 +54,15 @@ export const createDamageObligationsTable = (damageObligations: ExtendedDamageOb
 
   return {
     head: [
-      'Adjudication number',
-      'Payment start and end date',
-      'Total amount',
-      'Amount paid',
-      'Amount owed',
-      'Prison',
-      'Description',
+      'transactions.damageObligations.adjudicationNumber',
+      'transactions.damageObligations.paymentStartEnd',
+      'transactions.damageObligations.totalAmount',
+      'transactions.damageObligations.amountPaid',
+      'transactions.damageObligations.owes',
+      'transactions.details.prison',
+      'transactions.damageObligations.damageDescription',
     ].map(columnName => ({
-      text: columnName,
+      text: i18next.t(columnName, { lng: language }),
     })),
     rows,
     totalRemainingAmount: formatCurrency(totalRemainingAmount, 'GBP'),

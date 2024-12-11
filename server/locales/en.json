@@ -95,82 +95,39 @@
       "pm": "pm"
     }
   },
-  "settings": {
-    "settings": "Settings",
-    "next": "Next",
-    "privacy_policy": "Privacy policy",
-    "app_access": {
-      "desc": "You've given access to these applications (services). This is where you can take that access away in some cases.",
-      "removed_access": "You have removed the data access you gave to [Example application]",
-      "access": "Access to applications",
-      "app": "Application",
-      "can": "This application can",
-      "permissions": {
-        "basic_info": "Read basic information like your name",
-        "prison_info": "Read prison information like the name of your prison",
-        "app_list": "Read the list of applications you use",
-        "remove_access": "Remove access to applications you use"
-      },
-      "given_on": "Given on",
-      "status": "Status",
-      "remove_access": "Remove access",
-      "non_removable": {
-        "content_hub": "You share data with Content Hub so it can be displayed on your tablets. You cannot remove access",
-        "launchpad": "You share data with Launchpad so it can be displayed on your tablets. You cannot remove access"
-      }
-    }
-  },
-  "permissions_screen": {
-    "app_name": "Application name",
-    "permissions": {
-      "basic_info": "Read basic information like your name",
-      "prison_info": "Read prison information like the name of your prison",
-      "app_list": "Read the list of applications you use",
-      "remove_access": "Remove access to applications you use"
-    },
-    "confirmation": "Is this OK?",
-    "yes": "Yes",
-    "no": "No"
-  },
-  "remove_access_screen": {
-    "remove_access": "Remove access",
-    "confirmation": "Are you sure you want to remove the access you gave to [Example Application]?"
-  },
-  "error_screen": {
-    "error": "ERROR!",
-    "something_went_wrong": "Something went wrong.",
-    "no_redirect": "We can not direct you to this site.",
-    "try_later": "Please try again later.",
-    "get_started": "Get started"
-  },
   "transactions": {
-    "transactions": "Transactions",
+    "currentBalance": "Current balance",
     "help": "Help with transactions",
-    "help_options": {
-      "for_more_help": "For more help:",
-      "read_more": "read more about what this page means",
-      "application": "put it in an application",
-      "ask_staff": "ask a member of staff"
-    },
-    "current_balance": "Current balance",
-    "view_by_month_year": "View by month and year",
+    "title": "Transactions",
     "view": "View",
+    "viewByMonthYear": "View by month and year",
+    "helpOptions": {
+      "application": "put it in an application",
+      "askStaff": "ask a member of staff",
+      "forMoreHelp": "For more help:",
+      "readMore": "read more about what this page means"
+    },
     "details": {
-      "payment_date": "Payment date",
-      "money_in": "Money in",
-      "money_out": "Money out",
       "balance": "Balance",
-      "payment_description": "Payment description",
+      "moneyIn": "Money in",
+      "moneyOut": "Money out",
+      "paymentDate": "Payment date",
+      "paymentDescription": "Payment description",
       "prison": "Prison"
     },
-    "damage_obligations": {
-      "damage_obligations": "Damage obligations",
+    "damageObligations": {
+      "adjudicationNumber": "Adjudication number",
+      "amountPaid": "Amount paid",
+      "damageDescription": "Description of damage",
       "owes": "You currently owe",
-      "adjudication_number": "Adjudication number",
-      "payment_start_end": "Payment start / end",
-      "total_amount": "Total amount",
-      "amount_paid": "Amount paid",
-      "damage_description": "Description of damage"
+      "paymentStartEnd": "Payment start / end",
+      "title": "Damage obligations",
+      "totalAmount": "Total amount"
+    },
+    "types": {
+      "private": "Private",
+      "savings": "Savings",
+      "spends": "Spends"
     }
   },
   "socialVisitors": {
@@ -218,5 +175,53 @@
     "error": "Something went wrong",
     "problem_loading": "There was a problem loading the page.",
     "go_back_home": "Go back to home page"
+  },
+  "settings": {
+    "settings": "Settings",
+    "next": "Next",
+    "privacy_policy": "Privacy policy",
+    "app_access": {
+      "desc": "You've given access to these applications (services). This is where you can take that access away in some cases.",
+      "removed_access": "You have removed the data access you gave to [Example application]",
+      "access": "Access to applications",
+      "app": "Application",
+      "can": "This application can",
+      "permissions": {
+        "basic_info": "Read basic information like your name",
+        "prison_info": "Read prison information like the name of your prison",
+        "app_list": "Read the list of applications you use",
+        "remove_access": "Remove access to applications you use"
+      },
+      "given_on": "Given on",
+      "status": "Status",
+      "remove_access": "Remove access",
+      "non_removable": {
+        "content_hub": "You share data with Content Hub so it can be displayed on your tablets. You cannot remove access",
+        "launchpad": "You share data with Launchpad so it can be displayed on your tablets. You cannot remove access"
+      }
+    }
+  },
+  "permissions_screen": {
+    "app_name": "Application name",
+    "permissions": {
+      "basic_info": "Read basic information like your name",
+      "prison_info": "Read prison information like the name of your prison",
+      "app_list": "Read the list of applications you use",
+      "remove_access": "Remove access to applications you use"
+    },
+    "confirmation": "Is this OK?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "remove_access_screen": {
+    "remove_access": "Remove access",
+    "confirmation": "Are you sure you want to remove the access you gave to [Example Application]?"
+  },
+  "error_screen": {
+    "error": "ERROR!",
+    "something_went_wrong": "Something went wrong.",
+    "no_redirect": "We can not direct you to this site.",
+    "try_later": "Please try again later.",
+    "get_started": "Get started"
   }
 }
