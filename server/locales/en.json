@@ -34,7 +34,7 @@
       "contentHub": "Content Hub",
       "contentHubDesc": "Watch, read and listen to local and national content.",
       "exampleApp": "Example application",
-      "exampleAppAesc": "This link opens an allow-listed application which is hosted externally to Launchpad.",
+      "exampleAppDesc": "This link opens an allow-listed application which is hosted externally to Launchpad.",
       "insideTime": "Inside Time",
       "insideTimeDesc": "Read the national newspaper for prisoners and detainees.",
       "nationalPrisonRadio": "National Prison Radio",
