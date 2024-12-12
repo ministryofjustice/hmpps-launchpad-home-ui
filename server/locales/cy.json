@@ -135,37 +135,36 @@
     "moreAboutVisits": "Rhagor o wybodaeth am ymweliadau"
   },
   "adjudications": {
-    "adjudications": "Dyfarniadau",
-    "adjudication_note": "Dangosir hyd at 50 dyfarniad yma, yn nhrefn dyddiad, gyda’r mwyaf newydd yn gyntaf.",
-    "more_about_adjudications": "Rhagor o wybodaeth am ddyfarniadau.",
+    "title": "Dyfarniadau",
+    "adjudicationsDescription": "Dangosir hyd at 50 dyfarniad yma, yn nhrefn dyddiad, gyda’r mwyaf newydd yn gyntaf.",
+    "readMore": "Rhagor o wybodaeth am ddyfarniadau.",
     "report": {
       "number": "Rhif yr adroddiad",
-      "date_time": "Dyddiad ac amser yr adroddiad",
-      "view_details": "Gweld manylion [XXXX]",
-      "gov_report_number": "Rhif adroddiad y Llywodraethwr",
+      "dateTime": "Dyddiad ac amser yr adroddiad",
+      "viewDetails": "Gweld manylion",
+      "govReportNumber": "Rhif adroddiad y Llywodraethwr",
       "when": "Pryd",
       "where": "Ble",
-      "reported_by": "Adroddwyd gan",
-      "what_happened": "Beth ddigwyddodd"
+      "reportedBy": "Adroddwyd gan",
+      "whatHappened": "Beth ddigwyddodd"
     },
     "hearing": {
-      "on_date_time": "Gwrandawiad ar [dyddiad ac amser]",
+      "hearingOn": "Gwrandawiad ar",
       "what": "Beth",
       "where": "Ble",
-      "heard_by": "Gwrandewir gan",
+      "heardBy": "Gwrandewir gan",
       "comments": "Sylwadau"
     },
     "charges": {
-      "example_charge": "Cyflawni unrhyw ymosodiad - ymosod ar swyddog carchar",
       "paragraph": "Paragraff",
       "type": "Math",
       "plea": "Ple",
       "status": "Statws",
       "awards": {
         "type": "Math",
-        "how_long": "Am ba hyd",
-        "effective_date": "Dyddiad dod i rym",
-        "status_date": "Dyddiad y statws"
+        "howLong": "Am ba hyd",
+        "effectiveDate": "Dyddiad dod i rym",
+        "statusDate": "Dyddiad y statws"
       }
     },
     "comments": "Ymosodiad ar garcharor",

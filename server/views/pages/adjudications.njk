@@ -2,7 +2,7 @@
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
-{% set pageTitle = data.title + " - " + applicationName %}
+{% set pageTitle = t('adjudications.title') + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
@@ -12,7 +12,7 @@
 
 {% block title %}
   <div class="govuk-width-container govuk-body hub-header timetable-header" id="main-content" data-test="main-content">
-    <h1 class="govuk-heading-l" id="title">{{ data.title }}</h1>
+    <h1 class="govuk-heading-l" id="title">{{ t('adjudications.title') }}</h1>
   </div>
 {% endblock %}
 
@@ -22,15 +22,15 @@
     <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-9" data-test="approved-visitors-error">We can not list your adjudications at this time, please <a href="{{ params.returnUrl }}" class="govuk-link">try again</a> or <a href="{{ knownPages.profile.adjudicationsInfo }}" class="govuk-link">read more about adjudications</a>.</p>
   {% else %}  
       <div class="govuk-!-margin-bottom-7">
-        <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-2">Up to 50 adjudications are shown here, in date order, with the newest first.</p>
-        <a href='{{ data.readMoreUrl }}'  rel="noreferrer noopener" target="_blank" class="govuk-link govuk-!-font-size-24">Read more about adjudications</a>
+        <p class="govuk-body govuk-!-font-size-24 govuk-!-margin-bottom-2">{{ t('adjudications.adjudicationsDescription') }}</p>
+        <a href='{{ data.readMoreUrl }}'  rel="noreferrer noopener" target="_blank" class="govuk-link govuk-!-font-size-24">{{ t('adjudications.readMore') }}</a>
       </div>  
 
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Report number</th>
-            <th scope="col" class="govuk-table__header">Report date and time</th>
+            <th scope="col" class="govuk-table__header">{{ t('adjudications.report.number') }}</th>
+            <th scope="col" class="govuk-table__header">{{ t('adjudications.report.dateTime') }}</th>
             <th scope="col" class="govuk-table__header"></th>
           </tr>
         </thead>

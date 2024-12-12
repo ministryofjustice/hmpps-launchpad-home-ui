@@ -42,6 +42,7 @@
     @include govuk-link-common;
     @include govuk-link-style-default;
 
+    a,
     &:link,
     &:visited,
     &:active {
