@@ -135,41 +135,40 @@
     "moreAboutVisits": "More about visits"
   },
   "adjudications": {
-    "adjudications": "Adjudications",
-    "adjudication_note": "Up to 50 adjudications are shown here, in date order, with the newest first.",
-    "more_about_adjudications": "More about adjudications.",
+    "title": "Adjudications",
+    "adjudicationsDescription": "Up to 50 adjudications are shown here, in date order, with the newest first.",
+    "readMore": "More about adjudications.",
     "report": {
       "number": "Report number",
-      "date_time": "Report date and time",
-      "view_details": "View details of [XXXX]",
-      "gov_report_number": "Governor's report number",
+      "dateTime": "Report date and time",
+      "viewDetails": "View details of",
+      "govReportNumber": "Governor's report number",
       "when": "When",
       "where": "Where",
-      "reported_by": "Reported by",
-      "what_happened": "What happened"
+      "reportedBy": "Reported by",
+      "whatHappened": "What happened"
     },
     "hearing": {
-      "on_date_time": "Hearing on [date and time]",
+      "hearingOn": "Hearing on",
       "what": "What",
       "where": "Where",
-      "heard_by": "Heard by",
+      "heardBy": "Heard by",
       "comments": "Comments"
     },
     "charges": {
-      "example_charge": "Commits any assault - assault on prison officer",
       "paragraph": "Paragraph",
       "type": "Type",
       "plea": "Plea",
       "status": "Status",
       "awards": {
         "type": "Type",
-        "how_long": "How long",
-        "effective_date": "Effective date",
-        "status_date": "Status date"
+        "howLong": "How long",
+        "effectiveDate": "Effective date",
+        "statusSate": "Status date"
       }
     },
     "comments": "Assault on a prisoner",
-    "help_with_comments": "Help with comments"
+    "helpWithComments": "Help with comments"
   },
   "error_page": {
     "error": "Something went wrong",

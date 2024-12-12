@@ -4,18 +4,18 @@
 <div class="govuk-grid-row">
   <article class="moj-ticket-panel" aria-label="hearing">
     <section class="moj-ticket-panel__content moj-ticket-panel__content--blue" aria-label="hearing detail">
-      <h2 class="govuk-heading-l">Hearing on {{hearing.dateTimeOfHearing}}</h2>
+      <h2 class="govuk-heading-l">{{ t('adjudications.hearing.hearingOn') }} {{hearing.dateTimeOfHearing}}</h2>
       
       {{ govukSummaryList({
         classes: 'govuk-summary-list--no-border',
         rows: [
-          { key: { text: "What" }, value: { text: "Governor's Hearing " + hearing.oicHearingType } },
-          { key: { text: "Where" }, value: { text: hearing.location } },
-          { key: { text: "Comments" }, value: { text: hearing.outcome.details } }
+          { key: { text: t('adjudications.hearing.what') }, value: { text: "Governor's Hearing " + hearing.oicHearingType } },
+          { key: { text: t('adjudications.hearing.where') }, value: { text: hearing.location } },
+          { key: { text: t('adjudications.hearing.comments') }, value: { text: hearing.outcome.details } }
         ]
       }) }}
 
-      {{ adjudicationHearingOffences(hearing) }}
+      {{ adjudicationHearingOffences(hearing, t) }}
     </section>
   </article>
 </div>

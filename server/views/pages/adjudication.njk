@@ -23,7 +23,7 @@
   <div class="govuk-width-container">
     {% if data.adjudication %}
       <div class="govuk-!-margin-bottom-7">
-        <a href="{{ data.readMoreUrl }}" class="govuk-link govuk-!-font-size-24">More about adjudications</a>
+        <a href="{{ data.readMoreUrl }}" class="govuk-link govuk-!-font-size-24">{{ t('adjudications.readMore') }}</a>
       </div>
 
       <div class="govuk-grid-row">
@@ -32,23 +32,23 @@
             classes: 'govuk-summary-list--no-border',
             rows: [
               {
-                key: { text: "Governor's report number" },
+                key: { text: t('adjudications.report.govReportNumber') },
                 value: { text: data.adjudication.chargeNumber }
               },
               {
-                key: { text: "When" },
+                key: { text: t('adjudications.report.when') },
                 value: { text: data.adjudication.incidentDetails.dateTimeOfIncident }
               },
               {
-                key: { text: "Where" },
+                key: { text: t('adjudications.report.where') },
                 value: { text: data.adjudication.location }
               },
               {
-                key: { text: "Report date and time" },
+                key: { text: t('adjudications.report.dateTime') },
                 value: { text: data.adjudication.reportDateTime }
               },
               {
-                key: { text: "What happened" },
+                key: { text: t('adjudications.report.whatHappened') },
                 value: { text: data.adjudication.incidentStatement.statement }
               }
             ]
@@ -60,7 +60,7 @@
         {% if data.adjudication.hearings %}
           <div class="govuk-grid-column-full">
             {% for hearing in data.adjudication.hearings %}
-              {{ adjudicationHearing(hearing) }}
+              {{ adjudicationHearing(hearing, t) }}
             {% endfor %}
           </div>
         {% endif %}
