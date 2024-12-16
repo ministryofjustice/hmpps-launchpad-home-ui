@@ -1,16 +1,18 @@
+import i18next from 'i18next'
+
 import { DateFormats } from '../constants/date'
 import { TimetableValues } from '../constants/timetable'
 import { formatDateOrDefault, properCase } from '../utils/utils'
 
 const DEFAULT: string = 'Unavailable'
 
-const getTimetableEventTime = (startTime: string, endTime: string): string => {
+const getTimetableEventTime = (startTime: string, endTime: string, language: string): string => {
   if (startTime === '') {
     return ''
   }
 
   if (endTime !== '') {
-    return `${startTime} to ${endTime}`
+    return `${startTime} ${i18next.t('timetable.timeRange', { lng: language })} ${endTime}`
   }
 
   return startTime
@@ -67,7 +69,7 @@ export default class TimetableEvent {
     this.paid = options.paid || false
   }
 
-  format(): TimetableEventFormatted {
+  format(language: string): TimetableEventFormatted {
     return {
       description: this.description || DEFAULT,
       startTime: formatDateOrDefault('', DateFormats.PRETTY_TIME, this.startTime),
@@ -76,6 +78,7 @@ export default class TimetableEvent {
       timeString: getTimetableEventTime(
         formatDateOrDefault('', DateFormats.PRETTY_TIME, this.startTime),
         formatDateOrDefault('', DateFormats.PRETTY_TIME, this.endTime),
+        language,
       ),
       eventType: this.eventType || DEFAULT,
       finished: this.status !== TimetableValues.SCHEDULED_EVENT_TYPE,

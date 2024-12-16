@@ -37,15 +37,15 @@
         {% else %}
           <ul class="govuk-grid-row card-group">
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ card({ id: 'morningEvents', heading: t('profile.timetable.morning'), events: data.timetable.timetableEvents.morning.events }) }}
+              {{ card({ id: 'morningEvents', heading: t('profile.timetable.morning'), events: data.timetable.timetableEvents.morning.events }, t) }}
             </li>
 
             <li class="govuk-grid-column-one-quarter card-group__item">
-              {{ card({ id: 'afternoonEvents', heading: t('profile.timetable.afternoon'), events: data.timetable.timetableEvents.afternoon.events }) }}
+              {{ card({ id: 'afternoonEvents', heading: t('profile.timetable.afternoon'), events: data.timetable.timetableEvents.afternoon.events }, t) }}
             </li>
             
             <li class="govuk-grid-column-one-quarter card-group__item">
-                {{ card({ id: 'eveningEvents', heading: t('profile.timetable.evening'), events: data.timetable.timetableEvents.evening.events }) }}
+                {{ card({ id: 'eveningEvents', heading: t('profile.timetable.evening'), events: data.timetable.timetableEvents.evening.events }, t) }}
             </li>
             
             <li class="govuk-grid-column-one-quarter card-group__item">

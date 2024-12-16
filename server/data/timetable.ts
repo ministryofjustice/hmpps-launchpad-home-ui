@@ -1,4 +1,7 @@
 import { addDays, format, isBefore, isValid, parseISO } from 'date-fns'
+import { enGB, cy } from 'date-fns/locale'
+import i18next from 'i18next'
+
 import { NewTableRowOptions, TimetableOptions, TimetableRow, TimetableState } from '../@types/launchpad'
 import { ScheduledEvent } from '../@types/prisonApiTypes'
 import { DateFormats } from '../constants/date'
@@ -36,12 +39,13 @@ export default class Timetable {
       hasEvents: false,
     }
 
+    const { language } = i18next
     const { fromDate } = options
     const fromDateString: string = format(fromDate, DateFormats.ISO_DATE)
     const todaysDate = new Date()
 
     this.timetable.events[fromDateString] = Timetable.createNewTableRow({
-      title: Timetable.getTimetableRowTitle(fromDateString),
+      title: Timetable.getTimetableRowTitle(fromDateString, language),
       hasDateElapsed: isBefore(fromDate, todaysDate),
     })
   }
@@ -71,29 +75,35 @@ export default class Timetable {
     return timetableRow
   }
 
-  static getTimetableRowTitle(date: string) {
+  static getTimetableRowTitle(date: string, language: string) {
     const givenDate = new Date(date)
 
     if (!isValid(givenDate)) return ''
 
     const today = new Date()
     const tomorrow = addDays(today, 1)
-    const todayDateString = format(today, DateFormats.LONG_PRETTY_DATE)
-    const tomorrowDateString = format(tomorrow, DateFormats.LONG_PRETTY_DATE)
-    const givenDateString = format(givenDate, DateFormats.LONG_PRETTY_DATE)
+    const todayDateString = format(today, DateFormats.LONG_PRETTY_DATE, {
+      locale: language === 'cy' ? cy : enGB,
+    })
+    const tomorrowDateString = format(tomorrow, DateFormats.LONG_PRETTY_DATE, {
+      locale: language === 'cy' ? cy : enGB,
+    })
+    const givenDateString = format(givenDate, DateFormats.LONG_PRETTY_DATE, {
+      locale: language === 'cy' ? cy : enGB,
+    })
 
     if (givenDateString === todayDateString) {
-      return 'Today'
+      return i18next.t('timetable.today', { lng: language })
     }
 
     if (givenDateString === tomorrowDateString) {
-      return 'Tomorrow'
+      return i18next.t('timetable.tomorrow', { lng: language })
     }
 
     return givenDateString
   }
 
-  addEvents(events: ScheduledEvent[] = []) {
+  addEvents(language: string, events: ScheduledEvent[] = []) {
     if (!Array.isArray(events)) {
       throw new Error('Events must be an array')
     }
@@ -110,7 +120,7 @@ export default class Timetable {
 
       if (!this.timetable.events[eventDate]) {
         this.timetable.events[eventDate] = Timetable.createNewTableRow({
-          title: Timetable.getTimetableRowTitle(eventDate),
+          title: Timetable.getTimetableRowTitle(eventDate, language),
           hasDateElapsed: isBefore(new Date(eventDate), new Date()),
         })
       }
@@ -119,7 +129,7 @@ export default class Timetable {
         this.timetable.events[eventDate][timeOfDay] = { finished: false, events: [] }
       }
 
-      this.timetable.events[eventDate][timeOfDay].events.push(TimetableEvent.from(event).format())
+      this.timetable.events[eventDate][timeOfDay].events.push(TimetableEvent.from(event).format(language))
     })
 
     this.setEventStatesForToday()

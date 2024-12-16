@@ -44,7 +44,7 @@ export default class PrisonApiClient {
         const formattedTo = scheduledEvent.endTime
           ? formatDate(new Date(scheduledEvent.endTime), dateTimeFormat)
           : 'N/A'
-        const timeString = `${formattedFrom} ${i18next.t('timetable.time_range', { lng: language })} ${formattedTo}`
+        const timeString = `${formattedFrom} ${i18next.t('timetable.timeRange', { lng: language })} ${formattedTo}`
 
         const prisonerEvent: PrisonerEvent = {
           timeString,

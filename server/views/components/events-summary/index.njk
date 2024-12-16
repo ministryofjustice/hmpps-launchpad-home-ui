@@ -9,7 +9,7 @@
           {{ params.error }}, <a href="{{ params.authReturnUrl }}" class="govuk-link">try again</a>
         </span>
       {% elif not params.prisonerEvents | length %}
-          <span data-test="no-events" id="no-events-text">{{ t('timetable.no_events') }}</span>
+          <span data-test="no-events" id="no-events-text">{{ t('timetable.noEvents') }}</span>
       {% else %}
         {% for event in params.prisonerEvents %}
           <div class="event-details govuk-!-margin-bottom-2" data-test='event-detail-{{loop.index}}'>

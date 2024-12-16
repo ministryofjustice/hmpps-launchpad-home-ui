@@ -81,20 +81,6 @@
       "moreAboutAdjudications": "More about adjudications"
     }
   },
-  "timetable": {
-    "no_events": "You have no events today",
-    "timetable": "Timetable",
-    "this_week": "This week",
-    "last_week": "Last week",
-    "next_week": "Next week",
-    "today": "Today",
-    "tomorrow": "Tomorrow",
-    "time_range": "to",
-    "time_period": {
-      "am": "am",
-      "pm": "pm"
-    }
-  },
   "transactions": {
     "currentBalance": "Current balance",
     "help": "Help with transactions",
@@ -169,6 +155,23 @@
     },
     "comments": "Assault on a prisoner",
     "helpWithComments": "Help with comments"
+  },
+  "timetable": {
+    "evening": "Evening",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "lastWeek": "Last week",
+    "nextWeek": "Next week",
+    "noEvents": "You have no events today",
+    "thisWeek": "This week",
+    "timeRange": "to",
+    "title": "Timetable",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "timePeriod": {
+      "am": "am",
+      "pm": "pm"
+    }
   },
   "error_page": {
     "error": "Something went wrong",

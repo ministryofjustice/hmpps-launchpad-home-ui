@@ -5,6 +5,15 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 import { createMockPrisonService } from '../../services/testutils/mocks'
 import { TimetableEvents } from '../../@types/launchpad'
 
+const mockTranslations: Record<string, string> = {
+  'timetable.title': 'Timetable',
+  'timetable.morning': 'Morning',
+}
+
+jest.mock('i18next', () => ({
+  t: (key: string) => mockTranslations[key] || key,
+}))
+
 let app: Express
 
 const prisonService = createMockPrisonService()
