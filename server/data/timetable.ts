@@ -39,8 +39,7 @@ export default class Timetable {
       hasEvents: false,
     }
 
-    const { language } = i18next
-    const { fromDate } = options
+    const { fromDate, language } = options
     const fromDateString: string = format(fromDate, DateFormats.ISO_DATE)
     const todaysDate = new Date()
 
@@ -51,8 +50,8 @@ export default class Timetable {
   }
 
   static create(options: TimetableOptions) {
-    const { fromDate, toDate } = options
-    return new Timetable({ fromDate, toDate: toDate || fromDate })
+    const { fromDate, toDate, language } = options
+    return new Timetable({ fromDate, toDate: toDate || fromDate, language })
   }
 
   static createNewTableRow(options: NewTableRowOptions) {

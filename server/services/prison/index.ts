@@ -32,7 +32,7 @@ export default class PrisonService {
 
     try {
       const eventsData = await prisonApiClient.getEventsFor(bookingId, fromDate, toDate)
-      const timetableData = Timetable.create({ fromDate, toDate }).addEvents(language, eventsData).build()
+      const timetableData = Timetable.create({ fromDate, toDate, language }).addEvents(language, eventsData).build()
       return timetableData.events
     } catch (error) {
       logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, error)
