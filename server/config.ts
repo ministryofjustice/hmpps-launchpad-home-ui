@@ -160,6 +160,11 @@ export default {
       selfServiceURL: 'https://cdiclient.unilink.prisoner.service.justice.gov.uk:1126',
     },
     {
+      agencyId: 'CFI',
+      prisonerContentHubURL: 'https://cardiff.content-hub.prisoner.service.justice.gov.uk',
+      selfServiceURL: 'https://cficlient.unilink.prisoner.service.justice.gov.uk:1132',
+    },
+    {
       agencyId: 'CKI',
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
