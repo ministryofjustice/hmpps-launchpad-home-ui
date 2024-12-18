@@ -81,20 +81,6 @@
       "moreAboutAdjudications": "Rhagor o wybodaeth am ddyfarniadau"
     }
   },
-  "timetable": {
-    "no_events": "Nid oes gennych chi ddigwyddiadau heddiw",
-    "timetable": "Amserlen",
-    "this_week": "Yr wythnos hon",
-    "last_week": "Yr wythnos ddiwethaf",
-    "next_week": "Yr wythnos nesaf",
-    "today": "Heddiw",
-    "tomorrow": "Yfory",
-    "time_range": "tan",
-    "time_period": {
-      "am": "am",
-      "pm": "pm"
-    }
-  },
   "transactions": {
     "currentBalance": "Balans cyfredol",
     "help": "Cymorth gyda thrafodion",
@@ -169,6 +155,23 @@
     },
     "comments": "Ymosodiad ar garcharor",
     "help_with_comments": "Cymorth gyda sylwadau"
+  },
+  "timetable": {
+    "evening": "Fin nos",
+    "morning": "Bore",
+    "afternoon": "Prynhawn",
+    "lastWeek": "Yr wythnos ddiwethaf",
+    "nextWeek": "Yr wythnos nesaf",
+    "noEvents": "Nid oes gennych chi ddigwyddiadau heddiw",
+    "thisWeek": "Yr wythnos hon",
+    "timeRange": "tan",
+    "title": "Amserlen",
+    "today": "Heddiw",
+    "tomorrow": "Yfory",
+    "timePeriod": {
+      "am": "am",
+      "pm": "pm"
+    }
   },
   "error_page": {
     "error": "Aeth rhywbeth o’i le",

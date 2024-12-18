@@ -26,13 +26,13 @@ export default class PrisonService {
     }
   }
 
-  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date) {
+  async getEventsFor(bookingId: string, fromDate: Date, toDate: Date, language: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
       const eventsData = await prisonApiClient.getEventsFor(bookingId, fromDate, toDate)
-      const timetableData = Timetable.create({ fromDate, toDate }).addEvents(eventsData).build()
+      const timetableData = Timetable.create({ fromDate, toDate, language }).addEvents(language, eventsData).build()
       return timetableData.events
     } catch (error) {
       logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, error)
@@ -40,9 +40,9 @@ export default class PrisonService {
     }
   }
 
-  async getEventsForToday(bookingId: string, today: Date = new Date()) {
+  async getEventsForToday(bookingId: string, language: string, today: Date = new Date()) {
     try {
-      const results = await this.getEventsFor(bookingId, today, today)
+      const results = await this.getEventsFor(bookingId, today, today, language)
       return results[format(today, DateFormats.ISO_DATE)]
     } catch (error) {
       logger.error(`Error fetching today's events for bookingId: ${bookingId} on ${today}`, error)

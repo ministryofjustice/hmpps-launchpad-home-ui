@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { Request, Response, Router } from 'express'
+import i18next from 'i18next'
 
 import { DateFormats } from '../../constants/date'
 import { Features } from '../../constants/featureFlags'
@@ -16,13 +17,14 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     asyncHandler(async (req: Request, res: Response) => {
+      const language = req.language || i18next.language
       const { user } = res.locals
       const { idToken } = user
       const { establishment, booking } = idToken
       const prisonId = establishment.agency_id
 
       const timetableEvents = await Promise.all([
-        services.prisonService.getEventsForToday(user.idToken.booking.id, new Date()),
+        services.prisonService.getEventsForToday(user.idToken.booking.id, language, new Date()),
       ])
 
       const { prisonerContentHubURL } = await getEstablishmentLinksData(prisonId)

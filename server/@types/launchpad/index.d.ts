@@ -80,6 +80,7 @@ export type Establishment = {
 export type TimetableOptions = {
   fromDate: Date
   toDate: Date
+  language: string
 }
 
 export type TimetableSession = {

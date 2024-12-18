@@ -1,5 +1,6 @@
 import { addDays, subDays } from 'date-fns'
 import { type RequestHandler, Router } from 'express'
+import i18next from 'i18next'
 
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import type { Services } from '../../services'
@@ -9,6 +10,8 @@ export default function routes(services: Services): Router {
   const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
 
   get('/', async (req, res) => {
+    const language = req.language || i18next.language
+
     const config = {
       content: false,
       header: false,
@@ -22,12 +25,11 @@ export default function routes(services: Services): Router {
     const toDate = addDays(fromDate, 6)
 
     const events = await Promise.all([
-      services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate),
+      services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate, language),
     ])
 
     return res.render('pages/timetable', {
       givenName: res.locals.user.idToken.given_name,
-      title: 'Timetable',
       config,
       events,
       errors: req.flash('errors'),
@@ -36,6 +38,8 @@ export default function routes(services: Services): Router {
   })
 
   get('/last-week', async (req, res) => {
+    const language = req.language || i18next.language
+
     const config = {
       content: false,
       header: false,
@@ -50,7 +54,7 @@ export default function routes(services: Services): Router {
     const toDate = subDays(today, 1)
 
     const events = await Promise.all([
-      services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate),
+      services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate, language),
     ])
 
     return res.render('pages/timetable', {
@@ -64,6 +68,8 @@ export default function routes(services: Services): Router {
   })
 
   get('/next-week', async (req, res) => {
+    const language = req.language || i18next.language
+
     const config = {
       content: false,
       header: false,
@@ -78,7 +84,7 @@ export default function routes(services: Services): Router {
     const toDate = addDays(fromDate, 6)
 
     const events = await Promise.all([
-      services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate),
+      services.prisonService.getEventsFor(res.locals.user.idToken.booking.id, fromDate, toDate, language),
     ])
 
     return res.render('pages/timetable', {
