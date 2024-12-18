@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import * as cheerio from 'cheerio'
 import type { Express } from 'express'
 import request from 'supertest'

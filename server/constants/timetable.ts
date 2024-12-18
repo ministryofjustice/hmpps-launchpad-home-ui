@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-shadow, import/prefer-default-export
+// eslint-disable-next-line import/prefer-default-export
 export enum TimetableValues {
   SCHEDULED_EVENT_TYPE = 'SCH',
   APP_EVENT_TYPE = 'APP',

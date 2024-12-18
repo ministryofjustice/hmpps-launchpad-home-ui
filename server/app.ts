@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import express from 'express'
 import createError from 'http-errors'
 import i18next from 'i18next'

@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-shadow, import/prefer-default-export
+// eslint-disable-next-line import/prefer-default-export
 export enum DateFormats {
   GDS_PRETTY_DATE_TIME = 'd MMMM yyyy, h.mmaaa',
   GDS_PRETTY_DATE = 'd MMMM yyyy',

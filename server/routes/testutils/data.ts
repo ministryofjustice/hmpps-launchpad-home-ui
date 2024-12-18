@@ -1,7 +1,6 @@
 import { IncentiveReviewSummary } from '../../@types/incentivesApiTypes'
 import { TimetableEvents } from '../../@types/launchpad'
 
-/* eslint-disable import/prefer-default-export */
 export const events: TimetableEvents = {
   '2024-01-11': {
     morning: {

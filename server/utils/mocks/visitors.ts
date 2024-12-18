@@ -1,7 +1,6 @@
 import { VisitBalances } from '../../@types/prisonApiTypes'
 import { PrisonerContact } from '../../@types/prisonerContactRegistryApiTypes'
 
-// eslint-disable-next-line import/prefer-default-export
 export const prisonerContact: PrisonerContact = {
   personId: 3735390,
   firstName: 'firstName',
