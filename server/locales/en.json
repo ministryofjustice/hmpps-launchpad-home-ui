@@ -217,16 +217,16 @@
       "no": "No"
     }
   },
-  "error_page": {
+  "errorPage": {
     "error": "Something went wrong",
-    "problem_loading": "There was a problem loading the page.",
-    "go_back_home": "Go back to home page"
+    "problemLoading": "There was a problem loading the page.",
+    "goBackHome": "Go back to home page"
   },
-  "error_screen": {
+  "errorScreen": {
     "error": "ERROR!",
-    "something_went_wrong": "Something went wrong.",
-    "no_redirect": "We can not direct you to this site.",
-    "try_later": "Please try again later.",
-    "get_started": "Get started"
+    "somethingWentWrong": "Something went wrong.",
+    "noRedirect": "We can not direct you to this site.",
+    "tryLater": "Please try again later.",
+    "getStarted": "Get started"
   }
 }

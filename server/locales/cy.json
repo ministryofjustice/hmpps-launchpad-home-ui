@@ -217,16 +217,16 @@
       "no": "Nac ydy"
     }
   },
-  "error_page": {
+  "errorPage": {
     "error": "Aeth rhywbeth o’i le",
-    "problem_loading": "Roedd problem wrth lwytho’r dudalen.",
-    "go_back_home": "Mynd yn ôl i'r hafan"
+    "problemLoading": "Roedd problem wrth lwytho’r dudalen.",
+    "goBackHome": "Mynd yn ôl i'r hafan"
   },
-  "error_screen": {
+  "errorScreen": {
     "error": "GWALL!",
-    "something_went_wrong": "Aeth rhywbeth o’i le.",
-    "no_redirect": "Allwn ni ddim eich cyfeirio at y safle hwn.",
-    "try_later": "Rhowch gynnig arall arni yn nes ymlaen.",
-    "get_started": "Dechrau arni"
+    "somethingWentWrong": "Aeth rhywbeth o’i le.",
+    "noRedirect": "Allwn ni ddim eich cyfeirio at y safle hwn.",
+    "tryLater": "Rhowch gynnig arall arni yn nes ymlaen.",
+    "getStarted": "Dechrau arni"
   }
 }
