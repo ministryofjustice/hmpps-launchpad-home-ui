@@ -173,51 +173,54 @@
       "pm": "pm"
     }
   },
-  "error_page": {
-    "error": "Something went wrong",
-    "problem_loading": "There was a problem loading the page.",
-    "go_back_home": "Go back to home page"
-  },
   "settings": {
-    "settings": "Settings",
+    "title": "Settings",
     "next": "Next",
-    "privacy_policy": "Privacy policy",
-    "app_access": {
+    "privacyPolicy": "Privacy policy",
+    "appAccess": {
       "desc": "You've given access to these applications (services). This is where you can take that access away in some cases.",
-      "removed_access": "You have removed the data access you gave to [Example application]",
+      "removedAccess": "You have removed the data access you gave to",
       "access": "Access to applications",
       "app": "Application",
       "can": "This application can",
       "permissions": {
-        "basic_info": "Read basic information like your name",
-        "prison_info": "Read prison information like the name of your prison",
-        "app_list": "Read the list of applications you use",
-        "remove_access": "Remove access to applications you use"
+        "user.basic.read": "Read basic information like your name",
+        "user.establishment.read": "Read prison information like the name of your prison",
+        "user.clients.read": "Read the list of applications you use",
+        "user.clients.delete": "Remove access to applications you use",
+        "user.booking.read": "Read your booking information"
       },
-      "given_on": "Given on",
+      "givenOn": "Given on",
       "status": "Status",
-      "remove_access": "Remove access",
-      "non_removable": {
-        "content_hub": "You share data with Content Hub so it can be displayed on your tablets. You cannot remove access",
+      "removeAccess": "Remove access",
+      "nonRemovable": {
+        "contentHub": "You share data with Content Hub so it can be displayed on your tablets. You cannot remove access",
         "launchpad": "You share data with Launchpad so it can be displayed on your tablets. You cannot remove access"
       }
+    },
+    "permissionsScreen": {
+      "appName": "Application name",
+      "permissions": {
+        "basicInfo": "Read basic information like your name",
+        "prisonInfo": "Read prison information like the name of your prison",
+        "appList": "Read the list of applications you use",
+        "removeAccess": "Remove access to applications you use"
+      },
+      "confirmation": "Is this OK?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "removeAccessScreen": {
+      "removeAccess": "Remove access",
+      "confirmation": "Are you sure you want to remove the access you gave to",
+      "yes": "Yes",
+      "no": "No"
     }
   },
-  "permissions_screen": {
-    "app_name": "Application name",
-    "permissions": {
-      "basic_info": "Read basic information like your name",
-      "prison_info": "Read prison information like the name of your prison",
-      "app_list": "Read the list of applications you use",
-      "remove_access": "Remove access to applications you use"
-    },
-    "confirmation": "Is this OK?",
-    "yes": "Yes",
-    "no": "No"
-  },
-  "remove_access_screen": {
-    "remove_access": "Remove access",
-    "confirmation": "Are you sure you want to remove the access you gave to [Example Application]?"
+  "error_page": {
+    "error": "Something went wrong",
+    "problem_loading": "There was a problem loading the page.",
+    "go_back_home": "Go back to home page"
   },
   "error_screen": {
     "error": "ERROR!",

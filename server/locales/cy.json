@@ -173,51 +173,54 @@
       "pm": "pm"
     }
   },
-  "error_page": {
-    "error": "Aeth rhywbeth o’i le",
-    "problem_loading": "Roedd problem wrth lwytho’r dudalen.",
-    "go_back_home": "Mynd yn ôl i'r hafan"
-  },
   "settings": {
-    "settings": "Gosodiadau",
+    "title": "Gosodiadau",
     "next": "Nesaf",
-    "privacy_policy": "Polisi preifatrwydd",
-    "app_access": {
+    "privacyPolicy": "Polisi preifatrwydd",
+    "appAccess": {
       "desc": "Rydych chi wedi rhoi mynediad at y rhaglenni hyn (gwasanaethau). Dyma lle gallwch chi dynnu’r mynediad yn ôl mewn rhai achosion.",
-      "removed_access": "Rydych chi wedi tynnu’r mynediad yn ôl at ddata a roesoch i [Rhaglen Enghreifftiol]",
+      "removedAccess": "Rydych chi wedi tynnu’r mynediad yn ôl at ddata a roesoch i",
       "access": "Mynediad at raglenni",
       "app": "Rhaglen",
       "can": "Gall y rhaglen hon wneud y canlynol:",
       "permissions": {
-        "basic_info": "Darllen gwybodaeth sylfaenol, fel eich enw",
-        "prison_info": "Darllen gwybodaeth am y carchar, fel enw eich carchar",
-        "app_list": "Darllen y rhestr o raglenni rydych chi'n eu defnyddio",
-        "remove_access": "Tynnu mynediad at raglenni rydych chi’n eu defnyddio"
+        "user.basic.read": "Darllen gwybodaeth sylfaenol, fel eich enw",
+        "user.establishment.read": "Darllen gwybodaeth am y carchar, fel enw eich carchar",
+        "user.clients.read": "Darllen y rhestr o raglenni rydych chi'n eu defnyddio",
+        "user.clients.delete": "Tynnu mynediad at raglenni rydych chi’n eu defnyddio",
+        "user.booking.read": "Darllen gwybodaeth am eich archebion"
       },
-      "given_on": "Rhoddwyd ar",
+      "givenOn": "Rhoddwyd ar",
       "status": "Statws",
-      "remove_access": "Tynnu mynediad",
-      "non_removable": {
-        "content_hub": "Rydych chi’n rhannu data â’r Hwb Cynnwys er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl",
+      "removeAccess": "Tynnu mynediad",
+      "nonRemovable": {
+        "contentHub": "Rydych chi’n rhannu data â’r Hwb Cynnwys er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl",
         "launchpad": "Rydych chi’n rhannu data â Launchpad er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl"
       }
+    },
+    "permissionsScreen": {
+      "appName": "Gall enw’r rhaglen",
+      "permissions": {
+        "basicInfo": "Darllen gwybodaeth sylfaenol, fel eich enw",
+        "prisonInfo": "Darllen gwybodaeth am y carchar, fel enw eich carchar",
+        "appList": "Darllen y rhestr o raglenni rydych chi'n eu defnyddio",
+        "removeAccess": "Tynnu mynediad at raglenni rydych chi’n eu defnyddio"
+      },
+      "confirmation": "Ydy hyn yn iawn?",
+      "yes": "Ydy",
+      "no": "Nac ydy"
+    },
+    "removeAccessScreen": {
+      "removeAccess": "Tynnu mynediad",
+      "confirmation": "Ydych chi’n siŵr eich bod chi am dynnu’r mynediad a roesoch i",
+      "yes": "Ydy",
+      "no": "Nac ydy"
     }
   },
-  "permissions_screen": {
-    "app_name": "Gall enw’r rhaglen",
-    "permissions": {
-      "basic_info": "Darllen gwybodaeth sylfaenol, fel eich enw",
-      "prison_info": "Darllen gwybodaeth am y carchar, fel enw eich carchar",
-      "app_list": "Darllen y rhestr o raglenni rydych chi'n eu defnyddio",
-      "remove_access": "Tynnu mynediad at raglenni rydych chi’n eu defnyddio"
-    },
-    "confirmation": "Ydy hyn yn iawn?",
-    "yes": "Ydy",
-    "no": "Nac ydy"
-  },
-  "remove_access_screen": {
-    "remove_access": "Tynnu mynediad",
-    "confirmation": "Ydych chi’n siŵr eich bod chi am dynnu’r mynediad a roesoch i [Rhaglen Enghreifftiol]?"
+  "error_page": {
+    "error": "Aeth rhywbeth o’i le",
+    "problem_loading": "Roedd problem wrth lwytho’r dudalen.",
+    "go_back_home": "Mynd yn ôl i'r hafan"
   },
   "error_screen": {
     "error": "GWALL!",
