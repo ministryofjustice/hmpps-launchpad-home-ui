@@ -12,8 +12,8 @@
           loading="lazy">
       {% endif %}
 
-      <div class="govuk-heading-m">Remove access?</div>
-      <p class="govuk-!-margin-top-6">Are you sure you want to remove the access you gave to {{ data.client }}</p>
+      <div class="govuk-heading-m">{{ t('settings.removeAccessScreen.removeAccess') }}</div>
+      <p class="govuk-!-margin-top-6">{{ t('settings.removeAccessScreen.confirmation') }} {{ data.client }}?</p>
     
       <div class="remove-access__buttons">
         <form action="/remove-access" method="POST">
@@ -24,7 +24,7 @@
           <input type="hidden" id="action-input" name="action" value="remove">
           
           {{ govukButton({
-            text: "Yes",
+            text: t('settings.removeAccessScreen.yes'),
             id: "remove-access__button-yes",
             attributes: {
               type: "submit"
@@ -32,7 +32,7 @@
           }) }}
 
           {{ govukButton({
-            text: "No",
+            text: t('settings.removeAccessScreen.no'),
             id: "remove-access__button-no",
             attributes: {
               type: "submit"
