@@ -6,7 +6,7 @@
 
 {% from "../partials/breadCrumb.njk" import breadCrumb %}
 
-{% set pageTitle = title + " - " + applicationName %}
+{% set pageTitle = t('settings.title') + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
@@ -14,7 +14,7 @@
     <div class="govuk-width-container govuk-!-margin-top-6">
       {{ mojBanner({
         type: 'success',
-        text: 'You have removed the data access you gave to ' + response.client,
+        text: t('settings.appAccess.removedAccess') + '' + response.client,
         iconFallbackText: 'Success'
       }) }}
     </div>
@@ -34,22 +34,22 @@
 
 {% block title %}
   <div class="govuk-width-container">
-    <h1 class="govuk-heading-l" id="title">{{ title }}</h1>
-    <p class="govuk-!-font-size-24">You’ve given access to these applications (services).<br/>This is where you can take that access away in some cases.</p>
+    <h1 class="govuk-heading-l" id="title">{{ t('settings.title') }}</h1>
+    <p class="govuk-!-font-size-24">{{ t('settings.appAccess.desc') }}</p>
   </div>
 {% endblock %}
 
 {% block content %}
   <div class="govuk-width-container govuk-frontend-supported govuk-!-margin-top-8">
     <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--m">Access to applications</caption>
+      <caption class="govuk-table__caption govuk-table__caption--m">{{ t('settings.appAccess.access') }}</caption>
       
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Application</th>
-          <th scope="col" class="govuk-table__header govuk-!-width-one-third">Information you are sharing</th>
-          <th scope="col" class="govuk-table__header">Shared on</th>
-          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">Status</th>
+          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">{{ t('settings.appAccess.app') }}</th>
+          <th scope="col" class="govuk-table__header govuk-!-width-one-third">{{ t('settings.appAccess.can') }}</th>
+          <th scope="col" class="govuk-table__header">{{ t('settings.appAccess.givenOn') }}</th>
+          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">{{ t('settings.appAccess.status') }}</th>
         </tr>
       </thead>
 
@@ -93,7 +93,7 @@
                 You share data with {{ client.name }} so it can be displayed on your tablets. You cannot remove access.
               {% else %}
                 {{ govukButton({
-                  text: "Remove access",
+                  text: t('settings.appAccess.removeAccess'),
                   classes: "govuk-button--secondary govuk-!-margin-bottom-0",
                   href: removeAccessUrl
                 }) }}
