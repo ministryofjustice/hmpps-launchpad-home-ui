@@ -2,6 +2,16 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes } from './routes/testutils/appSetup'
 
+const mockTranslations: Record<string, string> = {
+  'errorPage.error': 'Something went wrong',
+  'errorPage.problemLoading': 'There was a problem loading the page.',
+  'errorPage.goBackHome': 'Go back to home page',
+}
+
+jest.mock('i18next', () => ({
+  t: (key: string) => mockTranslations[key] || key,
+}))
+
 let app: Express
 
 beforeEach(() => {

@@ -6,17 +6,17 @@
 
 {% block title %}
   <div class="govuk-width-container govuk-body hub-header" id="main-content" data-test="main-content">
-    <h1 class="govuk-heading-l" id="title">Something went wrong</h1>
+    <h1 class="govuk-heading-l" id="title">{{ t('errorPage.error') }}</h1>
   </div>
 {% endblock %}
 
 {% block content %}
   <div class="govuk-width-container">
     <p class="govuk-body" data-test="subheading">
-      There was a problem loading the page.
+      {{ t('errorPage.problemLoading') }}
     </p>
     {{ govukButton({
-      text: "Go back to homepage",
+      text: t('errorPage.goBackHome'),
       href: "/"
     }) }}
 
