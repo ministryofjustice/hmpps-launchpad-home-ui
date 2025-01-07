@@ -212,7 +212,7 @@ export default {
     {
       agencyId: 'SHI',
       prisonerContentHubURL: 'https://stokeheath.content-hub.prisoner.service.justice.gov.uk',
-      selfServicekURL: 'https://shiclient.unilink.prisoner.service.justice.gov.uk:1122',
+      selfServiceURL: 'https://shiclient.unilink.prisoner.service.justice.gov.uk:1122',
     },
     {
       agencyId: 'SLI',
