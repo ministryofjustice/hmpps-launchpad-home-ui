@@ -1,18 +1,16 @@
 import { format, formatISO, startOfMonth, subMonths } from 'date-fns'
-import { enGB, cy } from 'date-fns/locale'
+import { cy, enGB } from 'date-fns/locale'
 import { createDateSelectionRange } from './date'
 
 describe(createDateSelectionRange.name, () => {
-  const defaultLanguage = 'en'
-
   it('should create an array of length amount', () => {
     const amount = 12
-    const selectionRange = createDateSelectionRange(defaultLanguage, undefined, amount)
+    const selectionRange = createDateSelectionRange({ amount })
     expect(selectionRange).toHaveLength(amount)
   })
 
   it('should create selection range with correct text and value in English', () => {
-    const selectionRange = createDateSelectionRange('en')
+    const selectionRange = createDateSelectionRange({ language: 'en' })
     const currentDate = new Date()
     selectionRange.forEach((item, index) => {
       const expectedDate = subMonths(currentDate, index)
@@ -25,7 +23,7 @@ describe(createDateSelectionRange.name, () => {
   })
 
   it('should create selection range with correct text and value in Welsh', () => {
-    const selectionRange = createDateSelectionRange('cy')
+    const selectionRange = createDateSelectionRange({ language: 'cy' })
     const currentDate = new Date()
     selectionRange.forEach((item, index) => {
       const expectedDate = subMonths(currentDate, index)
@@ -39,7 +37,7 @@ describe(createDateSelectionRange.name, () => {
 
   it('should select the correct date if selectedDate is provided', () => {
     const selectedDate = '2024-02-15'
-    const selectionRange = createDateSelectionRange(defaultLanguage, selectedDate)
+    const selectionRange = createDateSelectionRange({ selectedDate })
     const selectedYearMonth = selectedDate.substring(0, 7)
 
     selectionRange.forEach(item => {
@@ -49,14 +47,14 @@ describe(createDateSelectionRange.name, () => {
   })
 
   it('should not select any date if selectedDate is not provided', () => {
-    const selectionRange = createDateSelectionRange(defaultLanguage)
+    const selectionRange = createDateSelectionRange({})
     selectionRange.forEach(item => {
       expect(item.selected).toBeFalsy()
     })
   })
 
   it('should default to English locale if an unknown language is provided', () => {
-    const selectionRange = createDateSelectionRange('unknown')
+    const selectionRange = createDateSelectionRange({ language: 'unknown' })
     const currentDate = new Date()
     selectionRange.forEach((item, index) => {
       const expectedDate = subMonths(currentDate, index)

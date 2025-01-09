@@ -30,7 +30,7 @@ export default function routes(services: Services): Router {
     const language = req.language || i18next.language
 
     const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
-    const dateSelectionRange = createDateSelectionRange(language, selectedDate)
+    const dateSelectionRange = createDateSelectionRange({ language, selectedDate })
     const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
     const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 

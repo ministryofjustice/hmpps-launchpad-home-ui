@@ -2,9 +2,16 @@ import { format, formatISO, isValid, Locale, parseISO, startOfMonth, subMonths }
 import { cy, enGB } from 'date-fns/locale'
 import { DateFormats } from '../../constants/date'
 
-export const createDateSelectionRange = (language: string, selectedDate?: string, amount = 12) => {
+export const createDateSelectionRange = ({
+  language = 'en',
+  selectedDate,
+  amount = 12,
+}: {
+  language?: string
+  selectedDate?: string
+  amount?: number
+}) => {
   const locales: Record<string, Locale> = { en: enGB, cy }
-
   const locale = locales[language] || enGB
 
   return Array.from({ length: amount }, (_, index) => {
