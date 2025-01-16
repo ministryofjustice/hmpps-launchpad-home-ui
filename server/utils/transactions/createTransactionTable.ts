@@ -1,4 +1,4 @@
-import { formatDate, Locale, parseISO } from 'date-fns'
+import { format, formatDate, Locale, parseISO } from 'date-fns'
 import { cy, enGB } from 'date-fns/locale'
 import i18next from 'i18next'
 
@@ -28,7 +28,7 @@ export const createTransactionTable = (transactions: ExtendedOffenderTransaction
       entryDate: transaction.entryDate,
       penceAmount: rTransaction.payAmount,
       currentBalance: rTransaction.currentBalance,
-      entryDescription: `${rTransaction.paymentDescription} from ${formatDate(
+      entryDescription: `${rTransaction.paymentDescription} from ${format(
         parseISO(rTransaction.calendarDate),
         DateFormats.GDS_PRETTY_DATE,
         { locale },
