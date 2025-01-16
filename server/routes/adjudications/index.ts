@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+import i18next from 'i18next'
 
 import { Features } from '../../constants/featureFlags'
 
@@ -19,11 +20,13 @@ export default function routes(services: Services): Router {
     featureFlagMiddleware(Features.Adjudications),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
+      const language = req.language || i18next.language
 
       const { prisonerContentHubURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id) || {}
       const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
+        language,
       )
 
       const paginationData = getPaginationData(Number(req.query.page), reportedAdjudications.content.length)

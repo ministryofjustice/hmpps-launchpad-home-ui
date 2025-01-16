@@ -1,4 +1,6 @@
-import { format } from 'date-fns'
+import { format, Locale } from 'date-fns'
+import { cy, enGB } from 'date-fns/locale'
+
 import logger from '../../../logger'
 import { ADJUDICATION_STATUSES } from '../../constants/adjudications'
 import { DateFormats } from '../../constants/date'
@@ -17,7 +19,7 @@ export default class AdjudicationsService {
     return adjudicationsApiClient.hasAdjudications(bookingId, prisonId)
   }
 
-  async getReportedAdjudicationsFor(bookingId: string, prisonId: string) {
+  async getReportedAdjudicationsFor(bookingId: string, prisonId: string, language: string) {
     try {
       const token = await this.hmppsAuthClient.getSystemClientToken()
       const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
@@ -30,9 +32,12 @@ export default class AdjudicationsService {
         statusQueryParam,
       )
 
+      const locales: Record<string, Locale> = { en: enGB, cy }
+      const locale = locales[language] || enGB
+
       const formattedContent = content.map(adjudication => ({
         ...adjudication,
-        createdDateTime: format(adjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
+        createdDateTime: format(new Date(adjudication.createdDateTime), DateFormats.GDS_PRETTY_DATE_TIME, { locale }),
       }))
 
       return {
