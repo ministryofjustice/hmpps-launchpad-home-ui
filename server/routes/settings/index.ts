@@ -1,3 +1,5 @@
+import { format, Locale } from 'date-fns'
+import { cy, enGB } from 'date-fns/locale'
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
 
@@ -7,8 +9,6 @@ import { Features } from '../../constants/featureFlags'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
-import { formatDate } from '../../utils/date/date'
-
 import { ApprovedClients } from '../../@types/launchpad'
 import type { Services } from '../../services'
 import { getPaginationData } from '../../utils/pagination/pagination'
@@ -17,11 +17,14 @@ export default function routes(services: Services): Router {
   const router = Router()
 
   const formatApprovedClients = (clients: ApprovedClients, language: string) => {
+    const locales: Record<string, Locale> = { en: enGB, cy }
+    const locale = locales[language] || enGB
+
     return clients.content.map(({ id, logoUri, name, createdDate, scopes, autoApprove }) => ({
       id,
       logoUri,
       name,
-      accessSharedDate: formatDate(createdDate, DateFormats.GDS_PRETTY_DATE),
+      accessSharedDate: format(createdDate, DateFormats.GDS_PRETTY_DATE, { locale }),
       permissions: scopes
         .filter(scope => scope?.humanReadable)
         .map(scope =>
