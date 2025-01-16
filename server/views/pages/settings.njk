@@ -90,7 +90,7 @@
 
             <td class="govuk-table__cell govuk-table__cell--valign-middle">
               {% if client.autoApprove %}
-                You share data with {{ client.name }} so it can be displayed on your tablets. You cannot remove access.
+                {{ t("settings.appAccess.shareDataMessage", { clientName: client.name }) }}
               {% else %}
                 {{ govukButton({
                   text: t('settings.appAccess.removeAccess'),

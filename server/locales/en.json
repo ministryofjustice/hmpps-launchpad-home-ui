@@ -198,7 +198,8 @@
       "nonRemovable": {
         "contentHub": "You share data with Content Hub so it can be displayed on your tablets. You cannot remove access",
         "launchpad": "You share data with Launchpad so it can be displayed on your tablets. You cannot remove access"
-      }
+      },
+      "shareDataMessage": "You share data with {{clientName}} so it can be displayed on your tablets. You cannot remove access."
     },
     "permissionsScreen": {
       "appName": "Application name",
