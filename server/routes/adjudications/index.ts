@@ -32,7 +32,6 @@ export default function routes(services: Services): Router {
       res.render('pages/adjudications', {
         givenName: user.idToken.given_name,
         data: {
-          title: 'Adjudications',
           paginationData,
           rawQuery: req.query.page,
           reportedAdjudications: pagedReportedAdjudications,
