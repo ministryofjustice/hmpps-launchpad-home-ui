@@ -1,4 +1,4 @@
-import { format, formatDate, Locale, parseISO } from 'date-fns'
+import { format, Locale, parseISO } from 'date-fns'
 import { cy, enGB } from 'date-fns/locale'
 import i18next from 'i18next'
 
@@ -55,7 +55,7 @@ export const createTransactionTable = (transactions: ExtendedOffenderTransaction
   const rows = [...nonRelatedTransactions, ...relatedTransactions]
     .sort(sortByEntryDate)
     .map(transaction => ({
-      paymentDate: formatDate(transaction.entryDate, DateFormats.GDS_PRETTY_DATE),
+      paymentDate: format(transaction.entryDate, DateFormats.GDS_PRETTY_DATE, { locale }),
       balance: formatCurrency(transaction.currentBalance / 100, transaction.currency),
       moneyIn:
         transaction.postingType === 'CR' ? formatCurrency(transaction.penceAmount / 100, transaction.currency) : null,
