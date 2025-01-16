@@ -73,7 +73,8 @@
       "socialVisit": "Ymweliad cymdeithasol",
       "noUpcoming": "Dim ymweliad ar y gweill",
       "viewVisitors": "Gweld ymwelwyr cymdeithasol",
-      "moreAboutVisits": "Rhagor o wybodaeth am ymweliadau"
+      "moreAboutVisits": "Rhagor o wybodaeth am ymweliadau",
+      "visitsRemaining": "Ymweliadau sydd gennyf ar ôl"
     },
     "adjudications": {
       "adjudications": "Dyfarniadau",
