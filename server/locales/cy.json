@@ -195,10 +195,6 @@
       "givenOn": "Rhoddwyd ar",
       "status": "Statws",
       "removeAccess": "Tynnu mynediad",
-      "nonRemovable": {
-        "contentHub": "Rydych chi’n rhannu data â’r Hwb Cynnwys er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl",
-        "launchpad": "Rydych chi’n rhannu data â Launchpad er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl"
-      },
       "shareDataMessage": "Rydych chi’n rhannu data â {{clientName}} er mwyn ei weld ar eich tabledi. Does dim modd i chi dynnu mynediad yn ôl."
     },
     "permissionsScreen": {
