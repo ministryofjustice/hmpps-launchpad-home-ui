@@ -50,8 +50,8 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: ADJUDICATIONS_PRISON_LIST,
   },
   [Features.Settings]: {
-    enabled: false,
-    allowedPrisons: [],
+    enabled: true,
+    allowedPrisons: COMMON_PRISON_LIST,
   },
   [Features.SocialVisitors]: {
     enabled: false,
@@ -62,8 +62,8 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: COMMON_PRISON_LIST,
   },
   [Features.Translations]: {
-    enabled: false,
-    allowedPrisons: [],
+    enabled: true,
+    allowedPrisons: COMMON_PRISON_LIST,
   },
   [Features.Visits]: {
     enabled: true,
