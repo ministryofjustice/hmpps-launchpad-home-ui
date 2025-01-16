@@ -1,4 +1,5 @@
-import { formatDate, parseISO } from 'date-fns'
+import { formatDate, Locale, parseISO } from 'date-fns'
+import { cy, enGB } from 'date-fns/locale'
 import i18next from 'i18next'
 
 import { OffenderTransactionHistoryDto } from '../../@types/prisonApiTypes'
@@ -8,6 +9,9 @@ import { formatCurrency } from '../currency/currency'
 export type ExtendedOffenderTransaction = OffenderTransactionHistoryDto & { prison: string }
 
 export const createTransactionTable = (transactions: ExtendedOffenderTransaction[], language: string) => {
+  const locales: Record<string, Locale> = { en: enGB, cy }
+  const locale = locales[language] || enGB
+
   const hasRelatedOffenderTransactions = (transaction: ExtendedOffenderTransaction) =>
     transaction.relatedOffenderTransactions.length > 0
 
@@ -25,8 +29,9 @@ export const createTransactionTable = (transactions: ExtendedOffenderTransaction
       penceAmount: rTransaction.payAmount,
       currentBalance: rTransaction.currentBalance,
       entryDescription: `${rTransaction.paymentDescription} from ${formatDate(
-        rTransaction.calendarDate,
+        parseISO(rTransaction.calendarDate),
         DateFormats.GDS_PRETTY_DATE,
+        { locale },
       )}`,
       postingType: 'CR',
       currency: transaction.currency,
