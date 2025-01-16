@@ -62,9 +62,9 @@ export default function routes(services: Services): Router {
 
       return res.render('pages/adjudication', {
         givenName: user.idToken.given_name,
-        title: `View details of ${req.params.chargeNumber}`,
         data: {
           adjudication: formattedAdjudication,
+          chargeNumber: req.params.chargeNumber,
           readMoreUrl: `${prisonerContentHubURL}/content/4193`,
         },
       })
