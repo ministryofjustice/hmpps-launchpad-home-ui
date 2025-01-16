@@ -124,6 +124,7 @@
     "title": "Adjudications",
     "adjudicationsDescription": "Up to 50 adjudications are shown here, in date order, with the newest first.",
     "readMore": "More about adjudications.",
+    "view": "View",
     "report": {
       "number": "Report number",
       "dateTime": "Report date and time",

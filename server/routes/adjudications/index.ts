@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+import i18next from 'i18next'
 
 import { Features } from '../../constants/featureFlags'
 
@@ -19,11 +20,13 @@ export default function routes(services: Services): Router {
     featureFlagMiddleware(Features.Adjudications),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
+      const language = req.language || i18next.language
 
       const { prisonerContentHubURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id) || {}
       const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
+        language,
       )
 
       const paginationData = getPaginationData(Number(req.query.page), reportedAdjudications.content.length)
@@ -32,7 +35,6 @@ export default function routes(services: Services): Router {
       res.render('pages/adjudications', {
         givenName: user.idToken.given_name,
         data: {
-          title: 'Adjudications',
           paginationData,
           rawQuery: req.query.page,
           reportedAdjudications: pagedReportedAdjudications,
@@ -62,9 +64,9 @@ export default function routes(services: Services): Router {
 
       return res.render('pages/adjudication', {
         givenName: user.idToken.given_name,
-        title: `View details of ${req.params.chargeNumber}`,
         data: {
           adjudication: formattedAdjudication,
+          chargeNumber: req.params.chargeNumber,
           readMoreUrl: `${prisonerContentHubURL}/content/4193`,
         },
       })

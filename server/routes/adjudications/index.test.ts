@@ -5,6 +5,11 @@ import { createMockAdjucationsService } from '../../services/testutils/mocks'
 import { formattedAdjudication, reportedAdjudication } from '../../utils/mocks/adjudications'
 import { appWithAllRoutes } from '../testutils/appSetup'
 
+jest.mock('i18next', () => ({
+  t: jest.fn().mockImplementation((key: string) => key),
+  language: 'en',
+}))
+
 jest.mock('../../constants/featureFlags', () => ({
   Features: {
     Adjudications: 'adjudications',
@@ -60,7 +65,7 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', '12345')
+    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', '12345', 'en')
   })
 
   it('should render the /adjudications/:chargeNumber view', async () => {
