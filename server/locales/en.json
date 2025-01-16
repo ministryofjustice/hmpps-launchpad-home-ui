@@ -73,7 +73,8 @@
       "socialVisit": "Social visit",
       "noUpcoming": "No upcoming visit",
       "viewVisitors": "View social visitors",
-      "moreAboutVisits": "More about visits"
+      "moreAboutVisits": "More about visits",
+      "visitsRemaining": "Visits I've got left"
     },
     "adjudications": {
       "adjudications": "Adjudications",
@@ -194,10 +195,7 @@
       "givenOn": "Given on",
       "status": "Status",
       "removeAccess": "Remove access",
-      "nonRemovable": {
-        "contentHub": "You share data with Content Hub so it can be displayed on your tablets. You cannot remove access",
-        "launchpad": "You share data with Launchpad so it can be displayed on your tablets. You cannot remove access"
-      }
+      "shareDataMessage": "You share data with {{clientName}} so it can be displayed on your tablets. You cannot remove access."
     },
     "permissionsScreen": {
       "appName": "Application name",
