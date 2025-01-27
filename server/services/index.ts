@@ -4,6 +4,7 @@ import AdjudicationsService from './adjudications'
 import IncentivesService from './incentives'
 import LaunchpadAuthService from './launchpadAuth'
 import LinksService from './links'
+import LocationService from './location'
 import PrisonService from './prison'
 import PrisonerContactRegistryService from './prisonerContactRegistry'
 
@@ -15,6 +16,7 @@ export const services = () => {
     adjudicationsApiClientBuilder,
     incentivesApiClientBuilder,
     launchpadAuthClientBuilder,
+    locationApiClientBuilder,
     prisonApiClientBuilder,
     prisonerContactRegistryApiClientBuilder,
   } = dataAccess()
@@ -22,6 +24,7 @@ export const services = () => {
   const adjudicationsService = new AdjudicationsService(hmppsAuthClient, adjudicationsApiClientBuilder)
   const incentivesService = new IncentivesService(hmppsAuthClient, incentivesApiClientBuilder)
   const launchpadAuthService = new LaunchpadAuthService(hmppsAuthClient, launchpadAuthClientBuilder)
+  const locationService = new LocationService(hmppsAuthClient, locationApiClientBuilder)
   const prisonService = new PrisonService(hmppsAuthClient, prisonApiClientBuilder)
   const prisonerContactRegistryService = new PrisonerContactRegistryService(
     hmppsAuthClient,
@@ -35,6 +38,7 @@ export const services = () => {
     incentivesService,
     launchpadAuthService,
     linksService,
+    locationService,
     prisonerContactRegistryService,
     prisonService,
   }
@@ -45,6 +49,7 @@ export {
   IncentivesService,
   LaunchpadAuthService,
   LinksService,
+  LocationService,
   PrisonerContactRegistryService,
   PrisonService,
 }

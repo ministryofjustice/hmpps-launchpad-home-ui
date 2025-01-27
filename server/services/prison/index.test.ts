@@ -3,7 +3,6 @@ import PrisonService from '.'
 import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 
 import { eventsSummary } from '../../utils/mocks/events'
-import { location } from '../../utils/mocks/location'
 import { staffUser } from '../../utils/mocks/user'
 import { visitBalances } from '../../utils/mocks/visitors'
 
@@ -57,23 +56,6 @@ describe('PrisonerProfileService', () => {
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(prisonApiClient.getUserById).toHaveBeenCalledWith(mockUserId)
-    })
-  })
-
-  describe('getLocationById', () => {
-    it('should return the location by location ID', async () => {
-      const mockLocationId = 123
-
-      hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-      prisonApiClientFactory.mockReturnValue(prisonApiClient)
-      prisonApiClient.getLocationById.mockResolvedValue(location)
-
-      const result = await prisonService.getLocationById(mockLocationId)
-
-      expect(result).toEqual(location)
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-      expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getLocationById).toHaveBeenCalledWith(mockLocationId)
     })
   })
 

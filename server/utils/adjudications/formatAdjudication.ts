@@ -10,7 +10,7 @@ import { convertToTitleCase, toSentenceCase } from '../utils'
 export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
   try {
     const reportedBy = await services.prisonService.getUserById(reportedAdjudication.createdByUserId)
-    const location = await services.prisonService.getLocationById(reportedAdjudication.incidentDetails.locationId)
+    const location = await services.locationService.getLocationById(reportedAdjudication.incidentDetails.locationId)
 
     const formattedIncidentDetails = {
       ...reportedAdjudication.incidentDetails,
@@ -30,7 +30,7 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
       ...reportedAdjudication,
       incidentDetails: formattedIncidentDetails,
       hearings: formattedHearings,
-      location: location ? `${location.userDescription} (${location.agencyId})` : 'N/A',
+      location: location ? `${location.localName} (${location.prisonId})` : 'N/A',
       reportedBy: reportedBy ? `${reportedBy.firstName} ${reportedBy.lastName}` : 'N/A',
       reportDateTime: format(reportedAdjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }
@@ -47,12 +47,12 @@ export const formatHearing = async (
   services: Services,
 ) => {
   try {
-    const location = await services.prisonService.getLocationById(hearing.locationId)
+    const location = await services.locationService.getLocationById(hearing.locationId)
 
     return {
       ...hearing,
       dateTimeOfHearing: format(hearing.dateTimeOfHearing, DateFormats.GDS_PRETTY_DATE_TIME),
-      location: location ? `${location.userDescription}` : 'N/A',
+      location: location ? `${location.localName}` : 'N/A',
       oicHearingType: hearing.oicHearingType === 'GOV_ADULT' ? 'Adult' : 'YOI',
       outcome: {
         ...hearing.outcome,

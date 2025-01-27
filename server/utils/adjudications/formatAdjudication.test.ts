@@ -3,6 +3,7 @@ import {
   createMockIncentivesService,
   createMockLaunchpadAuthService,
   createMockLinksService,
+  createMockLocationService,
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
 } from '../../services/testutils/mocks'
@@ -18,6 +19,7 @@ const services = {
   incentivesService: createMockIncentivesService(),
   launchpadAuthService: createMockLaunchpadAuthService(),
   linksService: createMockLinksService(),
+  locationService: createMockLocationService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),
 }
@@ -25,7 +27,7 @@ const services = {
 describe('formatAdjudication', () => {
   it('should format reported adjudication', async () => {
     services.prisonService.getUserById.mockResolvedValue(staffUser)
-    services.prisonService.getLocationById.mockResolvedValue(location)
+    services.locationService.getLocationById.mockResolvedValue(location)
 
     const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
@@ -35,7 +37,7 @@ describe('formatAdjudication', () => {
 
 describe('formatHearing', () => {
   it('should format hearing', async () => {
-    services.prisonService.getLocationById.mockResolvedValue(location)
+    services.locationService.getLocationById.mockResolvedValue(location)
 
     const formattedHearing = await formatHearing(
       reportedAdjudication.hearings[0],
