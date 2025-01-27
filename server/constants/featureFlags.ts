@@ -62,8 +62,8 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: COMMON_PRISON_LIST,
   },
   [Features.Translations]: {
-    enabled: false,
-    allowedPrisons: [],
+    enabled: true,
+    allowedPrisons: [prisonAgencyIds.Cardiff],
   },
   [Features.Visits]: {
     enabled: true,
