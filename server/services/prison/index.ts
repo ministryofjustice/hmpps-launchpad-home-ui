@@ -62,18 +62,6 @@ export default class PrisonService {
     }
   }
 
-  async getLocationById(locationId: number) {
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-    const prisonApiClient = this.prisonApiClientFactory(token)
-
-    try {
-      return await prisonApiClient.getLocationById(locationId)
-    } catch (error) {
-      logger.error(`Error fetching location by ID: ${locationId}`, error)
-      throw new Error('Failed to fetch location data')
-    }
-  }
-
   async getTransactions(user: { idToken: { sub: string } }, accountCode: string, fromDate: Date, toDate: Date) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)

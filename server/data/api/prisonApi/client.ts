@@ -5,7 +5,6 @@ import { EventsData, PrisonerEvent } from '../../../@types/launchpad'
 import {
   Account,
   Agency,
-  Location,
   OffenderDamageObligation,
   OffenderTransactionHistoryDto,
   ScheduledEvent,
@@ -84,17 +83,6 @@ export default class PrisonApiClient {
     } catch (error) {
       logger.error(`Error fetching user for userId: ${userId}`, error)
       throw new Error('Failed to fetch user')
-    }
-  }
-
-  async getLocationById(locationId: number): Promise<Location> {
-    try {
-      return await this.restClient.get({
-        path: `/api/locations/${locationId}`,
-      })
-    } catch (error) {
-      logger.error(`Error fetching location for locationId: ${locationId}`, error)
-      throw new Error('Failed to fetch location')
     }
   }
 

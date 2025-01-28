@@ -114,7 +114,7 @@ export const formattedAdjudication: FormattedReportedAdjudication = {
         plea: 'Abstain',
       },
       agencyId: 'GHI',
-      location: 'Main Building',
+      location: 'Wing A',
       offenceDetails: {
         offenceCode: 0,
         offenceRule: {
@@ -130,7 +130,7 @@ export const formattedAdjudication: FormattedReportedAdjudication = {
     ...reportedAdjudication.incidentDetails,
     dateTimeOfIncident: '28 January 2011, 11.52am',
   },
-  location: 'Main Building (ABC)',
+  location: 'Wing A (MDI)',
   reportedBy: 'John Smith',
   reportDateTime: '28 January 2011, 11.52am',
 }
