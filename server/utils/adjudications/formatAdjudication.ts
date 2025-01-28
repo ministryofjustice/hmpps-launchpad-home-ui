@@ -10,7 +10,11 @@ import { convertToTitleCase, toSentenceCase } from '../utils'
 export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
   try {
     const reportedBy = await services.prisonService.getUserById(reportedAdjudication.createdByUserId)
-    const location = await services.locationService.getLocationById(reportedAdjudication.incidentDetails.locationId)
+    const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(
+      reportedAdjudication.incidentDetails.locationId,
+    )
+    console.log('dpsLocationId', dpsLocationId)
+    const location = await services.locationService.getLocationById(dpsLocationId)
 
     const formattedIncidentDetails = {
       ...reportedAdjudication.incidentDetails,
@@ -47,7 +51,8 @@ export const formatHearing = async (
   services: Services,
 ) => {
   try {
-    const location = await services.locationService.getLocationById(hearing.locationId)
+    const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(hearing.locationId)
+    const location = await services.locationService.getLocationById(dpsLocationId)
 
     return {
       ...hearing,

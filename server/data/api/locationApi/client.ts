@@ -10,7 +10,7 @@ export default class LocationApiClient {
     this.restClient = new RestClient('locationApiClient', config.apis.location as ApiConfig, token)
   }
 
-  async getLocationById(locationId: number): Promise<Location> {
+  async getLocationById(locationId: string): Promise<Location> {
     try {
       return await this.restClient.get({
         path: `/locations/${locationId}`,

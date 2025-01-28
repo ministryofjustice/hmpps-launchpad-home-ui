@@ -7,7 +7,7 @@ export default class LocationService {
     private readonly locationApiClientFactory: RestClientBuilder<LocationApiClient>,
   ) {}
 
-  async getLocationById(locationId: number) {
+  async getLocationById(locationId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const locationApiClient = this.locationApiClientFactory(token)
 

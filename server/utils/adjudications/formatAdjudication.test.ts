@@ -4,6 +4,7 @@ import {
   createMockLaunchpadAuthService,
   createMockLinksService,
   createMockLocationService,
+  createMockNomisMappingService,
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
 } from '../../services/testutils/mocks'
@@ -20,6 +21,7 @@ const services = {
   launchpadAuthService: createMockLaunchpadAuthService(),
   linksService: createMockLinksService(),
   locationService: createMockLocationService(),
+  nomisMappingService: createMockNomisMappingService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),
 }
@@ -28,6 +30,10 @@ describe('formatAdjudication', () => {
   it('should format reported adjudication', async () => {
     services.prisonService.getUserById.mockResolvedValue(staffUser)
     services.locationService.getLocationById.mockResolvedValue(location)
+    services.nomisMappingService.nomisToDpsLocation.mockResolvedValue({
+      dpsLocationId: 'uuid',
+      nomisLocationId: location.id,
+    })
 
     const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
 
@@ -38,6 +44,10 @@ describe('formatAdjudication', () => {
 describe('formatHearing', () => {
   it('should format hearing', async () => {
     services.locationService.getLocationById.mockResolvedValue(location)
+    services.nomisMappingService.nomisToDpsLocation.mockResolvedValue({
+      dpsLocationId: 'uuid',
+      nomisLocationId: location.id,
+    })
 
     const formattedHearing = await formatHearing(
       reportedAdjudication.hearings[0],
