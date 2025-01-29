@@ -13,7 +13,6 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
     const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(
       reportedAdjudication.incidentDetails.locationId,
     )
-    console.log('dpsLocationId', dpsLocationId)
     const location = await services.locationService.getLocationById(dpsLocationId)
 
     const formattedIncidentDetails = {
