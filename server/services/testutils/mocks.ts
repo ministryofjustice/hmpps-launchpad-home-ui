@@ -3,6 +3,8 @@ import {
   IncentivesService,
   LaunchpadAuthService,
   LinksService,
+  LocationService,
+  NomisMappingService,
   PrisonService,
   PrisonerContactRegistryService,
 } from '..'
@@ -14,7 +16,12 @@ export const createMockAdjucationsService = () =>
 
 export const createMockLinksService = () => new LinksService() as jest.Mocked<LinksService>
 
+export const createMockLocationService = () => new LocationService(null, null) as jest.Mocked<LocationService>
+
 export const createMockIncentivesService = () => new IncentivesService(null, null) as jest.Mocked<IncentivesService>
+
+export const createMockNomisMappingService = () =>
+  new NomisMappingService(null, null) as jest.Mocked<NomisMappingService>
 
 export const createMockPrisonService = () => new PrisonService(null, null) as jest.Mocked<PrisonService>
 

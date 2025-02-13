@@ -5,7 +5,6 @@ export type OffenderDamageObligation = components['schemas']['OffenderDamageObli
 export type OffenderTransactionHistoryDto = components['schemas']['OffenderTransactionHistoryDto']
 export type ScheduledEvent = components['schemas']['ScheduledEvent']
 export type UserDetail = components['schemas']['UserDetail']
-export type Location = components['schemas']['Location']
 export type VisitDetails = components['schemas']['VisitDetails']
 export type VisitBalances = components['schemas']['VisitBalances']
 
