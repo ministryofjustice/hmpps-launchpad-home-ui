@@ -4,6 +4,8 @@ import AdjudicationsService from './adjudications'
 import IncentivesService from './incentives'
 import LaunchpadAuthService from './launchpadAuth'
 import LinksService from './links'
+import LocationService from './location'
+import NomisMappingService from './nomisMapping'
 import PrisonService from './prison'
 import PrisonerContactRegistryService from './prisonerContactRegistry'
 
@@ -15,6 +17,8 @@ export const services = () => {
     adjudicationsApiClientBuilder,
     incentivesApiClientBuilder,
     launchpadAuthClientBuilder,
+    locationApiClientBuilder,
+    nomisMappingApiClientBuilder,
     prisonApiClientBuilder,
     prisonerContactRegistryApiClientBuilder,
   } = dataAccess()
@@ -22,6 +26,8 @@ export const services = () => {
   const adjudicationsService = new AdjudicationsService(hmppsAuthClient, adjudicationsApiClientBuilder)
   const incentivesService = new IncentivesService(hmppsAuthClient, incentivesApiClientBuilder)
   const launchpadAuthService = new LaunchpadAuthService(hmppsAuthClient, launchpadAuthClientBuilder)
+  const locationService = new LocationService(hmppsAuthClient, locationApiClientBuilder)
+  const nomisMappingService = new NomisMappingService(hmppsAuthClient, nomisMappingApiClientBuilder)
   const prisonService = new PrisonService(hmppsAuthClient, prisonApiClientBuilder)
   const prisonerContactRegistryService = new PrisonerContactRegistryService(
     hmppsAuthClient,
@@ -35,6 +41,8 @@ export const services = () => {
     incentivesService,
     launchpadAuthService,
     linksService,
+    locationService,
+    nomisMappingService,
     prisonerContactRegistryService,
     prisonService,
   }
@@ -45,6 +53,8 @@ export {
   IncentivesService,
   LaunchpadAuthService,
   LinksService,
+  LocationService,
+  NomisMappingService,
   PrisonerContactRegistryService,
   PrisonService,
 }
