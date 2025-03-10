@@ -9,6 +9,7 @@ import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 
 import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
+import { formatBalances } from '../../utils/transactions/formatBalances'
 import { getEstablishmentLinksData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
@@ -75,7 +76,7 @@ export default function routes(services: Services): Router {
             readMoreUrl: `${prisonerContentHubURL}/tags/1341`,
           },
           transactions: {
-            balances: transactionsBalances,
+            balances: formatBalances(transactionsBalances),
             readMoreUrl: `${prisonerContentHubURL}/tags/872`,
             isEnabled: isTransactionsEnabled,
           },
