@@ -1,7 +1,7 @@
 import {
   convertToTitleCase,
   generateBasicAuthHeader,
-  getEstablishmentLinksData,
+  getEstablishmentData,
   initialiseName,
   toSentenceCase,
 } from './utils'
@@ -109,11 +109,11 @@ describe('get establishment link data', () => {
   })
 
   it('it should return the expected establishment links data for the provided agency id', () => {
-    expect(getEstablishmentLinksData(agencyId)).toEqual(establishmentLinksData)
+    expect(getEstablishmentData(agencyId)).toEqual(establishmentLinksData)
   })
 
   it('it should return null when an unknown agency id is provided', () => {
-    expect(getEstablishmentLinksData('ABC')).toBeNull()
+    expect(getEstablishmentData('ABC')).toBeNull()
   })
 })
 

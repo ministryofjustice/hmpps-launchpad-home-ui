@@ -37,7 +37,7 @@ export const generateBasicAuthHeader = (clientId: string, clientSecret: string):
   return `Basic ${token}`
 }
 
-export const getEstablishmentLinksData = (agencyId: string) => {
+export const getEstablishmentData = (agencyId: string) => {
   try {
     const { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile, hideInsideTime } =
       config.establishments.find(establishment => establishment.agencyId === agencyId)

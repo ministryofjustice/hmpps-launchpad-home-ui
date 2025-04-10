@@ -1,7 +1,7 @@
 import i18next from 'i18next'
 
 import { Link } from '../../@types/launchpad'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 
 export type LinksData = {
   links: Link[]
@@ -15,7 +15,7 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { prisonerContentHubURL, selfServiceURL, hideInsideTime } = getEstablishmentLinksData(
+    const { prisonerContentHubURL, selfServiceURL, hideInsideTime } = getEstablishmentData(
       user.idToken.establishment.agency_id,
     )
 

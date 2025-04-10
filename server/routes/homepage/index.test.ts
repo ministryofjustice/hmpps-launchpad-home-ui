@@ -6,7 +6,7 @@ import i18next from 'i18next'
 import { createMockLinksService, createMockPrisonService } from '../../services/testutils/mocks'
 import { eventsSummary } from '../../utils/mocks/events'
 import { links } from '../../utils/mocks/links'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 import { appWithAllRoutes } from '../testutils/appSetup'
 
 let app: Express
@@ -15,7 +15,7 @@ const linksService = createMockLinksService()
 
 jest.mock('../../utils/utils', () => ({
   ...jest.requireActual('../../utils/utils'),
-  getEstablishmentLinksData: jest.fn(),
+  getEstablishmentData: jest.fn(),
 }))
 
 jest.mock('i18next', () => ({
@@ -116,7 +116,7 @@ describe('GET /', () => {
   })
 
   it('should render events summary and profile link tile if show events and profile tile flag is true', () => {
-    ;(getEstablishmentLinksData as jest.Mock).mockReturnValue({
+    ;(getEstablishmentData as jest.Mock).mockReturnValue({
       agencyId,
       prisonerContentHubURL: links[1].url,
       selfServiceURL: links[0].url,
@@ -139,7 +139,7 @@ describe('GET /', () => {
   })
 
   it('should hide events summary and profile link tile when hide flag is set', () => {
-    ;(getEstablishmentLinksData as jest.Mock).mockReturnValue({
+    ;(getEstablishmentData as jest.Mock).mockReturnValue({
       agencyId,
       prisonerContentHubURL: links[1].url,
       selfServiceURL: links[0].url,
