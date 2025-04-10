@@ -39,10 +39,10 @@ export const generateBasicAuthHeader = (clientId: string, clientSecret: string):
 
 export const getEstablishmentLinksData = (agencyId: string) => {
   try {
-    const { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile } =
+    const { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile, hideInsideTime } =
       config.establishments.find(establishment => establishment.agencyId === agencyId)
 
-    return { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile }
+    return { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile, hideInsideTime }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return null

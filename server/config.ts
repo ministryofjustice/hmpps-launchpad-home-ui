@@ -163,6 +163,7 @@ export default {
       agencyId: 'BNI',
       prisonerContentHubURL: 'https://bullingdon.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bniclient.unilink.prisoner.service.justice.gov.uk:1128',
+      hideInsideTime: true,
     },
     {
       agencyId: 'BWI',

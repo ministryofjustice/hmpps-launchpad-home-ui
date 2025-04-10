@@ -15,7 +15,9 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { prisonerContentHubURL, selfServiceURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id)
+    const { prisonerContentHubURL, selfServiceURL, hideInsideTime } = getEstablishmentLinksData(
+      user.idToken.establishment.agency_id,
+    )
 
     const links = [
       {
@@ -48,7 +50,7 @@ export default class Linkservice {
         url: 'https://insidetimeprison.org/',
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
-        hidden: true,
+        hidden: hideInsideTime || false,
       },
     ]
     return { links }
