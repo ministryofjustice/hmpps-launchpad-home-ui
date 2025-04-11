@@ -163,4 +163,48 @@ describe('GET /', () => {
         )
       })
   })
+
+  it('should show inside times tile when hide flag is unset', () => {
+    links[3].hidden = false
+    linksService.getHomepageLinks.mockResolvedValue({ links })
+    ;(getEstablishmentData as jest.Mock).mockReturnValue({
+      agencyId,
+      prisonerContentHubURL: links[1].url,
+      selfServiceURL: links[0].url,
+    })
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        const insideTimeTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
+        expect(insideTimeTile.find('h3').text()).toBe('Inside Time')
+        expect(insideTimeTile.find('a').attr('href')).toBe(links[3].url)
+        expect(insideTimeTile.find('p').text()).toBe('Read the national newspaper for prisoners and detainees')
+      })
+  })
+
+  it('should hide inside times tile when hide flag is set', () => {
+    links[3].hidden = true
+    linksService.getHomepageLinks.mockResolvedValue({ links })
+    ;(getEstablishmentData as jest.Mock).mockReturnValue({
+      agencyId,
+      prisonerContentHubURL: links[1].url,
+      selfServiceURL: links[0].url,
+    })
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        const insideTimeTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
+        expect(insideTimeTile.find('h3').text()).not.toBe('Inside Time')
+        expect(insideTimeTile.find('a').attr('href')).not.toBe(links[3].url)
+        expect(insideTimeTile.find('p').text()).not.toBe('Read the national newspaper for prisoners and detainees')
+      })
+  })
 })
