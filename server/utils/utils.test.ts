@@ -96,7 +96,7 @@ describe('get establishment link data', () => {
   beforeEach(() => {
     agencyId = 'CKI'
     establishmentData = {
-      agencyId: 'CKI',
+      agencyId,
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
     }
