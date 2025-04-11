@@ -1,3 +1,4 @@
+import { Establishment } from '../@types/launchpad'
 import {
   convertToTitleCase,
   generateBasicAuthHeader,
@@ -90,14 +91,12 @@ describe('authentication', () => {
 
 describe('get establishment link data', () => {
   let agencyId: string
-  let establishmentLinksData: {
-    prisonerContentHubURL: string
-    selfServiceURL: string
-  }
+  let establishmentData: Establishment
 
   beforeEach(() => {
     agencyId = 'CKI'
-    establishmentLinksData = {
+    establishmentData = {
+      agencyId: 'CKI',
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
     }
@@ -105,15 +104,15 @@ describe('get establishment link data', () => {
 
   afterEach(() => {
     agencyId = null
-    establishmentLinksData = null
+    establishmentData = null
   })
 
   it('it should return the expected establishment links data for the provided agency id', () => {
-    expect(getEstablishmentData(agencyId)).toEqual(establishmentLinksData)
+    expect(getEstablishmentData(agencyId)).toEqual(establishmentData)
   })
 
   it('it should return null when an unknown agency id is provided', () => {
-    expect(getEstablishmentData('ABC')).toBeNull()
+    expect(getEstablishmentData('ABC')).toBeUndefined()
   })
 })
 

@@ -1,5 +1,6 @@
 import { format, isValid, parseISO } from 'date-fns'
 import config from '../config'
+import { Establishment } from '../@types/launchpad'
 
 export const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -39,10 +40,11 @@ export const generateBasicAuthHeader = (clientId: string, clientSecret: string):
 
 export const getEstablishmentData = (agencyId: string) => {
   try {
-    const { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile, hideInsideTime } =
-      config.establishments.find(establishment => establishment.agencyId === agencyId)
+    const establishmentData: Establishment = config.establishments.find(
+      (establishment: Establishment) => establishment.agencyId === agencyId,
+    )
 
-    return { prisonerContentHubURL, selfServiceURL, hideHomepageEventsSummaryAndProfileLinkTile, hideInsideTime }
+    return establishmentData
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     return null
