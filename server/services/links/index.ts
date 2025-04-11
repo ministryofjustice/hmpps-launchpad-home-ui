@@ -1,7 +1,7 @@
 import i18next from 'i18next'
 
 import { Link } from '../../@types/launchpad'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 
 export type LinksData = {
   links: Link[]
@@ -15,7 +15,9 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { prisonerContentHubURL, selfServiceURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id)
+    const { prisonerContentHubURL, selfServiceURL, hideInsideTime } = getEstablishmentData(
+      user.idToken.establishment.agency_id,
+    )
 
     const links = [
       {
@@ -48,7 +50,7 @@ export default class Linkservice {
         url: 'https://insidetimeprison.org/',
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
-        hidden: true,
+        hidden: hideInsideTime || false,
       },
     ]
     return { links }

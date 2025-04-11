@@ -20,7 +20,7 @@ import PrisonerContactRegistryApiClient from './api/prisonerContactRegistryApi/c
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
 
-type RestClientBuilder<T> = (token: string) => T
+export type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => ({
   hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
@@ -49,5 +49,4 @@ export {
   NomisMappingApiClient,
   PrisonApiClient,
   PrisonerContactRegistryApiClient,
-  RestClientBuilder,
 }

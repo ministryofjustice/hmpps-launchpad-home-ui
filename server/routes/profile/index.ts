@@ -10,7 +10,7 @@ import type { Services } from '../../services'
 
 import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
 import { formatBalances } from '../../utils/transactions/formatBalances'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -28,7 +28,7 @@ export default function routes(services: Services): Router {
         services.prisonService.getEventsForToday(user.idToken.booking.id, language, new Date()),
       ])
 
-      const { prisonerContentHubURL } = await getEstablishmentLinksData(prisonId)
+      const { prisonerContentHubURL } = await getEstablishmentData(prisonId)
       const { hasAdjudications } = await services.adjudicationsService.hasAdjudications(booking.id, prisonId)
 
       const incentivesData = await services.incentivesService.getIncentivesSummaryFor(user.idToken.booking.id)

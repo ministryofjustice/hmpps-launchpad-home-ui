@@ -8,7 +8,7 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import type { Services } from '../../services'
 
 import { getPaginationData } from '../../utils/pagination/pagination'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -17,7 +17,7 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware(Features.SocialVisitors),
     asyncHandler(async (req: Request, res: Response) => {
-      const { prisonerContentHubURL } = getEstablishmentLinksData(res.locals.user.idToken.establishment.agency_id) || {}
+      const { prisonerContentHubURL } = getEstablishmentData(res.locals.user.idToken.establishment.agency_id) || {}
       const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(req.user.idToken.sub)
 
       const paginationData = getPaginationData(Number(req.query.page), socialVisitorsRes.length)

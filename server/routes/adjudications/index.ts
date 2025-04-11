@@ -10,7 +10,7 @@ import type { Services } from '../../services'
 
 import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -22,7 +22,7 @@ export default function routes(services: Services): Router {
       const { user } = res.locals
       const language = req.language || i18next.language
 
-      const { prisonerContentHubURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id) || {}
+      const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
@@ -52,7 +52,7 @@ export default function routes(services: Services): Router {
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 
-      const { prisonerContentHubURL } = getEstablishmentLinksData(user.idToken.establishment.agency_id) || {}
+      const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
