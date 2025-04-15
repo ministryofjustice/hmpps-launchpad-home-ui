@@ -70,11 +70,10 @@ export type UpdatedTokensResponse = {
 
 export type Establishment = {
   agencyId: string
-  name: string
-  displayName: string
-  youth: boolean
   prisonerContentHubURL: string
   selfServiceURL: string
+  hideHomepageEventsSummaryAndProfileLinkTile?: boolean
+  hideInsideTime?: boolean
 }
 
 export type TimetableOptions = {

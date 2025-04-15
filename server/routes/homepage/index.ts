@@ -5,7 +5,7 @@ import { DateFormats } from '../../constants/date'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 
-import { getEstablishmentLinksData } from '../../utils/utils'
+import { getEstablishmentData } from '../../utils/utils'
 import { formatDateLocalized } from '../../utils/date/formatDateLocalized'
 
 export default function routes(services: Services): Router {
@@ -22,7 +22,7 @@ export default function routes(services: Services): Router {
         language,
       )
       const homepageLinks = await services.linksService.getHomepageLinks(user, language)
-      const establishmentLinks = getEstablishmentLinksData(user.idToken?.establishment?.agency_id)
+      const establishmentData = getEstablishmentData(user.idToken?.establishment?.agency_id)
 
       res.render('pages/homepage', {
         data: {
@@ -30,7 +30,7 @@ export default function routes(services: Services): Router {
           today: formatDateLocalized(new Date(), DateFormats.PRETTY_DATE, language),
           prisonerEventsSummary,
           homepageLinks,
-          hideEventsSummaryAndProfileLinkTile: establishmentLinks?.hideHomepageEventsSummaryAndProfileLinkTile || false,
+          hideEventsSummaryAndProfileLinkTile: establishmentData?.hideHomepageEventsSummaryAndProfileLinkTile || false,
         },
         errors: req.flash('errors'),
         message: req.flash('message'),
