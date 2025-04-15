@@ -38,9 +38,9 @@ export const generateBasicAuthHeader = (clientId: string, clientSecret: string):
   return `Basic ${token}`
 }
 
-export const getEstablishmentData = (agencyId: string) => {
+export const getEstablishmentData = (agencyId: string, configData = config) => {
   try {
-    const establishmentData: Establishment = config.establishments.find(
+    const establishmentData: Establishment = configData.establishments.find(
       (establishment: Establishment) => establishment.agencyId === agencyId,
     )
 

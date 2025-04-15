@@ -92,6 +92,11 @@ describe('authentication', () => {
 describe('get establishment link data', () => {
   let agencyId: string
   let establishmentData: Establishment
+  const configData: {
+    establishments: Establishment[]
+  } = {
+    establishments: [],
+  }
 
   beforeEach(() => {
     agencyId = 'CKI'
@@ -101,6 +106,7 @@ describe('get establishment link data', () => {
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
     }
+    configData.establishments.push(establishmentData)
   })
 
   afterEach(() => {
