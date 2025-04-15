@@ -97,6 +97,7 @@ describe('get establishment link data', () => {
     agencyId = 'CKI'
     establishmentData = {
       agencyId,
+      hideInsideTime: true,
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
     }
