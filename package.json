@@ -90,7 +90,7 @@
     ]
   },
   "dependencies": {
-    "@ministryofjustice/frontend": "^4.0.1",
+    "@ministryofjustice/frontend": "^4.0.2",
     "@sentry/node": "^9.12.0",
     "@sentry/profiling-node": "^9.12.0",
     "agentkeepalive": "^4.6.0",
