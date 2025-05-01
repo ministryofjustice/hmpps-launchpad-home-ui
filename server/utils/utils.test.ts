@@ -1,4 +1,5 @@
 import { Establishment } from '../@types/launchpad'
+import config from '../config'
 import {
   convertToTitleCase,
   generateBasicAuthHeader,
@@ -92,21 +93,10 @@ describe('authentication', () => {
 describe('get establishment link data', () => {
   let agencyId: string
   let establishmentData: Establishment
-  const configData: {
-    establishments: Establishment[]
-  } = {
-    establishments: [],
-  }
 
   beforeEach(() => {
     agencyId = 'CKI'
-    establishmentData = {
-      agencyId,
-      hideInsideTime: true,
-      prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
-      selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
-    }
-    configData.establishments.push(establishmentData)
+    establishmentData = config.establishments.find(establishment => establishment.agencyId === agencyId)
   })
 
   afterEach(() => {
