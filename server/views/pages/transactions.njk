@@ -10,7 +10,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
-  {% set breadCrumbList = [{ href: prisonerContentHubUrl + '/profile', title: user.idToken.given_name ~ "'s Profile"}] %}
+  {% set breadCrumbList = [{ href: '/profile', title: user.idToken.given_name ~ "'s Profile"}] %}
   {{ breadCrumb('', breadCrumbList, false) }}
 {% endblock %}
 
