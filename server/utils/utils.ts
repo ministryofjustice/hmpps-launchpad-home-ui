@@ -55,3 +55,23 @@ export const toSentenceCase = (str: string): string => {
   if (!str) return str
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
+
+export type LocationReplacement = {
+  match: string
+  replacement: string
+}
+export const convertLocation = (
+  location: string,
+  replacements: LocationReplacement[] = [{ match: 'cell swap', replacement: '' }],
+) => {
+  let convertedLocation = location
+
+  if (typeof location === 'string') {
+    replacements.forEach(replacement => {
+      const replacementRegExp = new RegExp(`${replacement.match}`, 'gi')
+      convertedLocation = convertedLocation.replaceAll(replacementRegExp, replacement.replacement)
+    })
+  }
+
+  return convertedLocation
+}

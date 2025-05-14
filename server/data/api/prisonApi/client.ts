@@ -16,7 +16,7 @@ import {
 import logger from '../../../../logger'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
-import { convertToTitleCase } from '../../../utils/utils'
+import { convertLocation, convertToTitleCase } from '../../../utils/utils'
 import RestClient from '../../restClient'
 
 export default class PrisonApiClient {
@@ -48,7 +48,7 @@ export default class PrisonApiClient {
         const prisonerEvent: PrisonerEvent = {
           timeString,
           description: convertToTitleCase(scheduledEvent.eventSourceDesc),
-          location: convertToTitleCase(scheduledEvent.eventLocation),
+          location: convertToTitleCase(convertLocation(scheduledEvent.eventLocation)),
         }
         prisonerEvents.push(prisonerEvent)
       })
