@@ -62,7 +62,7 @@ export type LocationReplacement = {
 }
 export const convertLocation = (
   location: string,
-  replacements: LocationReplacement[] = [{ match: 'cell swap', replacement: '' }],
+  replacements: LocationReplacement[] = [{ match: 'cell swap', replacement: 'On-wing activity' }],
 ) => {
   let convertedLocation = location
 

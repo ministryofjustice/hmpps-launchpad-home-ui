@@ -187,7 +187,7 @@ describe('convertLocation', () => {
     [null, null, null],
     ['Empty string', '', ''],
     ['Some location', 'Some location', 'Some location'],
-    ['Cell swap', 'Cell swap', ''],
+    ['Cell swap', 'Cell swap', 'On-wing activity'],
   ])('%s convertLocation(%s, %s)', (_: string, a: string, expected: string) => {
     expect(convertLocation(a)).toEqual(expected)
   })
