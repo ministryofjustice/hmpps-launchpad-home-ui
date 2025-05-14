@@ -1,6 +1,7 @@
 import { Establishment } from '../@types/launchpad'
 import config from '../config'
 import {
+  convertLocation,
   convertToTitleCase,
   generateBasicAuthHeader,
   getEstablishmentData,
@@ -178,5 +179,16 @@ describe('toSentenceCase', () => {
     const input = '    leading and trailing spaces    '
     const expectedOutput = '    leading and trailing spaces    '
     expect(toSentenceCase(input)).toBe(expectedOutput)
+  })
+})
+
+describe('convertLocation', () => {
+  it.each([
+    [null, null, null],
+    ['Empty string', '', ''],
+    ['Some location', 'Some location', 'Some location'],
+    ['Cell swap', 'Cell swap', 'On-wing activity'],
+  ])('%s convertLocation(%s, %s)', (_: string, a: string, expected: string) => {
+    expect(convertLocation(a)).toEqual(expected)
   })
 })

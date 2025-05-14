@@ -2,7 +2,7 @@ import i18next from 'i18next'
 
 import { DateFormats } from '../constants/date'
 import { TimetableValues } from '../constants/timetable'
-import { formatDateOrDefault, properCase } from '../utils/utils'
+import { convertLocation, formatDateOrDefault, properCase } from '../utils/utils'
 
 const DEFAULT: string = 'Unavailable'
 
@@ -104,7 +104,7 @@ export default class TimetableEvent {
       eventSourceDesc,
       startTime,
       endTime,
-      location: eventLocation,
+      location: convertLocation(eventLocation),
       eventType,
       eventSubType,
       eventSubTypeDesc,
