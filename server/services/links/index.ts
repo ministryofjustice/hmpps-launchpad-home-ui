@@ -53,7 +53,7 @@ export default class Linkservice {
         hidden: hideInsideTime || false,
       },
       {
-        image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.jpg',
+        image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
         title: i18next.t('homepage.links.thinkThroughNutrition', { lng: language }),
         url: 'https://lanah.org/hmpps',
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
