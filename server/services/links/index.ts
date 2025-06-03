@@ -56,7 +56,7 @@ export default class Linkservice {
         image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
         title: i18next.t('homepage.links.thinkThroughNutrition', { lng: language }),
         url: 'https://lanah.org/hmpps',
-        description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
+        description: i18next.t('homepage.links.thinkThroughNutritionDesc', { lng: language }),
         openInNewTab: true,
         hidden: hideThinkThroughNutrition || false,
       },
