@@ -194,7 +194,7 @@ export default {
       agencyId: 'CKI',
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
-      hideThinkThroughNutrition: true,
+      hideThinkThroughNutrition: false,
     },
     {
       agencyId: 'EEI',
