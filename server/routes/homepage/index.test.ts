@@ -224,5 +224,48 @@ describe('GET /', () => {
           }),
         )
       })
+    
+  it('should show think through nutrition tile when hide flag is unset', () => {
+    links[4].hidden = false
+    linksService.getHomepageLinks.mockResolvedValue({ links })
+    ;(getEstablishmentData as jest.Mock).mockReturnValue({
+      agencyId,
+      prisonerContentHubURL: links[1].url,
+      selfServiceURL: links[0].url,
+    })
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        const insideTimeTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
+        expect(insideTimeTile.find('h3').text()).toBe('Think Through Nutrition')
+        expect(insideTimeTile.find('a').attr('href')).toBe(links[4].url)
+        expect(insideTimeTile.find('p').text()).toBe('Feeding our brains for the better')
+      })
+  })
+
+  it('should hide think through nutrition tile when hide flag is set', () => {
+    links[4].hidden = true
+    linksService.getHomepageLinks.mockResolvedValue({ links })
+    ;(getEstablishmentData as jest.Mock).mockReturnValue({
+      agencyId,
+      prisonerContentHubURL: links[1].url,
+      selfServiceURL: links[0].url,
+    })
+
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+
+        const insideTimeTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
+        expect(insideTimeTile.find('h3').text()).not.toBe('Think Through Nutrition')
+        expect(insideTimeTile.find('a').attr('href')).not.toBe(links[4].url)
+        expect(insideTimeTile.find('p').text()).not.toBe('Feeding our brains for the better')
+      })
   })
 })

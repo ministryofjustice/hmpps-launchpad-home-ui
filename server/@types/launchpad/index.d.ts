@@ -74,6 +74,7 @@ export type Establishment = {
   selfServiceURL: string
   hideHomepageEventsSummaryAndProfileLinkTile?: boolean
   hideInsideTime?: boolean
+  hideThinkThroughNutrition?: boolean
 }
 
 export type TimetableOptions = {

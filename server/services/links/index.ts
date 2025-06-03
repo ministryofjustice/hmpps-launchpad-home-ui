@@ -15,7 +15,9 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { hideInsideTime } = getEstablishmentData(user.idToken.establishment.agency_id)
+    const { prisonerContentHubURL, selfServiceURL, hideInsideTime, hideThinkThroughNutrition } = getEstablishmentData(
+      user.idToken.establishment.agency_id,
+    )
 
     const links = [
       {
@@ -49,6 +51,14 @@ export default class Linkservice {
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
         hidden: hideInsideTime || false,
+      },
+      {
+        image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.jpg',
+        title: i18next.t('homepage.links.thinkThroughNutrition', { lng: language }),
+        url: 'https://lanah.org/hmpps',
+        description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
+        openInNewTab: true,
+        hidden: hideThinkThroughNutrition || false,
       },
     ]
     return { links }
