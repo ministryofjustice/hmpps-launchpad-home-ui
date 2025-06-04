@@ -243,7 +243,9 @@ describe('GET /', () => {
         const insideTimeTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
         expect(insideTimeTile.find('h3').text()).toBe('Think Through Nutrition')
         expect(insideTimeTile.find('a').attr('href')).toBe(links[4].url)
-        expect(insideTimeTile.find('p').text()).toBe('Feeding our brains for the better')
+        expect(insideTimeTile.find('p').text()).toBe(
+          'Learn how food affects your brain, mood and energy – and track your progress',
+        )
       })
   })
 
@@ -265,7 +267,9 @@ describe('GET /', () => {
         const insideTimeTile = $('[data-test="tiles-panel"] .link-tile:nth-child(4)')
         expect(insideTimeTile.find('h3').text()).not.toBe('Think Through Nutrition')
         expect(insideTimeTile.find('a').attr('href')).not.toBe(links[4].url)
-        expect(insideTimeTile.find('p').text()).not.toBe('Feeding our brains for the better')
+        expect(insideTimeTile.find('p').text()).not.toBe(
+          'Learn how food affects your brain, mood and energy – and track your progress',
+        )
       })
   })
 })
