@@ -34,4 +34,12 @@ export const links: Link[] = [
     openInNewTab: true,
     hidden: true,
   },
+  {
+    image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
+    title: 'Think Through Nutrition',
+    url: 'think-through-nutrition-url',
+    description: 'Learn how food affects your brain, mood and energy – and track your progress',
+    openInNewTab: true,
+    hidden: true,
+  },
 ]
