@@ -74,6 +74,6 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', '12345')
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', '12345', 'sub')
   })
 })

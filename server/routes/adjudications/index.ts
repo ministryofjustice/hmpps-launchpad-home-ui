@@ -56,6 +56,7 @@ export default function routes(services: Services): Router {
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
+        user.idToken.sub,
       )
 
       const formattedAdjudication = reportedAdjudication
@@ -69,6 +70,8 @@ export default function routes(services: Services): Router {
           chargeNumber: req.params.chargeNumber,
           readMoreUrl: `${prisonerContentHubURL}/content/4193`,
         },
+        errors: req.flash('errors'),
+        message: req.flash('message'),
       })
     }),
   )
