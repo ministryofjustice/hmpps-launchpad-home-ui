@@ -8,7 +8,7 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
 import type { Services } from '../../services'
 
-// import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
+import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentData } from '../../utils/utils'
 
@@ -50,7 +50,7 @@ export default function routes(services: Services): Router {
     '/:chargeNumber',
     featureFlagMiddleware('adjudications'),
     asyncHandler(async (req: Request, res: Response) => {
-      /* const { user } = res.locals
+      const { user } = res.locals
 
       const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
@@ -60,9 +60,18 @@ export default function routes(services: Services): Router {
 
       const formattedAdjudication = reportedAdjudication
         ? await formatAdjudication(reportedAdjudication, services)
-        : null */
+        : null
 
-      return res.redirect('/')
+      return user.idToken.sub !== reportedAdjudication.prisonerNumber
+        ? res.redirect('/adjudications')
+        : res.render('pages/adjudication', {
+            givenName: user.idToken.given_name,
+            data: {
+              adjudication: formattedAdjudication,
+              chargeNumber: req.params.chargeNumber,
+              readMoreUrl: `${prisonerContentHubURL}/content/4193`,
+            },
+          })
     }),
   )
 
