@@ -31,9 +31,9 @@ const COMMON_PRISON_LIST = [
   prisonAgencyIds.Woodhill,
 ]
 
-const ADJUDICATIONS_PRISON_LIST = COMMON_PRISON_LIST.filter(
+/* const ADJUDICATIONS_PRISON_LIST = COMMON_PRISON_LIST.filter(
   prison => ![prisonAgencyIds.Bullingdon, prisonAgencyIds.Chelmsford, prisonAgencyIds.Woodhill].includes(prison),
-)
+) */
 
 export const Features = {
   Adjudications: 'adjudications',
@@ -46,8 +46,8 @@ export const Features = {
 
 export const featureFlags: FeatureFlags = {
   [Features.Adjudications]: {
-    enabled: true,
-    allowedPrisons: ADJUDICATIONS_PRISON_LIST,
+    enabled: false,
+    allowedPrisons: [],
   },
   [Features.Settings]: {
     enabled: false,
