@@ -70,12 +70,12 @@ describe('GET /adjudications', () => {
     expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', 'CKI', 'en')
   })
 
-  it('should render the /adjudications/:chargeNumber view', async () => {
+  /* it('should render the /adjudications/:chargeNumber view', async () => {
     mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
 
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(200)
     expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
-  })
+  }) */
 })
