@@ -8,7 +8,7 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 
 import type { Services } from '../../services'
 
-import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
+// import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentData } from '../../utils/utils'
 
@@ -50,15 +50,15 @@ export default function routes(services: Services): Router {
     '/:chargeNumber',
     featureFlagMiddleware('adjudications'),
     asyncHandler(async (req: Request, res: Response) => {
-      const { user } = res.locals
+      /* const { user } = res.locals
 
-      // const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
+      const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
       )
 
-      /* const formattedAdjudication = reportedAdjudication
+      const formattedAdjudication = reportedAdjudication
         ? await formatAdjudication(reportedAdjudication, services)
         : null */
 
