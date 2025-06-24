@@ -52,15 +52,15 @@ export default function routes(services: Services): Router {
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 
-      const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
+      // const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
       )
 
-      const formattedAdjudication = reportedAdjudication
+      /* const formattedAdjudication = reportedAdjudication
         ? await formatAdjudication(reportedAdjudication, services)
-        : null
+        : null */
 
       return res.redirect('/')
     }),
