@@ -50,15 +50,10 @@ export default class AdjudicationsService {
     }
   }
 
-  async getReportedAdjudication(chargeNumber: string, agencyId: string, prisonerId: string) {
+  async getReportedAdjudication(chargeNumber: string, agencyId: string) {
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
-    const result = await adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
-
-    if (result.reportedAdjudication?.prisonerNumber === prisonerId) {
-      return result
-    }
-    throw new Error('Failed to fetch reported adjudication')
+    return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
   }
 }

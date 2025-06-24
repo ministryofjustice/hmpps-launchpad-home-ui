@@ -81,10 +81,9 @@ describe('PrisonerProfileService', () => {
   })
 
   describe('getReportedAdjudication', () => {
-    it('should return the reported adjudication for the given charge number, agency ID and prisoner number', async () => {
+    it('should return the reported adjudication for the given charge number and agency ID', async () => {
       const mockChargeNumber = 'ABC123'
       const mockAgencyId = 'XYZ456'
-      const prisonerId = 'G6046GQ'
       const mockReportedAdjudication: ReportedAdjudicationApiResponse = {
         reportedAdjudication,
       }
@@ -93,34 +92,12 @@ describe('PrisonerProfileService', () => {
       adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
       adjudicationsApiClient.getReportedAdjudication.mockResolvedValue(mockReportedAdjudication)
 
-      const result = await adjudicationsService.getReportedAdjudication(mockChargeNumber, mockAgencyId, prisonerId)
+      const result = await adjudicationsService.getReportedAdjudication(mockChargeNumber, mockAgencyId)
 
       expect(result).toEqual(mockReportedAdjudication)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
       expect(adjudicationsApiClient.getReportedAdjudication).toHaveBeenCalledWith(mockChargeNumber, mockAgencyId)
     })
-  })
-
-  it('should throw an error if the prisoner number does not match the adjudication', async () => {
-    const mockChargeNumber = 'ABC123'
-    const mockAgencyId = 'XYZ456'
-    const prisonerId = 'G6046GM'
-    const mockReportedAdjudication: ReportedAdjudicationApiResponse = {
-      reportedAdjudication,
-    }
-
-    hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
-    adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
-    adjudicationsApiClient.getReportedAdjudication.mockResolvedValue(mockReportedAdjudication)
-
-    try {
-      await adjudicationsService.getReportedAdjudication(mockChargeNumber, mockAgencyId, prisonerId)
-    } catch (error) {
-      expect(error).toEqual(new Error('Failed to fetch reported adjudication'))
-      expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
-      expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(adjudicationsApiClient.getReportedAdjudication).toHaveBeenCalledWith(mockChargeNumber, mockAgencyId)
-    }
   })
 })

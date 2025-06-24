@@ -56,23 +56,24 @@ export default function routes(services: Services): Router {
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment.agency_id,
-        user.idToken.sub,
       )
 
       const formattedAdjudication = reportedAdjudication
         ? await formatAdjudication(reportedAdjudication, services)
         : null
 
-      return res.render('pages/adjudication', {
-        givenName: user.idToken.given_name,
-        data: {
-          adjudication: formattedAdjudication,
-          chargeNumber: req.params.chargeNumber,
-          readMoreUrl: `${prisonerContentHubURL}/content/4193`,
-        },
-        errors: req.flash('errors'),
-        message: req.flash('message'),
-      })
+      return user.idToken.sub !== reportedAdjudication.prisonerNumber
+        ? res.redirect('/adjudications')
+        : res.render('pages/adjudication', {
+            givenName: user.idToken.given_name,
+            data: {
+              adjudication: formattedAdjudication,
+              chargeNumber: req.params.chargeNumber,
+              readMoreUrl: `${prisonerContentHubURL}/content/4193`,
+            },
+            errors: req.flash('errors'),
+            message: req.flash('message'),
+          })
     }),
   )
 
