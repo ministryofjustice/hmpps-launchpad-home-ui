@@ -78,4 +78,18 @@ describe('GET /adjudications', () => {
     expect(res.status).toBe(200)
     expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
   })
+
+  it('/adjudications/:chargeNumber view should redirect for user prisoner number not matching the fetched adjudication', async () => {
+    user.idToken.sub = 'incorrectId'
+    app = appWithAllRoutes({
+      services: { adjudicationsService },
+      userSupplier: () => user,
+    })
+    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+
+    const res = await request(app).get('/adjudications/12345')
+
+    expect(res.status).toBe(302) // redirect status code
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
+  })
 })
