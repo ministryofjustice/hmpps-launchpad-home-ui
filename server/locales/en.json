@@ -42,7 +42,9 @@
       "profile": "Profile",
       "profileDesc": "Check money, visits, incentives (IEP), adjudications and timetable.",
       "selfService": "Self-service",
-      "selfServiceDesc": "Access the kiosk applications"
+      "selfServiceDesc": "Access the kiosk applications",
+      "thinkThroughNutrition": "Think Through Nutrition",
+      "thinkThroughNutritionDesc": "Learn how food affects your brain, mood and energy – and track your progress"
     }
   },
   "profile": {
