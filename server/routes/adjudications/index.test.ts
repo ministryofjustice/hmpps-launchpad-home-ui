@@ -4,6 +4,7 @@ import request from 'supertest'
 import { createMockAdjucationsService } from '../../services/testutils/mocks'
 import { formattedAdjudication, reportedAdjudication } from '../../utils/mocks/adjudications'
 import { appWithAllRoutes } from '../testutils/appSetup'
+import { user } from '../../utils/mocks/user'
 
 jest.mock('i18next', () => ({
   t: jest.fn().mockImplementation((key: string) => key),
@@ -54,6 +55,7 @@ describe('GET /adjudications', () => {
 
     app = appWithAllRoutes({
       services: { adjudicationsService },
+      userSupplier: () => user,
     })
   })
 
@@ -65,7 +67,7 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', '12345', 'en')
+    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', 'CKI', 'en')
   })
 
   it('should render the /adjudications/:chargeNumber view', async () => {
@@ -74,6 +76,20 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', '12345')
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
+  })
+
+  it('/adjudications/:chargeNumber view should redirect for user prisoner number not matching the fetched adjudication', async () => {
+    user.idToken.sub = 'incorrectId'
+    app = appWithAllRoutes({
+      services: { adjudicationsService },
+      userSupplier: () => user,
+    })
+    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+
+    const res = await request(app).get('/adjudications/12345')
+
+    expect(res.status).toBe(302) // redirect status code
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
   })
 })
