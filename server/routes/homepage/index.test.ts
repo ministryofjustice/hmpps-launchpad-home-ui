@@ -3,7 +3,11 @@ import type { Express } from 'express'
 import request from 'supertest'
 import i18next from 'i18next'
 
-import { createMockLinksService, createMockPrisonService } from '../../services/testutils/mocks'
+import {
+  createMockLinksService,
+  createMockPrisonService,
+  createMockUserAuditService,
+} from '../../services/testutils/mocks'
 import { eventsSummary } from '../../utils/mocks/events'
 import { links } from '../../utils/mocks/links'
 import { getEstablishmentData } from '../../utils/utils'
@@ -12,6 +16,7 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 let app: Express
 const prisonService = createMockPrisonService()
 const linksService = createMockLinksService()
+const userAuditService = createMockUserAuditService()
 
 jest.mock('../../utils/utils', () => ({
   ...jest.requireActual('../../utils/utils'),
@@ -24,7 +29,7 @@ jest.mock('i18next', () => ({
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { prisonService, linksService },
+    services: { prisonService, linksService, userAuditService },
   })
 
   prisonService.getPrisonerEventsSummary.mockResolvedValue(eventsSummary)

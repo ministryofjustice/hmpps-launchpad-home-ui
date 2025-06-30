@@ -6,7 +6,7 @@
 import { buildAppInsightsClient, initialiseAppInsights } from '../utils/azureAppInsights'
 
 initialiseAppInsights()
-buildAppInsightsClient()
+const appInsightsClient = buildAppInsightsClient()
 
 import AdjudicationsApiClient from './api/adjudicationsApi/client'
 import HmppsAuthClient from './api/hmppsAuth/client'
@@ -36,6 +36,7 @@ export const dataAccess = () => ({
   locationApiClientBuilder: ((token: string) => new LocationApiClient(token)) as RestClientBuilder<LocationApiClient>,
   nomisMappingApiClientBuilder: ((token: string) =>
     new NomisMappingApiClient(token)) as RestClientBuilder<NomisMappingApiClient>,
+  applicationInsightsClient: appInsightsClient,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>

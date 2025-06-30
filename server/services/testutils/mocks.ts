@@ -1,3 +1,4 @@
+import { TelemetryClient } from 'applicationinsights'
 import {
   AdjudicationsService,
   IncentivesService,
@@ -7,9 +8,11 @@ import {
   NomisMappingService,
   PrisonService,
   PrisonerContactRegistryService,
+  UserAuditService,
 } from '..'
 
 jest.mock('..')
+jest.mock('applicationinsights')
 
 export const createMockAdjucationsService = () =>
   new AdjudicationsService(null, null) as jest.Mocked<AdjudicationsService>
@@ -30,3 +33,6 @@ export const createMockPrisonerContactRegistryService = () =>
 
 export const createMockLaunchpadAuthService = () =>
   new LaunchpadAuthService(null, null) as jest.Mocked<LaunchpadAuthService>
+
+export const createMockUserAuditService = () =>
+  new UserAuditService(new TelemetryClient()) as jest.Mocked<UserAuditService>
