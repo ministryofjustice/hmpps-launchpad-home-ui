@@ -8,7 +8,7 @@ import LocationService from './location'
 import NomisMappingService from './nomisMapping'
 import PrisonService from './prison'
 import PrisonerContactRegistryService from './prisonerContactRegistry'
-import UserAuditService from './userAudit'
+import CustomEventService from './userAudit'
 
 export type Services = ReturnType<typeof services>
 
@@ -37,7 +37,7 @@ export const services = () => {
   )
 
   const linksService = new LinksService()
-  const userAuditService = new UserAuditService(applicationInsightsClient)
+  const customEventService = new CustomEventService(applicationInsightsClient)
 
   return {
     adjudicationsService,
@@ -48,7 +48,7 @@ export const services = () => {
     nomisMappingService,
     prisonerContactRegistryService,
     prisonService,
-    userAuditService,
+    customEventService,
   }
 }
 
@@ -61,5 +61,5 @@ export {
   NomisMappingService,
   PrisonerContactRegistryService,
   PrisonService,
-  UserAuditService,
+  CustomEventService,
 }

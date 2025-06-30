@@ -10,7 +10,7 @@ export interface CustomEvent {
   measurements?: Record<string, number>
 }
 
-export default class UserAuditService {
+export default class CustomEventService {
   constructor(private readonly appInsightsClient: TelemetryClient) {}
 
   trackEvent(event: CustomEvent) {
@@ -19,8 +19,8 @@ export default class UserAuditService {
     }
   }
 
-  logCustomEvent(auditEvent: CustomEvent) {
-    this.trackEvent(auditEvent)
+  logCustomEvent(customEvent: CustomEvent) {
+    this.trackEvent(customEvent)
   }
 
   logPageView(page: Page, username: string, activeCaseLoadId: string) {

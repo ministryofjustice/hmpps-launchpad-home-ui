@@ -1,14 +1,14 @@
 import { TelemetryClient } from 'applicationinsights'
-import UserAuditService, { Page } from './index'
+import CustomEventService, { Page } from './index'
 
 jest.mock('applicationinsights')
 
 describe('Metrics Service', () => {
   const telemetryClient = new TelemetryClient()
-  const userAuditService = new UserAuditService(telemetryClient)
+  const customEventService = new CustomEventService(telemetryClient)
 
   it('logPageView', () => {
-    userAuditService.logPageView(Page.HOME_PAGE, 'username', 'MDI')
+    customEventService.logPageView(Page.HOME_PAGE, 'username', 'MDI')
     expect(telemetryClient.trackEvent).toHaveBeenCalledWith({
       name: 'PAGE_VIEW_HOME_PAGE',
       properties: {

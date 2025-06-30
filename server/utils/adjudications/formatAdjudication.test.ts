@@ -7,7 +7,7 @@ import {
   createMockNomisMappingService,
   createMockPrisonService,
   createMockPrisonerContactRegistryService,
-  createMockUserAuditService,
+  createMockCustomEventService,
 } from '../../services/testutils/mocks'
 
 import { formattedAdjudication, reportedAdjudication } from '../mocks/adjudications'
@@ -25,7 +25,7 @@ const services = {
   nomisMappingService: createMockNomisMappingService(),
   prisonerContactRegistryService: createMockPrisonerContactRegistryService(),
   prisonService: createMockPrisonService(),
-  userAuditService: createMockUserAuditService(),
+  customEventService: createMockCustomEventService(),
 }
 
 describe('formatAdjudication', () => {

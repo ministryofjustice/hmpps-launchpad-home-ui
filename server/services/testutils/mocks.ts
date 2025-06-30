@@ -8,7 +8,7 @@ import {
   NomisMappingService,
   PrisonService,
   PrisonerContactRegistryService,
-  UserAuditService,
+  CustomEventService,
 } from '..'
 
 jest.mock('..')
@@ -34,5 +34,5 @@ export const createMockPrisonerContactRegistryService = () =>
 export const createMockLaunchpadAuthService = () =>
   new LaunchpadAuthService(null, null) as jest.Mocked<LaunchpadAuthService>
 
-export const createMockUserAuditService = () =>
-  new UserAuditService(new TelemetryClient()) as jest.Mocked<UserAuditService>
+export const createMockCustomEventService = () =>
+  new CustomEventService(new TelemetryClient()) as jest.Mocked<CustomEventService>

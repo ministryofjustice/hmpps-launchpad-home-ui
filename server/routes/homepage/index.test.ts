@@ -6,7 +6,7 @@ import i18next from 'i18next'
 import {
   createMockLinksService,
   createMockPrisonService,
-  createMockUserAuditService,
+  createMockCustomEventService,
 } from '../../services/testutils/mocks'
 import { eventsSummary } from '../../utils/mocks/events'
 import { links } from '../../utils/mocks/links'
@@ -16,7 +16,7 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 let app: Express
 const prisonService = createMockPrisonService()
 const linksService = createMockLinksService()
-const userAuditService = createMockUserAuditService()
+const customEventService = createMockCustomEventService()
 
 jest.mock('../../utils/utils', () => ({
   ...jest.requireActual('../../utils/utils'),
@@ -29,7 +29,7 @@ jest.mock('i18next', () => ({
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: { prisonService, linksService, userAuditService },
+    services: { prisonService, linksService, customEventService },
   })
 
   prisonService.getPrisonerEventsSummary.mockResolvedValue(eventsSummary)
