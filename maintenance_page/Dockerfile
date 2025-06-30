@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} bitnami/nginx:1.28.0-debian-12-r3
+FROM --platform=${BUILDPLATFORM} bitnami/nginx:1.29.0-debian-12-r2
 
 COPY index.html /opt/bitnami/nginx/html
 COPY conf/maintenance_page.conf /opt/bitnami/nginx/conf/server_blocks/
