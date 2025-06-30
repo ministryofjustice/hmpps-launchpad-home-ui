@@ -41,13 +41,13 @@ export function buildAppInsightsClient(name = defaultName()): TelemetryClient {
 export function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: ContextObject) {
   const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
   if (isRequest) {
-    const { username, activeCaseLoadId } = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
-    if (username) {
+    const { sub, establishment } = contextObjects?.['http.ServerRequest']?.res?.locals?.user?.idToken || {}
+    if (sub) {
       const { properties } = envelope.data.baseData
       // eslint-disable-next-line no-param-reassign
       envelope.data.baseData.properties = {
-        username,
-        activeCaseLoadId,
+        username: sub,
+        activeCaseLoadId: establishment?.agency_id,
         ...properties,
       }
     }

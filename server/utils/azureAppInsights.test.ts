@@ -2,8 +2,12 @@ import { DataTelemetry, EnvelopeTelemetry } from 'applicationinsights/out/Declar
 import { addUserDataToRequests, ContextObject } from './azureAppInsights'
 
 const user = {
-  activeCaseLoadId: 'LII',
-  username: 'test-user',
+  idToken: {
+    establishment: {
+      agency_id: 'LII',
+    },
+    sub: 'test-user',
+  },
 }
 
 const createEnvelope = (properties: Record<string, string | boolean>, baseType = 'RequestData') =>
@@ -14,21 +18,18 @@ const createEnvelope = (properties: Record<string, string | boolean>, baseType =
     } as DataTelemetry,
   }) as EnvelopeTelemetry
 
-const createContext = (username: string, activeCaseLoadId: string) =>
+const createContext = (userObject: object) =>
   ({
     'http.ServerRequest': {
       res: {
         locals: {
-          user: {
-            username,
-            activeCaseLoadId,
-          },
+          user: userObject,
         },
       },
     },
   }) as ContextObject
 
-const context = createContext(user.username, user.activeCaseLoadId)
+const context = createContext(user)
 
 describe('azure-appinsights', () => {
   describe('addUserDataToRequests', () => {
@@ -38,15 +39,26 @@ describe('azure-appinsights', () => {
       addUserDataToRequests(envelope, context)
 
       expect(envelope.data.baseData.properties).toStrictEqual({
-        ...user,
+        activeCaseLoadId: 'LII',
         other: 'things',
+        username: 'test-user',
       })
     })
 
     it('handles absent user data', () => {
       const envelope = createEnvelope({ other: 'things' })
 
-      addUserDataToRequests(envelope, createContext(undefined, user.activeCaseLoadId))
+      addUserDataToRequests(
+        envelope,
+        createContext({
+          idToken: {
+            establishment: {
+              agency_id: 'LII',
+            },
+            sub: undefined,
+          },
+        }),
+      )
 
       expect(envelope.data.baseData.properties).toStrictEqual({ other: 'things' })
     })
@@ -64,7 +76,10 @@ describe('azure-appinsights', () => {
 
       addUserDataToRequests(envelope, context)
 
-      expect(envelope.data.baseData.properties).toStrictEqual(user)
+      expect(envelope.data.baseData.properties).toStrictEqual({
+        activeCaseLoadId: 'LII',
+        username: 'test-user',
+      })
     })
 
     it('handles missing user details', () => {

@@ -8,9 +8,9 @@ describe('Metrics Service', () => {
   const customEventService = new CustomEventService(telemetryClient)
 
   it('logPageView', () => {
-    customEventService.logPageView(Page.HOME_PAGE, 'username', 'MDI')
+    customEventService.logPageView(Page.HOMEPAGE, 'username', 'MDI')
     expect(telemetryClient.trackEvent).toHaveBeenCalledWith({
-      name: 'PAGE_VIEW_HOME_PAGE',
+      name: 'LNP-Page-View-Homepage',
       properties: {
         username: 'username',
         activeCaseLoadId: 'MDI',

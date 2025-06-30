@@ -1,7 +1,7 @@
 import { TelemetryClient } from 'applicationinsights'
 
 export enum Page {
-  HOME_PAGE = 'HOME_PAGE',
+  HOMEPAGE = 'Homepage',
 }
 
 export interface CustomEvent {
@@ -25,7 +25,7 @@ export default class CustomEventService {
 
   logPageView(page: Page, username: string, activeCaseLoadId: string) {
     const event: CustomEvent = {
-      name: `PAGE_VIEW_${page}`,
+      name: `LNP-Page-View-${page}`,
       properties: {
         username,
         activeCaseLoadId,

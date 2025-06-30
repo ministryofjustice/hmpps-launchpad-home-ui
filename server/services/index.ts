@@ -8,7 +8,7 @@ import LocationService from './location'
 import NomisMappingService from './nomisMapping'
 import PrisonService from './prison'
 import PrisonerContactRegistryService from './prisonerContactRegistry'
-import CustomEventService from './userAudit'
+import CustomEventService from './customEvent'
 
 export type Services = ReturnType<typeof services>
 
