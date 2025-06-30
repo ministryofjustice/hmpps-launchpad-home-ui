@@ -17,4 +17,15 @@ describe('Metrics Service', () => {
       },
     })
   })
+
+  it('logCustomEvent', () => {
+    customEventService.logCustomEvent('Custom-Event-Name', 'username', 'MDI')
+    expect(telemetryClient.trackEvent).toHaveBeenCalledWith({
+      name: 'LNP-Custom-Event-Name',
+      properties: {
+        username: 'username',
+        activeCaseLoadId: 'MDI',
+      },
+    })
+  })
 })

@@ -19,8 +19,15 @@ export default class CustomEventService {
     }
   }
 
-  logCustomEvent(customEvent: CustomEvent) {
-    this.trackEvent(customEvent)
+  logCustomEvent(eventName: string, username: string, activeCaseLoadId: string) {
+    const event: CustomEvent = {
+      name: `LNP-${eventName}`,
+      properties: {
+        username,
+        activeCaseLoadId,
+      },
+    }
+    this.trackEvent(event)
   }
 
   logPageView(page: Page, username: string, activeCaseLoadId: string) {
@@ -31,6 +38,6 @@ export default class CustomEventService {
         activeCaseLoadId,
       },
     }
-    this.logCustomEvent(event)
+    this.trackEvent(event)
   }
 }
