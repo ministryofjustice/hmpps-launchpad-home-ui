@@ -25,7 +25,7 @@ export default function routes(services: Services): Router {
       const homepageLinks = await services.linksService.getHomepageLinks(user, language)
       const establishmentData = getEstablishmentData(user.idToken?.establishment?.agency_id)
 
-      services.userAuditService.logPageView(Page.HOME_PAGE)
+      services.userAuditService.logPageView(Page.HOME_PAGE, user.idToken?.sub, user.idToken?.establishment?.agency_id)
 
       res.render('pages/homepage', {
         data: {

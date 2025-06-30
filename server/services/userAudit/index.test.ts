@@ -8,9 +8,13 @@ describe('Metrics Service', () => {
   const userAuditService = new UserAuditService(telemetryClient)
 
   it('logPageView', () => {
-    userAuditService.logPageView(Page.HOME_PAGE)
+    userAuditService.logPageView(Page.HOME_PAGE, 'username', 'MDI')
     expect(telemetryClient.trackEvent).toHaveBeenCalledWith({
       name: 'PAGE_VIEW_HOME_PAGE',
+      properties: {
+        username: 'username',
+        activeCaseLoadId: 'MDI',
+      },
     })
   })
 })

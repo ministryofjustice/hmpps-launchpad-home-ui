@@ -23,9 +23,13 @@ export default class UserAuditService {
     this.trackEvent(auditEvent)
   }
 
-  logPageView(page: Page) {
+  logPageView(page: Page, username: string, activeCaseLoadId: string) {
     const event: CustomEvent = {
       name: `PAGE_VIEW_${page}`,
+      properties: {
+        username,
+        activeCaseLoadId,
+      },
     }
     this.logCustomEvent(event)
   }
