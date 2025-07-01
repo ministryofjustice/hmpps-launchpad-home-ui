@@ -11,7 +11,7 @@ export default function createErrorHandler(production: boolean) {
         prisonerNumber: res.locals.user?.idToken?.sub,
         agencyId: res.locals.user?.idToken?.establishment?.agency_id,
       },
-      production ? null : error,
+      error,
     )
 
     res.locals.heading = 'Something went wrong'
