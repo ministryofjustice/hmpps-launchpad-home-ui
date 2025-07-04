@@ -75,3 +75,12 @@ export const convertLocation = (
 
   return convertedLocation
 }
+
+export const formatLogMessage = (summary: string, prisonerName: string, prisonerId: string, agencyId: string) => {
+  return {
+    summary,
+    userName: prisonerName,
+    prisonerNumber: prisonerId,
+    agencyId,
+  }
+}
