@@ -25,6 +25,7 @@ generic-service:
     GA4_SITE_ID: 'G-EJVJ26SLFY'
 
   allowlist:
+    appsec-testers: 80.195.27.199
     groups:
       - internal
 
