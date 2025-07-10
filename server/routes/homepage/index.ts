@@ -1,7 +1,6 @@
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { DateFormats } from '../../constants/date'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
@@ -17,12 +16,6 @@ export default function routes(services: Services): Router {
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
-
-      await auditService.sendAuditMessage({
-        action: 'VIEW_HOMEPAGE',
-        who: user.idToken.sub,
-        service: 'hmpps-launchpad-home-ui',
-      })
 
       const prisonerEventsSummary = await services.prisonService.getPrisonerEventsSummary(
         user.idToken.booking.id,
