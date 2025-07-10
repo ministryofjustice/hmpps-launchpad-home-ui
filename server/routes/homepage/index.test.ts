@@ -3,6 +3,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import i18next from 'i18next'
 
+import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockLinksService, createMockPrisonService } from '../../services/testutils/mocks'
 import { eventsSummary } from '../../utils/mocks/events'
 import { links } from '../../utils/mocks/links'
@@ -12,6 +13,7 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 let app: Express
 const prisonService = createMockPrisonService()
 const linksService = createMockLinksService()
+const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
 
 jest.mock('../../utils/utils', () => ({
   ...jest.requireActual('../../utils/utils'),
@@ -27,6 +29,7 @@ beforeEach(() => {
     services: { prisonService, linksService },
   })
 
+  auditServiceSpy.mockResolvedValue()
   prisonService.getPrisonerEventsSummary.mockResolvedValue(eventsSummary)
   linksService.getHomepageLinks.mockResolvedValue({ links })
 })
@@ -205,6 +208,21 @@ describe('GET /', () => {
         expect(insideTimeTile.find('h3').text()).not.toBe('Inside Time')
         expect(insideTimeTile.find('a').attr('href')).not.toBe(links[3].url)
         expect(insideTimeTile.find('p').text()).not.toBe('Read the national newspaper for prisoners and detainees')
+      })
+  })
+
+  it('should audit the request', () => {
+    return request(app)
+      .get('/')
+      .set('Accept-Language', 'en')
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+        expect(auditServiceSpy).toHaveBeenCalledWith({
+          action: 'VIEW_HOMEPAGE',
+          service: 'hmpps-launchpad-home-ui',
+          who: 'sub',
+        })
       })
   })
 })
