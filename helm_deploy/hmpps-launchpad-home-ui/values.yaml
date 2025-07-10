@@ -45,6 +45,7 @@ generic-service:
     TOKEN_VERIFICATION_ENABLED: 'true'
     APPLICATIONINSIGHTS_CONNECTION_STRING: 'InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/'
     REFRESH_CHECK_TIMEOUT_IN_MINUTES: 1
+    AUDIT_ENABLED: "false"
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "hmpps-launchpad-home-ui"
 
