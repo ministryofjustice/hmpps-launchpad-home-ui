@@ -1,6 +1,6 @@
 import { format, isValid, parseISO } from 'date-fns'
 import config from '../config'
-import { Establishment } from '../@types/launchpad'
+import { Establishment, IdToken } from '../@types/launchpad'
 
 export const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -76,11 +76,13 @@ export const convertLocation = (
   return convertedLocation
 }
 
-export const formatLogMessage = (summary: string, prisonerName: string, prisonerId: string, agencyId: string) => {
-  return {
-    summary,
-    userName: prisonerName,
-    prisonerNumber: prisonerId,
-    agencyId,
-  }
+export const formatLogMessage = (summary: string, userIdToken?: IdToken) => {
+  return !userIdToken
+    ? summary
+    : {
+        summary,
+        userName: `${userIdToken.given_name} ${userIdToken.family_name}`,
+        prisonerNumber: userIdToken.sub,
+        agencyId: userIdToken.establishment?.agency_id,
+      }
 }
