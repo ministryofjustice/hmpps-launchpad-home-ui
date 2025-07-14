@@ -5,6 +5,10 @@ import IncentivesApiClient from './client'
 
 jest.mock('../../restClient')
 
+const mockBookingId = 'bookingId'
+const mockAgencyId = 'agencyId'
+const mockPrisonerId = 'prisonerId'
+
 describe('IncentivesApiClient', () => {
   let mockRestClient: jest.Mocked<RestClient>
   let incentivesApiClient: jest.Mocked<IncentivesApiClient>
@@ -21,7 +25,7 @@ describe('IncentivesApiClient', () => {
     it('should call restClient.get with correct parameters', async () => {
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(incentivesReviewSummary)
 
-      const response = await incentivesApiClient.getIncentivesSummaryFor('bookingId')
+      const response = await incentivesApiClient.getIncentivesSummaryFor(mockBookingId, mockAgencyId, mockPrisonerId)
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
         path: `/incentive-reviews/booking/bookingId`,

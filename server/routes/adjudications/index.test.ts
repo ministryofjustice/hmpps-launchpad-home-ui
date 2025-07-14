@@ -65,7 +65,12 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', '12345', 'en')
+    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith(
+      '12345',
+      '67890',
+      'en',
+      'sub',
+    )
   })
 
   it('should render the /adjudications/:chargeNumber view', async () => {
@@ -74,6 +79,6 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', '12345')
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', '67890', 'sub')
   })
 })

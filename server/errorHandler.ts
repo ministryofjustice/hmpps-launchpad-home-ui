@@ -6,7 +6,11 @@ import { formatLogMessage } from './utils/utils'
 export default function createErrorHandler(production: boolean) {
   return (error: HTTPError, req: Request, res: Response, next: NextFunction): void => {
     logger.error(
-      formatLogMessage(`Error handling request for '${req.originalUrl}'`, res.locals.user?.idToken),
+      formatLogMessage(
+        `Error handling request for '${req.originalUrl}'`,
+        res.locals.user?.idToken?.sub,
+        res.locals.user?.idToken?.establishment?.agency_id,
+      ),
       production ? null : error,
     )
 

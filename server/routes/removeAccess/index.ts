@@ -14,7 +14,11 @@ export default function routes(services: Services): Router {
       const { clientId, clientLogoUri, client } = req.query
       const { user } = res.locals
 
-      const approvedClients = await services.launchpadAuthService.getApprovedClients(user.idToken.sub, user.accessToken)
+      const approvedClients = await services.launchpadAuthService.getApprovedClients(
+        user.idToken.sub,
+        user.idToken.establishment.agency_id,
+        user.accessToken,
+      )
       const validClient = approvedClients.content.find(c => c.id === clientId)
 
       if (!validClient) {
@@ -24,11 +28,11 @@ export default function routes(services: Services): Router {
 
       return res.render('pages/remove-access', {
         data: {
-          userId: res.locals.user.idToken.sub,
+          userId: user.idToken.sub,
           clientId,
           clientLogoUri,
           client,
-          accessToken: res.locals.user.accessToken,
+          accessToken: user.accessToken,
         },
         csrfToken: req.csrfToken(),
         errors: req.flash('errors'),
@@ -42,9 +46,13 @@ export default function routes(services: Services): Router {
     featureFlagMiddleware(Features.Settings),
     asyncHandler(async (req: Request, res: Response) => {
       const { userId, clientId, client, action } = req.body
-      const { accessToken } = res.locals.user
+      const { user } = res.locals
 
-      const approvedClients = await services.launchpadAuthService.getApprovedClients(userId, accessToken)
+      const approvedClients = await services.launchpadAuthService.getApprovedClients(
+        userId,
+        user.idToken.establishment.agency_id,
+        user.accessToken,
+      )
       const validClient = approvedClients.content.find(c => c.id === clientId)
 
       if (!validClient) {
@@ -54,7 +62,12 @@ export default function routes(services: Services): Router {
 
       if (action === 'remove') {
         try {
-          await services.launchpadAuthService.removeClientAccess(clientId, userId, accessToken)
+          await services.launchpadAuthService.removeClientAccess(
+            clientId,
+            userId,
+            user.idToken.establishment.agency_id,
+            user.accessToken,
+          )
           return res.redirect(`/settings?success=true&client=${client}`)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {

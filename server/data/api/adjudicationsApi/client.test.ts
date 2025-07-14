@@ -6,6 +6,10 @@ import AdjudicationsApiClient from './client'
 
 jest.mock('../../restClient')
 
+const mockBookingId = 'bookingId'
+const mockAgencyId = 'agencyId'
+const mockPrisonerId = 'prisonerId'
+
 describe('AdjudicationsApiClient', () => {
   let mockRestClient: jest.Mocked<RestClient>
   let adjudicationsApiClient: jest.Mocked<AdjudicationsApiClient>
@@ -27,14 +31,12 @@ describe('AdjudicationsApiClient', () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
-      const bookingId = 'bookingId'
-      const agencyId = 'agencyId'
-      const response = await adjudicationsApiClient.hasAdjudications(bookingId, agencyId)
+      const response = await adjudicationsApiClient.hasAdjudications(mockBookingId, mockAgencyId, mockPrisonerId)
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/adjudications/booking/${bookingId}/exists`,
+        path: `/adjudications/booking/${mockBookingId}/exists`,
         headers: {
-          'Active-Caseload': agencyId,
+          'Active-Caseload': mockAgencyId,
         },
       })
       expect(response).toEqual(mockResponse)
@@ -46,15 +48,18 @@ describe('AdjudicationsApiClient', () => {
       const mockResponse: PageReportedAdjudicationDto = {}
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
-      const bookingId = 'bookingId'
-      const agencyId = 'agencyId'
       const status = 'status'
-      const response = await adjudicationsApiClient.getReportedAdjudicationsFor(bookingId, agencyId, status)
+      const response = await adjudicationsApiClient.getReportedAdjudicationsFor(
+        mockBookingId,
+        mockAgencyId,
+        status,
+        mockPrisonerId,
+      )
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}&size=50`,
+        path: `/reported-adjudications/booking/${mockBookingId}?agency=${mockAgencyId}${status}&size=50`,
         headers: {
-          'Active-Caseload': agencyId,
+          'Active-Caseload': mockAgencyId,
         },
       })
       expect(response).toEqual(mockResponse)
@@ -70,13 +75,12 @@ describe('AdjudicationsApiClient', () => {
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
       const chargeNumber = 'chargeNumber'
-      const agencyId = 'agencyId'
-      const response = await adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
+      const response = await adjudicationsApiClient.getReportedAdjudication(chargeNumber, mockAgencyId, mockPrisonerId)
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
         path: `/reported-adjudications/${chargeNumber}/v2`,
         headers: {
-          'Active-Caseload': agencyId,
+          'Active-Caseload': mockAgencyId,
         },
       })
       expect(response).toEqual(mockResponse)

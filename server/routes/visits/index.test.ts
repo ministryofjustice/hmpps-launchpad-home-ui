@@ -55,6 +55,6 @@ describe('GET /visits', () => {
     const res = await request(app).get('/visits')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonerContactRegistryService.getSocialVisitors).toHaveBeenCalledWith('sub')
+    expect(mockServices.prisonerContactRegistryService.getSocialVisitors).toHaveBeenCalledWith('sub', '67890')
   })
 })

@@ -5,6 +5,7 @@ import logger from '../../../logger'
 import { ADJUDICATION_STATUSES } from '../../constants/adjudications'
 import { DateFormats } from '../../constants/date'
 import { AdjudicationsApiClient, HmppsAuthClient, RestClientBuilder } from '../../data'
+import { formatLogMessage } from '../../utils/utils'
 
 export default class AdjudicationsService {
   constructor(
@@ -12,15 +13,29 @@ export default class AdjudicationsService {
     private readonly adjudicationsApiClientFactory: RestClientBuilder<AdjudicationsApiClient>,
   ) {}
 
-  async hasAdjudications(bookingId: string, prisonId: string) {
+  async hasAdjudications(bookingId: string, agencyId: string, prisonerId: string) {
+    logger.info(
+      formatLogMessage(
+        `Fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+        prisonerId,
+        agencyId,
+      ),
+    )
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
-    return adjudicationsApiClient.hasAdjudications(bookingId, prisonId)
+    return adjudicationsApiClient.hasAdjudications(bookingId, agencyId, prisonerId)
   }
 
-  async getReportedAdjudicationsFor(bookingId: string, prisonId: string, language: string) {
+  async getReportedAdjudicationsFor(bookingId: string, agencyId: string, language: string, prisonerId: string) {
     try {
+      logger.info(
+        formatLogMessage(
+          `Fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
+      )
       const token = await this.hmppsAuthClient.getSystemClientToken()
       const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
@@ -28,10 +43,18 @@ export default class AdjudicationsService {
 
       const { content, ...rest } = await adjudicationsApiClient.getReportedAdjudicationsFor(
         bookingId,
-        prisonId,
+        agencyId,
         statusQueryParam,
+        prisonerId,
       )
 
+      logger.info(
+        formatLogMessage(
+          `Formatting reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
+      )
       const locales: Record<string, Locale> = { en: enGB, cy }
       const locale = locales[language] || enGB
 
@@ -45,15 +68,30 @@ export default class AdjudicationsService {
         content: formattedContent,
       }
     } catch (error) {
-      logger.error(`Error fetching reported adjudications for bookingId: ${bookingId}, prisonId: ${prisonId}`, error)
+      logger.error(
+        formatLogMessage(
+          `Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
+        error,
+      )
       throw new Error('Failed to fetch reported adjudications')
     }
   }
 
-  async getReportedAdjudication(chargeNumber: string, agencyId: string) {
+  async getReportedAdjudication(chargeNumber: string, agencyId: string, prisonerId: string) {
+    logger.info(
+      formatLogMessage(
+        `Fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`,
+        prisonerId,
+        agencyId,
+      ),
+    )
+
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const adjudicationsApiClient = this.adjudicationsApiClientFactory(token)
 
-    return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId)
+    return adjudicationsApiClient.getReportedAdjudication(chargeNumber, agencyId, prisonerId)
   }
 }

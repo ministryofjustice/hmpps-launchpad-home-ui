@@ -20,6 +20,8 @@ export default function routes(services: Services): Router {
       const prisonerEventsSummary = await services.prisonService.getPrisonerEventsSummary(
         user.idToken.booking.id,
         language,
+        user.idToken.sub,
+        user.idToken.establishment.agency_id,
       )
       const homepageLinks = await services.linksService.getHomepageLinks(user, language)
       const establishmentData = getEstablishmentData(user.idToken?.establishment?.agency_id)

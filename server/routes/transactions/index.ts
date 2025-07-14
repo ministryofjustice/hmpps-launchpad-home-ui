@@ -34,9 +34,23 @@ export default function routes(services: Services): Router {
     const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date())
     const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date()
 
-    const balances = await services.prisonService.getBalances(req.user.idToken.booking.id)
-    const prisons = await services.prisonService.getPrisonsByAgencyType(AgencyType.INST)
-    const transactions = await services.prisonService.getTransactions(req.user, accountCode, dateRangeFrom, dateRangeTo)
+    const balances = await services.prisonService.getBalances(
+      req.user.idToken.booking.id,
+      req.user.idToken.sub,
+      req.user.idToken.establishment.agency_id,
+    )
+    const prisons = await services.prisonService.getPrisonsByAgencyType(
+      AgencyType.INST,
+      req.user.idToken.sub,
+      req.user.idToken.establishment.agency_id,
+    )
+    const transactions = await services.prisonService.getTransactions(
+      req.user.idToken.sub,
+      accountCode,
+      dateRangeFrom,
+      dateRangeTo,
+      req.user.idToken.establishment.agency_id,
+    )
 
     const transactionsWithPrison = transactions.map(transaction => {
       const prisonDescription = prisons.find(p => p.agencyId === transaction.agencyId)?.description || ''
@@ -64,9 +78,20 @@ export default function routes(services: Services): Router {
   const renderDamageObligationsTransactions = async (req: Request, res: Response) => {
     const language = req.language || i18next.language
 
-    const balances = await services.prisonService.getBalances(req.user.idToken.booking.id)
-    const prisons = await services.prisonService.getPrisonsByAgencyType(AgencyType.INST)
-    const { damageObligations } = await services.prisonService.getDamageObligations(req.user)
+    const balances = await services.prisonService.getBalances(
+      req.user.idToken.booking.id,
+      req.user.idToken.sub,
+      req.user.idToken.establishment.agency_id,
+    )
+    const prisons = await services.prisonService.getPrisonsByAgencyType(
+      AgencyType.INST,
+      req.user.idToken.sub,
+      req.user.idToken.establishment.agency_id,
+    )
+    const { damageObligations } = await services.prisonService.getDamageObligations(
+      req.user.idToken.sub,
+      req.user.idToken.establishment.agency_id,
+    )
 
     const damageObligationsWithPrison = damageObligations.map(damageObligation => {
       const prisonDescription = prisons.find(p => p.agencyId === damageObligation.prisonId)?.description || ''

@@ -1,5 +1,6 @@
 import logger from '../../../logger'
 import { HmppsAuthClient, PrisonerContactRegistryApiClient, RestClientBuilder } from '../../data'
+import { formatLogMessage } from '../../utils/utils'
 
 export default class PrisonerContactRegistryService {
   constructor(
@@ -7,13 +8,17 @@ export default class PrisonerContactRegistryService {
     private readonly prisonerContactRegistryApiClientFactory: RestClientBuilder<PrisonerContactRegistryApiClient>,
   ) {}
 
-  async getSocialVisitors(prisonerId: string) {
+  async getSocialVisitors(prisonerId: string, agencyId: string) {
     try {
+      logger.info(formatLogMessage(`Fetching social visitors for prisonerId: ${prisonerId}`, prisonerId, agencyId))
       const token = await this.hmppsAuthClient.getSystemClientToken()
       const prisonerContactRegistryApiClient = this.prisonerContactRegistryApiClientFactory(token)
-      return await prisonerContactRegistryApiClient.getSocialVisitors(prisonerId)
+      return await prisonerContactRegistryApiClient.getSocialVisitors(prisonerId, agencyId)
     } catch (error) {
-      logger.error(`Error fetching social visitors for prisonerId: ${prisonerId}`, error)
+      logger.error(
+        formatLogMessage(`Error fetching social visitors for prisonerId: ${prisonerId}`, prisonerId, agencyId),
+        error,
+      )
       throw new Error('Failed to fetch social visitors')
     }
   }

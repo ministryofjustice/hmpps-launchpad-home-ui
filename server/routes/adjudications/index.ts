@@ -27,6 +27,7 @@ export default function routes(services: Services): Router {
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
         language,
+        user.idToken.sub,
       )
 
       const paginationData = getPaginationData(Number(req.query.page), reportedAdjudications.content.length)
@@ -55,11 +56,12 @@ export default function routes(services: Services): Router {
       const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
-        user.idToken.establishment.agency_id,
+        user.idToken.establishment?.agency_id,
+        user.idToken.sub,
       )
 
       const formattedAdjudication = reportedAdjudication
-        ? await formatAdjudication(reportedAdjudication, services)
+        ? await formatAdjudication(reportedAdjudication, services, user.idToken)
         : null
 
       return res.render('pages/adjudication', {

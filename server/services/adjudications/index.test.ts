@@ -13,6 +13,7 @@ import { reportedAdjudication } from '../../utils/mocks/adjudications'
 jest.mock('../../data')
 
 const mockToken = 'mockToken'
+const mockPrisonerId = 'prisonerId'
 
 describe('PrisonerProfileService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -43,12 +44,12 @@ describe('PrisonerProfileService', () => {
       adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
       adjudicationsApiClient.hasAdjudications.mockResolvedValue(mockHasAdjudicationsResponse)
 
-      const result = await adjudicationsService.hasAdjudications(mockUserId, mockAgencyId)
+      const result = await adjudicationsService.hasAdjudications(mockUserId, mockAgencyId, mockPrisonerId)
 
       expect(result).toEqual(mockHasAdjudicationsResponse)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(adjudicationsApiClient.hasAdjudications).toHaveBeenCalledWith(mockUserId, mockAgencyId)
+      expect(adjudicationsApiClient.hasAdjudications).toHaveBeenCalledWith(mockUserId, mockAgencyId, mockPrisonerId)
     })
   })
 
@@ -67,7 +68,12 @@ describe('PrisonerProfileService', () => {
       adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
       adjudicationsApiClient.getReportedAdjudicationsFor.mockResolvedValue(mockReportedAdjudicationsData)
 
-      const result = await adjudicationsService.getReportedAdjudicationsFor(mockBookingId, mockAgencyId, 'en')
+      const result = await adjudicationsService.getReportedAdjudicationsFor(
+        mockBookingId,
+        mockAgencyId,
+        'en',
+        mockPrisonerId,
+      )
 
       expect(result).toEqual(mockReportedAdjudicationsData)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
@@ -76,6 +82,7 @@ describe('PrisonerProfileService', () => {
         mockBookingId,
         mockAgencyId,
         mockStatusQueryParam,
+        mockPrisonerId,
       )
     })
   })
@@ -92,12 +99,16 @@ describe('PrisonerProfileService', () => {
       adjudicationsApiClientFactory.mockReturnValue(adjudicationsApiClient)
       adjudicationsApiClient.getReportedAdjudication.mockResolvedValue(mockReportedAdjudication)
 
-      const result = await adjudicationsService.getReportedAdjudication(mockChargeNumber, mockAgencyId)
+      const result = await adjudicationsService.getReportedAdjudication(mockChargeNumber, mockAgencyId, mockPrisonerId)
 
       expect(result).toEqual(mockReportedAdjudication)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(adjudicationsApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(adjudicationsApiClient.getReportedAdjudication).toHaveBeenCalledWith(mockChargeNumber, mockAgencyId)
+      expect(adjudicationsApiClient.getReportedAdjudication).toHaveBeenCalledWith(
+        mockChargeNumber,
+        mockAgencyId,
+        mockPrisonerId,
+      )
     })
   })
 })

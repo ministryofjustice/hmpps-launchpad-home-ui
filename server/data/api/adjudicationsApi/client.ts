@@ -6,6 +6,7 @@ import {
 } from '../../../@types/adjudicationsApiTypes'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
+import { formatLogMessage } from '../../../utils/utils'
 
 export default class AdjudicationsApiClient {
   public restClient: RestClient
@@ -14,7 +15,7 @@ export default class AdjudicationsApiClient {
     this.restClient = new RestClient('adjudicationsApiClient', config.apis.adjudications as ApiConfig, token)
   }
 
-  async hasAdjudications(bookingId: string, agencyId: string): Promise<HasAdjudicationsResponse> {
+  async hasAdjudications(bookingId: string, agencyId: string, prisonerId: string): Promise<HasAdjudicationsResponse> {
     try {
       return await this.restClient.get({
         path: `/adjudications/booking/${bookingId}/exists`,
@@ -23,7 +24,14 @@ export default class AdjudicationsApiClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, error)
+      logger.error(
+        formatLogMessage(
+          `Error fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
+        error,
+      )
       return { hasAdjudications: false }
     }
   }
@@ -32,6 +40,7 @@ export default class AdjudicationsApiClient {
     bookingId: string,
     agencyId: string,
     status: string,
+    prisonerId: string,
   ): Promise<PageReportedAdjudicationDto> {
     try {
       return await this.restClient.get({
@@ -41,12 +50,23 @@ export default class AdjudicationsApiClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, error)
+      logger.error(
+        formatLogMessage(
+          `Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
+        error,
+      )
       return null
     }
   }
 
-  async getReportedAdjudication(chargeNumber: string, agencyId: string): Promise<ReportedAdjudicationApiResponse> {
+  async getReportedAdjudication(
+    chargeNumber: string,
+    agencyId: string,
+    prisonerId: string,
+  ): Promise<ReportedAdjudicationApiResponse> {
     try {
       return await this.restClient.get({
         path: `/reported-adjudications/${chargeNumber}/v2`,
@@ -55,7 +75,14 @@ export default class AdjudicationsApiClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`, error)
+      logger.error(
+        formatLogMessage(
+          `Error fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
+        error,
+      )
       return { reportedAdjudication: null }
     }
   }

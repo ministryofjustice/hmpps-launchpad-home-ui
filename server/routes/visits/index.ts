@@ -17,8 +17,11 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware(Features.SocialVisitors),
     asyncHandler(async (req: Request, res: Response) => {
-      const { prisonerContentHubURL } = getEstablishmentData(res.locals.user.idToken.establishment.agency_id) || {}
-      const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(req.user.idToken.sub)
+      const { prisonerContentHubURL } = getEstablishmentData(req.user.idToken.establishment.agency_id) || {}
+      const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(
+        req.user.idToken.sub,
+        req.user.idToken.establishment.agency_id,
+      )
 
       const paginationData = getPaginationData(Number(req.query.page), socialVisitorsRes.length)
       const socialVisitors = socialVisitorsRes

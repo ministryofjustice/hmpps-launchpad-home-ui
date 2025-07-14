@@ -5,6 +5,9 @@ import PrisonerContactRegistryApiClient from './client'
 
 jest.mock('../../restClient')
 
+const mockAgencyId = 'agencyId'
+const mockPrisonerId = 'prisonerId'
+
 describe('PrisonerContactRegistryApiClient', () => {
   let mockRestClient: jest.Mocked<RestClient>
   let prisonerContactRegistryApiClient: jest.Mocked<PrisonerContactRegistryApiClient>
@@ -29,10 +32,10 @@ describe('PrisonerContactRegistryApiClient', () => {
     it('should call restClient.get with correct parameters', async () => {
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(prisonerContact)
 
-      const response = await prisonerContactRegistryApiClient.getSocialVisitors('prisonerId')
+      const response = await prisonerContactRegistryApiClient.getSocialVisitors(mockPrisonerId, mockAgencyId)
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/prisoners/${'prisonerId'}/contacts/social`,
+        path: `/prisoners/${mockPrisonerId}/contacts/social`,
       })
       expect(response).toEqual(prisonerContact)
     })

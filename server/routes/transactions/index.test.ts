@@ -63,13 +63,14 @@ describe('GET /transactions', () => {
     const res = await request(app).get('/transactions')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345', 'sub', '67890')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST, 'sub', '67890')
     expect(mockServices.prisonService.getTransactions).toHaveBeenCalledWith(
-      expect.any(Object),
+      'sub',
       AccountCodes.SPENDS,
       expect.any(Date),
       expect.any(Date),
+      '67890',
     )
   })
 
@@ -81,13 +82,14 @@ describe('GET /transactions', () => {
     const res = await request(app).get('/transactions/private')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345', 'sub', '67890')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST, 'sub', '67890')
     expect(mockServices.prisonService.getTransactions).toHaveBeenCalledWith(
-      expect.any(Object),
+      'sub',
       AccountCodes.PRIVATE,
       expect.any(Date),
       expect.any(Date),
+      '67890',
     )
   })
 
@@ -99,13 +101,14 @@ describe('GET /transactions', () => {
     const res = await request(app).get('/transactions/savings')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345', 'sub', '67890')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST, 'sub', '67890')
     expect(mockServices.prisonService.getTransactions).toHaveBeenCalledWith(
-      expect.any(Object),
+      'sub',
       AccountCodes.SAVINGS,
       expect.any(Date),
       expect.any(Date),
+      '67890',
     )
   })
 
@@ -119,8 +122,8 @@ describe('GET /transactions', () => {
     const res = await request(app).get('/transactions/damage-obligations')
 
     expect(res.status).toBe(200)
-    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345')
-    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST)
-    expect(mockServices.prisonService.getDamageObligations).toHaveBeenCalledWith(expect.any(Object))
+    expect(mockServices.prisonService.getBalances).toHaveBeenCalledWith('12345', 'sub', '67890')
+    expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalledWith(AgencyType.INST, 'sub', '67890')
+    expect(mockServices.prisonService.getDamageObligations).toHaveBeenCalledWith('sub', '67890')
   })
 })

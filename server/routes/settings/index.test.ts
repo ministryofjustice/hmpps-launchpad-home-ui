@@ -60,6 +60,6 @@ describe('GET /settings', () => {
     const res = await request(app).get('/settings')
 
     expect(res.status).toBe(200)
-    expect(mockServices.launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', 'ACCESS_TOKEN')
+    expect(mockServices.launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
   })
 })
