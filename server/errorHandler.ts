@@ -7,7 +7,7 @@ export default function createErrorHandler(production: boolean) {
   return (error: HTTPError, req: Request, res: Response, next: NextFunction): void => {
     logger.error(
       formatLogMessage(
-        `Error handling request for '${req.originalUrl}'`,
+        `Error handling request for '${req.originalUrl}', user '${res.locals.user?.name}'`,
         res.locals.user?.idToken?.sub,
         res.locals.user?.idToken?.establishment?.agency_id,
       ),
