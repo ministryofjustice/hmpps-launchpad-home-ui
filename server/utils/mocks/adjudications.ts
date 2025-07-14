@@ -3,7 +3,7 @@ import { FormattedReportedAdjudication } from '../adjudications/types'
 
 export const reportedAdjudication: ReportedAdjudicationDto = {
   chargeNumber: '409064-1',
-  prisonerNumber: 'G6046GQ',
+  prisonerNumber: 'G1234UE',
   gender: 'MALE',
   incidentDetails: {
     locationId: 78668,
