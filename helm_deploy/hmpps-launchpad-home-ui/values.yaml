@@ -14,7 +14,7 @@ generic-service:
     host: app-hostname.local # override per environment
     tlsSecretName: hmpps-launchpad-cert
     modsecurity_enabled: true
-    modsecurity_github_team: 'prisoner-content-hub-developers'
+    modsecurity_github_team: 'hmpps-launchpad'
     annotations:
       nginx.ingress.kubernetes.io/server-snippet: |
         server_tokens off;
