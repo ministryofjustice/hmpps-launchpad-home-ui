@@ -2,7 +2,6 @@ import logger from '../../../../logger'
 import { PrisonerContact } from '../../../@types/prisonerContactRegistryApiTypes'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
-import { formatLogMessage } from '../../../utils/utils'
 
 export default class PrisonerContactRegistryApiClient {
   public restClient: RestClient
@@ -21,10 +20,11 @@ export default class PrisonerContactRegistryApiClient {
         path: `/prisoners/${prisonerId}/contacts/social`,
       })
     } catch (error) {
-      logger.error(
-        formatLogMessage(`Error fetching social visitors for prisonerId: ${prisonerId}`, prisonerId, agencyId),
+      logger.error(`Error fetching social visitors for prisonerId: ${prisonerId}`, {
+        prisonerId,
+        agencyId,
         error,
-      )
+      })
       throw new Error('Failed to fetch social visitors')
     }
   }

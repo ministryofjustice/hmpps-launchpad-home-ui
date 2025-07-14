@@ -1,6 +1,5 @@
 import { HmppsAuthClient, IncentivesApiClient, RestClientBuilder } from '../../data'
 import logger from '../../../logger'
-import { formatLogMessage } from '../../utils/utils'
 
 export default class IncentivesService {
   constructor(
@@ -9,7 +8,7 @@ export default class IncentivesService {
   ) {}
 
   async getIncentivesSummaryFor(bookingId: string, prisonerId: string, agencyId: string) {
-    logger.info(formatLogMessage(`Fetching incentive summary for bookingId: ${bookingId}`, prisonerId, agencyId))
+    logger.info(`Fetching incentive summary for bookingId: ${bookingId}`, { prisonerId, agencyId })
 
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const incentivesApiClient = this.incentivesApiClientFactory(token)

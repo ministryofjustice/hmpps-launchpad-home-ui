@@ -7,7 +7,6 @@ import { DateFormats } from '../../constants/date'
 import { Account, VisitBalances } from '../../@types/prisonApiTypes'
 import { HmppsAuthClient, PrisonApiClient, RestClientBuilder } from '../../data'
 import Timetable from '../../data/timetable'
-import { formatLogMessage } from '../../utils/utils'
 
 export default class PrisonService {
   constructor(
@@ -16,17 +15,18 @@ export default class PrisonService {
   ) {}
 
   async getPrisonerEventsSummary(bookingId: string, language: string, prisonerId: string, agencyId: string) {
-    logger.info(formatLogMessage(`Fetching prisoner events summary for bookingId: ${bookingId}`, prisonerId, bookingId))
+    logger.info(`Fetching prisoner events summary for bookingId: ${bookingId}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
       return await prisonApiClient.getEventsSummary(bookingId, language, prisonerId, agencyId)
     } catch (error) {
-      logger.error(
-        formatLogMessage(`Error fetching prisoner events summary for bookingId: ${bookingId}`, prisonerId, bookingId),
+      logger.error(`Error fetching prisoner events summary for bookingId: ${bookingId}`, {
+        prisonerId,
+        agencyId,
         error,
-      )
+      })
       throw new Error('Failed to fetch prisoner events summary')
     }
   }
@@ -39,13 +39,7 @@ export default class PrisonService {
     prisonerId: string,
     agencyId: string,
   ) {
-    logger.info(
-      formatLogMessage(
-        `Fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`,
-        prisonerId,
-        agencyId,
-      ),
-    )
+    logger.info(`Fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
@@ -54,14 +48,11 @@ export default class PrisonService {
       const timetableData = Timetable.create({ fromDate, toDate, language }).addEvents(language, eventsData).build()
       return timetableData.events
     } catch (error) {
-      logger.error(
-        formatLogMessage(
-          `Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`,
-          prisonerId,
-          agencyId,
-        ),
+      logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, {
+        prisonerId,
+        agencyId,
         error,
-      )
+      })
       throw new Error('Failed to fetch events data')
     }
   }
@@ -74,40 +65,36 @@ export default class PrisonService {
     today: Date = new Date(),
   ) {
     try {
-      logger.info(
-        formatLogMessage(`Error fetching today's events for bookingId: ${bookingId} on ${today}`, prisonerId, agencyId),
-      )
+      logger.info(`Fetching today's events for bookingId: ${bookingId} on ${today}`, { prisonerId, agencyId })
       const results = await this.getEventsFor(bookingId, today, today, language, prisonerId, agencyId)
       return results[format(today, DateFormats.ISO_DATE)]
     } catch (error) {
-      logger.error(
-        formatLogMessage(`Error fetching today's events for bookingId: ${bookingId} on ${today}`, prisonerId, agencyId),
+      logger.error(`Error fetching today's events for bookingId: ${bookingId} on ${today}`, {
+        prisonerId,
+        agencyId,
         error,
-      )
+      })
       throw new Error("Failed to fetch today's events")
     }
   }
 
   async getUserById(userId: string, prisonerId: string, agencyId: string) {
-    logger.info(formatLogMessage(`Fetching user by ID: ${userId}`, prisonerId, agencyId))
+    logger.info(`Fetching user by ID: ${userId}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
       return await prisonApiClient.getUserById(userId, prisonerId, agencyId)
     } catch (error) {
-      logger.error(formatLogMessage(`Error fetching user by ID: ${userId}`, prisonerId, agencyId), error)
+      logger.error(`Error fetching user by ID: ${userId}`, { prisonerId, agencyId, error })
       throw new Error('Failed to fetch user data')
     }
   }
 
   async getTransactions(prisonerId: string, accountCode: string, fromDate: Date, toDate: Date, agencyId: string) {
     logger.info(
-      formatLogMessage(
-        `Fetching transactions for userId: ${prisonerId}, accountCode: ${accountCode}, fromDate: ${fromDate}, toDate: ${toDate}`,
-        prisonerId,
-        agencyId,
-      ),
+      `Fetching transactions for userId: ${prisonerId}, accountCode: ${accountCode}, fromDate: ${fromDate}, toDate: ${toDate}`,
+      { prisonerId, agencyId },
     )
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
@@ -116,19 +103,15 @@ export default class PrisonService {
       return await prisonApiClient.getTransactionsForDateRange(prisonerId, accountCode, fromDate, toDate, agencyId)
     } catch (error) {
       logger.error(
-        formatLogMessage(
-          `Error fetching transactions for userId: ${prisonerId}, accountCode: ${accountCode}, fromDate: ${fromDate}, toDate: ${toDate}`,
-          prisonerId,
-          agencyId,
-        ),
-        error,
+        `Error fetching transactions for userId: ${prisonerId}, accountCode: ${accountCode}, fromDate: ${fromDate}, toDate: ${toDate}`,
+        { prisonerId, agencyId, error },
       )
       throw new Error('Failed to fetch transactions')
     }
   }
 
   async getBalances(bookingId: string, prisonerId: string, agencyId: string): Promise<Account> {
-    logger.info(formatLogMessage(`Error fetching balances for bookingId: ${bookingId}`, prisonerId, agencyId))
+    logger.info(`Fetching balances for bookingId: ${bookingId}`, { prisonerId, agencyId })
 
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
@@ -137,36 +120,33 @@ export default class PrisonService {
   }
 
   async getPrisonsByAgencyType(type: string, prisonerId: string, agencyId: string) {
-    logger.info(formatLogMessage(`Fetching prisons by agency type: ${type}`, prisonerId, agencyId))
+    logger.info(`Fetching prisons by agency type: ${type}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
       return await prisonApiClient.getPrisonsByAgencyType(type, prisonerId, agencyId)
     } catch (error) {
-      logger.error(formatLogMessage(`Error fetching prisons by agency type: ${type}`, prisonerId, agencyId), error)
+      logger.error(`Error fetching prisons by agency type: ${type}`, { prisonerId, agencyId, error })
       throw new Error('Failed to fetch prisons by agency type')
     }
   }
 
   async getDamageObligations(prisonerId: string, agencyId: string) {
-    logger.info(formatLogMessage(`Fetching damage obligations for userId: ${prisonerId}`, prisonerId, agencyId))
+    logger.info(`Fetching damage obligations for userId: ${prisonerId}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
     try {
       return await prisonApiClient.getDamageObligations(prisonerId, agencyId)
     } catch (error) {
-      logger.error(
-        formatLogMessage(`Error fetching damage obligations for userId: ${prisonerId}`, prisonerId, agencyId),
-        error,
-      )
+      logger.error(`Error fetching damage obligations for userId: ${prisonerId}`, { prisonerId, agencyId, error })
       throw new Error('Failed to fetch damage obligations')
     }
   }
 
   async getNextVisit(bookingId: string, prisonerId: string, agencyId: string) {
-    logger.info(formatLogMessage(`Fetching next visit for bookingId: ${bookingId}`, prisonerId, agencyId))
+    logger.info(`Fetching next visit for bookingId: ${bookingId}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
@@ -174,7 +154,7 @@ export default class PrisonService {
   }
 
   async getVisitBalances(prisonerId: string, agencyId: string): Promise<VisitBalances | null> {
-    logger.info(formatLogMessage(`Fetching visit balances for prisonerId: ${prisonerId}`, prisonerId, agencyId))
+    logger.info(`Fetching visit balances for prisonerId: ${prisonerId}`, { prisonerId, agencyId })
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 

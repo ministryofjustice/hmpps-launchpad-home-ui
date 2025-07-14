@@ -2,7 +2,6 @@ import logger from '../../../../logger'
 import { IncentiveReviewSummary } from '../../../@types/incentivesApiTypes'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
-import { formatLogMessage } from '../../../utils/utils'
 
 export default class IncentivesApiClient {
   public restClient: RestClient
@@ -21,10 +20,11 @@ export default class IncentivesApiClient {
         path: `/incentive-reviews/booking/${bookingId}`,
       })
     } catch (error) {
-      logger.error(
-        formatLogMessage(`Error fetching incentive summary for bookingId: ${bookingId}`, prisonerId, agencyId),
+      logger.error(`Error fetching incentive summary for bookingId: ${bookingId}`, {
+        prisonerId,
+        agencyId,
         error,
-      )
+      })
       return null
     }
   }

@@ -2,7 +2,6 @@ import logger from '../../../../logger'
 import { Location } from '../../../@types/locationInsidePrisonApiTypes'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
-import { formatLogMessage } from '../../../utils/utils'
 
 export default class LocationApiClient {
   public restClient: RestClient
@@ -17,10 +16,11 @@ export default class LocationApiClient {
         path: `/locations/${locationId}`,
       })
     } catch (error) {
-      logger.error(
-        formatLogMessage(`Error fetching location for locationId: ${locationId}`, prisonerId, agencyId),
+      logger.error(`Error fetching location for locationId: ${locationId}`, {
+        prisonerId,
+        agencyId,
         error,
-      )
+      })
       throw new Error('Failed to fetch location')
     }
   }
