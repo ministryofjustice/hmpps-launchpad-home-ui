@@ -1,7 +1,6 @@
 ---
 generic-service:
   nameOverride: hmpps-launchpad-home-ui
-  serviceAccountName: hmpps-launchpad-home-ui
 
   replicaCount: 4
 
