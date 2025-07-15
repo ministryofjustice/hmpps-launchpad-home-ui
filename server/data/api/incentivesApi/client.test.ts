@@ -25,10 +25,10 @@ describe('IncentivesApiClient', () => {
     it('should call restClient.get with correct parameters', async () => {
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(incentivesReviewSummary)
 
-      const response = await incentivesApiClient.getIncentivesSummaryFor(mockBookingId, mockAgencyId, mockPrisonerId)
+      const response = await incentivesApiClient.getIncentivesSummaryFor(mockBookingId, mockPrisonerId, mockAgencyId)
 
       expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/incentive-reviews/booking/bookingId`,
+        path: `/incentive-reviews/booking/${mockBookingId}`,
       })
       expect(response).toEqual(incentivesReviewSummary)
     })
