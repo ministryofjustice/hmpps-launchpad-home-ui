@@ -12,6 +12,8 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 
 const requiredInProduction = { requireInProduction: true }
 
+const serviceName = 'hmpps-launchpad-home-ui'
+
 export class AgentConfig {
   timeout: number
 
@@ -155,6 +157,9 @@ export default {
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
+    },
+    audit: {
+      serviceName: get('AUDIT_SERVICE_NAME', serviceName, requiredInProduction),
     },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),

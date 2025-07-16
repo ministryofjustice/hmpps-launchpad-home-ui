@@ -6,6 +6,7 @@ import { DateFormats } from '../../constants/date'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 
+import config from '../../config'
 import { getEstablishmentData } from '../../utils/utils'
 import { formatDateLocalized } from '../../utils/date/formatDateLocalized'
 
@@ -21,7 +22,7 @@ export default function routes(services: Services): Router {
       await auditService.sendAuditMessage({
         action: 'VIEW_HOMEPAGE',
         who: user.idToken.sub,
-        service: 'hmpps-launchpad-home-ui',
+        service: config.apis.audit.serviceName,
       })
 
       const prisonerEventsSummary = await services.prisonService.getPrisonerEventsSummary(
