@@ -39,7 +39,7 @@ export default class PrisonService {
     prisonerId: string,
     agencyId: string,
   ) {
-    logger.info(`Fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, { prisonerId, agencyId })
+    logger.info({ prisonerId, agencyId }, `Fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`)
     const token = await this.hmppsAuthClient.getSystemClientToken()
     const prisonApiClient = this.prisonApiClientFactory(token)
 
