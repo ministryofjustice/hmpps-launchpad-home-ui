@@ -5,18 +5,12 @@ import logger from '../logger'
 export default function createErrorHandler(production: boolean) {
   return (error: HTTPError, req: Request, res: Response, next: NextFunction): void => {
     logger.error(
-      production
-        ? {
-            prisonerId: res.locals.user?.idToken?.sub,
-            agencyId: res.locals.user?.idToken?.establishment?.agency_id,
-            error,
-          }
-        : {
-            prisonerId: res.locals.user?.idToken?.sub,
-            agencyId: res.locals.user?.idToken?.establishment?.agency_id,
-            error,
-          },
-      `Error handling request for '${req.originalUrl}', user '${res.locals.user?.idToken?.name}'`,
+      {
+        logMessage: `Error handling request for '${req.originalUrl}', user '${res.locals.user?.idToken?.name}'`,
+        prisonerId: res.locals.user?.idToken?.sub,
+        agencyId: res.locals.user?.idToken?.establishment?.agency_id,
+      },
+      error,
     )
 
     res.locals.heading = 'Something went wrong'
