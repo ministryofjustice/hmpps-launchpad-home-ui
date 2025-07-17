@@ -16,7 +16,7 @@ import {
 import logger from '../../../../logger'
 import config, { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
-import { convertLocation, convertToTitleCase } from '../../../utils/utils'
+import { convertLocation, convertToTitleCase, formatLogMessage } from '../../../utils/utils'
 import RestClient from '../../restClient'
 
 export default class PrisonApiClient {
@@ -38,7 +38,7 @@ export default class PrisonApiClient {
         query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
       })
 
-      logger.info(`Formatting events summary for bookingId: ${bookingId}`, { prisonerId, agencyId })
+      logger.info(formatLogMessage(`Formatting events summary for bookingId: ${bookingId}`, prisonerId, agencyId))
       const prisonerEvents: PrisonerEvent[] = []
       scheduledEvents.forEach(scheduledEvent => {
         const dateTimeFormat = DateFormats.PRETTY_TIME
@@ -61,11 +61,10 @@ export default class PrisonApiClient {
 
       return { isTomorrow: false, error: false, prisonerEvents }
     } catch (error) {
-      logger.error(`Error fetching events summary for bookingId: ${bookingId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error fetching events summary for bookingId: ${bookingId}`, prisonerId, agencyId),
         error,
-      })
+      )
       throw new Error('Failed to fetch events summary')
     }
   }
@@ -86,11 +85,14 @@ export default class PrisonApiClient {
         }).toString(),
       })
     } catch (error) {
-      logger.error(`Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(
+          `Error fetching events for bookingId: ${bookingId} from ${fromDate} to ${toDate}`,
+          prisonerId,
+          agencyId,
+        ),
         error,
-      })
+      )
       throw new Error('Failed to fetch events data')
     }
   }
@@ -101,7 +103,7 @@ export default class PrisonApiClient {
         path: `/api/users/${userId}`,
       })
     } catch (error) {
-      logger.error(`Error fetching user for userId: ${userId}`, { prisonerId, agencyId, error })
+      logger.error(formatLogMessage(`Error fetching user for userId: ${userId}`, prisonerId, agencyId), error)
       throw new Error('Failed to fetch user')
     }
   }
@@ -112,11 +114,10 @@ export default class PrisonApiClient {
         path: `/api/bookings/${bookingId}/balances`,
       })
     } catch (error) {
-      logger.error(`Error fetching account data for bookingId: ${bookingId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error fetching account data for bookingId: ${bookingId}`, prisonerId, agencyId),
         error,
-      })
+      )
       return {
         spends: null,
         cash: null,
@@ -136,11 +137,10 @@ export default class PrisonApiClient {
         path: `/api/offenders/${prisonerId}/damage-obligations`,
       })
     } catch (error) {
-      logger.error(`Error fetching damage obligations for prisonerId: ${prisonerId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error fetching damage obligations for prisonerId: ${prisonerId}`, prisonerId, agencyId),
         error,
-      })
+      )
       throw new Error('Failed to fetch damage obligations')
     }
   }
@@ -151,7 +151,7 @@ export default class PrisonApiClient {
         path: `/api/agencies/type/${type}`,
       })
     } catch (error) {
-      logger.error(`Error fetching prisons by agency type: ${type}`, { prisonerId, agencyId, error })
+      logger.error(formatLogMessage(`Error fetching prisons by agency type: ${type}`, prisonerId, agencyId), error)
       throw new Error('Failed to fetch prisons')
     }
   }
@@ -168,9 +168,8 @@ export default class PrisonApiClient {
         path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
       })
     } catch (error) {
-      logger.error('Error fetching transactions for prisoner', {
-        prisonerId,
-        agencyId,
+      logger.error({
+        ...formatLogMessage('Error fetching transactions for prisoner', prisonerId, agencyId),
         accountCode,
         fromDate,
         toDate,
@@ -186,11 +185,10 @@ export default class PrisonApiClient {
         path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
       })
     } catch (error) {
-      logger.error(`Error fetching next visit for bookingId: ${bookingId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error fetching next visit for bookingId: ${bookingId}`, prisonerId, agencyId),
         error,
-      })
+      )
       return null
     }
   }
@@ -201,11 +199,10 @@ export default class PrisonApiClient {
         path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
       })
     } catch (error) {
-      logger.error(`Error fetching visit balances for prisonerId: ${prisonerId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error fetching visit balances for prisonerId: ${prisonerId}`, prisonerId, agencyId),
         error,
-      })
+      )
       return null
     }
   }

@@ -1,6 +1,7 @@
 import logger from '../../../../logger'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
+import { formatLogMessage } from '../../../utils/utils'
 
 export default class NomisMappingApiClient {
   public restClient: RestClient
@@ -19,11 +20,10 @@ export default class NomisMappingApiClient {
         path: `/api/locations/nomis/${locationId}`,
       })
     } catch (error) {
-      logger.error(`Error mapping NOMIS location ID to DPS location ID: ${locationId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error mapping NOMIS location ID to DPS location ID: ${locationId}`, prisonerId, agencyId),
         error,
-      })
+      )
       throw new Error('Failed to map location ID')
     }
   }

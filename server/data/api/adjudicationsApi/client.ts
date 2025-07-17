@@ -6,6 +6,7 @@ import {
 } from '../../../@types/adjudicationsApiTypes'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
+import { formatLogMessage } from '../../../utils/utils'
 
 export default class AdjudicationsApiClient {
   public restClient: RestClient
@@ -23,11 +24,14 @@ export default class AdjudicationsApiClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(
+          `Error fetching adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
         error,
-      })
+      )
       return { hasAdjudications: false }
     }
   }
@@ -46,11 +50,14 @@ export default class AdjudicationsApiClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(
+          `Error fetching reported adjudications for bookingId: ${bookingId}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
         error,
-      })
+      )
       return null
     }
   }
@@ -68,11 +75,14 @@ export default class AdjudicationsApiClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(
+          `Error fetching adjudication for chargeNumber: ${chargeNumber}, agencyId: ${agencyId}`,
+          prisonerId,
+          agencyId,
+        ),
         error,
-      })
+      )
       return { reportedAdjudication: null }
     }
   }

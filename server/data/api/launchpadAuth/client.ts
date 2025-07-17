@@ -2,6 +2,7 @@ import logger from '../../../../logger'
 import { ApprovedClients } from '../../../@types/launchpad'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
+import { formatLogMessage } from '../../../utils/utils'
 
 export default class LaunchpadAuthClient {
   public readonly restClient: RestClient
@@ -19,11 +20,10 @@ export default class LaunchpadAuthClient {
         },
       })
     } catch (error) {
-      logger.error(`Error fetching approved clients for prisonerId: ${prisonerId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(`Error fetching approved clients for prisonerId: ${prisonerId}`, prisonerId, agencyId),
         error,
-      })
+      )
       throw new Error('Failed to fetch approved clients')
     }
   }
@@ -37,11 +37,14 @@ export default class LaunchpadAuthClient {
         },
       })
     } catch (error) {
-      logger.error(`Error removing client access for clientId: ${clientId}, prisonerId: ${prisonerId}`, {
-        prisonerId,
-        agencyId,
+      logger.error(
+        formatLogMessage(
+          `Error removing client access for clientId: ${clientId}, prisonerId: ${prisonerId}`,
+          prisonerId,
+          agencyId,
+        ),
         error,
-      })
+      )
       throw new Error('Failed to remove client access')
     }
   }

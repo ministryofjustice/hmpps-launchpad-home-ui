@@ -5,7 +5,7 @@ import { HearingDto, OffenceDto, PunishmentDto, ReportedAdjudicationDto } from '
 import logger from '../../../logger'
 import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
-import { convertToTitleCase, toSentenceCase } from '../utils'
+import { convertToTitleCase, formatLogMessage, toSentenceCase } from '../utils'
 import { IdToken } from '../../@types/launchpad'
 
 export const formatAdjudication = async (
@@ -14,10 +14,13 @@ export const formatAdjudication = async (
   userIdToken: IdToken,
 ) => {
   try {
-    logger.info(`Formatting reported adjudication: ${reportedAdjudication.chargeNumber}`, {
-      prisonerId: userIdToken.sub,
-      agencyId: userIdToken.establishment.agency_id,
-    })
+    logger.info(
+      formatLogMessage(
+        `Formatting reported adjudication: ${reportedAdjudication.chargeNumber}`,
+        userIdToken.sub,
+        userIdToken.establishment.agency_id,
+      ),
+    )
     const reportedBy = await services.prisonService.getUserById(
       reportedAdjudication.createdByUserId,
       userIdToken.sub,
@@ -63,11 +66,14 @@ export const formatAdjudication = async (
       reportDateTime: format(reportedAdjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }
   } catch (error) {
-    logger.error(`Error formatting reported adjudication: ${reportedAdjudication.chargeNumber}`, {
-      prisonerId: userIdToken.sub,
-      agencyId: userIdToken.establishment.agency_id,
+    logger.error(
+      formatLogMessage(
+        `Error formatting reported adjudication: ${reportedAdjudication.chargeNumber}`,
+        userIdToken.sub,
+        userIdToken.establishment.agency_id,
+      ),
       error,
-    })
+    )
     return null
   }
 }
@@ -80,10 +86,9 @@ export const formatHearing = async (
   userIdToken: IdToken,
 ) => {
   try {
-    logger.info(`Formatting hearing: ${hearing.id}`, {
-      prisonerId: userIdToken.sub,
-      agencyId: userIdToken.establishment.agency_id,
-    })
+    logger.info(
+      formatLogMessage(`Formatting hearing: ${hearing.id}`, userIdToken.sub, userIdToken.establishment.agency_id),
+    )
     const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(
       hearing.locationId,
       userIdToken.sub,
@@ -115,11 +120,10 @@ export const formatHearing = async (
       })),
     }
   } catch (error) {
-    logger.error(`Error formatting hearing: ${hearing.id}`, {
-      prisonerId: userIdToken.sub,
-      agencyId: userIdToken.establishment.agency_id,
+    logger.error(
+      formatLogMessage(`Error formatting hearing: ${hearing.id}`, userIdToken.sub, userIdToken.establishment.agency_id),
       error,
-    })
+    )
     return null
   }
 }

@@ -46,12 +46,14 @@ export default class RestClient {
     return this.config.timeout
   }
 
-  async get<Response = unknown>(
-    { path, query = {}, headers = {}, responseType = '', raw = false }: Request,
-    prisonerId?: string,
-    agencyId?: string,
-  ): Promise<Response> {
-    logger.info({ prisonerId, agencyId }, `${this.name} GET: ${path}`)
+  async get<Response = unknown>({
+    path,
+    query = {},
+    headers = {},
+    responseType = '',
+    raw = false,
+  }: Request): Promise<Response> {
+    logger.info(`${this.name} GET: ${path}`)
     try {
       const result = await superagent
         .get(`${this.apiUrl()}${path}`)
