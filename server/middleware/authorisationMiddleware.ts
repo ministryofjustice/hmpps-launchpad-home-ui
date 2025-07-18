@@ -3,6 +3,7 @@ import type { RequestHandler } from 'express'
 
 import logger from '../../logger'
 import asyncMiddleware from './asyncMiddleware'
+import { formatLogMessage } from '../utils/utils'
 
 export default function authorisationMiddleware(authorisedRoles: string[] = []): RequestHandler {
   return asyncMiddleware((req, res, next) => {
@@ -10,7 +11,13 @@ export default function authorisationMiddleware(authorisedRoles: string[] = []):
       const { authorities: roles = [] } = jwtDecode(res.locals.user.token) as { authorities?: string[] }
 
       if (authorisedRoles.length && !roles.some(role => authorisedRoles.includes(role))) {
-        logger.error('User is not authorised to access this')
+        logger.error(
+          formatLogMessage(
+            'User is not authorised to access this',
+            res.locals?.user?.idToken?.sub,
+            res.locals?.user?.idToken?.establishment?.agency_id,
+          ),
+        )
         return res.redirect('/authError')
       }
 

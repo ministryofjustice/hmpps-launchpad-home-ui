@@ -1,12 +1,17 @@
 import type { Request, Response, NextFunction } from 'express'
 import type { HTTPError } from 'superagent'
 import logger from '../logger'
+import { formatLogMessage } from './utils/utils'
 
 export default function createErrorHandler(production: boolean) {
   return (error: HTTPError, req: Request, res: Response, next: NextFunction): void => {
     logger.error(
-      `Error handling request for '${req.originalUrl}', user '${res.locals.user?.name}'`,
-      production ? null : error,
+      formatLogMessage(
+        `Error handling request for '${req.originalUrl}', user '${res.locals.user?.idToken?.name}'`,
+        res.locals.user?.idToken?.sub,
+        res.locals.user?.idToken?.establishment?.agency_id,
+      ),
+      error,
     )
 
     res.locals.heading = 'Something went wrong'

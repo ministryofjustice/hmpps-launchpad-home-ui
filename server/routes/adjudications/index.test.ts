@@ -67,7 +67,12 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith('12345', 'CKI', 'en')
+    expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).toHaveBeenCalledWith(
+      '12345',
+      'CKI',
+      'en',
+      'G1234UE',
+    )
   })
 
   it('should render the /adjudications/:chargeNumber view', async () => {
@@ -76,7 +81,7 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI', 'G1234UE')
   })
 
   it('/adjudications/:chargeNumber view should redirect for user prisoner number not matching the fetched adjudication', async () => {
@@ -90,6 +95,10 @@ describe('GET /adjudications', () => {
     const res = await request(app).get('/adjudications/12345')
 
     expect(res.status).toBe(302) // redirect status code
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI')
+    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith(
+      '12345',
+      'CKI',
+      'incorrectId',
+    )
   })
 })

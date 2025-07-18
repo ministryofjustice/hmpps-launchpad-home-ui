@@ -5,6 +5,8 @@ import { prisonerContact } from '../../utils/mocks/visitors'
 jest.mock('../../data')
 
 const mockToken = 'mockToken'
+const mockPrisonerId = 'prisonerId'
+const mockAgencyId = 'agencyId'
 
 describe('PrisonerProfileService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -30,18 +32,16 @@ describe('PrisonerProfileService', () => {
 
   describe('getSocialVisitors', () => {
     it('should return an array of social visitors for a given prisonerId', async () => {
-      const prisonerId = 'prisonerId'
-
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonerContactRegistryClientFactory.mockReturnValue(prisonerContactRegistryApiClient)
       prisonerContactRegistryApiClient.getSocialVisitors.mockResolvedValue([prisonerContact])
 
-      const result = await prisonerContactRegistryService.getSocialVisitors(prisonerId)
+      const result = await prisonerContactRegistryService.getSocialVisitors(mockPrisonerId, mockAgencyId)
 
       expect(result).toEqual([prisonerContact])
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonerContactRegistryClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonerContactRegistryApiClient.getSocialVisitors).toHaveBeenCalledWith(prisonerId)
+      expect(prisonerContactRegistryApiClient.getSocialVisitors).toHaveBeenCalledWith(mockPrisonerId, mockAgencyId)
     })
   })
 })

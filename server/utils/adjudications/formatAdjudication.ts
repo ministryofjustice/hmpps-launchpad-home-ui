@@ -5,15 +5,37 @@ import { HearingDto, OffenceDto, PunishmentDto, ReportedAdjudicationDto } from '
 import logger from '../../../logger'
 import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
-import { convertToTitleCase, toSentenceCase } from '../utils'
+import { convertToTitleCase, formatLogMessage, toSentenceCase } from '../utils'
+import { IdToken } from '../../@types/launchpad'
 
-export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicationDto, services: Services) => {
+export const formatAdjudication = async (
+  reportedAdjudication: ReportedAdjudicationDto,
+  services: Services,
+  userIdToken: IdToken,
+) => {
   try {
-    const reportedBy = await services.prisonService.getUserById(reportedAdjudication.createdByUserId)
+    logger.info(
+      formatLogMessage(
+        `Formatting reported adjudication: ${reportedAdjudication.chargeNumber}`,
+        userIdToken.sub,
+        userIdToken.establishment.agency_id,
+      ),
+    )
+    const reportedBy = await services.prisonService.getUserById(
+      reportedAdjudication.createdByUserId,
+      userIdToken.sub,
+      userIdToken.establishment.agency_id,
+    )
     const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(
       reportedAdjudication.incidentDetails.locationId,
+      userIdToken.sub,
+      userIdToken.establishment.agency_id,
     )
-    const location = await services.locationService.getLocationById(dpsLocationId)
+    const location = await services.locationService.getLocationById(
+      dpsLocationId,
+      userIdToken.sub,
+      userIdToken.establishment.agency_id,
+    )
 
     const formattedIncidentDetails = {
       ...reportedAdjudication.incidentDetails,
@@ -25,7 +47,13 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
 
     const formattedHearings = await Promise.all(
       reportedAdjudication.hearings.map(hearing =>
-        formatHearing(hearing, reportedAdjudication.offenceDetails, reportedAdjudication.punishments, services),
+        formatHearing(
+          hearing,
+          reportedAdjudication.offenceDetails,
+          reportedAdjudication.punishments,
+          services,
+          userIdToken,
+        ),
       ),
     )
 
@@ -38,7 +66,14 @@ export const formatAdjudication = async (reportedAdjudication: ReportedAdjudicat
       reportDateTime: format(reportedAdjudication.createdDateTime, DateFormats.GDS_PRETTY_DATE_TIME),
     }
   } catch (error) {
-    logger.error('Error formatting reported adjudication:', error)
+    logger.error(
+      formatLogMessage(
+        `Error formatting reported adjudication: ${reportedAdjudication.chargeNumber}`,
+        userIdToken.sub,
+        userIdToken.establishment.agency_id,
+      ),
+      error,
+    )
     return null
   }
 }
@@ -48,10 +83,22 @@ export const formatHearing = async (
   offenceDetails: OffenceDto,
   punishments: PunishmentDto[],
   services: Services,
+  userIdToken: IdToken,
 ) => {
   try {
-    const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(hearing.locationId)
-    const location = await services.locationService.getLocationById(dpsLocationId)
+    logger.info(
+      formatLogMessage(`Formatting hearing: ${hearing.id}`, userIdToken.sub, userIdToken.establishment.agency_id),
+    )
+    const { dpsLocationId } = await services.nomisMappingService.nomisToDpsLocation(
+      hearing.locationId,
+      userIdToken.sub,
+      userIdToken.establishment.agency_id,
+    )
+    const location = await services.locationService.getLocationById(
+      dpsLocationId,
+      userIdToken.sub,
+      userIdToken.establishment.agency_id,
+    )
 
     return {
       ...hearing,
@@ -73,7 +120,10 @@ export const formatHearing = async (
       })),
     }
   } catch (error) {
-    logger.error('Error formatting hearing:', error)
+    logger.error(
+      formatLogMessage(`Error formatting hearing: ${hearing.id}`, userIdToken.sub, userIdToken.establishment.agency_id),
+      error,
+    )
     return null
   }
 }

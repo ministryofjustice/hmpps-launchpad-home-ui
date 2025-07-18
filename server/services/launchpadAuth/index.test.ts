@@ -7,7 +7,8 @@ jest.mock('../../data')
 const accessToken = 'access_token'
 const clientId = 'client'
 const token = 'token'
-const userId = 'user'
+const prisonerId = 'prisonerId'
+const agencyId = 'agencyId'
 
 describe('LaunchpadAuthService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -39,12 +40,12 @@ describe('LaunchpadAuthService', () => {
       launchpadAuthClientFactory.mockReturnValue(launchpadAuthClient)
       launchpadAuthClient.getApprovedClients.mockResolvedValue(response)
 
-      const result = await launchpadAuthService.getApprovedClients(userId, accessToken)
+      const result = await launchpadAuthService.getApprovedClients(prisonerId, agencyId, accessToken)
 
       expect(result).toEqual(response)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(launchpadAuthClientFactory).toHaveBeenCalledWith(token)
-      expect(launchpadAuthClient.getApprovedClients).toHaveBeenCalledWith(userId, accessToken)
+      expect(launchpadAuthClient.getApprovedClients).toHaveBeenCalledWith(prisonerId, agencyId, accessToken)
     })
   })
 
@@ -54,12 +55,12 @@ describe('LaunchpadAuthService', () => {
       launchpadAuthClientFactory.mockReturnValue(launchpadAuthClient)
       launchpadAuthClient.removeClientAccess.mockResolvedValue(undefined)
 
-      const result = await launchpadAuthService.removeClientAccess(clientId, userId, accessToken)
+      const result = await launchpadAuthService.removeClientAccess(clientId, prisonerId, agencyId, accessToken)
 
       expect(result).toBe(undefined)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(launchpadAuthClientFactory).toHaveBeenCalledWith(token)
-      expect(launchpadAuthClient.removeClientAccess).toHaveBeenCalledWith(clientId, userId, accessToken)
+      expect(launchpadAuthClient.removeClientAccess).toHaveBeenCalledWith(clientId, prisonerId, agencyId, accessToken)
     })
   })
 })

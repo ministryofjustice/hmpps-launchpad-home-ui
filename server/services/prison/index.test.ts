@@ -10,6 +10,8 @@ jest.mock('../../data')
 
 const mockToken = 'mockToken'
 const defaultLanguage = 'en'
+const mockPrisonerId = 'prisonerId'
+const mockAgencyId = 'agencyId'
 
 describe('PrisonerProfileService', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
@@ -33,12 +35,22 @@ describe('PrisonerProfileService', () => {
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
       prisonApiClient.getEventsSummary.mockResolvedValue(eventsSummary)
 
-      const result = await prisonService.getPrisonerEventsSummary('123456', defaultLanguage)
+      const result = await prisonService.getPrisonerEventsSummary(
+        '123456',
+        defaultLanguage,
+        mockPrisonerId,
+        mockAgencyId,
+      )
 
       expect(result).toEqual(eventsSummary)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith('123456', defaultLanguage)
+      expect(prisonApiClient.getEventsSummary).toHaveBeenCalledWith(
+        '123456',
+        defaultLanguage,
+        mockPrisonerId,
+        mockAgencyId,
+      )
     })
   })
 
@@ -50,29 +62,27 @@ describe('PrisonerProfileService', () => {
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
       prisonApiClient.getUserById.mockResolvedValue(staffUser)
 
-      const result = await prisonService.getUserById(mockUserId)
+      const result = await prisonService.getUserById(mockUserId, mockPrisonerId, mockAgencyId)
 
       expect(result).toEqual(staffUser)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getUserById).toHaveBeenCalledWith(mockUserId)
+      expect(prisonApiClient.getUserById).toHaveBeenCalledWith(mockUserId, mockPrisonerId, mockAgencyId)
     })
   })
 
   describe('getVisitBalances', () => {
     it('should return the visit balances for the prisoner', async () => {
-      const prisonerId = '12345'
-
       hmppsAuthClient.getSystemClientToken.mockResolvedValue(mockToken)
       prisonApiClientFactory.mockReturnValue(prisonApiClient)
       prisonApiClient.getVisitBalances.mockResolvedValue(visitBalances)
 
-      const result = await prisonService.getVisitBalances(prisonerId)
+      const result = await prisonService.getVisitBalances(mockPrisonerId, mockAgencyId)
 
       expect(result).toEqual(visitBalances)
       expect(hmppsAuthClient.getSystemClientToken).toHaveBeenCalled()
       expect(prisonApiClientFactory).toHaveBeenCalledWith(mockToken)
-      expect(prisonApiClient.getVisitBalances).toHaveBeenCalledWith(prisonerId)
+      expect(prisonApiClient.getVisitBalances).toHaveBeenCalledWith(mockPrisonerId, mockAgencyId)
     })
   })
 })

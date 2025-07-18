@@ -19,30 +19,46 @@ export default function routes(services: Services): Router {
     '/',
     asyncHandler(async (req: Request, res: Response) => {
       const language = req.language || i18next.language
-      const { user } = res.locals
-      const { idToken } = user
+      const { idToken } = res.locals.user
       const { establishment, booking } = idToken
-      const prisonId = establishment.agency_id
 
       const timetableEvents = await Promise.all([
-        services.prisonService.getEventsForToday(user.idToken.booking.id, language, new Date()),
+        services.prisonService.getEventsForToday(
+          idToken.booking.id,
+          language,
+          idToken.sub,
+          idToken.establishment.agency_id,
+          new Date(),
+        ),
       ])
 
-      const { prisonerContentHubURL } = await getEstablishmentData(prisonId)
-      const { hasAdjudications } = await services.adjudicationsService.hasAdjudications(booking.id, prisonId)
+      const { prisonerContentHubURL } = getEstablishmentData(establishment.agency_id)
+      const { hasAdjudications } = await services.adjudicationsService.hasAdjudications(
+        booking.id,
+        establishment.agency_id,
+        idToken.sub,
+      )
 
-      const incentivesData = await services.incentivesService.getIncentivesSummaryFor(user.idToken.booking.id)
+      const incentivesData = await services.incentivesService.getIncentivesSummaryFor(
+        booking.id,
+        idToken.sub,
+        establishment.agency_id,
+      )
 
-      const nextVisit = await services.prisonService.getNextVisit(booking.id)
-      const transactionsBalances = await services.prisonService.getBalances(booking.id)
+      const nextVisit = await services.prisonService.getNextVisit(booking.id, idToken.sub, establishment.agency_id)
+      const transactionsBalances = await services.prisonService.getBalances(
+        booking.id,
+        idToken.sub,
+        establishment.agency_id,
+      )
 
-      const visitBalances = await services.prisonService.getVisitBalances(req.user.idToken.sub)
+      const visitBalances = await services.prisonService.getVisitBalances(req.user.idToken.sub, establishment.agency_id)
       const visitsRemaining = visitBalances ? visitBalances.remainingPvo + visitBalances.remainingVo : 'N/A'
 
-      const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, prisonId)
-      const isSocialVisitorsEnabled = isFeatureEnabled(Features.SocialVisitors, prisonId)
-      const isTransactionsEnabled = isFeatureEnabled(Features.Transactions, prisonId)
-      const isVisitsEnabled = isFeatureEnabled(Features.Visits, prisonId)
+      const isAdjudicationsEnabled = isFeatureEnabled(Features.Adjudications, establishment.agency_id)
+      const isSocialVisitorsEnabled = isFeatureEnabled(Features.SocialVisitors, establishment.agency_id)
+      const isTransactionsEnabled = isFeatureEnabled(Features.Transactions, establishment.agency_id)
+      const isVisitsEnabled = isFeatureEnabled(Features.Visits, establishment.agency_id)
 
       const nextVisitData =
         nextVisit && Object.keys(nextVisit).length > 0

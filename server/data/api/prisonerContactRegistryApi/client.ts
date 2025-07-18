@@ -2,6 +2,7 @@ import logger from '../../../../logger'
 import { PrisonerContact } from '../../../@types/prisonerContactRegistryApiTypes'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
+import { formatLogMessage } from '../../../utils/utils'
 
 export default class PrisonerContactRegistryApiClient {
   public restClient: RestClient
@@ -14,13 +15,20 @@ export default class PrisonerContactRegistryApiClient {
     )
   }
 
-  async getSocialVisitors(prisonerId: string): Promise<PrisonerContact[]> {
+  async getSocialVisitors(prisonerId: string, agencyId: string): Promise<PrisonerContact[]> {
     try {
-      return await this.restClient.get({
-        path: `/prisoners/${prisonerId}/contacts/social`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/prisoners/${prisonerId}/contacts/social`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
-      logger.error(`Error fetching social visitors for prisonerId: ${prisonerId}`, error)
+      logger.error(
+        formatLogMessage(`Error fetching social visitors for prisonerId: ${prisonerId}`, prisonerId, agencyId),
+        error,
+      )
       throw new Error('Failed to fetch social visitors')
     }
   }

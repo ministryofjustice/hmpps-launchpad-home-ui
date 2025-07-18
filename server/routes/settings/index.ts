@@ -47,7 +47,11 @@ export default function routes(services: Services): Router {
       const { user } = res.locals
       const language = req.language || i18next.language
 
-      const approvedClients = await services.launchpadAuthService.getApprovedClients(user.idToken.sub, user.accessToken)
+      const approvedClients = await services.launchpadAuthService.getApprovedClients(
+        user.idToken.sub,
+        user.idToken.establishment.agency_id,
+        user.accessToken,
+      )
 
       const formattedClients = formatApprovedClients(approvedClients, language)
       const paginationData = getPaginationData(Number(req.query.page), formattedClients.length, 3)

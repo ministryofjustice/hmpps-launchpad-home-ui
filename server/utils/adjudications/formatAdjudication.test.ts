@@ -14,6 +14,14 @@ import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
 import { formatAdjudication, formatHearing } from './formatAdjudication'
+import { IdToken } from '../../@types/launchpad'
+
+const mockIdToken = {
+  sub: 'prisonerId',
+  establishment: {
+    agency_id: 'agencyId',
+  },
+} as IdToken
 
 const services = {
   adjudicationsService: createMockAdjucationsService(),
@@ -35,7 +43,7 @@ describe('formatAdjudication', () => {
       nomisLocationId: location.id,
     })
 
-    const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services)
+    const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services, mockIdToken)
 
     expect(formattedReportedAdjudication).toEqual(formattedAdjudication)
   })
@@ -54,6 +62,7 @@ describe('formatHearing', () => {
       reportedAdjudication.offenceDetails,
       [],
       services,
+      mockIdToken,
     )
 
     expect(formattedHearing).toEqual(formattedAdjudication.hearings[0])

@@ -61,7 +61,7 @@ describe('GET /remove-access', () => {
 
     expect(res.status).toBe(200)
     expect(res.text).toContain(client.name)
-    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
   })
 
   it('should redirect to /settings with error when invalid client ID is provided', async () => {
@@ -80,7 +80,7 @@ describe('GET /remove-access', () => {
 
     expect(res.status).toBe(302)
     expect(res.header.location).toBe('/settings')
-    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
     expect(res.text).toContain('Found. Redirecting to /settings')
   })
 })
@@ -112,8 +112,8 @@ describe('POST /remove-access', () => {
 
     expect(res.status).toBe(302)
     expect(res.header.location).toBe(`/settings?success=true&client=${encodeURIComponent(client.name)}`)
-    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', 'ACCESS_TOKEN')
-    expect(launchpadAuthService.removeClientAccess).toHaveBeenCalledWith(client.id, 'sub', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.removeClientAccess).toHaveBeenCalledWith(client.id, 'sub', '67890', 'ACCESS_TOKEN')
   })
 
   it('should redirect to /settings with error if client removal fails', async () => {
@@ -135,8 +135,8 @@ describe('POST /remove-access', () => {
 
     expect(res.status).toBe(302)
     expect(res.header.location).toBe('/settings?success=false')
-    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', 'ACCESS_TOKEN')
-    expect(launchpadAuthService.removeClientAccess).toHaveBeenCalledWith(client.id, 'sub', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.removeClientAccess).toHaveBeenCalledWith(client.id, 'sub', '67890', 'ACCESS_TOKEN')
   })
 
   it('should redirect to /settings with error when invalid client ID is provided', async () => {
@@ -156,7 +156,7 @@ describe('POST /remove-access', () => {
 
     expect(res.status).toBe(302)
     expect(res.header.location).toBe('/settings')
-    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', 'ACCESS_TOKEN')
+    expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
     expect(launchpadAuthService.removeClientAccess).not.toHaveBeenCalled()
   })
 })

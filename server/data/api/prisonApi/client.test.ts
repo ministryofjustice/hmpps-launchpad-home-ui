@@ -6,6 +6,10 @@ import PrisonApiClientApiClient from './client'
 
 jest.mock('../../restClient')
 
+const mockBookingId = 'bookingId'
+const mockAgencyId = 'agencyId'
+const mockPrisonerId = 'prisonerId'
+
 describe('PrisonApiClient', () => {
   let mockRestClient: jest.Mocked<RestClient>
   let prisonApiClient: jest.Mocked<PrisonApiClientApiClient>
@@ -27,12 +31,15 @@ describe('PrisonApiClient', () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
-      const bookingId = 'bookingId'
-      const response = await prisonApiClient.getBalances(bookingId)
+      const response = await prisonApiClient.getBalances(mockBookingId, mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/bookings/${bookingId}/balances`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/bookings/${mockBookingId}/balances`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -42,12 +49,15 @@ describe('PrisonApiClient', () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
-      const prisonerId = 'prisonerId'
-      const response = await prisonApiClient.getDamageObligations(prisonerId)
+      const response = await prisonApiClient.getDamageObligations(mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/offenders/${prisonerId}/damage-obligations`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/offenders/${mockPrisonerId}/damage-obligations`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -58,11 +68,15 @@ describe('PrisonApiClient', () => {
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
       const type = 'type'
-      const response = await prisonApiClient.getPrisonsByAgencyType(type)
+      const response = await prisonApiClient.getPrisonsByAgencyType(type, mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/agencies/type/${type}`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/agencies/type/${type}`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -72,15 +86,24 @@ describe('PrisonApiClient', () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
-      const prisonerId = 'prisonerId'
       const accountCode = 'accountCode'
       const fromDate = new Date()
       const toDate = new Date()
-      const response = await prisonApiClient.getTransactionsForDateRange(prisonerId, accountCode, fromDate, toDate)
+      const response = await prisonApiClient.getTransactionsForDateRange(
+        mockPrisonerId,
+        accountCode,
+        fromDate,
+        toDate,
+        mockAgencyId,
+      )
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/offenders/${mockPrisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -90,12 +113,15 @@ describe('PrisonApiClient', () => {
       const mockResponse = true
       ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
 
-      const prisonerId = 'prisonerId'
-      const response = await prisonApiClient.getVisitBalances(prisonerId)
+      const response = await prisonApiClient.getVisitBalances(mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/bookings/offenderNo/${mockPrisonerId}/visit/balances`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
