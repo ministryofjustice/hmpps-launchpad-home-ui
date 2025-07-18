@@ -16,9 +16,13 @@ export default class NomisMappingApiClient {
     agencyId: string,
   ): Promise<{ dpsLocationId: string; nomisLocationId: string }> {
     try {
-      return await this.restClient.get({
-        path: `/api/locations/nomis/${locationId}`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/locations/nomis/${locationId}`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error mapping NOMIS location ID to DPS location ID: ${locationId}`, prisonerId, agencyId),

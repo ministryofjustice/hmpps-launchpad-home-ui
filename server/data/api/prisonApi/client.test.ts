@@ -33,9 +33,13 @@ describe('PrisonApiClient', () => {
 
       const response = await prisonApiClient.getBalances(mockBookingId, mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/bookings/${mockBookingId}/balances`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/bookings/${mockBookingId}/balances`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -47,9 +51,13 @@ describe('PrisonApiClient', () => {
 
       const response = await prisonApiClient.getDamageObligations(mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/offenders/${mockPrisonerId}/damage-obligations`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/offenders/${mockPrisonerId}/damage-obligations`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -62,9 +70,13 @@ describe('PrisonApiClient', () => {
       const type = 'type'
       const response = await prisonApiClient.getPrisonsByAgencyType(type, mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/agencies/type/${type}`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/agencies/type/${type}`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -85,9 +97,13 @@ describe('PrisonApiClient', () => {
         mockAgencyId,
       )
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/offenders/${mockPrisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/offenders/${mockPrisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -99,9 +115,13 @@ describe('PrisonApiClient', () => {
 
       const response = await prisonApiClient.getVisitBalances(mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/api/bookings/offenderNo/${mockPrisonerId}/visit/balances`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/bookings/offenderNo/${mockPrisonerId}/visit/balances`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })

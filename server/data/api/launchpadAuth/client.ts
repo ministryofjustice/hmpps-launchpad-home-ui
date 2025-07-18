@@ -13,12 +13,16 @@ export default class LaunchpadAuthClient {
 
   async getApprovedClients(prisonerId: string, agencyId: string, accessToken: string): Promise<ApprovedClients> {
     try {
-      return await this.restClient.get<ApprovedClients>({
-        path: `/v1/users/${prisonerId}/clients`,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      return await this.restClient.get<ApprovedClients>(
+        {
+          path: `/v1/users/${prisonerId}/clients`,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      })
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error fetching approved clients for prisonerId: ${prisonerId}`, prisonerId, agencyId),
@@ -30,12 +34,16 @@ export default class LaunchpadAuthClient {
 
   async removeClientAccess(clientId: string, prisonerId: string, agencyId: string, accessToken: string): Promise<void> {
     try {
-      return await this.restClient.delete<void>({
-        path: `/v1/users/${prisonerId}/clients/${clientId}`,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      return await this.restClient.delete<void>(
+        {
+          path: `/v1/users/${prisonerId}/clients/${clientId}`,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      })
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(

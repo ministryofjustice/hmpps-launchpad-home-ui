@@ -34,9 +34,13 @@ describe('PrisonerContactRegistryApiClient', () => {
 
       const response = await prisonerContactRegistryApiClient.getSocialVisitors(mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/prisoners/${mockPrisonerId}/contacts/social`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/prisoners/${mockPrisonerId}/contacts/social`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(prisonerContact)
     })
   })

@@ -17,12 +17,16 @@ export default class AdjudicationsApiClient {
 
   async hasAdjudications(bookingId: string, agencyId: string, prisonerId: string): Promise<HasAdjudicationsResponse> {
     try {
-      return await this.restClient.get({
-        path: `/adjudications/booking/${bookingId}/exists`,
-        headers: {
-          'Active-Caseload': agencyId,
+      return await this.restClient.get(
+        {
+          path: `/adjudications/booking/${bookingId}/exists`,
+          headers: {
+            'Active-Caseload': agencyId,
+          },
         },
-      })
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(
@@ -43,12 +47,16 @@ export default class AdjudicationsApiClient {
     prisonerId: string,
   ): Promise<PageReportedAdjudicationDto> {
     try {
-      return await this.restClient.get({
-        path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}&size=50`,
-        headers: {
-          'Active-Caseload': agencyId,
+      return await this.restClient.get(
+        {
+          path: `/reported-adjudications/booking/${bookingId}?agency=${agencyId}${status}&size=50`,
+          headers: {
+            'Active-Caseload': agencyId,
+          },
         },
-      })
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(
@@ -68,12 +76,16 @@ export default class AdjudicationsApiClient {
     prisonerId: string,
   ): Promise<ReportedAdjudicationApiResponse> {
     try {
-      return await this.restClient.get({
-        path: `/reported-adjudications/${chargeNumber}/v2`,
-        headers: {
-          'Active-Caseload': agencyId,
+      return await this.restClient.get(
+        {
+          path: `/reported-adjudications/${chargeNumber}/v2`,
+          headers: {
+            'Active-Caseload': agencyId,
+          },
         },
-      })
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(

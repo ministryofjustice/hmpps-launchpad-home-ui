@@ -13,9 +13,13 @@ export default class LocationApiClient {
 
   async getLocationById(locationId: string, prisonerId: string, agencyId: string): Promise<Location> {
     try {
-      return await this.restClient.get({
-        path: `/locations/${locationId}`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/locations/${locationId}`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error fetching location for locationId: ${locationId}`, prisonerId, agencyId),

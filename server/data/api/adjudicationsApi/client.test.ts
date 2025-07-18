@@ -33,12 +33,16 @@ describe('AdjudicationsApiClient', () => {
 
       const response = await adjudicationsApiClient.hasAdjudications(mockBookingId, mockAgencyId, mockPrisonerId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/adjudications/booking/${mockBookingId}/exists`,
-        headers: {
-          'Active-Caseload': mockAgencyId,
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/adjudications/booking/${mockBookingId}/exists`,
+          headers: {
+            'Active-Caseload': mockAgencyId,
+          },
         },
-      })
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -56,12 +60,16 @@ describe('AdjudicationsApiClient', () => {
         mockPrisonerId,
       )
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/reported-adjudications/booking/${mockBookingId}?agency=${mockAgencyId}${status}&size=50`,
-        headers: {
-          'Active-Caseload': mockAgencyId,
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/reported-adjudications/booking/${mockBookingId}?agency=${mockAgencyId}${status}&size=50`,
+          headers: {
+            'Active-Caseload': mockAgencyId,
+          },
         },
-      })
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })
@@ -77,12 +85,16 @@ describe('AdjudicationsApiClient', () => {
       const chargeNumber = 'chargeNumber'
       const response = await adjudicationsApiClient.getReportedAdjudication(chargeNumber, mockAgencyId, mockPrisonerId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/reported-adjudications/${chargeNumber}/v2`,
-        headers: {
-          'Active-Caseload': mockAgencyId,
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/reported-adjudications/${chargeNumber}/v2`,
+          headers: {
+            'Active-Caseload': mockAgencyId,
+          },
         },
-      })
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(mockResponse)
     })
   })

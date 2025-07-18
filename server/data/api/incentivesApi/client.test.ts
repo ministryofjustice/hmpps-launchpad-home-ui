@@ -27,9 +27,13 @@ describe('IncentivesApiClient', () => {
 
       const response = await incentivesApiClient.getIncentivesSummaryFor(mockBookingId, mockPrisonerId, mockAgencyId)
 
-      expect(mockRestClient.get).toHaveBeenCalledWith({
-        path: `/incentive-reviews/booking/${mockBookingId}`,
-      })
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/incentive-reviews/booking/${mockBookingId}`,
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
       expect(response).toEqual(incentivesReviewSummary)
     })
   })

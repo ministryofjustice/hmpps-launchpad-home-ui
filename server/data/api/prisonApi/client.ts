@@ -33,10 +33,14 @@ export default class PrisonApiClient {
     agencyId: string,
   ): Promise<EventsData> {
     try {
-      const scheduledEvents: ScheduledEvent[] = await this.restClient.get({
-        path: `/api/bookings/${bookingId}/events/today`,
-        query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
-      })
+      const scheduledEvents: ScheduledEvent[] = await this.restClient.get(
+        {
+          path: `/api/bookings/${bookingId}/events/today`,
+          query: new URLSearchParams({ activeRestrictionsOnly: 'true' }).toString(),
+        },
+        prisonerId,
+        agencyId,
+      )
 
       logger.info(formatLogMessage(`Formatting events summary for bookingId: ${bookingId}`, prisonerId, agencyId))
       const prisonerEvents: PrisonerEvent[] = []
@@ -77,13 +81,17 @@ export default class PrisonApiClient {
     agencyId: string,
   ): Promise<ScheduledEvent[]> {
     try {
-      return await this.restClient.get({
-        path: `/api/bookings/${bookingId}/events`,
-        query: new URLSearchParams({
-          fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
-          toDate: formatDate(toDate, DateFormats.ISO_DATE),
-        }).toString(),
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/bookings/${bookingId}/events`,
+          query: new URLSearchParams({
+            fromDate: formatDate(fromDate, DateFormats.ISO_DATE),
+            toDate: formatDate(toDate, DateFormats.ISO_DATE),
+          }).toString(),
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(
@@ -99,9 +107,13 @@ export default class PrisonApiClient {
 
   async getUserById(userId: string, prisonerId: string, agencyId: string): Promise<UserDetail> {
     try {
-      return await this.restClient.get({
-        path: `/api/users/${userId}`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/users/${userId}`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(formatLogMessage(`Error fetching user for userId: ${userId}`, prisonerId, agencyId), error)
       throw new Error('Failed to fetch user')
@@ -110,9 +122,13 @@ export default class PrisonApiClient {
 
   async getBalances(bookingId: string, prisonerId: string, agencyId: string): Promise<Account> {
     try {
-      return await this.restClient.get({
-        path: `/api/bookings/${bookingId}/balances`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/bookings/${bookingId}/balances`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error fetching account data for bookingId: ${bookingId}`, prisonerId, agencyId),
@@ -133,9 +149,13 @@ export default class PrisonApiClient {
     agencyId: string,
   ): Promise<{ damageObligations: OffenderDamageObligation[] } | null> {
     try {
-      return await this.restClient.get({
-        path: `/api/offenders/${prisonerId}/damage-obligations`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/offenders/${prisonerId}/damage-obligations`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error fetching damage obligations for prisonerId: ${prisonerId}`, prisonerId, agencyId),
@@ -147,9 +167,13 @@ export default class PrisonApiClient {
 
   async getPrisonsByAgencyType(type: string, prisonerId: string, agencyId: string): Promise<Agency[] | null> {
     try {
-      return await this.restClient.get({
-        path: `/api/agencies/type/${type}`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/agencies/type/${type}`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(formatLogMessage(`Error fetching prisons by agency type: ${type}`, prisonerId, agencyId), error)
       throw new Error('Failed to fetch prisons')
@@ -164,9 +188,13 @@ export default class PrisonApiClient {
     agencyId: string,
   ): Promise<OffenderTransactionHistoryDto[] | null> {
     try {
-      return await this.restClient.get({
-        path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/offenders/${prisonerId}/transaction-history?account_code=${accountCode}&from_date=${formatDate(fromDate, DateFormats.ISO_DATE)}&to_date=${formatDate(toDate, DateFormats.ISO_DATE)}`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error({
         ...formatLogMessage('Error fetching transactions for prisoner', prisonerId, agencyId),
@@ -181,9 +209,13 @@ export default class PrisonApiClient {
 
   async getNextVisit(bookingId: string, prisonerId: string, agencyId: string): Promise<VisitDetails | null> {
     try {
-      return await this.restClient.get({
-        path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/bookings/${bookingId}/visits/next?withVisitors=true`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error fetching next visit for bookingId: ${bookingId}`, prisonerId, agencyId),
@@ -195,9 +227,13 @@ export default class PrisonApiClient {
 
   async getVisitBalances(prisonerId: string, agencyId: string): Promise<VisitBalances | null> {
     try {
-      return await this.restClient.get({
-        path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
-      })
+      return await this.restClient.get(
+        {
+          path: `/api/bookings/offenderNo/${prisonerId}/visit/balances`,
+        },
+        prisonerId,
+        agencyId,
+      )
     } catch (error) {
       logger.error(
         formatLogMessage(`Error fetching visit balances for prisonerId: ${prisonerId}`, prisonerId, agencyId),
