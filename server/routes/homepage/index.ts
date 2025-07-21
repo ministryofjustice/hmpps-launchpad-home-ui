@@ -1,29 +1,24 @@
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { DateFormats } from '../../constants/date'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import type { Services } from '../../services'
 
-import config from '../../config'
 import { getEstablishmentData } from '../../utils/utils'
 import { formatDateLocalized } from '../../utils/date/formatDateLocalized'
+import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
+import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
   router.get(
     '/',
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.HOMEPAGE),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
-
-      await auditService.sendAuditMessage({
-        action: 'VIEW_HOMEPAGE',
-        who: user.idToken.sub,
-        service: config.apis.audit.serviceName,
-      })
 
       const prisonerEventsSummary = await services.prisonService.getPrisonerEventsSummary(
         user.idToken.booking.id,

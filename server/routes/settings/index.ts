@@ -12,6 +12,8 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { ApprovedClients } from '../../@types/launchpad'
 import type { Services } from '../../services'
 import { getPaginationData } from '../../utils/pagination/pagination'
+import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
+import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -43,6 +45,7 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.Settings),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.SETTINGS),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language

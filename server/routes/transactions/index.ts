@@ -17,6 +17,8 @@ import { createTransactionTable } from '../../utils/transactions/createTransacti
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'
 
 import { getConfig } from '../config'
+import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
+import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -123,6 +125,7 @@ export default function routes(services: Services): Router {
     router.get(
       path,
       featureFlagMiddleware(Features.Transactions),
+      auditPageViewMiddleware(AUDIT_PAGE_NAMES.TRANSACTIONS),
       asyncHandler((req: Request, res: Response) => {
         return renderTransactions(req, res, accountCode, transactionType)
       }),
@@ -132,6 +135,7 @@ export default function routes(services: Services): Router {
   router.get(
     '/damage-obligations',
     featureFlagMiddleware(Features.Transactions),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.TRANSACTIONS),
     asyncHandler(renderDamageObligationsTransactions),
   )
 

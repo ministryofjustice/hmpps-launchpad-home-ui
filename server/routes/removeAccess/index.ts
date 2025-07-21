@@ -3,6 +3,8 @@ import { Features } from '../../constants/featureFlags'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { Services } from '../../services'
+import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
+import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -10,6 +12,7 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.Settings),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
     asyncHandler(async (req: Request, res: Response) => {
       const { clientId, clientLogoUri, client } = req.query
       const { user } = res.locals
@@ -44,6 +47,7 @@ export default function routes(services: Services): Router {
   router.post(
     '/',
     featureFlagMiddleware(Features.Settings),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
     asyncHandler(async (req: Request, res: Response) => {
       const { userId, clientId, client, action } = req.body
       const { user } = res.locals

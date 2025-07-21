@@ -9,6 +9,8 @@ import type { Services } from '../../services'
 
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentData } from '../../utils/utils'
+import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
+import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -16,6 +18,7 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.SocialVisitors),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.VISITS),
     asyncHandler(async (req: Request, res: Response) => {
       const { prisonerContentHubURL } = getEstablishmentData(req.user.idToken.establishment.agency_id) || {}
       const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(

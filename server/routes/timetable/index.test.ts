@@ -1,9 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { createMockPrisonService } from '../../services/testutils/mocks'
 import { TimetableEvents } from '../../@types/launchpad'
+import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 const mockTranslations: Record<string, string> = {
   'timetable.title': 'Timetable',
@@ -15,10 +17,12 @@ jest.mock('i18next', () => ({
 }))
 
 let app: Express
+const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
 
 const prisonService = createMockPrisonService()
 
 beforeEach(() => {
+  auditServiceSpy.mockResolvedValue()
   app = appWithAllRoutes({
     services: { prisonService },
   })
@@ -528,6 +532,46 @@ describe('GET /timetable', () => {
             'No activities',
           )
         })
+    })
+
+    it('should audit the page view', async () => {
+      await request(app).get('/timetable')
+
+      expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+      expect(auditServiceSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: AUDIT_ACTIONS.VIEW_PAGE,
+          details: expect.stringContaining(AUDIT_PAGE_NAMES.TIMETABLE),
+        }),
+      )
+    })
+  })
+
+  describe('Last week', () => {
+    it('should audit the page view', async () => {
+      await request(app).get('/timetable/last-week')
+
+      expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+      expect(auditServiceSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: AUDIT_ACTIONS.VIEW_PAGE,
+          details: expect.stringContaining(AUDIT_PAGE_NAMES.TIMETABLE),
+        }),
+      )
+    })
+  })
+
+  describe('Next week', () => {
+    it('should audit the page view', async () => {
+      await request(app).get('/timetable/next-week')
+
+      expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+      expect(auditServiceSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: AUDIT_ACTIONS.VIEW_PAGE,
+          details: expect.stringContaining(AUDIT_PAGE_NAMES.TIMETABLE),
+        }),
+      )
     })
   })
 })
