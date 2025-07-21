@@ -28,6 +28,7 @@ import settingsRoutes from './routes/settings'
 import timetableRoutes from './routes/timetable'
 import transactionsRoutes from './routes/transactions'
 import visitsRoutes from './routes/visits'
+import externalRoutes from './routes/external'
 
 import { setPrisonerContentHubUrl } from './middleware/setPrisonerContentHubUrl'
 import type { Services } from './services'
@@ -85,6 +86,7 @@ export default function createApp(services: Services): express.Application {
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', transactionsRoutes(services))
   app.use('/visits', visitsRoutes(services))
+  app.use('/external', externalRoutes())
 
   app.use(sentryErrorHandler())
 

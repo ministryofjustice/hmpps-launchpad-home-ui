@@ -18,6 +18,7 @@ import settingsRoutes from '../settings/index'
 import timetableRoutes from '../timetable/index'
 import transactionsRoutes from '../transactions/index'
 import visitsRoutes from '../visits/index'
+import externalRoutes from '../external/index'
 
 export const idToken = {
   name: 'name',
@@ -99,6 +100,7 @@ function appSetup(
   app.use('/timetable', timetableRoutes(services))
   app.use('/transactions', featureFlagMiddleware('transactions'), transactionsRoutes(services))
   app.use('/visits', featureFlagMiddleware('visits'), visitsRoutes(services))
+  app.use('/external', externalRoutes())
 
   app.use((_req, _res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(production))
