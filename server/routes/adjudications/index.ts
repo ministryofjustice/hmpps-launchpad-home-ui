@@ -11,6 +11,8 @@ import type { Services } from '../../services'
 import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { getEstablishmentData } from '../../utils/utils'
+import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
+import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -18,6 +20,7 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.Adjudications),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.ADJUDICATIONS),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
@@ -49,7 +52,8 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/:chargeNumber',
-    featureFlagMiddleware('adjudications'),
+    featureFlagMiddleware(Features.Adjudications),
+    auditPageViewMiddleware(AUDIT_PAGE_NAMES.CHARGE),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 

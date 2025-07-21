@@ -1,10 +1,12 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
+import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockAdjucationsService } from '../../services/testutils/mocks'
 import { formattedAdjudication, reportedAdjudication } from '../../utils/mocks/adjudications'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { user } from '../../utils/mocks/user'
+import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 jest.mock('i18next', () => ({
   t: jest.fn().mockImplementation((key: string) => key),
@@ -43,6 +45,8 @@ jest.mock('../../utils/adjudications/formatAdjudication', () => ({
 
 let app: Express
 
+const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+
 const adjudicationsService = createMockAdjucationsService()
 
 const mockServices = {
@@ -53,6 +57,7 @@ describe('GET /adjudications', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    auditServiceSpy.mockResolvedValue()
     app = appWithAllRoutes({
       services: { adjudicationsService },
       userSupplier: () => user,
@@ -75,6 +80,22 @@ describe('GET /adjudications', () => {
     )
   })
 
+  it('should audit the /adjudications view', async () => {
+    mockServices.adjudicationsService.getReportedAdjudicationsFor.mockResolvedValue({
+      content: [reportedAdjudication],
+    })
+
+    await request(app).get('/adjudications')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: AUDIT_ACTIONS.VIEW_PAGE,
+        details: expect.stringContaining(AUDIT_PAGE_NAMES.ADJUDICATIONS),
+      }),
+    )
+  })
+
   it('should render the /adjudications/:chargeNumber view', async () => {
     mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
 
@@ -82,6 +103,20 @@ describe('GET /adjudications', () => {
 
     expect(res.status).toBe(200)
     expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI', 'G1234UE')
+  })
+
+  it('should audit the /adjudications/:chargeNumber view', async () => {
+    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+
+    await request(app).get('/adjudications/12345')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: AUDIT_ACTIONS.VIEW_PAGE,
+        details: expect.stringContaining(AUDIT_PAGE_NAMES.CHARGE),
+      }),
+    )
   })
 
   it('/adjudications/:chargeNumber view should redirect for user prisoner number not matching the fetched adjudication', async () => {

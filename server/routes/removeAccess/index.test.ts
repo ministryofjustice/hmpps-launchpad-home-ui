@@ -1,9 +1,11 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
+import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockLaunchpadAuthService } from '../../services/testutils/mocks'
 import { client } from '../../utils/mocks/client'
 import { appWithAllRoutes } from '../testutils/appSetup'
+import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 jest.mock('../../constants/featureFlags', () => ({
   ALLOW_ALL_PRISONS: 'ALL',
@@ -33,6 +35,7 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 })
 
 let app: Express
+const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
 
 const launchpadAuthService = createMockLaunchpadAuthService()
 
@@ -40,6 +43,7 @@ describe('GET /remove-access', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    auditServiceSpy.mockResolvedValue()
     app = appWithAllRoutes({
       services: { launchpadAuthService },
     })
@@ -62,6 +66,29 @@ describe('GET /remove-access', () => {
     expect(res.status).toBe(200)
     expect(res.text).toContain(client.name)
     expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
+  })
+
+  it('should audit the page view', async () => {
+    launchpadAuthService.getApprovedClients.mockResolvedValue({
+      page: 1,
+      exhausted: true,
+      totalElements: 1,
+      content: [client],
+    })
+
+    await request(app).get('/remove-access').query({
+      clientId: client.id,
+      clientLogoUri: client.logoUri,
+      client: client.name,
+    })
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: AUDIT_ACTIONS.VIEW_PAGE,
+        details: expect.stringContaining(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
+      }),
+    )
   })
 
   it('should redirect to /settings with error when invalid client ID is provided', async () => {
@@ -158,5 +185,29 @@ describe('POST /remove-access', () => {
     expect(res.header.location).toBe('/settings')
     expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
     expect(launchpadAuthService.removeClientAccess).not.toHaveBeenCalled()
+  })
+
+  it('should audit the page view', async () => {
+    launchpadAuthService.getApprovedClients.mockResolvedValue({
+      page: 1,
+      exhausted: true,
+      totalElements: 1,
+      content: [client],
+    })
+
+    await request(app).post('/remove-access').send({
+      userId: 'sub',
+      clientId: client.id,
+      client: client.name,
+      action: 'remove',
+    })
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: AUDIT_ACTIONS.VIEW_PAGE,
+        details: expect.stringContaining(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
+      }),
+    )
   })
 })

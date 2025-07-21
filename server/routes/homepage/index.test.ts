@@ -9,6 +9,7 @@ import { eventsSummary } from '../../utils/mocks/events'
 import { links } from '../../utils/mocks/links'
 import { getEstablishmentData } from '../../utils/utils'
 import { appWithAllRoutes } from '../testutils/appSetup'
+import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 let app: Express
 const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
@@ -218,11 +219,12 @@ describe('GET /', () => {
       .expect('Content-Type', /html/)
       .expect(() => {
         expect(auditServiceSpy).toHaveBeenCalledTimes(1)
-        expect(auditServiceSpy).toHaveBeenCalledWith({
-          action: 'VIEW_HOMEPAGE',
-          service: 'hmpps-launchpad-home-ui',
-          who: 'sub',
-        })
+        expect(auditServiceSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            action: AUDIT_ACTIONS.VIEW_PAGE,
+            details: expect.stringContaining(AUDIT_PAGE_NAMES.HOMEPAGE),
+          }),
+        )
       })
   })
 })
