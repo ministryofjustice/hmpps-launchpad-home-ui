@@ -23,15 +23,15 @@ export default function routes(): Router {
       const links: { [key: string]: string } = {
         'self-service': selfServiceURL,
         'content-hub': prisonerContentHubURL,
-        'prison-radio': `${prisonerContentHubURL}/tags/785`,
-        'inside-time': 'https://insidetimeprison.org/',
-        adjudications: `${prisonerContentHubURL}/content/4193`,
-        incentives: `${prisonerContentHubURL}/tags/1417`,
-        timetable: `${prisonerContentHubURL}/tags/1341`,
-        transactions: `${prisonerContentHubURL}/tags/872`,
-        visits: `${prisonerContentHubURL}/tags/1133`,
-        'privacy-policy': `${prisonerContentHubURL}/content/4856`,
-        'transactions-help': `${prisonerContentHubURL}/content/8534`,
+        'prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,
+        'inside-time': config.externalUrls.insideTime,
+        adjudications: `${prisonerContentHubURL}/${config.contentHubUrls.adjudications}`,
+        incentives: `${prisonerContentHubURL}/${config.contentHubUrls.incentives}`,
+        timetable: `${prisonerContentHubURL}/${config.contentHubUrls.timetable}`,
+        transactions: `${prisonerContentHubURL}/${config.contentHubUrls.transactions}`,
+        visits: `${prisonerContentHubURL}/${config.contentHubUrls.visits}`,
+        'privacy-policy': `${prisonerContentHubURL}/${config.contentHubUrls.privacyPolicy}`,
+        'transactions-help': `${prisonerContentHubURL}/${config.contentHubUrls.transactionsHelp}`,
       }
 
       const redirectUrl = links[target]
