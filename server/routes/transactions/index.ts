@@ -65,7 +65,6 @@ export default function routes(services: Services): Router {
       data: {
         accountTypes: AccountTypes,
         balance: getBalanceByAccountCode(balances, accountCode),
-        contentHubTransactionsHelpLinkUrl: `/content/8534`,
         dateSelectionRange,
         hasDamageObligations: balances.damageObligations > 0,
         selectedDate,
@@ -106,7 +105,6 @@ export default function routes(services: Services): Router {
       data: {
         accountTypes: AccountTypes,
         balance: balances.damageObligations,
-        contentHubTransactionsHelpLinkUrl: `/content/8534`,
         damageObligations: createDamageObligationsTable(damageObligationsWithPrison, language),
         selectedTab: TransactionTypes.DAMAGE_OBLIGATIONS,
       },

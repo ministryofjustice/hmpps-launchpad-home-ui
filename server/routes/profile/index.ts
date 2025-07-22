@@ -10,7 +10,6 @@ import type { Services } from '../../services'
 
 import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
 import { formatBalances } from '../../utils/transactions/formatBalances'
-import { getEstablishmentData } from '../../utils/utils'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
 import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
@@ -35,7 +34,6 @@ export default function routes(services: Services): Router {
         ),
       ])
 
-      const { prisonerContentHubURL } = getEstablishmentData(establishment.agency_id)
       const { hasAdjudications } = await services.adjudicationsService.hasAdjudications(
         booking.id,
         establishment.agency_id,
@@ -80,28 +78,28 @@ export default function routes(services: Services): Router {
         data: {
           adjudications: {
             hasAdjudications,
-            readMoreUrl: `${prisonerContentHubURL}/content/4193`,
+            readMoreUrl: '/external/adjudications',
             isEnabled: isAdjudicationsEnabled,
           },
           incentives: {
             incentivesData,
-            readMoreUrl: `${prisonerContentHubURL}/tags/1417`,
+            readMoreUrl: '/external/incentives',
           },
           socialVisitors: {
             isEnabled: isSocialVisitorsEnabled,
           },
           timetable: {
             timetableEvents: timetableEvents[0],
-            readMoreUrl: `${prisonerContentHubURL}/tags/1341`,
+            readMoreUrl: '/external/timetable',
           },
           transactions: {
             balances: formatBalances(transactionsBalances),
-            readMoreUrl: `${prisonerContentHubURL}/tags/872`,
+            readMoreUrl: '/external/transactions',
             isEnabled: isTransactionsEnabled,
           },
           visits: {
             nextVisit: nextVisitData,
-            readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
+            readMoreUrl: '/external/visits',
             visitsRemaining,
             isEnabled: isVisitsEnabled,
           },

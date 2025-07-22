@@ -1,5 +1,6 @@
 export const enum AUDIT_ACTIONS {
   VIEW_PAGE = 'VIEW_PAGE',
+  VIEW_EXTERNAL_PAGE = 'VIEW_EXTERNAL_PAGE',
 }
 
 export const enum AUDIT_PAGE_NAMES {

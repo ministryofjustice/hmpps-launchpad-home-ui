@@ -10,7 +10,6 @@ import type { Services } from '../../services'
 
 import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
-import { getEstablishmentData } from '../../utils/utils'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
 import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
@@ -25,7 +24,6 @@ export default function routes(services: Services): Router {
       const { user } = res.locals
       const language = req.language || i18next.language
 
-      const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
         user.idToken.booking.id,
         user.idToken.establishment.agency_id,
@@ -42,7 +40,7 @@ export default function routes(services: Services): Router {
           paginationData,
           rawQuery: req.query.page,
           reportedAdjudications: pagedReportedAdjudications,
-          readMoreUrl: `${prisonerContentHubURL}/content/4193`,
+          readMoreUrl: '/external/adjudications',
         },
         errors: req.flash('errors'),
         message: req.flash('message'),
@@ -57,7 +55,6 @@ export default function routes(services: Services): Router {
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
 
-      const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
         user.idToken.establishment?.agency_id,
@@ -75,7 +72,7 @@ export default function routes(services: Services): Router {
             data: {
               adjudication: formattedAdjudication,
               chargeNumber: req.params.chargeNumber,
-              readMoreUrl: `${prisonerContentHubURL}/content/4193`,
+              readMoreUrl: '/external/adjudications',
             },
           })
     }),
