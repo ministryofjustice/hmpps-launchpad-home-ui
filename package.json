@@ -165,6 +165,7 @@
     "typescript": "^5.8.3"
   },
   "overrides": {
-    "@eslint/plugin-kit": "^0.3.3"
+    "@eslint/plugin-kit": "^0.3.3",
+    "form-data": "^4.0.4"
   }
 }
