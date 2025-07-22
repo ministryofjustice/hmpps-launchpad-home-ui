@@ -15,15 +15,13 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { prisonerContentHubURL, selfServiceURL, hideInsideTime } = getEstablishmentData(
-      user.idToken.establishment.agency_id,
-    )
+    const { hideInsideTime } = getEstablishmentData(user.idToken.establishment.agency_id)
 
     const links = [
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',
         title: i18next.t('homepage.links.selfService', { lng: language }),
-        url: selfServiceURL,
+        url: '/external/self-service',
         description: i18next.t('homepage.links.selfServiceDesc', { lng: language }),
         openInNewTab: true,
         hidden: false,
@@ -31,7 +29,7 @@ export default class Linkservice {
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
         title: i18next.t('homepage.links.contentHub', { lng: language }),
-        url: prisonerContentHubURL,
+        url: '/external/content-hub',
         description: i18next.t('homepage.links.contentHubDesc', { lng: language }),
         openInNewTab: true,
         hidden: false,
@@ -39,7 +37,7 @@ export default class Linkservice {
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.jpg',
         title: i18next.t('homepage.links.nationalPrisonRadio', { lng: language }),
-        url: `${prisonerContentHubURL}/tags/785`,
+        url: '/external/prison-radio',
         description: i18next.t('homepage.links.nationalPrisonRadioDesc', { lng: language }),
         openInNewTab: true,
         hidden: false,
@@ -47,7 +45,7 @@ export default class Linkservice {
       {
         image: '/assets/images/link-tile-images/inside-time-link-tile-image.jpg',
         title: i18next.t('homepage.links.insideTime', { lng: language }),
-        url: 'https://insidetimeprison.org/',
+        url: '/external/inside-time',
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
         hidden: hideInsideTime || false,
