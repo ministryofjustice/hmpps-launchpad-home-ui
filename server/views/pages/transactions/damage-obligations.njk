@@ -22,7 +22,7 @@
 
 {% block content %}
   <div class="govuk-body govuk-width-container govuk-frontend-supported">
-    {{ transactionsHelp(prisonerContentHubUrl, data.contentHubTransactionsHelpLinkUrl, t) }}
+    {{ transactionsHelp(t) }}
     {{ transactionsTabs(data.selectedTab, data.accountTypes, data.hasDamageObligations, t) }}
     {{ damageObligationsTable(data.balance, data.damageObligations, t)}}
   </div>

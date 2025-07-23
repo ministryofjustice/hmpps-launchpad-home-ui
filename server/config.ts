@@ -266,6 +266,19 @@ export default {
       selfServiceURL: 'https://wyiclient.unilink.prisoner.service.justice.gov.uk:1100',
     },
   ],
+  contentHubUrls: {
+    prisonRadio: 'tags/785',
+    adjudications: 'content/4193',
+    incentives: 'tags/1417',
+    timetable: 'tags/1341',
+    transactions: 'tags/872',
+    visits: 'tags/1133',
+    privacyPolicy: 'content/4856',
+    transactionsHelp: 'content/8534',
+  },
+  externalUrls: {
+    insideTime: 'https://insidetimeprison.org/',
+  },
   analytics: {
     // use staging GA4 tag as fallback
     ga4SiteId: get('GA4_SITE_ID', 'G-4VW039LBEF', requiredInProduction),

@@ -8,7 +8,6 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import type { Services } from '../../services'
 
 import { getPaginationData } from '../../utils/pagination/pagination'
-import { getEstablishmentData } from '../../utils/utils'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
 import { AUDIT_PAGE_NAMES } from '../../constants/audit'
 
@@ -20,7 +19,6 @@ export default function routes(services: Services): Router {
     featureFlagMiddleware(Features.SocialVisitors),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.VISITS),
     asyncHandler(async (req: Request, res: Response) => {
-      const { prisonerContentHubURL } = getEstablishmentData(req.user.idToken.establishment.agency_id) || {}
       const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(
         req.user.idToken.sub,
         req.user.idToken.establishment.agency_id,
@@ -35,7 +33,7 @@ export default function routes(services: Services): Router {
         data: {
           paginationData,
           rawQuery: req.query.page,
-          readMoreUrl: `${prisonerContentHubURL}/tags/1133`,
+          readMoreUrl: '/external/visits',
           socialVisitors,
         },
         errors: req.flash('errors'),
