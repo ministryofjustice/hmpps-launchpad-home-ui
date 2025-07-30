@@ -5,7 +5,6 @@ import { createMockLaunchpadAuthService } from '../../services/testutils/mocks'
 import { client } from '../../utils/mocks/client'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
-import objectContaining = jasmine.objectContaining
 
 jest.mock('../../constants/featureFlags', () => ({
   ALLOW_ALL_PRISONS: 'ALL',

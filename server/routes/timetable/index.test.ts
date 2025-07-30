@@ -5,7 +5,6 @@ import { appWithAllRoutes } from '../testutils/appSetup'
 import { createMockPrisonService } from '../../services/testutils/mocks'
 import { TimetableEvents } from '../../@types/launchpad'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
-import * as routes from './index'
 
 const mockTranslations: Record<string, string> = {
   'timetable.title': 'Timetable',
