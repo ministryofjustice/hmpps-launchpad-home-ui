@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express'
 import { auditService } from '@ministryofjustice/hmpps-audit-client'
-import { asyncHandler } from '../../middleware/asyncHandler'
 import logger from '../../../logger'
 import { getEstablishmentData } from '../../utils/utils'
 import { AUDIT_ACTIONS } from '../../constants/audit'
@@ -11,7 +10,7 @@ export default function routes(): Router {
 
   router.get(
     '/:target(self\\-service|content\\-hub|prison\\-radio|inside\\-time|adjudications|incentives|timetable|transactions|visits|privacy-policy|transactions-help)',
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const { target } = req.params
       const { idToken } = res.locals.user
       const agencyId = idToken.establishment?.agency_id
@@ -56,7 +55,7 @@ export default function routes(): Router {
       })
 
       res.redirect(redirectUrl)
-    }),
+    },
   )
 
   return router

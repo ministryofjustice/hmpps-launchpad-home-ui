@@ -1,13 +1,8 @@
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
-
 import { Features } from '../../constants/featureFlags'
-
-import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
-
 import type { Services } from '../../services'
-
 import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
@@ -20,7 +15,7 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware(Features.Adjudications),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.ADJUDICATIONS),
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
 
@@ -45,14 +40,14 @@ export default function routes(services: Services): Router {
         errors: req.flash('errors'),
         message: req.flash('message'),
       })
-    }),
+    },
   )
 
   router.get(
     '/:chargeNumber',
     featureFlagMiddleware(Features.Adjudications),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.CHARGE),
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const { user } = res.locals
 
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
@@ -75,7 +70,7 @@ export default function routes(services: Services): Router {
               readMoreUrl: '/external/adjudications',
             },
           })
-    }),
+    },
   )
 
   return router

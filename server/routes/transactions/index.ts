@@ -1,21 +1,15 @@
 import { endOfMonth, isFuture, startOfMonth } from 'date-fns'
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
-
 import { AgencyType } from '../../constants/agency'
 import { Features } from '../../constants/featureFlags'
 import { AccountCodes, AccountTypes, TransactionTypes } from '../../constants/transactions'
-
-import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
-
 import type { Services } from '../../services'
-
 import { createDateSelectionRange } from '../../utils/date/date'
 import { createDamageObligationsTable } from '../../utils/transactions/createDamageObligationsTable'
 import { createTransactionTable } from '../../utils/transactions/createTransactionTable'
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'
-
 import { getConfig } from '../config'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
 import { AUDIT_PAGE_NAMES } from '../../constants/audit'
@@ -124,9 +118,9 @@ export default function routes(services: Services): Router {
       path,
       featureFlagMiddleware(Features.Transactions),
       auditPageViewMiddleware(AUDIT_PAGE_NAMES.TRANSACTIONS),
-      asyncHandler((req: Request, res: Response) => {
+      (req: Request, res: Response) => {
         return renderTransactions(req, res, accountCode, transactionType)
-      }),
+      },
     )
   })
 
@@ -134,7 +128,7 @@ export default function routes(services: Services): Router {
     '/damage-obligations',
     featureFlagMiddleware(Features.Transactions),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.TRANSACTIONS),
-    asyncHandler(renderDamageObligationsTransactions),
+    renderDamageObligationsTransactions,
   )
 
   return router

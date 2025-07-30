@@ -20,7 +20,7 @@ const auditPageViewMiddleware = (pageName: string) => {
         pageUrl: req.originalUrl,
         params: req.params,
         query: req.query,
-        body: req.body,
+        body: req.body || {},
         agencyId,
         bookingId,
       }),

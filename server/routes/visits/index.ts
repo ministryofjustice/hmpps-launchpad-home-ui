@@ -1,12 +1,7 @@
 import { Request, Response, Router } from 'express'
-
 import { Features } from '../../constants/featureFlags'
-
-import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
-
 import type { Services } from '../../services'
-
 import { getPaginationData } from '../../utils/pagination/pagination'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
 import { AUDIT_PAGE_NAMES } from '../../constants/audit'
@@ -18,7 +13,7 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware(Features.SocialVisitors),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.VISITS),
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const socialVisitorsRes = await services.prisonerContactRegistryService.getSocialVisitors(
         req.user.idToken.sub,
         req.user.idToken.establishment.agency_id,
@@ -39,7 +34,7 @@ export default function routes(services: Services): Router {
         errors: req.flash('errors'),
         message: req.flash('message'),
       })
-    }),
+    },
   )
 
   return router

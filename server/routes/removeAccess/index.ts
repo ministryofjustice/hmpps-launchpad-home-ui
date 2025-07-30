@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express'
 import { Features } from '../../constants/featureFlags'
-import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { Services } from '../../services'
 import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
@@ -13,7 +12,7 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware(Features.Settings),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const { clientId, clientLogoUri, client } = req.query
       const { user } = res.locals
 
@@ -41,14 +40,14 @@ export default function routes(services: Services): Router {
         errors: req.flash('errors'),
         message: req.flash('message'),
       })
-    }),
+    },
   )
 
   router.post(
     '/',
     featureFlagMiddleware(Features.Settings),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const { userId, clientId, client, action } = req.body
       const { user } = res.locals
 
@@ -81,7 +80,7 @@ export default function routes(services: Services): Router {
       }
 
       return res.redirect('/settings')
-    }),
+    },
   )
 
   return router

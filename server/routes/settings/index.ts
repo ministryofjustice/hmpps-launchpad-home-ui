@@ -2,13 +2,9 @@ import { format, Locale } from 'date-fns'
 import { cy, enGB } from 'date-fns/locale'
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
-
 import { DateFormats } from '../../constants/date'
 import { Features } from '../../constants/featureFlags'
-
-import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
-
 import { ApprovedClients } from '../../@types/launchpad'
 import type { Services } from '../../services'
 import { getPaginationData } from '../../utils/pagination/pagination'
@@ -46,7 +42,7 @@ export default function routes(services: Services): Router {
     '/',
     featureFlagMiddleware(Features.Settings),
     auditPageViewMiddleware(AUDIT_PAGE_NAMES.SETTINGS),
-    asyncHandler(async (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
 
@@ -77,7 +73,7 @@ export default function routes(services: Services): Router {
         errors: req.flash('errors'),
         message: req.flash('message'),
       })
-    }),
+    },
   )
 
   return router
