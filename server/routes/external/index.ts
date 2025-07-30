@@ -9,28 +9,40 @@ export default function routes(): Router {
   const router = Router()
 
   router.get(
-    '/:target(self\\-service|content\\-hub|prison\\-radio|inside\\-time|adjudications|incentives|timetable|transactions|visits|privacy-policy|transactions-help)',
+    [
+      '/self-service',
+      '/content-hub',
+      '/prison-radio',
+      '/inside-time',
+      '/adjudications',
+      '/incentives',
+      '/timetable',
+      '/transactions',
+      '/visits',
+      '/privacy-policy',
+      '/transactions-help',
+    ],
     async (req: Request, res: Response) => {
-      const { target } = req.params
       const { idToken } = res.locals.user
       const agencyId = idToken.establishment?.agency_id
       const bookingId = idToken.booking.id
       const prisonerId = idToken.sub
+      const target = req.path
 
       const { prisonerContentHubURL, selfServiceURL } = getEstablishmentData(agencyId)
 
       const links: { [key: string]: string } = {
-        'self-service': selfServiceURL,
-        'content-hub': prisonerContentHubURL,
-        'prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,
-        'inside-time': config.externalUrls.insideTime,
-        adjudications: `${prisonerContentHubURL}/${config.contentHubUrls.adjudications}`,
-        incentives: `${prisonerContentHubURL}/${config.contentHubUrls.incentives}`,
-        timetable: `${prisonerContentHubURL}/${config.contentHubUrls.timetable}`,
-        transactions: `${prisonerContentHubURL}/${config.contentHubUrls.transactions}`,
-        visits: `${prisonerContentHubURL}/${config.contentHubUrls.visits}`,
-        'privacy-policy': `${prisonerContentHubURL}/${config.contentHubUrls.privacyPolicy}`,
-        'transactions-help': `${prisonerContentHubURL}/${config.contentHubUrls.transactionsHelp}`,
+        '/self-service': selfServiceURL,
+        '/content-hub': prisonerContentHubURL,
+        '/prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,
+        '/inside-time': config.externalUrls.insideTime,
+        '/adjudications': `${prisonerContentHubURL}/${config.contentHubUrls.adjudications}`,
+        '/incentives': `${prisonerContentHubURL}/${config.contentHubUrls.incentives}`,
+        '/timetable': `${prisonerContentHubURL}/${config.contentHubUrls.timetable}`,
+        '/transactions': `${prisonerContentHubURL}/${config.contentHubUrls.transactions}`,
+        '/visits': `${prisonerContentHubURL}/${config.contentHubUrls.visits}`,
+        '/privacy-policy': `${prisonerContentHubURL}/${config.contentHubUrls.privacyPolicy}`,
+        '/transactions-help': `${prisonerContentHubURL}/${config.contentHubUrls.transactionsHelp}`,
       }
 
       const redirectUrl = links[target]
@@ -42,7 +54,7 @@ export default function routes(): Router {
         who: prisonerId,
         service: config.apis.audit.serviceName,
         details: JSON.stringify({
-          page: target.toUpperCase().replace('-', '_'),
+          page: target.toUpperCase().replace('/', '').replace('-', '_'),
           method: req.method,
           pageUrl: req.originalUrl,
           params: req.params,
