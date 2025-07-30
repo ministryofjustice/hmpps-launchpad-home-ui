@@ -4,15 +4,13 @@ import i18next from 'i18next'
 
 import type { Services } from '../../services'
 import { asyncHandler } from '../../middleware/asyncHandler'
-import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
-import { AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
   router.get(
     '/',
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.TIMETABLE),
     asyncHandler(async (req: Request, res: Response) => {
       const language = req.language || i18next.language
       const { user } = res.locals
@@ -26,7 +24,7 @@ export default function routes(services: Services): Router {
         nextWeek: false,
       }
 
-      const fromDate = new Date()
+      const fromDate = new Date(Date.now())
       const toDate = addDays(fromDate, 6)
 
       const events = await Promise.all([
@@ -40,6 +38,12 @@ export default function routes(services: Services): Router {
         ),
       ])
 
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_TIMETABLE,
+        idToken: user.idToken,
+        details: { fromDate, toDate },
+      })
+
       return res.render('pages/timetable', {
         givenName: user.idToken.given_name,
         config,
@@ -52,7 +56,6 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/last-week',
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.TIMETABLE),
     asyncHandler(async (req: Request, res: Response) => {
       const language = req.language || i18next.language
       const { user } = res.locals
@@ -66,7 +69,7 @@ export default function routes(services: Services): Router {
         nextWeek: false,
       }
 
-      const today = new Date()
+      const today = new Date(Date.now())
       const fromDate = subDays(today, 7)
       const toDate = subDays(today, 1)
 
@@ -81,6 +84,12 @@ export default function routes(services: Services): Router {
         ),
       ])
 
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_TIMETABLE,
+        idToken: user.idToken,
+        details: { fromDate, toDate },
+      })
+
       return res.render('pages/timetable', {
         givenName: user.idToken.given_name,
         title: 'Timetable',
@@ -94,7 +103,6 @@ export default function routes(services: Services): Router {
 
   router.get(
     '/next-week',
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.TIMETABLE),
     asyncHandler(async (req: Request, res: Response) => {
       const language = req.language || i18next.language
       const { user } = res.locals
@@ -108,7 +116,7 @@ export default function routes(services: Services): Router {
         nextWeek: true,
       }
 
-      const today = new Date()
+      const today = new Date(Date.now())
       const fromDate = addDays(today, 7)
       const toDate = addDays(fromDate, 6)
 
@@ -122,6 +130,12 @@ export default function routes(services: Services): Router {
           user.idToken.establishment.agency_id,
         ),
       ])
+
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_TIMETABLE,
+        idToken: user.idToken,
+        details: { fromDate, toDate },
+      })
 
       return res.render('pages/timetable', {
         givenName: user.idToken.given_name,

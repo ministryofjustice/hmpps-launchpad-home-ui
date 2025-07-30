@@ -6,6 +6,7 @@ import config from '../config'
 import generateOauthClientToken from './clientCredentials'
 import type { TokenVerifier } from '../data/tokenVerification'
 import { createUserObject } from './refreshToken'
+import { AUDIT_EVENTS, auditService } from '../services/audit/auditService'
 
 passport.serializeUser((user, cb) => {
   process.nextTick(() => {
@@ -51,7 +52,7 @@ function init(): void {
         nonce: 'true',
         customHeaders: { Authorization: generateOauthClientToken() },
       },
-      function verify(
+      async function verify(
         _iss: string,
         _profile: any,
         _context: any,
@@ -61,7 +62,9 @@ function init(): void {
         _verified: any,
         cb: (arg0: null, arg1: { idToken: any; refreshToken: any; accessToken: any; token: any }) => any,
       ) {
-        return cb(null, createUserObject(idToken, refreshToken, accessToken))
+        const user = createUserObject(idToken, refreshToken, accessToken)
+        await auditService.audit({ what: AUDIT_EVENTS.LOGGED_IN, idToken: user.idToken })
+        return cb(null, user)
       },
     ),
   )

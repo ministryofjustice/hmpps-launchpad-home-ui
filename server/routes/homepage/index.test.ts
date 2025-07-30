@@ -3,16 +3,15 @@ import type { Express } from 'express'
 import request from 'supertest'
 import i18next from 'i18next'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockLinksService, createMockPrisonService } from '../../services/testutils/mocks'
 import { eventsSummary } from '../../utils/mocks/events'
 import { links } from '../../utils/mocks/links'
 import { getEstablishmentData } from '../../utils/utils'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 const prisonService = createMockPrisonService()
 const linksService = createMockLinksService()
 
@@ -221,8 +220,7 @@ describe('GET /', () => {
         expect(auditServiceSpy).toHaveBeenCalledTimes(1)
         expect(auditServiceSpy).toHaveBeenCalledWith(
           expect.objectContaining({
-            action: AUDIT_ACTIONS.VIEW_PAGE,
-            details: expect.stringContaining(AUDIT_PAGE_NAMES.HOMEPAGE),
+            what: AUDIT_EVENTS.VIEW_HOMEPAGE,
           }),
         )
       })

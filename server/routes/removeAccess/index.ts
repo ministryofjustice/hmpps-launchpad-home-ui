@@ -3,8 +3,7 @@ import { Features } from '../../constants/featureFlags'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { Services } from '../../services'
-import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
-import { AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -12,7 +11,6 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.Settings),
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
     asyncHandler(async (req: Request, res: Response) => {
       const { clientId, clientLogoUri, client } = req.query
       const { user } = res.locals
@@ -28,6 +26,12 @@ export default function routes(services: Services): Router {
         req.flash('errors', 'Invalid client ID.')
         return res.redirect('/settings')
       }
+
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_REMOVE_APP_ACCESS,
+        idToken: user.idToken,
+        details: { clientId, client },
+      })
 
       return res.render('pages/remove-access', {
         data: {
@@ -47,7 +51,6 @@ export default function routes(services: Services): Router {
   router.post(
     '/',
     featureFlagMiddleware(Features.Settings),
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
     asyncHandler(async (req: Request, res: Response) => {
       const { userId, clientId, client, action } = req.body
       const { user } = res.locals
@@ -66,6 +69,12 @@ export default function routes(services: Services): Router {
 
       if (action === 'remove') {
         try {
+          await auditService.audit({
+            what: AUDIT_EVENTS.DELETE_APP_ACCESS,
+            idToken: user.idToken,
+            details: { clientId, client },
+          })
+
           await services.launchpadAuthService.removeClientAccess(
             clientId,
             userId,

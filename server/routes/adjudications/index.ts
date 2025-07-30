@@ -10,8 +10,7 @@ import type { Services } from '../../services'
 
 import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
-import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
-import { AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -19,23 +18,28 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.Adjudications),
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.ADJUDICATIONS),
     asyncHandler(async (req: Request, res: Response) => {
-      const { user } = res.locals
+      const { idToken } = res.locals.user
       const language = req.language || i18next.language
 
       const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
-        user.idToken.booking.id,
-        user.idToken.establishment.agency_id,
+        idToken.booking.id,
+        idToken.establishment.agency_id,
         language,
-        user.idToken.sub,
+        idToken.sub,
       )
 
       const paginationData = getPaginationData(Number(req.query.page), reportedAdjudications.content.length)
       const pagedReportedAdjudications = reportedAdjudications.content.slice(paginationData.min - 1, paginationData.max)
 
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_ADJUDICATIONS,
+        idToken,
+        details: { ...(req.query.page && { page: req.query.page }) },
+      })
+
       res.render('pages/adjudications', {
-        givenName: user.idToken.given_name,
+        givenName: idToken.given_name,
         data: {
           paginationData,
           rawQuery: req.query.page,
@@ -51,30 +55,37 @@ export default function routes(services: Services): Router {
   router.get(
     '/:chargeNumber',
     featureFlagMiddleware(Features.Adjudications),
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.CHARGE),
     asyncHandler(async (req: Request, res: Response) => {
-      const { user } = res.locals
+      const { idToken } = res.locals.user
 
       const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
         req.params.chargeNumber,
-        user.idToken.establishment?.agency_id,
-        user.idToken.sub,
+        idToken.establishment?.agency_id,
+        idToken.sub,
       )
 
       const formattedAdjudication = reportedAdjudication
-        ? await formatAdjudication(reportedAdjudication, services, user.idToken)
+        ? await formatAdjudication(reportedAdjudication, services, idToken)
         : null
 
-      return user.idToken.sub !== reportedAdjudication.prisonerNumber
-        ? res.redirect('/adjudications')
-        : res.render('pages/adjudication', {
-            givenName: user.idToken.given_name,
-            data: {
-              adjudication: formattedAdjudication,
-              chargeNumber: req.params.chargeNumber,
-              readMoreUrl: '/external/adjudications',
-            },
-          })
+      if (idToken.sub !== reportedAdjudication.prisonerNumber) {
+        res.redirect('/adjudications')
+      } else {
+        await auditService.audit({
+          what: AUDIT_EVENTS.VIEW_CHARGE,
+          idToken,
+          details: { chargeNumber: req.params.chargeNumber },
+        })
+
+        res.render('pages/adjudication', {
+          givenName: idToken.given_name,
+          data: {
+            adjudication: formattedAdjudication,
+            chargeNumber: req.params.chargeNumber,
+            readMoreUrl: '/external/adjudications',
+          },
+        })
+      }
     }),
   )
 
