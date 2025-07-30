@@ -1,10 +1,9 @@
 import { Request, Response, Router } from 'express'
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { asyncHandler } from '../../middleware/asyncHandler'
 import logger from '../../../logger'
 import { getEstablishmentData } from '../../utils/utils'
-import { AUDIT_ACTIONS } from '../../constants/audit'
 import config from '../../config'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(): Router {
   const router = Router()
@@ -15,7 +14,6 @@ export default function routes(): Router {
       const { target } = req.params
       const { idToken } = res.locals.user
       const agencyId = idToken.establishment?.agency_id
-      const bookingId = idToken.booking.id
       const prisonerId = idToken.sub
 
       const { prisonerContentHubURL, selfServiceURL } = getEstablishmentData(agencyId)
@@ -38,21 +36,13 @@ export default function routes(): Router {
 
       logger.info(`Redirecting ${prisonerId} to ${redirectUrl}`)
 
-      await auditService.sendAuditMessage({
-        action: AUDIT_ACTIONS.VIEW_EXTERNAL_PAGE,
-        who: prisonerId,
-        service: config.apis.audit.serviceName,
-        details: JSON.stringify({
-          page: target.toUpperCase().replace('-', '_'),
-          method: req.method,
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_EXTERNAL_PAGE,
+        idToken,
+        details: {
           pageUrl: req.originalUrl,
-          params: req.params,
-          query: req.query,
-          body: req.body,
-          agencyId,
-          bookingId,
           redirectUrl,
-        }),
+        },
       })
 
       res.redirect(redirectUrl)

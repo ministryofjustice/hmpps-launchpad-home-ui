@@ -1,11 +1,10 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockLaunchpadAuthService } from '../../services/testutils/mocks'
 import { client } from '../../utils/mocks/client'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 jest.mock('../../constants/featureFlags', () => ({
   ALLOW_ALL_PRISONS: 'ALL',
@@ -35,7 +34,7 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 })
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 
 const launchpadAuthService = createMockLaunchpadAuthService()
 
@@ -85,8 +84,11 @@ describe('GET /remove-access', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
+        what: AUDIT_EVENTS.VIEW_REMOVE_APP_ACCESS,
+        details: {
+          clientId: client.id,
+          client: client.name,
+        },
       }),
     )
   })
@@ -187,7 +189,7 @@ describe('POST /remove-access', () => {
     expect(launchpadAuthService.removeClientAccess).not.toHaveBeenCalled()
   })
 
-  it('should audit the page view', async () => {
+  it('should audit a client deletion', async () => {
     launchpadAuthService.getApprovedClients.mockResolvedValue({
       page: 1,
       exhausted: true,
@@ -205,9 +207,30 @@ describe('POST /remove-access', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.REMOVE_ACCESS),
+        what: AUDIT_EVENTS.DELETE_APP_ACCESS,
+        details: {
+          clientId: client.id,
+          client: client.name,
+        },
       }),
     )
+  })
+
+  it('should not audit a cancellation', async () => {
+    launchpadAuthService.getApprovedClients.mockResolvedValue({
+      page: 1,
+      exhausted: true,
+      totalElements: 1,
+      content: [client],
+    })
+
+    await request(app).post('/remove-access').send({
+      userId: 'sub',
+      clientId: client.id,
+      client: client.name,
+      action: 'cancel',
+    })
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(0)
   })
 })

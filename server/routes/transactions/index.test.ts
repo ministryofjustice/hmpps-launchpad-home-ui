@@ -1,7 +1,6 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { AgencyType } from '../../constants/agency'
 import { AccountCodes } from '../../constants/transactions'
 
@@ -12,7 +11,7 @@ import { prison } from '../../utils/mocks/prison'
 import { damageObligation, offenderTransaction } from '../../utils/mocks/transactions'
 
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 jest.mock('../../constants/featureFlags', () => ({
   Features: {
@@ -41,7 +40,7 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 })
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 
 const prisonService = createMockPrisonService()
 
@@ -79,6 +78,9 @@ describe('GET /transactions', () => {
   })
 
   it('should audit spends transactions', async () => {
+    const mockNow = new Date('2025-01-10')
+    jest.spyOn(Date, 'now').mockImplementation(() => mockNow.getTime())
+
     mockServices.prisonService.getBalances.mockResolvedValue(balances)
     mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
     mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
@@ -88,8 +90,36 @@ describe('GET /transactions', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.TRANSACTIONS),
+        what: AUDIT_EVENTS.VIEW_TRANSACTIONS,
+        details: {
+          transactionType: 'spends',
+          dateRangeFrom: new Date('2025-01-01'),
+          dateRangeTo: new Date('2025-01-10'),
+        },
+      }),
+    )
+  })
+
+  it('should audit transactions with a selected date', async () => {
+    const mockNow = new Date('2025-01-10')
+    jest.spyOn(Date, 'now').mockImplementation(() => mockNow.getTime())
+
+    mockServices.prisonService.getBalances.mockResolvedValue(balances)
+    mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
+    mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
+
+    await request(app).get('/transactions?selectedDate=2024-12-25')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        what: AUDIT_EVENTS.VIEW_TRANSACTIONS,
+        details: {
+          transactionType: 'spends',
+          dateRangeFrom: new Date('2024-12-01'),
+          dateRangeTo: new Date('2024-12-31T23:59:59.999Z'),
+          selectedDate: '2024-12-25',
+        },
       }),
     )
   })
@@ -114,6 +144,9 @@ describe('GET /transactions', () => {
   })
 
   it('should audit private transactions', async () => {
+    const mockNow = new Date('2025-01-10')
+    jest.spyOn(Date, 'now').mockImplementation(() => mockNow.getTime())
+
     mockServices.prisonService.getBalances.mockResolvedValue(balances)
     mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
     mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
@@ -123,8 +156,12 @@ describe('GET /transactions', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.TRANSACTIONS),
+        what: AUDIT_EVENTS.VIEW_TRANSACTIONS,
+        details: {
+          transactionType: 'private',
+          dateRangeFrom: new Date('2025-01-01'),
+          dateRangeTo: new Date('2025-01-10'),
+        },
       }),
     )
   })
@@ -149,6 +186,9 @@ describe('GET /transactions', () => {
   })
 
   it('should audit savings transactions', async () => {
+    const mockNow = new Date('2025-01-10')
+    jest.spyOn(Date, 'now').mockImplementation(() => mockNow.getTime())
+
     mockServices.prisonService.getBalances.mockResolvedValue(balances)
     mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
     mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
@@ -158,8 +198,12 @@ describe('GET /transactions', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.TRANSACTIONS),
+        what: AUDIT_EVENTS.VIEW_TRANSACTIONS,
+        details: {
+          transactionType: 'savings',
+          dateRangeFrom: new Date('2025-01-01'),
+          dateRangeTo: new Date('2025-01-10'),
+        },
       }),
     )
   })
@@ -191,8 +235,7 @@ describe('GET /transactions', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.TRANSACTIONS),
+        what: AUDIT_EVENTS.VIEW_DAMAGE_OBLIGATIONS,
       }),
     )
   })

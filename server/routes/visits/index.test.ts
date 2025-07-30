@@ -1,11 +1,10 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockPrisonerContactRegistryService } from '../../services/testutils/mocks'
 import { prisonerContact } from '../../utils/mocks/visitors'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 jest.mock('../../constants/featureFlags', () => ({
   ALLOW_ALL_PRISONS: 'ALL',
@@ -35,7 +34,7 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 })
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 
 const prisonerContactRegistryService = createMockPrisonerContactRegistryService()
 
@@ -70,8 +69,22 @@ describe('GET /visits', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.VISITS),
+        what: AUDIT_EVENTS.VIEW_VISITS,
+        details: {},
+      }),
+    )
+  })
+
+  it('should audit the /visits view when paginated', async () => {
+    mockServices.prisonerContactRegistryService.getSocialVisitors.mockResolvedValue([prisonerContact])
+
+    await request(app).get('/visits?page=2')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        what: AUDIT_EVENTS.VIEW_VISITS,
+        details: { page: '2' },
       }),
     )
   })

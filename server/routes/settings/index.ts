@@ -12,8 +12,7 @@ import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { ApprovedClients } from '../../@types/launchpad'
 import type { Services } from '../../services'
 import { getPaginationData } from '../../utils/pagination/pagination'
-import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
-import { AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -45,7 +44,6 @@ export default function routes(services: Services): Router {
   router.get(
     '/',
     featureFlagMiddleware(Features.Settings),
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.SETTINGS),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
@@ -70,6 +68,15 @@ export default function routes(services: Services): Router {
         client: req.query.client,
         success: getSuccessStatus(req.query.success as string),
       }
+
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_SETTINGS,
+        idToken: user.idToken,
+        details: {
+          ...(req.query.page && { page: req.query.page }),
+          ...(req.query.client && { client: req.query.client }),
+        },
+      })
 
       res.render('pages/settings', {
         data,

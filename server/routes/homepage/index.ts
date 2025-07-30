@@ -7,15 +7,13 @@ import type { Services } from '../../services'
 
 import { getEstablishmentData } from '../../utils/utils'
 import { formatDateLocalized } from '../../utils/date/formatDateLocalized'
-import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
-import { AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
   router.get(
     '/',
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.HOMEPAGE),
     asyncHandler(async (req: Request, res: Response) => {
       const { user } = res.locals
       const language = req.language || i18next.language
@@ -28,6 +26,8 @@ export default function routes(services: Services): Router {
       )
       const homepageLinks = await services.linksService.getHomepageLinks(user, language)
       const establishmentData = getEstablishmentData(user.idToken?.establishment?.agency_id)
+
+      await auditService.audit({ what: AUDIT_EVENTS.VIEW_HOMEPAGE, idToken: user.idToken })
 
       res.render('pages/homepage', {
         data: {

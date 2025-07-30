@@ -10,15 +10,13 @@ import type { Services } from '../../services'
 
 import { isFeatureEnabled } from '../../utils/featureFlag/featureFlagUtils'
 import { formatBalances } from '../../utils/transactions/formatBalances'
-import auditPageViewMiddleware from '../../middleware/auditPageViewMiddleware'
-import { AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 export default function routes(services: Services): Router {
   const router = Router()
 
   router.get(
     '/',
-    auditPageViewMiddleware(AUDIT_PAGE_NAMES.PROFILE),
     asyncHandler(async (req: Request, res: Response) => {
       const language = req.language || i18next.language
       const { idToken } = res.locals.user
@@ -71,6 +69,8 @@ export default function routes(services: Services): Router {
               visitors: nextVisit.visitors,
             }
           : null
+
+      await auditService.audit({ what: AUDIT_EVENTS.VIEW_PROFILE, idToken })
 
       return res.render('pages/profile', {
         title: 'Profile',
