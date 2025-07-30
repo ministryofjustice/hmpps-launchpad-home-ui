@@ -1,14 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 import * as utils from '../../utils/utils'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { AUDIT_ACTIONS } from '../../constants/audit'
 import { Establishment } from '../../@types/launchpad'
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 const establishmentDataSpy = jest.spyOn(utils, 'getEstablishmentData')
 
 const establishment: Establishment = {
@@ -52,12 +51,9 @@ describe('GET /external', () => {
       expect(auditServiceSpy).toHaveBeenCalledTimes(1)
 
       const audit = auditServiceSpy.mock.lastCall[0]
-      expect(audit.action).toBe(AUDIT_ACTIONS.VIEW_EXTERNAL_PAGE)
-
-      const details = JSON.parse(audit.details)
-      expect(details).toHaveProperty('page', pageName)
-      expect(details).toHaveProperty('pageUrl', `/external/${url}`)
-      expect(details).toHaveProperty('redirectUrl', redirectUrl)
+      expect(audit.what).toBe(AUDIT_EVENTS.VIEW_EXTERNAL_PAGE)
+      expect(audit.details).toHaveProperty('pageUrl', `/external/${url}`)
+      expect(audit.details).toHaveProperty('redirectUrl', redirectUrl)
     })
   })
 

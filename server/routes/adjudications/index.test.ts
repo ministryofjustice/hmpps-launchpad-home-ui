@@ -1,12 +1,11 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 import { createMockAdjucationsService } from '../../services/testutils/mocks'
 import { formattedAdjudication, reportedAdjudication } from '../../utils/mocks/adjudications'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { user } from '../../utils/mocks/user'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
 
 jest.mock('i18next', () => ({
   t: jest.fn().mockImplementation((key: string) => key),
@@ -45,7 +44,7 @@ jest.mock('../../utils/adjudications/formatAdjudication', () => ({
 
 let app: Express
 
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 
 const adjudicationsService = createMockAdjucationsService()
 
@@ -90,8 +89,24 @@ describe('GET /adjudications', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.ADJUDICATIONS),
+        what: AUDIT_EVENTS.VIEW_ADJUDICATIONS,
+        details: {},
+      }),
+    )
+  })
+
+  it('should audit the /adjudications pagination', async () => {
+    mockServices.adjudicationsService.getReportedAdjudicationsFor.mockResolvedValue({
+      content: [reportedAdjudication],
+    })
+
+    await request(app).get('/adjudications?page=2')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        what: AUDIT_EVENTS.VIEW_ADJUDICATIONS,
+        details: { page: '2' },
       }),
     )
   })
@@ -113,8 +128,10 @@ describe('GET /adjudications', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.CHARGE),
+        what: AUDIT_EVENTS.VIEW_CHARGE,
+        details: {
+          chargeNumber: '12345',
+        },
       }),
     )
   })

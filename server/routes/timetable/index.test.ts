@@ -1,11 +1,10 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { createMockPrisonService } from '../../services/testutils/mocks'
 import { TimetableEvents } from '../../@types/launchpad'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 const mockTranslations: Record<string, string> = {
   'timetable.title': 'Timetable',
@@ -17,7 +16,7 @@ jest.mock('i18next', () => ({
 }))
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 
 const prisonService = createMockPrisonService()
 
@@ -535,13 +534,19 @@ describe('GET /timetable', () => {
     })
 
     it('should audit the page view', async () => {
+      const mockNow = new Date('2025-01-10').getTime()
+      jest.spyOn(Date, 'now').mockImplementation(() => mockNow)
+
       await request(app).get('/timetable')
 
       expect(auditServiceSpy).toHaveBeenCalledTimes(1)
       expect(auditServiceSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          action: AUDIT_ACTIONS.VIEW_PAGE,
-          details: expect.stringContaining(AUDIT_PAGE_NAMES.TIMETABLE),
+          what: AUDIT_EVENTS.VIEW_TIMETABLE,
+          details: {
+            fromDate: new Date('2025-01-10'),
+            toDate: new Date('2025-01-16'),
+          },
         }),
       )
     })
@@ -549,13 +554,19 @@ describe('GET /timetable', () => {
 
   describe('Last week', () => {
     it('should audit the page view', async () => {
+      const mockNow = new Date('2025-01-10').getTime()
+      jest.spyOn(Date, 'now').mockImplementation(() => mockNow)
+
       await request(app).get('/timetable/last-week')
 
       expect(auditServiceSpy).toHaveBeenCalledTimes(1)
       expect(auditServiceSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          action: AUDIT_ACTIONS.VIEW_PAGE,
-          details: expect.stringContaining(AUDIT_PAGE_NAMES.TIMETABLE),
+          what: AUDIT_EVENTS.VIEW_TIMETABLE,
+          details: {
+            fromDate: new Date('2025-01-03'),
+            toDate: new Date('2025-01-09'),
+          },
         }),
       )
     })
@@ -563,13 +574,19 @@ describe('GET /timetable', () => {
 
   describe('Next week', () => {
     it('should audit the page view', async () => {
+      const mockNow = new Date('2025-01-10').getTime()
+      jest.spyOn(Date, 'now').mockImplementation(() => mockNow)
+
       await request(app).get('/timetable/next-week')
 
       expect(auditServiceSpy).toHaveBeenCalledTimes(1)
       expect(auditServiceSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          action: AUDIT_ACTIONS.VIEW_PAGE,
-          details: expect.stringContaining(AUDIT_PAGE_NAMES.TIMETABLE),
+          what: AUDIT_EVENTS.VIEW_TIMETABLE,
+          details: {
+            fromDate: new Date('2025-01-17'),
+            toDate: new Date('2025-01-23'),
+          },
         }),
       )
     })

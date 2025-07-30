@@ -1,11 +1,10 @@
 import type { Express, NextFunction, Request, Response } from 'express'
 import request from 'supertest'
 
-import { auditService } from '@ministryofjustice/hmpps-audit-client'
 import { createMockLaunchpadAuthService } from '../../services/testutils/mocks'
 import { client } from '../../utils/mocks/client'
 import { appWithAllRoutes } from '../testutils/appSetup'
-import { AUDIT_ACTIONS, AUDIT_PAGE_NAMES } from '../../constants/audit'
+import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
 jest.mock('../../constants/featureFlags', () => ({
   ALLOW_ALL_PRISONS: 'ALL',
@@ -35,7 +34,7 @@ jest.mock('../../middleware/featureFlag/featureFlag', () => {
 })
 
 let app: Express
-const auditServiceSpy = jest.spyOn(auditService, 'sendAuditMessage')
+const auditServiceSpy = jest.spyOn(auditService, 'audit')
 
 const launchpadAuthService = createMockLaunchpadAuthService()
 
@@ -80,8 +79,51 @@ describe('GET /settings', () => {
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        action: AUDIT_ACTIONS.VIEW_PAGE,
-        details: expect.stringContaining(AUDIT_PAGE_NAMES.SETTINGS),
+        what: AUDIT_EVENTS.VIEW_SETTINGS,
+        details: {},
+      }),
+    )
+  })
+
+  it('should audit the /settings view with one query string param', async () => {
+    mockServices.launchpadAuthService.getApprovedClients.mockResolvedValue({
+      page: 1,
+      exhausted: true,
+      totalElements: 1,
+      content: [client],
+    })
+
+    await request(app).get('/settings?page=2')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        what: AUDIT_EVENTS.VIEW_SETTINGS,
+        details: {
+          page: '2',
+        },
+      }),
+    )
+  })
+
+  it('should audit the /settings view with all query string params', async () => {
+    mockServices.launchpadAuthService.getApprovedClients.mockResolvedValue({
+      page: 1,
+      exhausted: true,
+      totalElements: 1,
+      content: [client],
+    })
+
+    await request(app).get('/settings?page=0&client=false')
+
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    expect(auditServiceSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        what: AUDIT_EVENTS.VIEW_SETTINGS,
+        details: {
+          page: '0',
+          client: 'false',
+        },
       }),
     )
   })
