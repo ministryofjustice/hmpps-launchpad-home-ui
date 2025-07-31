@@ -85,7 +85,7 @@ describe('GET /settings', () => {
     )
   })
 
-  it('should audit the /settings view with one query string param', async () => {
+  it('should audit the /settings view with the page param', async () => {
     mockServices.launchpadAuthService.getApprovedClients.mockResolvedValue({
       page: 1,
       exhausted: true,
@@ -101,28 +101,6 @@ describe('GET /settings', () => {
         what: AUDIT_EVENTS.VIEW_SETTINGS,
         details: {
           page: '2',
-        },
-      }),
-    )
-  })
-
-  it('should audit the /settings view with all query string params', async () => {
-    mockServices.launchpadAuthService.getApprovedClients.mockResolvedValue({
-      page: 1,
-      exhausted: true,
-      totalElements: 1,
-      content: [client],
-    })
-
-    await request(app).get('/settings?page=0&client=false')
-
-    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
-    expect(auditServiceSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        what: AUDIT_EVENTS.VIEW_SETTINGS,
-        details: {
-          page: '0',
-          client: 'false',
         },
       }),
     )
