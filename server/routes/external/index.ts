@@ -9,7 +9,7 @@ export default function routes(): Router {
   const router = Router()
 
   router.get(
-    '/:target(self\\-service|content\\-hub|prison\\-radio|inside\\-time|adjudications|incentives|timetable|transactions|visits|privacy-policy|transactions-help)',
+    '/:target(self\\-service|content\\-hub|prison\\-radio|inside\\-time|adjudications|incentives|learning-and-skills|money-and-debt|visits|privacy-policy|transactions-help)',
     asyncHandler(async (req: Request, res: Response) => {
       const { target } = req.params
       const { idToken } = res.locals.user
@@ -25,8 +25,8 @@ export default function routes(): Router {
         'inside-time': config.externalUrls.insideTime,
         adjudications: `${prisonerContentHubURL}/${config.contentHubUrls.adjudications}`,
         incentives: `${prisonerContentHubURL}/${config.contentHubUrls.incentives}`,
-        timetable: `${prisonerContentHubURL}/${config.contentHubUrls.timetable}`,
-        transactions: `${prisonerContentHubURL}/${config.contentHubUrls.transactions}`,
+        'learning-and-skills': `${prisonerContentHubURL}/${config.contentHubUrls.learningAndSkills}`,
+        'money-and-debt': `${prisonerContentHubURL}/${config.contentHubUrls.moneyAndDebt}`,
         visits: `${prisonerContentHubURL}/${config.contentHubUrls.visits}`,
         'privacy-policy': `${prisonerContentHubURL}/${config.contentHubUrls.privacyPolicy}`,
         'transactions-help': `${prisonerContentHubURL}/${config.contentHubUrls.transactionsHelp}`,

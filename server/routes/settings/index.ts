@@ -74,7 +74,6 @@ export default function routes(services: Services): Router {
         idToken: user.idToken,
         details: {
           ...(req.query.page && { page: req.query.page }),
-          ...(req.query.client && { client: req.query.client }),
         },
       })
 

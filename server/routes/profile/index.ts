@@ -90,11 +90,11 @@ export default function routes(services: Services): Router {
           },
           timetable: {
             timetableEvents: timetableEvents[0],
-            readMoreUrl: '/external/timetable',
+            readMoreUrl: '/external/learning-and-skills',
           },
           transactions: {
             balances: formatBalances(transactionsBalances),
-            readMoreUrl: '/external/transactions',
+            readMoreUrl: '/external/money-and-debt',
             isEnabled: isTransactionsEnabled,
           },
           visits: {
