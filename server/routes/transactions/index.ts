@@ -1,21 +1,15 @@
 import { endOfMonth, isFuture, startOfMonth } from 'date-fns'
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
-
 import { AgencyType } from '../../constants/agency'
 import { Features } from '../../constants/featureFlags'
 import { AccountCodes, AccountTypes, TransactionTypes } from '../../constants/transactions'
-
-import { asyncHandler } from '../../middleware/asyncHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
-
 import type { Services } from '../../services'
-
 import { createDateSelectionRange } from '../../utils/date/date'
 import { createDamageObligationsTable } from '../../utils/transactions/createDamageObligationsTable'
 import { createTransactionTable } from '../../utils/transactions/createTransactionTable'
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'
-
 import { getConfig } from '../config'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 
@@ -134,20 +128,12 @@ export default function routes(services: Services): Router {
   ]
 
   transactionRoutes.forEach(({ path, accountCode, transactionType }) => {
-    router.get(
-      path,
-      featureFlagMiddleware(Features.Transactions),
-      asyncHandler((req: Request, res: Response) => {
-        return renderTransactions(req, res, accountCode, transactionType)
-      }),
-    )
+    router.get(path, featureFlagMiddleware(Features.Transactions), (req: Request, res: Response) => {
+      return renderTransactions(req, res, accountCode, transactionType)
+    })
   })
 
-  router.get(
-    '/damage-obligations',
-    featureFlagMiddleware(Features.Transactions),
-    asyncHandler(renderDamageObligationsTransactions),
-  )
+  router.get('/damage-obligations', featureFlagMiddleware(Features.Transactions), renderDamageObligationsTransactions)
 
   return router
 }
