@@ -26,18 +26,18 @@ describe('GET /external', () => {
   })
 
   describe.each([
-    ['self-service', 'SELF_SERVICE', establishment.selfServiceURL],
-    ['content-hub', 'CONTENT_HUB', establishment.prisonerContentHubURL],
-    ['prison-radio', 'PRISON_RADIO', `${establishment.prisonerContentHubURL}/tags/785`],
-    ['inside-time', 'INSIDE_TIME', 'https://insidetimeprison.org/'],
-    ['adjudications', 'ADJUDICATIONS', `${establishment.prisonerContentHubURL}/content/4193`],
-    ['incentives', 'INCENTIVES', `${establishment.prisonerContentHubURL}/tags/1417`],
-    ['timetable', 'TIMETABLE', `${establishment.prisonerContentHubURL}/tags/1341`],
-    ['transactions', 'TRANSACTIONS', `${establishment.prisonerContentHubURL}/tags/872`],
-    ['visits', 'VISITS', `${establishment.prisonerContentHubURL}/tags/1133`],
-    ['privacy-policy', 'PRIVACY_POLICY', `${establishment.prisonerContentHubURL}/content/4856`],
-    ['transactions-help', 'TRANSACTIONS_HELP', `${establishment.prisonerContentHubURL}/content/8534`],
-  ])('/external/%s', (url: string, pageName: string, redirectUrl: string) => {
+    ['self-service', establishment.selfServiceURL],
+    ['content-hub', establishment.prisonerContentHubURL],
+    ['prison-radio', `${establishment.prisonerContentHubURL}/tags/785`],
+    ['inside-time', 'https://insidetimeprison.org/'],
+    ['adjudications', `${establishment.prisonerContentHubURL}/content/4193`],
+    ['incentives', `${establishment.prisonerContentHubURL}/tags/1417`],
+    ['learning-and-skills', `${establishment.prisonerContentHubURL}/tags/1341`],
+    ['money-and-debt', `${establishment.prisonerContentHubURL}/tags/872`],
+    ['visits', `${establishment.prisonerContentHubURL}/tags/1133`],
+    ['privacy-policy', `${establishment.prisonerContentHubURL}/content/4856`],
+    ['transactions-help', `${establishment.prisonerContentHubURL}/content/8534`],
+  ])('/external/%s', (url: string, redirectUrl: string) => {
     it(`should redirect the user`, async () => {
       const res = await request(app).get(`/external/${url}`)
 
