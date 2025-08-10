@@ -111,46 +111,69 @@ describe('GET /adjudications', () => {
     )
   })
 
-  it('should render the /adjudications/:chargeNumber view', async () => {
-    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+  describe('the /adjudications/:chargeNumber route', () => {
+    it('should render the view', async () => {
+      mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
 
-    const res = await request(app).get('/adjudications/12345')
+      const res = await request(app).get('/adjudications/12345')
 
-    expect(res.status).toBe(200)
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI', 'G1234UE')
-  })
-
-  it('should audit the /adjudications/:chargeNumber view', async () => {
-    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
-
-    await request(app).get('/adjudications/12345')
-
-    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
-    expect(auditServiceSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        what: AUDIT_EVENTS.VIEW_CHARGE,
-        details: {
-          chargeNumber: '12345',
-        },
-      }),
-    )
-  })
-
-  it('/adjudications/:chargeNumber view should redirect for user prisoner number not matching the fetched adjudication', async () => {
-    user.idToken.sub = 'incorrectId'
-    app = appWithAllRoutes({
-      services: { adjudicationsService },
-      userSupplier: () => user,
+      expect(res.status).toBe(200)
+      expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith('12345', 'CKI', 'G1234UE')
     })
-    mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
 
-    const res = await request(app).get('/adjudications/12345')
+    it('should audit successful requests', async () => {
+      mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
 
-    expect(res.status).toBe(302) // redirect status code
-    expect(mockServices.adjudicationsService.getReportedAdjudication).toHaveBeenCalledWith(
-      '12345',
-      'CKI',
-      'incorrectId',
-    )
+      await request(app).get('/adjudications/12345')
+
+      expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+      expect(auditServiceSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          what: AUDIT_EVENTS.VIEW_CHARGE,
+          details: {
+            chargeNumber: '12345',
+          },
+        }),
+      )
+    })
+
+    it('should redirect to /adjudications if the charge does not exist', async () => {
+      mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication: null })
+
+      const res = await request(app).get('/adjudications/12345')
+
+      expect(res.status).toBe(302)
+      expect(res.headers.location).toBe('/adjudications')
+
+      expect(auditServiceSpy).not.toHaveBeenCalled()
+    })
+
+    it('should redirect to /adjudications if the charge does not belong to the user', async () => {
+      user.idToken.sub = 'incorrectId'
+      app = appWithAllRoutes({
+        services: { adjudicationsService },
+        userSupplier: () => user,
+      })
+      mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+
+      const res = await request(app).get('/adjudications/12345')
+
+      expect(res.status).toBe(302)
+      expect(res.headers.location).toBe('/adjudications')
+
+      expect(auditServiceSpy).not.toHaveBeenCalled()
+    })
+
+    it('should redirect to /adjudications if the url contains any invalid characters', async () => {
+      mockServices.adjudicationsService.getReportedAdjudication.mockResolvedValue({ reportedAdjudication })
+
+      const res = await request(app).get('/adjudications/123@45')
+
+      expect(res.status).toBe(302)
+      expect(res.headers.location).toBe('/adjudications')
+
+      expect(mockServices.adjudicationsService.getReportedAdjudicationsFor).not.toHaveBeenCalled()
+      expect(auditServiceSpy).not.toHaveBeenCalled()
+    })
   })
 })
