@@ -1,11 +1,13 @@
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
+import * as z from 'zod'
 import { Features } from '../../constants/featureFlags'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import type { Services } from '../../services'
 import { formatAdjudication } from '../../utils/adjudications/formatAdjudication'
 import { getPaginationData } from '../../utils/pagination/pagination'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
+import { ReportedAdjudicationDto } from '../../@types/adjudicationsApiTypes'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -45,31 +47,42 @@ export default function routes(services: Services): Router {
 
   router.get('/:chargeNumber', featureFlagMiddleware(Features.Adjudications), async (req: Request, res: Response) => {
     const { idToken } = res.locals.user
+    let adjudicationData: ReportedAdjudicationDto = null
 
-    const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
-      req.params.chargeNumber,
-      idToken.establishment?.agency_id,
-      idToken.sub,
-    )
+    const schema = z.object({
+      chargeNumber: z.string().regex(/^[0-9a-zA-Z\\-]+$/),
+    })
 
-    const formattedAdjudication = reportedAdjudication
-      ? await formatAdjudication(reportedAdjudication, services, idToken)
-      : null
+    const params = schema.safeParse(req.params)
 
-    if (idToken.sub !== reportedAdjudication.prisonerNumber) {
+    if (params.success) {
+      const { reportedAdjudication } = await services.adjudicationsService.getReportedAdjudication(
+        params.data.chargeNumber,
+        idToken.establishment?.agency_id,
+        idToken.sub,
+      )
+
+      if (reportedAdjudication && reportedAdjudication.prisonerNumber === idToken.sub) {
+        adjudicationData = reportedAdjudication
+      }
+    }
+
+    if (!adjudicationData) {
       res.redirect('/adjudications')
     } else {
       await auditService.audit({
         what: AUDIT_EVENTS.VIEW_CHARGE,
         idToken,
-        details: { chargeNumber: req.params.chargeNumber },
+        details: { chargeNumber: params.data.chargeNumber },
       })
+
+      const formattedAdjudication = await formatAdjudication(adjudicationData, services, idToken)
 
       res.render('pages/adjudication', {
         givenName: idToken.given_name,
         data: {
           adjudication: formattedAdjudication,
-          chargeNumber: req.params.chargeNumber,
+          chargeNumber: params.data.chargeNumber,
           readMoreUrl: '/external/adjudications',
         },
       })
