@@ -196,13 +196,17 @@ export default class PrisonApiClient {
         agencyId,
       )
     } catch (error) {
-      logger.error({
-        ...formatLogMessage('Error fetching transactions for prisoner', prisonerId, agencyId),
-        accountCode,
-        fromDate,
-        toDate,
-        error,
-      })
+      logger.error(
+        JSON.stringify({
+          logText: 'Error fetching transactions for prisoner',
+          prisonerId,
+          agencyId,
+          accountCode,
+          fromDate,
+          toDate,
+          error,
+        }),
+      )
       throw new Error('Failed to fetch transactions')
     }
   }

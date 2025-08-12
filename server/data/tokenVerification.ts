@@ -11,7 +11,7 @@ function getApiClientToken(token: string) {
     .timeout(config.apis.tokenVerification.timeout)
     .then(response => Boolean(response.body && response.body.active))
     .catch(error => {
-      logger.error(getSanitisedError(error), 'Error calling tokenVerificationApi')
+      logger.error(JSON.stringify(getSanitisedError(error)), 'Error calling tokenVerificationApi')
     })
 }
 
