@@ -1,6 +1,7 @@
 import { endOfMonth, isFuture, startOfMonth } from 'date-fns'
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
+import * as z from 'zod'
 import { AgencyType } from '../../constants/agency'
 import { Features } from '../../constants/featureFlags'
 import { AccountCodes, AccountTypes, TransactionTypes } from '../../constants/transactions'
@@ -12,6 +13,7 @@ import { createTransactionTable } from '../../utils/transactions/createTransacti
 import { getBalanceByAccountCode } from '../../utils/transactions/getBalanceByAccountCode'
 import { getConfig } from '../config'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
+import config from '../../config'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -25,7 +27,17 @@ export default function routes(services: Services): Router {
     const language = req.language || i18next.language
     const { idToken } = req.user
 
-    const selectedDate = req.query.selectedDate ? req.query.selectedDate.toString() : undefined
+    const schema = z.object({
+      selectedDate: z.iso.date().optional(),
+    })
+
+    const query = schema.safeParse(req.query)
+
+    if (!query.success) {
+      return res.redirect(`${new URL(req.originalUrl, config.domain).pathname}`)
+    }
+
+    const selectedDate = query.data.selectedDate ? query.data.selectedDate.toString() : undefined
     const dateSelectionRange = createDateSelectionRange({ language, selectedDate })
     const dateRangeFrom = startOfMonth(selectedDate ? new Date(selectedDate) : new Date(Date.now()))
     const dateRangeTo = !isFuture(endOfMonth(dateRangeFrom)) ? endOfMonth(dateRangeFrom) : new Date(Date.now())
@@ -64,7 +76,7 @@ export default function routes(services: Services): Router {
       },
     })
 
-    res.render('pages/transactions', {
+    return res.render('pages/transactions', {
       title: 'Transactions',
       config: getConfig(),
       data: {

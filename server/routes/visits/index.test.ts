@@ -84,8 +84,17 @@ describe('GET /visits', () => {
     expect(auditServiceSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         what: AUDIT_EVENTS.VIEW_VISITS,
-        details: { page: '2' },
+        details: { page: 2 },
       }),
     )
+  })
+
+  it('should redirect to /visits if the page number is invalid', async () => {
+    const result = await request(app).get('/visits?page=0')
+
+    expect(result.status).toBe(302)
+    expect(result.headers.location).toBe('/visits')
+    expect(mockServices.prisonerContactRegistryService.getSocialVisitors).not.toHaveBeenCalled()
+    expect(auditServiceSpy).not.toHaveBeenCalled()
   })
 })
