@@ -77,5 +77,9 @@ export const convertLocation = (
 }
 
 export const formatLogMessage = (logText: string, prisonerId?: string, agencyId?: string) => {
-  return { logText, prisonerId, agencyId }
+  return JSON.stringify({
+    logText,
+    prisonerId,
+    agencyId,
+  })
 }
