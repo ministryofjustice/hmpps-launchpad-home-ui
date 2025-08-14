@@ -16,6 +16,16 @@ export default function routes(services: Services): Router {
     const { idToken } = res.locals.user
     const language = req.language || i18next.language
 
+    const schema = z.object({
+      page: z.coerce.number().int().min(1).optional(),
+    })
+
+    const query = schema.safeParse(req.query)
+
+    if (!query.success) {
+      return res.redirect('/adjudications')
+    }
+
     const reportedAdjudications = await services.adjudicationsService.getReportedAdjudicationsFor(
       idToken.booking.id,
       idToken.establishment.agency_id,
@@ -23,20 +33,20 @@ export default function routes(services: Services): Router {
       idToken.sub,
     )
 
-    const paginationData = getPaginationData(Number(req.query.page), reportedAdjudications.content.length)
+    const paginationData = getPaginationData(query.data.page, reportedAdjudications.content.length)
     const pagedReportedAdjudications = reportedAdjudications.content.slice(paginationData.min - 1, paginationData.max)
 
     await auditService.audit({
       what: AUDIT_EVENTS.VIEW_ADJUDICATIONS,
       idToken,
-      details: { ...(req.query.page && { page: req.query.page }) },
+      details: { ...(query.data.page && { page: query.data.page }) },
     })
 
-    res.render('pages/adjudications', {
+    return res.render('pages/adjudications', {
       givenName: idToken.given_name,
       data: {
         paginationData,
-        rawQuery: req.query.page,
+        rawQuery: query.data,
         reportedAdjudications: pagedReportedAdjudications,
         readMoreUrl: '/external/adjudications',
       },
