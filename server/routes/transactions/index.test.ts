@@ -239,4 +239,34 @@ describe('GET /transactions', () => {
       }),
     )
   })
+
+  const transactionUrls = ['/transactions', '/transactions/spends', '/transactions/private', '/transactions/savings']
+
+  describe.each(transactionUrls)('%s date validation', baseUrl => {
+    it('should render for a valid date string (2025-09-30)', async () => {
+      mockServices.prisonService.getBalances.mockResolvedValue(balances)
+      mockServices.prisonService.getPrisonsByAgencyType.mockResolvedValue([prison])
+      mockServices.prisonService.getTransactions.mockResolvedValue([offenderTransaction])
+
+      const res = await request(app).get(`${baseUrl}?selectedDate=2025-09-30`)
+
+      expect(res.status).toBe(200)
+      expect(mockServices.prisonService.getBalances).toHaveBeenCalled()
+      expect(mockServices.prisonService.getPrisonsByAgencyType).toHaveBeenCalled()
+      expect(mockServices.prisonService.getTransactions).toHaveBeenCalled()
+      expect(auditServiceSpy).toHaveBeenCalledTimes(1)
+    })
+
+    const invalidDates = ['2025-30-09', '30/09/2025', '2025-09', '2025-09-30T00:00:00.000Z', '2025-09-31']
+    it.each(invalidDates)(`should redirect to ${baseUrl} for an invalid date string (%s)`, async date => {
+      const res = await request(app).get(`${baseUrl}?selectedDate=${date}`)
+
+      expect(res.status).toBe(302)
+      expect(res.headers.location).toBe(baseUrl)
+      expect(mockServices.prisonService.getBalances).not.toHaveBeenCalled()
+      expect(mockServices.prisonService.getPrisonsByAgencyType).not.toHaveBeenCalled()
+      expect(mockServices.prisonService.getTransactions).not.toHaveBeenCalled()
+      expect(auditServiceSpy).not.toHaveBeenCalled()
+    })
+  })
 })
