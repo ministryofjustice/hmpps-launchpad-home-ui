@@ -58,8 +58,6 @@ describe('GET /remove-access', () => {
 
     const res = await request(app).get('/remove-access').query({
       clientId: client.id,
-      clientLogoUri: client.logoUri,
-      client: client.name,
     })
 
     expect(res.status).toBe(200)
@@ -77,8 +75,6 @@ describe('GET /remove-access', () => {
 
     await request(app).get('/remove-access').query({
       clientId: client.id,
-      clientLogoUri: client.logoUri,
-      client: client.name,
     })
 
     expect(auditServiceSpy).toHaveBeenCalledTimes(1)
@@ -87,13 +83,23 @@ describe('GET /remove-access', () => {
         what: AUDIT_EVENTS.VIEW_REMOVE_APP_ACCESS,
         details: {
           clientId: client.id,
-          client: client.name,
         },
       }),
     )
   })
 
   it('should redirect to /settings with error when invalid client ID is provided', async () => {
+    const res = await request(app).get('/remove-access').query({
+      clientId: 'invalid-client-id',
+    })
+
+    expect(res.status).toBe(302)
+    expect(res.header.location).toBe('/settings')
+    expect(launchpadAuthService.getApprovedClients).not.toHaveBeenCalled()
+    expect(auditServiceSpy).not.toHaveBeenCalled()
+  })
+
+  it('should redirect to /settings with error when client ID cant be found', async () => {
     launchpadAuthService.getApprovedClients.mockResolvedValue({
       page: 1,
       exhausted: true,
@@ -102,15 +108,13 @@ describe('GET /remove-access', () => {
     })
 
     const res = await request(app).get('/remove-access').query({
-      clientId: 'invalid-client-id',
-      clientLogoUri: client.logoUri,
-      client: client.name,
+      clientId: client.id,
     })
 
     expect(res.status).toBe(302)
     expect(res.header.location).toBe('/settings')
     expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
-    expect(res.text).toContain('Found. Redirecting to /settings')
+    expect(auditServiceSpy).not.toHaveBeenCalled()
   })
 })
 
@@ -133,16 +137,15 @@ describe('POST /remove-access', () => {
     })
 
     const res = await request(app).post('/remove-access').send({
-      userId: 'sub',
       clientId: client.id,
-      client: client.name,
       action: 'remove',
     })
 
     expect(res.status).toBe(302)
-    expect(res.header.location).toBe(`/settings?success=true&client=${encodeURIComponent(client.name)}`)
+    expect(res.header.location).toBe(`/settings`)
     expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
     expect(launchpadAuthService.removeClientAccess).toHaveBeenCalledWith(client.id, 'sub', '67890', 'ACCESS_TOKEN')
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should redirect to /settings with error if client removal fails', async () => {
@@ -156,19 +159,18 @@ describe('POST /remove-access', () => {
     launchpadAuthService.removeClientAccess.mockRejectedValue(new Error('Removal failed'))
 
     const res = await request(app).post('/remove-access').send({
-      userId: 'sub',
       clientId: client.id,
-      client: client.name,
       action: 'remove',
     })
 
     expect(res.status).toBe(302)
-    expect(res.header.location).toBe('/settings?success=false')
+    expect(res.header.location).toBe('/settings')
     expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
     expect(launchpadAuthService.removeClientAccess).toHaveBeenCalledWith(client.id, 'sub', '67890', 'ACCESS_TOKEN')
+    expect(auditServiceSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('should redirect to /settings with error when invalid client ID is provided', async () => {
+  it('should redirect to /settings with error when client ID cant be found', async () => {
     launchpadAuthService.getApprovedClients.mockResolvedValue({
       page: 1,
       exhausted: true,
@@ -177,9 +179,7 @@ describe('POST /remove-access', () => {
     })
 
     const res = await request(app).post('/remove-access').send({
-      userId: 'sub',
-      clientId: 'invalid-client-id',
-      client: client.name,
+      clientId: client.id,
       action: 'remove',
     })
 
@@ -187,6 +187,33 @@ describe('POST /remove-access', () => {
     expect(res.header.location).toBe('/settings')
     expect(launchpadAuthService.getApprovedClients).toHaveBeenCalledWith('sub', '67890', 'ACCESS_TOKEN')
     expect(launchpadAuthService.removeClientAccess).not.toHaveBeenCalled()
+    expect(auditServiceSpy).not.toHaveBeenCalled()
+  })
+
+  it('should redirect to /settings with error when invalid client ID is provided', async () => {
+    const res = await request(app).post('/remove-access').send({
+      clientId: 'invalid-client-id',
+      action: 'remove',
+    })
+
+    expect(res.status).toBe(302)
+    expect(res.header.location).toBe('/settings')
+    expect(launchpadAuthService.getApprovedClients).not.toHaveBeenCalled()
+    expect(launchpadAuthService.removeClientAccess).not.toHaveBeenCalled()
+    expect(auditServiceSpy).not.toHaveBeenCalled()
+  })
+
+  it('should redirect to /settings with error when invalid action is provided', async () => {
+    const res = await request(app).post('/remove-access').send({
+      clientId: client.id,
+      action: 'xxx',
+    })
+
+    expect(res.status).toBe(302)
+    expect(res.header.location).toBe('/settings')
+    expect(launchpadAuthService.getApprovedClients).not.toHaveBeenCalled()
+    expect(launchpadAuthService.removeClientAccess).not.toHaveBeenCalled()
+    expect(auditServiceSpy).not.toHaveBeenCalled()
   })
 
   it('should audit a client deletion', async () => {
@@ -198,9 +225,7 @@ describe('POST /remove-access', () => {
     })
 
     await request(app).post('/remove-access').send({
-      userId: 'sub',
       clientId: client.id,
-      client: client.name,
       action: 'remove',
     })
 
@@ -210,7 +235,6 @@ describe('POST /remove-access', () => {
         what: AUDIT_EVENTS.DELETE_APP_ACCESS,
         details: {
           clientId: client.id,
-          client: client.name,
         },
       }),
     )
@@ -225,12 +249,10 @@ describe('POST /remove-access', () => {
     })
 
     await request(app).post('/remove-access').send({
-      userId: 'sub',
       clientId: client.id,
-      client: client.name,
       action: 'cancel',
     })
 
-    expect(auditServiceSpy).toHaveBeenCalledTimes(0)
+    expect(auditServiceSpy).not.toHaveBeenCalled()
   })
 })

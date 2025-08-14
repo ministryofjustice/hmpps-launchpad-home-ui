@@ -100,9 +100,18 @@ describe('GET /settings', () => {
       expect.objectContaining({
         what: AUDIT_EVENTS.VIEW_SETTINGS,
         details: {
-          page: '2',
+          page: 2,
         },
       }),
     )
+  })
+
+  it('should redirect to /settings if the page param is invalid', async () => {
+    const result = await request(app).get('/settings?page=two')
+
+    expect(result.status).toBe(302)
+    expect(result.headers.location).toBe('/settings')
+    expect(mockServices.launchpadAuthService.getApprovedClients).not.toHaveBeenCalled()
+    expect(auditServiceSpy).not.toHaveBeenCalled()
   })
 })

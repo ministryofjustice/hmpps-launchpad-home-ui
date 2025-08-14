@@ -10,19 +10,21 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block beforeContent %}
-  {% if response.success == 'success' %}
+  {% if message | length %}
     <div class="govuk-width-container govuk-!-margin-top-6">
       {{ mojBanner({
         type: 'success',
-        text: t('settings.appAccess.removedAccess') + '' + response.client,
+        text: message,
         iconFallbackText: 'Success'
       }) }}
     </div>
-  {% elseif response.success == 'error' %}
+  {% endif %}
+
+  {% if errors | length %}
     <div class="govuk-width-container govuk-!-margin-top-6">
       {{ mojBanner({
         type: 'warning',
-        text: 'Error',
+        text: errors,
         iconFallbackText: 'Warning'
       }) }}
     </div>
@@ -43,7 +45,7 @@
   <div class="govuk-width-container govuk-frontend-supported govuk-!-margin-top-8">
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--m">{{ t('settings.appAccess.access') }}</caption>
-      
+
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">{{ t('settings.appAccess.app') }}</th>
@@ -55,18 +57,14 @@
 
       <tbody class="govuk-table__body">
         {% for client in data.approvedClients %}
-          {% set removeAccessUrl = "/remove-access?clientId=" + client.id + "&client=" + client.name %}
-          
-          {% if client.logoUri %}
-            {% set removeAccessUrl = removeAccessUrl + "&clientLogoUri=" + client.logoUri %}
-          {% endif %}
+          {% set removeAccessUrl = "/remove-access?clientId=" + client.id %}
 
           <tr class="govuk-table__row">
             <td class="govuk-table__cell govuk-table__cell--valign-middle govuk-!-margin-top-0 govuk-!-margin-bottom-0">
               <span class="two-column-cell govuk-!-margin-left-0">
                 {% if client.logoUri %}
-                  <img 
-                    src="{{ client.logoUri }}" 
+                  <img
+                    src="{{ client.logoUri }}"
                     max-width="104px"
                     alt="client logo"
                     loading="lazy">
