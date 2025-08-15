@@ -2,6 +2,7 @@ import { format, Locale } from 'date-fns'
 import { cy, enGB } from 'date-fns/locale'
 import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
+import * as z from 'zod'
 import { DateFormats } from '../../constants/date'
 import { Features } from '../../constants/featureFlags'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
@@ -31,15 +32,19 @@ export default function routes(services: Services): Router {
     }))
   }
 
-  const getSuccessStatus = (success?: string): string | null => {
-    if (success === 'true') return 'success'
-    if (success === 'false') return 'error'
-    return null
-  }
-
   router.get('/', featureFlagMiddleware(Features.Settings), async (req: Request, res: Response) => {
     const { user } = res.locals
     const language = req.language || i18next.language
+
+    const schema = z.object({
+      page: z.coerce.number().int().min(1).optional(),
+    })
+
+    const query = schema.safeParse(req.query)
+
+    if (!query.success) {
+      return res.redirect('/settings')
+    }
 
     const approvedClients = await services.launchpadAuthService.getApprovedClients(
       user.idToken.sub,
@@ -48,32 +53,25 @@ export default function routes(services: Services): Router {
     )
 
     const formattedClients = formatApprovedClients(approvedClients, language)
-    const paginationData = getPaginationData(Number(req.query.page), formattedClients.length, 3)
+    const paginationData = getPaginationData(query.data.page, formattedClients.length, 3)
     const paginatedClients = formattedClients.slice(paginationData.min - 1, paginationData.max)
 
     const data = {
       approvedClients: paginatedClients,
       paginationData,
-      rawQuery: req.query.page,
-    }
-
-    const response = {
-      client: req.query.client,
-      success: getSuccessStatus(req.query.success as string),
+      rawQuery: query.data,
     }
 
     await auditService.audit({
       what: AUDIT_EVENTS.VIEW_SETTINGS,
       idToken: user.idToken,
       details: {
-        ...(req.query.page && { page: req.query.page }),
-        ...(req.query.client && { client: req.query.client }),
+        ...(query.data.page && { page: query.data.page }),
       },
     })
 
-    res.render('pages/settings', {
+    return res.render('pages/settings', {
       data,
-      response,
       errors: req.flash('errors'),
       message: req.flash('message'),
     })

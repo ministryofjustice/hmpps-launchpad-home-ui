@@ -30,20 +30,6 @@ function handleCardClick(event) {
   }
 }
 
-function initDeleteButtonHandler() {
-  const yesButton = document.getElementById('remove-access__button-yes')
-  const noButton = document.getElementById('remove-access__button-no')
-  const actionInput = document.getElementById('action-input')
-
-  if (yesButton) {
-    yesButton.addEventListener('click', () => (actionInput.value = 'remove'))
-  }
-
-  if (noButton) {
-    noButton.addEventListener('click', () => (actionInput.value = 'cancel'))
-  }
-}
-
 function initHeader() {
   const userToggle = document.querySelector('.launchpad-home-header__user-menu-toggle')
   const userMenu = document.getElementById('launchpad-home-header-user-menu')

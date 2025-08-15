@@ -5,8 +5,8 @@
   <div class="govuk-body remove-access__wrapper">
     <div class="remove-access__container">
       {% if data.clientLogoUri %}
-        <img 
-          src="{{ data.clientLogoUri }}" 
+        <img
+          src="{{ data.clientLogoUri }}"
           max-width="104px"
           alt="Client logo"
           loading="lazy">
@@ -14,15 +14,13 @@
 
       <div class="govuk-heading-m">{{ t('settings.removeAccessScreen.removeAccess') }}</div>
       <p class="govuk-!-margin-top-6">{{ t('settings.removeAccessScreen.confirmation') }} {{ data.client }}?</p>
-    
+
       <div class="remove-access__buttons">
         <form action="/remove-access" method="POST">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          <input type="hidden" name="userId" value="{{ data.userId }}">
           <input type="hidden" name="clientId" value="{{ data.clientId }}">
-          <input type="hidden" name="client" value="{{ data.client }}">
-          <input type="hidden" id="action-input" name="action" value="remove">
-          
+          <input type="hidden" name="action" value="remove">
+
           {{ govukButton({
             text: t('settings.removeAccessScreen.yes'),
             id: "remove-access__button-yes",
@@ -30,6 +28,11 @@
               type: "submit"
             }
           }) }}
+        </form>
+        <form action="/remove-access" method="POST">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+          <input type="hidden" name="clientId" value="{{ data.clientId }}">
+          <input type="hidden" name="action" value="cancel">
 
           {{ govukButton({
             text: t('settings.removeAccessScreen.no'),
