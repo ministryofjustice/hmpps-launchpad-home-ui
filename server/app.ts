@@ -40,6 +40,7 @@ i18next
   .use(FilesystemBackend)
   .init({
     preload: ['en', 'cy'],
+    supportedLngs: ['en', 'cy'],
     fallbackLng: 'en',
     backend: {
       loadPath: path.join(__dirname, 'locales/{{lng}}.json'),
