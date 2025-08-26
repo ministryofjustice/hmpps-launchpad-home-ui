@@ -3,6 +3,8 @@ import { ApiConfig } from '../../../config'
 import { DateFormats } from '../../../constants/date'
 import RestClient from '../../restClient'
 import PrisonApiClientApiClient from './client'
+import { ScheduledEvent } from '../../../@types/prisonApiTypes'
+import { PrisonerEvent } from '../../../@types/launchpad'
 
 jest.mock('../../restClient')
 
@@ -123,6 +125,60 @@ describe('PrisonApiClient', () => {
         mockAgencyId,
       )
       expect(response).toEqual(mockResponse)
+    })
+  })
+
+  describe('getEventsSummary', () => {
+    it('Should return correct description for Activities', async () => {
+      const mockResponse = [
+        {
+          startTime: `${new Date().toISOString().split('T')[0]}T08:50:00`,
+          endTime: `${new Date().toISOString().split('T')[0]}T10:20:00`,
+          eventSubType: 'PA',
+          eventSourceDesc: 'Description Activities',
+          eventSubTypeDesc: 'Description Appointments',
+          eventLocation: 'A Wing',
+        },
+      ] as ScheduledEvent[]
+      ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
+
+      const response = await prisonApiClient.getEventsSummary(mockBookingId, 'en', mockPrisonerId, mockAgencyId)
+
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/bookings/${mockBookingId}/events/today`,
+          query: 'activeRestrictionsOnly=true',
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
+      expect(response.prisonerEvents[0].description).toEqual('Description Activities')
+    })
+
+    it('Should return correct description for Appointments', async () => {
+      const mockResponse = [
+        {
+          startTime: `${new Date().toISOString().split('T')[0]}T15:10:00`,
+          endTime: `${new Date().toISOString().split('T')[0]}T16:40:00`,
+          eventSubType: 'APP',
+          eventSourceDesc: 'Do not show',
+          eventSubTypeDesc: 'Description Appointments',
+          eventLocation: 'A Wing',
+        },
+      ] as ScheduledEvent[]
+      ;(mockRestClient.get as jest.Mock).mockResolvedValue(mockResponse)
+
+      const response = await prisonApiClient.getEventsSummary(mockBookingId, 'en', mockPrisonerId, mockAgencyId)
+
+      expect(mockRestClient.get).toHaveBeenCalledWith(
+        {
+          path: `/api/bookings/${mockBookingId}/events/today`,
+          query: 'activeRestrictionsOnly=true',
+        },
+        mockPrisonerId,
+        mockAgencyId,
+      )
+      expect(response.prisonerEvents[0].description).toEqual('Description Appointments')
     })
   })
 })
