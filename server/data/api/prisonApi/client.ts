@@ -57,7 +57,11 @@ export default class PrisonApiClient {
 
         const prisonerEvent: PrisonerEvent = {
           timeString,
-          description: convertToTitleCase(scheduledEvent.eventSourceDesc),
+          description: convertToTitleCase(
+            (scheduledEvent.eventSubType === 'PA' && scheduledEvent.eventSourceDesc) ||
+              scheduledEvent.eventSubTypeDesc ||
+              '',
+          ),
           location: convertToTitleCase(convertLocation(scheduledEvent.eventLocation)),
         }
         prisonerEvents.push(prisonerEvent)
