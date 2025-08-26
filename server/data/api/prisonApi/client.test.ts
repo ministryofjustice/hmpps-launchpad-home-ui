@@ -4,7 +4,6 @@ import { DateFormats } from '../../../constants/date'
 import RestClient from '../../restClient'
 import PrisonApiClientApiClient from './client'
 import { ScheduledEvent } from '../../../@types/prisonApiTypes'
-import { PrisonerEvent } from '../../../@types/launchpad'
 
 jest.mock('../../restClient')
 
