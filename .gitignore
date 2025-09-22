@@ -1,4 +1,3 @@
-test-results/
 # Logs
 logs
 *.log
@@ -131,3 +130,4 @@ integration_tests/videos/
 integration_tests/screenshots/
 */*.iml
 **/Chart.lock
+test-results/

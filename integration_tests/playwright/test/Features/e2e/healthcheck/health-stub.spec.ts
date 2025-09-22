@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Load fixture data from file (example)
 const healthyFixture = {
   healthy: true,
   checks: {
@@ -21,7 +20,6 @@ test.describe('Advanced Healthcheck Stubbing', () => {
   test('Health endpoint returns healthy or unhealthy based on query', async ({ page }) => {
     await page.route('**/health', async route => {
       const url = route.request().url();
-      // Conditional response based on query param
       if (url.includes('unhealthy=true')) {
         await route.fulfill({
           status: 200,
@@ -85,7 +83,6 @@ test.describe('Advanced Healthcheck Stubbing', () => {
         });
       }
     });
-    // Simulate POST with error
     await page.evaluate(() => {
       fetch('/health', {
         method: 'POST',

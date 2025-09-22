@@ -1,13 +1,18 @@
 import { defineConfig } from '@playwright/test';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export default defineConfig({
-  testDir: './integration_tests/playwright',
-  timeout: 30000,
-  retries: 0,
+  globalSetup: require.resolve('./integration_tests/support/playwright.global-setup.ts'),
+  globalTeardown: require.resolve('./integration_tests/support/playwright.global-teardown.ts'),
   use: {
+    storageState: 'storageState.json',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
     headless: true,
-    baseURL: 'http://localhost:3000', // Update as needed
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
+  timeout: 30000,
+  retries: 0,
+  testDir: './integration_tests/playwright/test/Features/e2e',
 });
