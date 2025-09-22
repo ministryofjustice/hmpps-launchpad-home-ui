@@ -71,7 +71,10 @@ web_modules/
 # dotenv environment variables file
 .env
 .env.test
-.appsettings.json
+
+# Ignore appsettings.json in all locations
+appsettings.json
+**/appsettings.json
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
