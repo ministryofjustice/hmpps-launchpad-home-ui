@@ -130,3 +130,11 @@ integration_tests/videos/
 integration_tests/screenshots/
 */*.iml
 **/Chart.lock
+
+# Ignore appsettings.json in all locations
+appsettings.json
+**/appsettings.json
+
+# Ignore Playwright and other test results
+/test-results/
+**/test-results/
