@@ -1,7 +1,8 @@
-import { defineConfig } from '@playwright/test';
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config();
+import { defineConfig } from '@playwright/test'
+import dotenv from 'dotenv'
+import path from 'path'
+
+dotenv.config()
 
 export default defineConfig({
   globalSetup: path.resolve(__dirname, 'integration_tests/support/playwright.global-setup.js'),
@@ -15,8 +16,6 @@ export default defineConfig({
   },
   timeout: 30000,
   retries: 2,
-  reporter: [['html', { open: 'never' }]
-            , ['list']
-            , ['junit', { outputFile: 'test-results/results.xml' }]],
+  reporter: [['html', { open: 'never' }], ['list'], ['junit', { outputFile: 'test-results/results.xml' }]],
   testDir: './integration_tests/playwright/test/Features/e2e',
-});
+})
