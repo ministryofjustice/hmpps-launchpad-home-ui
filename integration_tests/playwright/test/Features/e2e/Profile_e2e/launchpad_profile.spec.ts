@@ -5,27 +5,12 @@ dotenv.config()
 
 const baseURL = process.env.BASE_URL
 
-test.describe('Launchpad Web App', () => {
+test.describe('Launchpad Profile', () => {
         test.beforeEach(async ({ page }) => {
             await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
         })
         
-  test('Assert that the User has logged into Launchpad', async ({ page }) => {
-    await expect(page)
-            .toHaveURL(`${baseURL}`)
-  })
-
-   test('Assert that the user can see the calendar module', async ({ page }) => {
-
-    const timetableLink = page.locator('a.govuk-link#view-timetable-link[href="/timetable"]')
-
-        await expect(timetableLink)
-            .toBeVisible()
-        await expect(timetableLink)
-            .toHaveText('View my timetable')
-  })
-
-    test('Assert that the user can see their profile details module', async ({ page }) => {
+      test('Assert that the user can see their profile details module', async ({ page }) => {
         const profileTile = page.locator('div.internal-link-tile#internal-link-tile-profile')
         await profileTile.waitFor({ state: 'visible', timeout: 5000 })
 

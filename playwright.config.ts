@@ -6,6 +6,7 @@ import path from 'path'
 dotenv.config()
 
 export default defineConfig({
+  workers: 1,
   globalSetup: path.resolve(__dirname, 'integration_tests/support/playwright.global-setup.js'),
   globalTeardown: path.resolve(__dirname, 'integration_tests/support/playwright.global-teardown.js'),
   use: {

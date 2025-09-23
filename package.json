@@ -28,7 +28,8 @@
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test"
+    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test",
+    "test:playwright:rerun-failed": "PW_TEST_PRELOAD=ts-node/register npx playwright test --last-failed"
   },
   "engines": {
     "node": "^22",
