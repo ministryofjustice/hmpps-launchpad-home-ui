@@ -35,11 +35,9 @@ test.describe('Advanced Healthcheck Stubbing', () => {
       }
     })
     // Healthy response
-    await page
-          .goto('/health')
+    await page.goto('/health')
     // Unhealthy response
-    await page
-          .goto('/health?unhealthy=true')
+    await page.goto('/health?unhealthy=true')
   })
 
   test('Ping endpoint returns UP or DOWN', async ({ page }) => {
