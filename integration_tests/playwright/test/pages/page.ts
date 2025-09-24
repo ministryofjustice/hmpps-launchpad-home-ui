@@ -1,19 +1,20 @@
-export type PageElement = Cypress.Chainable<JQuery>
+import { Page, Locator } from '@playwright/test'
 
-export default abstract class Page {
-  static verifyOnPage<T>(constructor: new () => T): T {
-    return new constructor()
+export type PageElement = Locator
+
+export default abstract class BasePage {
+  constructor(
+    protected readonly page: Page,
+    private readonly title: string,
+  ) {
+    // Page verification can be done in specific implementations
   }
 
-  constructor(private readonly title: string) {
-    this.checkOnPage()
+  async checkOnPage(): Promise<void> {
+    await this.page.locator('h1').filter({ hasText: this.title }).waitFor()
   }
 
-  checkOnPage(): void {
-    cy.get('h1').contains(this.title)
-  }
+  signOut = (): PageElement => this.page.locator('[data-qa=signOut]')
 
-  signOut = (): PageElement => cy.get('[data-qa=signOut]')
-
-  manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+  manageDetails = (): PageElement => this.page.locator('[data-qa=manageDetails]')
 }

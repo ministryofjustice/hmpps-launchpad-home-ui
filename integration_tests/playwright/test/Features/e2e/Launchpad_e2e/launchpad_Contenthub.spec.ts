@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
-import launchpadExternalLinksLocators from 'pages/launchpad/launchlinks'
+import launchpadExternalLinksLocators from '../../../pages/Launchpad_Portal/launchpadExternalLinksLocators'
 
 dotenv.config()
 

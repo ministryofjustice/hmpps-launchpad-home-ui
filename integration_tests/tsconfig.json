@@ -1,16 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2022",
     "noEmit": true,
-    "lib": ["es5", "dom", "es2015.promise"],
-    "types": ["cypress", "express", "express-session"],
+    "lib": ["es2022", "dom"],
+    "types": ["@playwright/test", "express", "express-session"],
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "strict": false,
     "baseUrl": "playwright/test",
     "paths": {
       "pages/launchpad/launchlinks": ["pages/Launchpad_Portal/launchpadExternalLinksLocators"],
       "pages/launchpad/portal": ["pages/Launchpad_Portal/launchpadPortalLocators"]
     }
   },
-  "include": ["**/*.ts", "support/playwright.global-setup.js", "support/playwright.global-teardown.js"]
+  "include": [
+    "playwright/**/*.ts",
+    "support/playwright.global-setup.js", 
+    "support/playwright.global-teardown.js"
+  ],
+  "exclude": [
+    "e2e/**/*",
+    "mockApis/**/*",
+    "pages/**/*",
+    "support/commands.ts",
+    "support/index.ts"
+  ]
 }

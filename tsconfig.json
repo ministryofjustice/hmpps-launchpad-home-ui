@@ -3,11 +3,6 @@
   "compileOnSave": true,
   "compilerOptions": {
     "isolatedModules": true,
-    "baseUrl": "integration_tests/playwright/test",
-    "paths": {
-      "pages/launchpad/launchlinks": ["pages/Launchpad_Portal/launchpadExternalLinksLocators.ts"],
-      "pages/launchpad/portal": ["pages/Launchpad_Portal/launchpadPortalLocators.ts"]
-    },
     "outDir": "./dist",
     "sourceMap": true,
     "skipLibCheck": true,
@@ -21,6 +16,6 @@
     "experimentalDecorators": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
-  "exclude": ["node_modules", "assets/**/*.js", "dist", "cypress.config.ts", "eslint.config.mjs"],
-  "include": ["**/*.js", "**/*.ts", "**/*.json", "integration_tests/playwright/test/pages/Launchpad_Portal/*.ts"]
+  "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts", "eslint.config.mjs"],
+  "include": ["**/*.js", "**/*.ts", "**/*.json"]
 }

@@ -1,11 +1,12 @@
-import Page, { PageElement } from './page'
+import { Page } from '@playwright/test'
+import BasePage, { PageElement } from './page'
 
-export default class IndexPage extends Page {
-  constructor() {
-    super('This site is under construction...')
+export default class IndexPage extends BasePage {
+  constructor(page: Page) {
+    super(page, 'This site is under construction...')
   }
 
-  headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
+  headerUserName = (): PageElement => this.page.locator('[data-qa=header-user-name]')
 
-  courtRegisterLink = (): PageElement => cy.get('[href="/court-register"]')
+  courtRegisterLink = (): PageElement => this.page.locator('[href="/court-register"]')
 }
