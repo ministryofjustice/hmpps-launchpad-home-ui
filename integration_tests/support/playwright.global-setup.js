@@ -2,11 +2,12 @@ const { chromium } = require('@playwright/test')
 
 module.exports = async function globalSetup() {
   const baseURL = process.env.BASE_URL || 'http://localhost:3000'
-  
+
   if (!process.env.BASE_URL) {
+    // eslint-disable-next-line no-console
     console.log('Warning: BASE_URL environment variable not set, using default: http://localhost:3000')
   }
-  
+
   const browser = await chromium.launch()
   const page = await browser.newPage()
   await page.goto(`${baseURL}`)
