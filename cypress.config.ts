@@ -1,7 +1,7 @@
 import { defineConfig } from 'cypress'
-import { resetStubs } from './integration_tests/legacy_tests(Archived)/mockApis/wiremock'
-import auth from './integration_tests/legacy_tests(Archived)/mockApis/auth'
-import tokenVerification from './integration_tests/legacy_tests(Archived)/mockApis/tokenVerification'
+import { resetStubs } from './integration_tests/playwright/test/mockApis/wiremock'
+import auth from './integration_tests/playwright/test/mockApis/auth'
+import tokenVerification from './integration_tests/playwright/test/mockApis/tokenVerification'
 
 export default defineConfig({
   chromeWebSecurity: false,
