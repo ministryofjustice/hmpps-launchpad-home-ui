@@ -5,7 +5,8 @@
     "isolatedModules": true,
     "baseUrl": "integration_tests/playwright/test",
     "paths": {
-      "pages/launchpad/launchlinks": ["pages/Launchpad_Portal/launchpadExternalLinksLocators.ts"]
+      "pages/launchpad/launchlinks": ["pages/Launchpad_Portal/launchpadExternalLinksLocators.ts"],
+      "pages/launchpad/portal": ["pages/Launchpad_Portal/launchpadPortalLocators.ts"]
     },
     "outDir": "./dist",
     "sourceMap": true,

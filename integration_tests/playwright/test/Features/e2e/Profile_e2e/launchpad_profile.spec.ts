@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
+import launchpadPortalLocators from 'pages/Launchpad_Portal/launchpadPortalLocators'
 
 dotenv.config()
 
@@ -11,19 +12,19 @@ test.describe('Launchpad Profile', () => {
   })
 
   test('Assert that the user can see their profile details module', async ({ page }) => {
-    const profileTile = page.locator('div.internal-link-tile#internal-link-tile-profile')
+    const profileTile = page.locator(launchpadPortalLocators.profileTile)
     await profileTile.waitFor({ state: 'visible', timeout: 5000 })
 
-    const profileLink = profileTile.locator('a[href="/profile"][rel="noreferrer noopener"]')
+    const profileLink = profileTile.locator(launchpadPortalLocators.profileLink)
     await profileLink.waitFor({ state: 'visible', timeout: 5000 })
 
-    const profileHeading = profileLink.locator('h2:has-text("Profile")')
+    const profileHeading = profileLink.locator(launchpadPortalLocators.profileHeading)
     await profileHeading.waitFor({ state: 'visible', timeout: 5000 })
 
     await expect(profileTile).toBeVisible()
     await expect(profileLink).toBeVisible()
     await expect(profileHeading).toHaveText('Profile')
-    await expect(profileLink.locator('p')).toHaveText(
+    await expect(profileLink.locator(launchpadPortalLocators.profileDescription)).toHaveText(
       'Check money, visits, incentives (IEP), adjudications and timetable.',
     )
   })
