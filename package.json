@@ -6,7 +6,6 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "postinstall": "npx playwright install --with-deps",
     "copy-views": "cp -R server/views dist/server/",
     "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
     "watch-ts": "tsc -w",
@@ -27,9 +26,10 @@
     "test:ci": "jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "playwright:install": "npx playwright install --with-deps",
+    "int-test:setup": "npx playwright install && npm run int-test",
     "int-test": "npx playwright test",
     "int-test-ui": "npx playwright test --ui",
-    "int-test:ci": "npx playwright test --reporter=junit",
+    "int-test:ci": "npx playwright install --with-deps && npx playwright test --reporter=junit",
     "clean": "rm -rf dist build node_modules stylesheets",
     "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test",
     "test:playwright:rerun-failed": "PW_TEST_PRELOAD=ts-node/register npx playwright test --last-failed"
