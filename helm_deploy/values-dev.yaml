@@ -24,6 +24,7 @@ generic-service:
     NOMIS_MAPPING_API_URL: 'https://nomis-sync-prisoner-mapping-dev.hmpps.service.justice.gov.uk'
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-dev.hmpps.service.justice.gov.uk'
     GA4_SITE_ID: 'G-EJVJ26SLFY'
+    ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: 'true'
 
   namespace_secrets:
