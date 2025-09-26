@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
-import ProfileLocators from 'pages/Profile_Portal/ProfileLocators'
+import ProfileLocators from '../../../pages/Profile_Portal/ProfileLocators'
 
 dotenv.config()
 
@@ -37,4 +37,3 @@ test.describe('Profile - Timetable', () => {
     await expect(page).toHaveURL(/.*\/timetable/)
   })
 })
-

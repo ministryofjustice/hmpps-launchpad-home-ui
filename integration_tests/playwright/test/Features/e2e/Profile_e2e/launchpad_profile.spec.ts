@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
-import launchpadPortalLocators from '../../../pages/Launchpad_Portal/launchpadPortalLocators'
-import ProfileLocators from 'pages/Profile_Portal/ProfileLocators'
+import ProfileLocators from '../../../pages/Profile_Portal/ProfileLocators'
 
 dotenv.config()
 
@@ -10,14 +9,14 @@ const baseURL = process.env.BASE_URL
 test.describe('Launchpad Profile', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
-    
+
     const profileLink = page.locator(ProfileLocators.profileLink)
     await profileLink.click()
   })
 
   test('Assert that the user can see their profile details module', async ({ page }) => {
     await page.goBack()
-    
+
     const profileTile = page.locator(ProfileLocators.profileTile)
     await profileTile.waitFor({ state: 'visible', timeout: 5000 })
 
@@ -36,12 +35,10 @@ test.describe('Launchpad Profile', () => {
   })
 
   test('Assert that the user can navigate to their profile page', async ({ page }) => {
-    
     await expect(page).toHaveURL(/.*\/profile/)
   })
 
   test('Assert that the User can see todays Timetable on their profile page', async ({ page }) => {
-
     const todayTimetable = page.locator(ProfileLocators.todayTimetable)
     await todayTimetable.waitFor({ state: 'visible', timeout: 5000 })
     await expect(todayTimetable).toBeVisible()
@@ -123,7 +120,9 @@ test.describe('Launchpad Profile', () => {
     await expect(savingsDetails).toContainText('My current balance is:')
   })
 
-  test('Assert that the User can select and navigate into View transactions on their profile page', async ({ page }) => {
+  test('Assert that the User can select and navigate into View transactions on their profile page', async ({
+    page,
+  }) => {
     const transactionsLink = page.locator(ProfileLocators.transactionsLink)
     await transactionsLink.waitFor({ state: 'visible', timeout: 5000 })
     await expect(transactionsLink).toBeVisible()
