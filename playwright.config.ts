@@ -48,7 +48,7 @@ export default defineConfig({
   },
 
   timeout: 60000,
-  retries: 1,
+  retries: 3,
 
   reporter: [
     ['html', { open: 'never', outputFolder: 'integration_tests/videos' }],

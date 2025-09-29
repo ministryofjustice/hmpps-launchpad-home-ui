@@ -124,24 +124,52 @@ jobs:
             echo "export TEST_ENV=\"$TEST_ENV\"" >> "$BASH_ENV"
             echo "Testing against environment: $TEST_ENV"
             
-            # Use environment-specific INGRESS_URL variables from context
+            # Set environment-specific URL variables that Playwright expects
             case "$TEST_ENV" in
               "dev")
-                INGRESS_URL_VAR="${DEV_INGRESS_URL:-$INGRESS_URL}"
+                TARGET_URL="${DEV_INGRESS_URL:-$INGRESS_URL}"
+                echo "export DEV_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
                 ;;
               "staging")
-                INGRESS_URL_VAR="${STAGING_INGRESS_URL:-$INGRESS_URL}"
+                TARGET_URL="${STAGING_INGRESS_URL:-$INGRESS_URL}"
+                echo "export STAGING_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
                 ;;
               *)
                 echo "Unknown environment: $TEST_ENV, using default INGRESS_URL"
-                INGRESS_URL_VAR="$INGRESS_URL"
+                TARGET_URL="$INGRESS_URL"
+                echo "export INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
                 ;;
             esac
             
-            echo "export INGRESS_URL=\"$INGRESS_URL_VAR\"" >> "$BASH_ENV"
             echo "Environment parameter: $TEST_ENV"
+            echo "Target URL: $TARGET_URL"
             source "$BASH_ENV"
-            echo "INGRESS_URL set to: $INGRESS_URL"
+      - run:
+          name: Network connectivity check
+          command: |
+            echo "=== Network Connectivity Diagnostics ==="
+            echo "Testing connectivity to target environment..."
+            
+            # Extract hostname from target URL
+            if [[ "$TARGET_URL" =~ https?://([^/]+) ]]; then
+              HOSTNAME="${BASH_REMATCH[1]}"
+              echo "Target hostname: $HOSTNAME"
+              
+              # Test DNS resolution
+              echo "DNS resolution test:"
+              nslookup "$HOSTNAME" || echo "DNS resolution failed"
+              
+              # Test basic connectivity
+              echo "Basic connectivity test:"
+              curl -I --connect-timeout 10 --max-time 30 "$TARGET_URL" || echo "HTTP connectivity failed"
+              
+              # Test specific login endpoints
+              echo "Microsoft login endpoint test:"
+              curl -I --connect-timeout 10 --max-time 30 "https://login.microsoftonline.com/" || echo "Microsoft login unreachable"
+              
+            else
+              echo "Could not extract hostname from: $TARGET_URL"
+            fi
       - run:
           name: integration tests
           command: npm run int-test

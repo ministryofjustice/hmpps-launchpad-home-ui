@@ -49,20 +49,40 @@ module.exports = async function globalSetup() {
 
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
-  await page.goto(`${baseURL}`)
-
-  // Wait for the page to load and check what we actually got
-  await page.waitForLoadState('networkidle')
+  
+  try {
+    await page.goto(`${baseURL}`, { timeout: 30000 })
+    
+    // Wait for the page to load and check what we actually got
+    await page.waitForLoadState('networkidle')
+    const currentUrl = page.url()
+    // eslint-disable-next-line no-console
+    console.log(`✅ Successfully navigated to: ${currentUrl}`)
+    
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(`❌ Navigation failed: ${error.message}`)
+    // eslint-disable-next-line no-console
+    console.log(`🔍 This could indicate:`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Firewall blocking CI access to ${baseURL}`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Network connectivity issues`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Environment not accessible from CI IP range`)
+    // eslint-disable-next-line no-console
+    console.log(`📧 Contact infrastructure team to whitelist CircleCI IPs`)
+    throw error
+  }
+  
   const currentUrl = page.url()
-  // eslint-disable-next-line no-console
-  console.log(`Current URL after navigation: ${currentUrl}`)
 
   // Check if we're already logged in or if auth is bypassed
   const isAlreadyLoggedIn = (await page.locator('input#i0116').count()) === 0
 
   if (isAlreadyLoggedIn) {
     // eslint-disable-next-line no-console
-    console.log('No Microsoft login form found - assuming already authenticated or auth bypassed')
+    console.log('No Microsoft login form found.')
   } else {
     // eslint-disable-next-line no-console
     console.log('Microsoft login form detected - proceeding with authentication')
