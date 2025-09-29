@@ -16,6 +16,13 @@ module.exports = async function globalSetup() {
     console.log(`Using BASE_URL: ${process.env.BASE_URL}`)
   }
 
+  // Check for required Microsoft SSO credentials
+  if (!process.env.MS_USERNAME || !process.env.MS_PASSWORD) {
+    throw new Error(
+      'Missing required environment variables: MS_USERNAME and MS_PASSWORD must be set for authentication',
+    )
+  }
+
   const browser = await chromium.launch()
   const page = await browser.newPage()
   await page.goto(`${baseURL}`)
