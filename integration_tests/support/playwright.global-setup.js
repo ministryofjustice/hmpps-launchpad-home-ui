@@ -1,11 +1,17 @@
 const { chromium } = require('@playwright/test')
 
 module.exports = async function globalSetup() {
-  const baseURL = process.env.BASE_URL || 'http://localhost:3000'
+  const baseURL = process.env.BASE_URL || process.env.INGRESS_URL || 'http://localhost:3000'
 
-  if (!process.env.BASE_URL) {
+  if (!process.env.BASE_URL && !process.env.INGRESS_URL) {
     // eslint-disable-next-line no-console
-    console.log('Warning: BASE_URL environment variable not set, using default: http://localhost:3000')
+    console.log('Warning: Neither BASE_URL nor INGRESS_URL environment variables are set, using dev environment default')
+  } else if (!process.env.BASE_URL) {
+    // eslint-disable-next-line no-console
+    console.log(`Using INGRESS_URL: ${process.env.INGRESS_URL}`)
+  } else {
+    // eslint-disable-next-line no-console
+    console.log(`Using BASE_URL: ${process.env.BASE_URL}`)
   }
 
   const browser = await chromium.launch()
