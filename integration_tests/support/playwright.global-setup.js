@@ -5,7 +5,9 @@ module.exports = async function globalSetup() {
 
   if (!process.env.BASE_URL && !process.env.INGRESS_URL) {
     // eslint-disable-next-line no-console
-    console.log('Warning: Neither BASE_URL nor INGRESS_URL environment variables are set, using dev environment default')
+    console.log(
+      'Warning: Neither BASE_URL nor INGRESS_URL environment variables are set, using dev environment default',
+    )
   } else if (!process.env.BASE_URL) {
     // eslint-disable-next-line no-console
     console.log(`Using INGRESS_URL: ${process.env.INGRESS_URL}`)
