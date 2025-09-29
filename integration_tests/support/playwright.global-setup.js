@@ -76,12 +76,44 @@ module.exports = async function globalSetup() {
 
   const currentUrl = page.url()
 
-  // Check if we're already logged in or if auth is bypassed
-  const isAlreadyLoggedIn = (await page.locator('input#i0116').count()) === 0
+  // Enhanced page detection and diagnostics
+  const loginFormExists = (await page.locator('input#i0116').count()) > 0
+  const isLaunchpadPage = currentUrl.includes('launchpad') && !currentUrl.includes('login.microsoftonline.com')
+  const isLocalhost = currentUrl.includes('localhost')
 
-  if (isAlreadyLoggedIn) {
-    // eslint-disable-next-line no-console
-    console.log('No Microsoft login form found.')
+  // eslint-disable-next-line no-console
+  console.log(`🔍 Page Analysis:`)
+  // eslint-disable-next-line no-console
+  console.log(`   📍 Current URL: ${currentUrl}`)
+  // eslint-disable-next-line no-console
+  console.log(`   🔑 Microsoft login form: ${loginFormExists ? 'Found ✅' : 'Not found ❌'}`)
+  // eslint-disable-next-line no-console
+  console.log(`   🏠 Is Launchpad page: ${isLaunchpadPage ? 'Yes ✅' : 'No ❌'}`)
+  // eslint-disable-next-line no-console
+  console.log(`   💻 Is localhost: ${isLocalhost ? 'Yes' : 'No'}`)
+
+  // Get page title and some content for debugging
+  const pageTitle = await page.title()
+  // eslint-disable-next-line no-console
+  console.log(`   📄 Page title: "${pageTitle}"`)
+
+  if (!loginFormExists) {
+    // Check what kind of page we landed on
+    if (isLaunchpadPage) {
+      // eslint-disable-next-line no-console
+      console.log('🎯 Already authenticated - landed directly on Launchpad portal')
+    } else if (isLocalhost) {
+      // eslint-disable-next-line no-console
+      console.log('🏠 On localhost - authentication likely bypassed')
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('❓ Unexpected page - not Microsoft login, not Launchpad')
+      // Get some page content for debugging
+      const bodyText = await page.locator('body').textContent()
+      const firstWords = (bodyText && bodyText.substring(0, 200)) || 'No content found'
+      // eslint-disable-next-line no-console
+      console.log(`   📝 Page content preview: "${firstWords}..."`)
+    }
   } else {
     // eslint-disable-next-line no-console
     console.log('Microsoft login form detected - proceeding with authentication')
