@@ -171,19 +171,6 @@ jobs:
               echo "Could not extract hostname from: $TARGET_URL"
             fi
       - run:
-          name: Get CircleCI IP Address
-          command: |
-            echo "=== CircleCI IP Address Detection ==="
-            echo "Method 1 - httpbin.org:"
-            curl -s https://httpbin.org/ip
-            echo ""
-            echo "Method 2 - ifconfig.me:"
-            curl -s https://ifconfig.me
-            echo ""
-            echo "Method 3 - ipinfo.io:"
-            curl -s https://ipinfo.io/ip
-            echo ""
-      - run:
           name: integration tests
           command: npm run int-test
       - store_test_results:

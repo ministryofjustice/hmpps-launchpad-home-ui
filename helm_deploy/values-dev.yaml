@@ -32,6 +32,7 @@ generic-service:
 
   allowlist:
     appsec-testers: 80.195.27.199
+    circleci-runner: 34.236.147.180
     groups:
       - internal
 
