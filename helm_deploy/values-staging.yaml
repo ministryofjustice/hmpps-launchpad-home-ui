@@ -6,6 +6,10 @@ generic-service:
 
   ingress:
     host: launchpad-home-staging.hmpps.service.justice.gov.uk
+    allowlist:
+      circleci-runner: REPLACE_WITH_ACTUAL_IP 
+      groups:
+        - internal
 
   scheduledDowntime:
     enabled: true

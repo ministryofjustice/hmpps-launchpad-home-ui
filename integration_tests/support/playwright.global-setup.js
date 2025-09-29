@@ -125,8 +125,20 @@ module.exports = async function globalSetup() {
   if (!loginFormExists) {
     // Check what kind of page we landed on
     if (isLaunchpadPage) {
-      // eslint-disable-next-line no-console
-      console.log('🎯 Already authenticated - landed directly on Launchpad portal')
+      // Check for error conditions even on trusted hosts
+      if (
+        pageTitle.toLowerCase().includes('403') ||
+        pageTitle.toLowerCase().includes('forbidden') ||
+        pageTitle.toLowerCase().includes('error')
+      ) {
+        // eslint-disable-next-line no-console
+        console.log('❌ ERROR: Access denied on trusted host - authentication may have failed')
+        // eslint-disable-next-line no-console
+        console.log('   🚨 This indicates a firewall, permission, or authentication issue')
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('🎯 Already authenticated - landed directly on Launchpad portal')
+      }
     } else if (isLocalhost) {
       // eslint-disable-next-line no-console
       console.log('🏠 On localhost - authentication likely bypassed')
@@ -183,9 +195,20 @@ module.exports = async function globalSetup() {
   // Verify authentication was successful before saving storage state
   const finalUrl = page.url()
   const finalUrlObj = new URL(finalUrl)
+  const finalPageTitle = await page.title()
+
   const isNotMicrosoftLogin = finalUrlObj.host !== 'login.microsoftonline.com'
   const isTrustedHost = TRUSTED_HOSTS.includes(finalUrlObj.host)
-  const isAuthenticated = isTrustedHost && isNotMicrosoftLogin
+
+  // Check for error conditions that indicate failed authentication
+  const hasErrorTitle =
+    finalPageTitle.toLowerCase().includes('403') ||
+    finalPageTitle.toLowerCase().includes('forbidden') ||
+    finalPageTitle.toLowerCase().includes('access denied') ||
+    finalPageTitle.toLowerCase().includes('unauthorized') ||
+    finalPageTitle.toLowerCase().includes('error')
+
+  const isAuthenticated = isTrustedHost && isNotMicrosoftLogin && !hasErrorTitle
 
   if (isAuthenticated) {
     // eslint-disable-next-line no-console
@@ -197,7 +220,23 @@ module.exports = async function globalSetup() {
     // eslint-disable-next-line no-console
     console.log(`   Final URL: ${finalUrl}`)
     // eslint-disable-next-line no-console
-    console.log('   Tests may fail due to missing authentication state')
+    console.log(`   Final Page Title: "${finalPageTitle}"`)
+
+    if (hasErrorTitle) {
+      // eslint-disable-next-line no-console
+      console.log('   🚨 ERROR PAGE DETECTED: Access denied or authentication failed')
+      // eslint-disable-next-line no-console
+      console.log('   🔍 Possible causes:')
+      // eslint-disable-next-line no-console
+      console.log('      - Firewall blocking access after authentication')
+      // eslint-disable-next-line no-console
+      console.log('      - Insufficient permissions for authenticated user')
+      // eslint-disable-next-line no-console
+      console.log('      - Service temporarily unavailable')
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('   Tests may fail due to missing authentication state')
+    }
   }
 
   await browser.close()
