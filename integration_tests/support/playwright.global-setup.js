@@ -4,7 +4,7 @@ module.exports = async function globalSetup() {
   // Generate trusted hostnames from environment variables for security
   const getTrustedHosts = () => {
     const hosts = ['localhost:3000'] // Always allow localhost for development
-    
+
     // Add environment-specific hosts from environment variables
     if (process.env.DEV_INGRESS_URL) {
       hosts.push(new URL(process.env.DEV_INGRESS_URL).host)
@@ -18,10 +18,10 @@ module.exports = async function globalSetup() {
     if (process.env.INGRESS_URL && !process.env.INGRESS_URL.includes('localhost')) {
       hosts.push(new URL(process.env.INGRESS_URL).host)
     }
-    
+
     return [...new Set(hosts)] // Remove duplicates
   }
-  
+
   const TRUSTED_HOSTS = getTrustedHosts()
 
   // Environment URL mapping using environment variables (secure approach)
@@ -102,7 +102,8 @@ module.exports = async function globalSetup() {
   // Enhanced page detection and diagnostics
   const loginFormExists = (await page.locator('input#i0116').count()) > 0
   const currentUrlObj = new URL(currentUrl)
-  const isLaunchpadPage = TRUSTED_HOSTS.includes(currentUrlObj.host) && currentUrlObj.host !== 'login.microsoftonline.com'
+  const isLaunchpadPage =
+    TRUSTED_HOSTS.includes(currentUrlObj.host) && currentUrlObj.host !== 'login.microsoftonline.com'
   const isLocalhost = currentUrlObj.host === 'localhost:3000'
 
   // eslint-disable-next-line no-console
@@ -168,10 +169,13 @@ module.exports = async function globalSetup() {
     // Wait for successful authentication and redirect back to the app
     // eslint-disable-next-line no-console
     console.log('⏳ Waiting for authentication to complete...')
-    await page.waitForURL(url => {
-      const urlObj = new URL(url.toString())
-      return TRUSTED_HOSTS.includes(urlObj.host)
-    }, { timeout: 30000 })
+    await page.waitForURL(
+      url => {
+        const urlObj = new URL(url.toString())
+        return TRUSTED_HOSTS.includes(urlObj.host)
+      },
+      { timeout: 30000 },
+    )
     // eslint-disable-next-line no-console
     console.log('✅ Authentication completed successfully')
   }
