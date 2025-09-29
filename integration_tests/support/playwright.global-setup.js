@@ -49,16 +49,15 @@ module.exports = async function globalSetup() {
 
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
-  
+
   try {
     await page.goto(`${baseURL}`, { timeout: 30000 })
-    
+
     // Wait for the page to load and check what we actually got
     await page.waitForLoadState('networkidle')
     const currentUrl = page.url()
     // eslint-disable-next-line no-console
     console.log(`✅ Successfully navigated to: ${currentUrl}`)
-    
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(`❌ Navigation failed: ${error.message}`)
@@ -74,7 +73,7 @@ module.exports = async function globalSetup() {
     console.log(`📧 Contact infrastructure team to whitelist CircleCI IPs`)
     throw error
   }
-  
+
   const currentUrl = page.url()
 
   // Check if we're already logged in or if auth is bypassed
