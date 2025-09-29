@@ -1,6 +1,29 @@
 const { chromium } = require('@playwright/test')
 
 module.exports = async function globalSetup() {
+  // Generate trusted hostnames from environment variables for security
+  const getTrustedHosts = () => {
+    const hosts = ['localhost:3000'] // Always allow localhost for development
+    
+    // Add environment-specific hosts from environment variables
+    if (process.env.DEV_INGRESS_URL) {
+      hosts.push(new URL(process.env.DEV_INGRESS_URL).host)
+    }
+    if (process.env.STAGING_INGRESS_URL) {
+      hosts.push(new URL(process.env.STAGING_INGRESS_URL).host)
+    }
+    if (process.env.TEST_INGRESS_URL && !process.env.TEST_INGRESS_URL.includes('localhost')) {
+      hosts.push(new URL(process.env.TEST_INGRESS_URL).host)
+    }
+    if (process.env.INGRESS_URL && !process.env.INGRESS_URL.includes('localhost')) {
+      hosts.push(new URL(process.env.INGRESS_URL).host)
+    }
+    
+    return [...new Set(hosts)] // Remove duplicates
+  }
+  
+  const TRUSTED_HOSTS = getTrustedHosts()
+
   // Environment URL mapping using environment variables (secure approach)
   const getEnvironmentUrl = env => {
     switch (env) {
@@ -78,8 +101,9 @@ module.exports = async function globalSetup() {
 
   // Enhanced page detection and diagnostics
   const loginFormExists = (await page.locator('input#i0116').count()) > 0
-  const isLaunchpadPage = currentUrl.includes('launchpad') && !currentUrl.includes('login.microsoftonline.com')
-  const isLocalhost = currentUrl.includes('localhost')
+  const currentUrlObj = new URL(currentUrl)
+  const isLaunchpadPage = TRUSTED_HOSTS.includes(currentUrlObj.host) && currentUrlObj.host !== 'login.microsoftonline.com'
+  const isLocalhost = currentUrlObj.host === 'localhost:3000'
 
   // eslint-disable-next-line no-console
   console.log(`🔍 Page Analysis:`)
@@ -140,9 +164,37 @@ module.exports = async function globalSetup() {
     await page.click('input[type="submit"]')
     await page.waitForSelector('input#idSIButton9', { timeout: 10000 })
     await page.click('input#idSIButton9')
+
+    // Wait for successful authentication and redirect back to the app
+    // eslint-disable-next-line no-console
+    console.log('⏳ Waiting for authentication to complete...')
+    await page.waitForURL(url => {
+      const urlObj = new URL(url.toString())
+      return TRUSTED_HOSTS.includes(urlObj.host)
+    }, { timeout: 30000 })
+    // eslint-disable-next-line no-console
+    console.log('✅ Authentication completed successfully')
   }
 
-  // Save storage state for reuse
-  await page.context().storageState({ path: 'storageState.json' })
+  // Verify authentication was successful before saving storage state
+  const finalUrl = page.url()
+  const finalUrlObj = new URL(finalUrl)
+  const isNotMicrosoftLogin = finalUrlObj.host !== 'login.microsoftonline.com'
+  const isTrustedHost = TRUSTED_HOSTS.includes(finalUrlObj.host)
+  const isAuthenticated = isTrustedHost && isNotMicrosoftLogin
+
+  if (isAuthenticated) {
+    // eslint-disable-next-line no-console
+    console.log('💾 Saving authenticated storage state')
+    await page.context().storageState({ path: 'storageState.json' })
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('⚠️  WARNING: Not saving storage state - authentication not verified')
+    // eslint-disable-next-line no-console
+    console.log(`   Final URL: ${finalUrl}`)
+    // eslint-disable-next-line no-console
+    console.log('   Tests may fail due to missing authentication state')
+  }
+
   await browser.close()
 }
