@@ -32,7 +32,6 @@ generic-service:
 
   allowlist:
     appsec-testers: 80.195.27.199
-    circleci-runner: REPLACE_WITH_ACTUAL_IP  # Add the IP shown in CircleCI logs
     groups:
       - internal
 

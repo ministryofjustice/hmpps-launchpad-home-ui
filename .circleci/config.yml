@@ -170,14 +170,19 @@ jobs:
             else
               echo "Could not extract hostname from: $TARGET_URL"
             fi
-            
-            # Get CircleCI IP for allowlist configuration
-            echo "=== CircleCI IP Detection ==="
-            CIRCLECI_IP=$(curl -s https://httpbin.org/ip | grep -o '"origin":"[^"]*' | cut -d'"' -f4)
-            echo "🌐 CircleCI IP Address: $CIRCLECI_IP"
-            echo "📝 Add this IP to your Helm deployment allowlist:"
-            echo "   helm_deploy/values-$TEST_ENV.yaml"
-            echo "   Under ingress.allowlist configuration"
+      - run:
+          name: Get CircleCI IP Address
+          command: |
+            echo "=== CircleCI IP Address Detection ==="
+            echo "Method 1 - httpbin.org:"
+            curl -s https://httpbin.org/ip
+            echo ""
+            echo "Method 2 - ifconfig.me:"
+            curl -s https://ifconfig.me
+            echo ""
+            echo "Method 3 - ipinfo.io:"
+            curl -s https://ipinfo.io/ip
+            echo ""
       - run:
           name: integration tests
           command: npm run int-test
