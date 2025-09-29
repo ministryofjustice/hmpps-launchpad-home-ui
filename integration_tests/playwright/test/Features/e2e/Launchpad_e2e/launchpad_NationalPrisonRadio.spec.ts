@@ -4,11 +4,9 @@ import launchpadExternalLinksLocators from '../../../pages/Launchpad_Portal/laun
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
 test.describe('Launchpad External Web Links - National Prison Radio', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
   })
   test('Assert that the user can see the National Prison Radio module', async ({ page }) => {
     const prisonRadioLink = page.locator(launchpadExternalLinksLocators.prisonRadioLink)

@@ -29,6 +29,11 @@ parameters:
     type: string
     default: 22.13-browsers
 
+  test-environment:
+    type: string
+    description: "Environment to run tests against: dev, staging, preprod, prod"
+    default: "dev"
+
 jobs:
   build:
     executor:
@@ -112,6 +117,31 @@ jobs:
       - run:
           name: Wait for node app to start
           command: sleep 5
+      - run:
+          name: Set environment for tests
+          command: |
+            TEST_ENV="<< pipeline.parameters.test-environment >>"
+            echo "export TEST_ENV=\"$TEST_ENV\"" >> "$BASH_ENV"
+            echo "Testing against environment: $TEST_ENV"
+            
+            # Use environment-specific INGRESS_URL variables from context
+            case "$TEST_ENV" in
+              "dev")
+                INGRESS_URL_VAR="${DEV_INGRESS_URL:-$INGRESS_URL}"
+                ;;
+              "staging")
+                INGRESS_URL_VAR="${STAGING_INGRESS_URL:-$INGRESS_URL}"
+                ;;
+              *)
+                echo "Unknown environment: $TEST_ENV, using default INGRESS_URL"
+                INGRESS_URL_VAR="$INGRESS_URL"
+                ;;
+            esac
+            
+            echo "export INGRESS_URL=\"$INGRESS_URL_VAR\"" >> "$BASH_ENV"
+            echo "Environment parameter: $TEST_ENV"
+            source "$BASH_ENV"
+            echo "INGRESS_URL set to: $INGRESS_URL"
       - run:
           name: integration tests
           command: npm run int-test

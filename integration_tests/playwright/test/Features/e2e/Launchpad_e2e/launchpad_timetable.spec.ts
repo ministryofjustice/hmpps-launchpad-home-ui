@@ -4,11 +4,9 @@ import launchpadPortalLocators from '../../../pages/Launchpad_Portal/launchpadPo
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
 test.describe('Launchpad External Web Links - Content Hub', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
   })
 
   test("Assert that the user can see today's events section", async ({ page }) => {

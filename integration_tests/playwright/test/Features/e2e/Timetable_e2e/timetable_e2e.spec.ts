@@ -5,11 +5,9 @@ import launchpadPortalLocators from '../../../pages/Launchpad_Portal/launchpadPo
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
 test.describe('Launchpad Portal - Timetable', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
 
     const timetableLink = page.locator(launchpadPortalLocators.timetableLink)
     await timetableLink.click()

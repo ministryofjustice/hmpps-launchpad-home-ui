@@ -4,11 +4,9 @@ import ProfileLocators from '../../../pages/Profile_Portal/ProfileLocators'
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
-test.describe('Profile - Timetable', () => {
+test.describe('Launchpad Profile Timetable', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
   })
 
   test('Assert that the user can see the calendar module', async ({ page }) => {

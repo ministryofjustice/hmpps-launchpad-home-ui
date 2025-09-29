@@ -6,11 +6,9 @@ import launchpadPortalLocators from '../../../pages/Launchpad_Portal/launchpadPo
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
 test.describe('Timetable Navigation and Grid Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
 
     const timetableLink = page.locator(launchpadPortalLocators.timetableLink)
     await timetableLink.click()
@@ -66,7 +64,7 @@ test.describe('Timetable Navigation and Grid Tests', () => {
   })
 
   test('Assert that This week navigation link works correctly', async ({ page }) => {
-    await page.goto(`${baseURL}/timetable/last-week`, { waitUntil: 'networkidle' })
+    await page.goto('/timetable/last-week', { waitUntil: 'networkidle' })
 
     const thisWeekLink = page.locator(TimetableLocators.thisWeekLink).first()
     await expect(thisWeekLink).toBeVisible()

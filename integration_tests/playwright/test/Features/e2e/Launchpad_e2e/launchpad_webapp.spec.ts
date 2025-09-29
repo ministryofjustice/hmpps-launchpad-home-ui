@@ -4,15 +4,13 @@ import launchpadPortalLocators from '../../../pages/Launchpad_Portal/launchpadPo
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
 test.describe('Launchpad Web App', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
   })
 
   test('Assert that the User has logged into Launchpad', async ({ page }) => {
-    await expect(page).toHaveURL(`${baseURL}`)
+    await expect(page).toHaveURL('/')
   })
 
   test('Assert that the user can see the calendar module', async ({ page }) => {

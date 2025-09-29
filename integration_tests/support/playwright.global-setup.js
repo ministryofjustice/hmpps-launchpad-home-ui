@@ -1,22 +1,41 @@
 const { chromium } = require('@playwright/test')
 
 module.exports = async function globalSetup() {
-  // Use dev environment as default for CI
-  const baseURL =
-    process.env.BASE_URL || process.env.INGRESS_URL || 'https://launchpad-home-dev.hmpps.service.justice.gov.uk'
+  // Environment URL mapping using environment variables (secure approach)
+  const getEnvironmentUrl = env => {
+    switch (env) {
+      case 'test':
+        return process.env.TEST_INGRESS_URL || 'http://localhost:3000'
+      case 'dev':
+        return process.env.DEV_INGRESS_URL || 'http://localhost:3000'
+      case 'staging':
+        return process.env.STAGING_INGRESS_URL || 'http://localhost:3000'
+      case 'preprod':
+        return process.env.PREPROD_INGRESS_URL || 'http://localhost:3000'
+      case 'prod':
+        return process.env.PROD_INGRESS_URL || 'http://localhost:3000'
+      default:
+        return process.env.INGRESS_URL || 'http://localhost:3000'
+    }
+  }
+
+  // Determine base URL with priority: TEST_ENV > INGRESS_URL > default localhost
+  let baseURL
+
+  if (process.env.TEST_ENV) {
+    baseURL = getEnvironmentUrl(process.env.TEST_ENV)
+  } else {
+    baseURL = process.env.INGRESS_URL || 'http://localhost:3000'
+  }
 
   // eslint-disable-next-line no-console
-  console.log(`=== Playwright Global Setup ===`)
+  console.log(`=== Playwright Environment Setup ===`)
   // eslint-disable-next-line no-console
-  console.log(`BASE_URL: ${process.env.BASE_URL || 'not set'}`)
+  console.log(`🌍 TEST_ENV: ${process.env.TEST_ENV || 'default (local)'}`)
   // eslint-disable-next-line no-console
-  console.log(`INGRESS_URL: ${process.env.INGRESS_URL || 'not set'}`)
+  console.log(`🔐 MS_USERNAME: ${process.env.MS_USERNAME ? 'set ✅' : 'not set ❌'}`)
   // eslint-disable-next-line no-console
-  console.log(`Final baseURL: ${baseURL}`)
-  // eslint-disable-next-line no-console
-  console.log(`MS_USERNAME: ${process.env.MS_USERNAME ? 'set' : 'not set'}`)
-  // eslint-disable-next-line no-console
-  console.log(`MS_PASSWORD: ${process.env.MS_PASSWORD ? 'set' : 'not set'}`)
+  console.log(`🔐 MS_PASSWORD: ${process.env.MS_PASSWORD ? 'set ✅' : 'not set ❌'}`)
 
   // Check for required Microsoft SSO credentials
   if (!process.env.MS_USERNAME || !process.env.MS_PASSWORD) {
@@ -29,7 +48,7 @@ module.exports = async function globalSetup() {
   const page = await browser.newPage()
 
   // eslint-disable-next-line no-console
-  console.log(`Navigating to: ${baseURL}`)
+  console.log(`🚀 Navigating to: ${baseURL}`)
   await page.goto(`${baseURL}`)
 
   // Wait for the page to load and check what we actually got

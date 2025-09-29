@@ -4,11 +4,9 @@ import ProfileLocators from '../../../pages/Profile_Portal/ProfileLocators'
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL
-
 test.describe('Launchpad Profile', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}`, { waitUntil: 'networkidle' })
+    await page.goto('/', { waitUntil: 'networkidle' })
 
     const profileLink = page.locator(ProfileLocators.profileLink)
     await profileLink.click()
