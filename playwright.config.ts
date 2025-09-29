@@ -14,7 +14,7 @@ export default defineConfig({
 
   use: {
     storageState: 'storageState.json',
-    baseURL: process.env.INGRESS_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || process.env.INGRESS_URL || 'http://localhost:3000',
     headless: true,
     screenshot: 'only-on-failure',
     video: {
