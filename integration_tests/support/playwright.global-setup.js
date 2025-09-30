@@ -1,5 +1,56 @@
 const { chromium } = require('@playwright/test')
 
+// Import WireMock modules at the top to avoid global-require lint errors
+let auth
+let tokenVerification
+let wiremock
+
+try {
+  // eslint-disable-next-line global-require
+  auth = require('../playwright/mockApis/auth')
+  // eslint-disable-next-line global-require
+  tokenVerification = require('../playwright/mockApis/tokenVerification')
+  // eslint-disable-next-line global-require
+  wiremock = require('../playwright/mockApis/wiremock')
+  // eslint-disable-next-line no-unused-vars
+} catch (error) {
+  // WireMock modules not available - will skip initialization
+}
+
+// Initialize WireMock stubs for API mocking
+const initializeWireMockStubs = async () => {
+  if (!auth || !tokenVerification || !wiremock) {
+    // eslint-disable-next-line no-console
+    console.log('⚠️  WireMock modules not available - skipping stub initialization')
+    return
+  }
+
+  try {
+    // eslint-disable-next-line no-console
+    console.log('🎭 Initializing WireMock stubs...')
+
+    // Reset any existing stubs
+    await wiremock.resetStubs()
+
+    // Set up auth stubs
+    await auth.ping()
+    await auth.token()
+    await auth.redirect()
+    await auth.favicon()
+
+    // Set up token verification stubs
+    await tokenVerification.stubVerifyToken()
+    await tokenVerification.stubPing()
+
+    // eslint-disable-next-line no-console
+    console.log('✅ WireMock stubs initialized successfully')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(`⚠️  WireMock initialization failed: ${error.message}`)
+    // Don't fail the whole setup - continue without mocks
+  }
+}
+
 module.exports = async function globalSetup() {
   const getTrustedHosts = () => {
     const hosts = ['localhost:3000']
@@ -45,7 +96,7 @@ module.exports = async function globalSetup() {
 
     // Expanded port list for CI environments - common development and service ports
     const commonPorts = [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009, 3010]
-    const webPorts = [8000, 8001, 8080, 8081, 8082, 8090, 8888, 9000, 9001, 9090]
+    const webPorts = [8000, 8001, 8080, 8081, 8082, 8090, 8888, 9000, 9001, 9090, 9091]
     const devPorts = [4000, 4001, 4200, 5000, 5001, 5173, 5432, 6000, 6001, 7000, 7001]
     const ciPorts = [1234, 2000, 2001, 10000, 10001] // Common CI service ports
 
@@ -209,6 +260,11 @@ module.exports = async function globalSetup() {
   console.log(`🔐 MS_USERNAME: ${process.env.MS_USERNAME ? 'set ✅' : 'not set ❌'}`)
   // eslint-disable-next-line no-console
   console.log(`🔐 MS_PASSWORD: ${process.env.MS_PASSWORD ? 'set ✅' : 'not set ❌'}`)
+
+  // Initialize WireMock stubs if we're in a test environment
+  if (process.env.TEST_ENV === 'test' || !process.env.TEST_ENV) {
+    await initializeWireMockStubs()
+  }
 
   if (!process.env.MS_USERNAME || !process.env.MS_PASSWORD) {
     throw new Error(
