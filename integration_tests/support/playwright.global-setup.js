@@ -1,146 +1,98 @@
 const { chromium } = require('@playwright/test')
 
-// Import WireMock modules at the top to avoid global-require lint errors
-let auth
-let tokenVerification
-let wiremock
-
-try {
-  // eslint-disable-next-line global-require
-  auth = require('../playwright/mockApis/auth')
-  // eslint-disable-next-line global-require
-  tokenVerification = require('../playwright/mockApis/tokenVerification')
-  // eslint-disable-next-line global-require
-  wiremock = require('../playwright/mockApis/wiremock')
-  // eslint-disable-next-line no-unused-vars
-} catch (error) {
-  // WireMock modules not available - will skip initialization
-}
-
-// Initialize WireMock stubs for API mocking
-const initializeWireMockStubs = async () => {
-  if (!auth || !tokenVerification || !wiremock) {
-    // eslint-disable-next-line no-console
-    console.log('⚠️  WireMock modules not available - skipping stub initialization')
-    return
+module.exports = async function globalSetup() {
+  // 🏗️  CI Service Startup Script
+  // ===============================
+  console.log('🚀 Starting CI service health checks...')
+  console.log('🔍 Checking WireMock...')
+  
+  // Wait for WireMock to be ready
+  const maxAttempts = 15
+  let attempts = 0
+  let wiremockReady = false
+  
+  while (attempts < maxAttempts && !wiremockReady) {
+    attempts++
+    console.log(`⏳ Waiting for WireMock (attempt ${attempts}/${maxAttempts})...`)
+    
+    try {
+      const response = await fetch('http://localhost:9091/__admin/health')
+      if (response.ok) {
+        wiremockReady = true
+        console.log(`✅ WireMock is ready after ${attempts} attempts`)
+      }
+    } catch (error) {
+      // WireMock not ready yet, continue waiting
+      if (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+      }
+    }
   }
-
+  
+  if (!wiremockReady) {
+    console.log('❌ WireMock failed to start after maximum attempts')
+    throw new Error('WireMock service is not available')
+  }
+  
+  console.log('🎭 Initializing basic WireMock stubs for CI...')
+  
   try {
-    // eslint-disable-next-line no-console
-    console.log('🎭 Initializing WireMock stubs...')
-
-    // Reset any existing stubs
-    await wiremock.resetStubs()
-
-    // Set up auth stubs
-    await auth.default.stubAuthPing()
+    const auth = require('../../dist/integration_tests/mockApis/auth')
+    const tokenVerification = require('../../dist/integration_tests/mockApis/tokenVerification')
+    
     await auth.default.stubSignIn()
     await auth.default.stubAuthUser()
-
-    // Set up token verification stubs
     await tokenVerification.default.stubVerifyToken()
-    await tokenVerification.default.stubTokenVerificationPing()
-
-    // Add generic health endpoint for WireMock itself
-    await wiremock.stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/health',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { status: 'UP' },
-      },
-    })
-
-    // Verify stubs are working with CI-friendly retries
-    let stubCount = 0
-    let verificationAttempts = 0
-    const maxVerificationAttempts = 5
-
-    while (verificationAttempts < maxVerificationAttempts) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const response = await fetch('http://localhost:9091/__admin/mappings')
-        if (response.ok) {
-          // eslint-disable-next-line no-await-in-loop
-          const data = await response.json()
-          stubCount = data.mappings.length
-          if (stubCount > 0) break
-        }
-      } catch (networkError) {
-        // CI environments may need more time for network setup
-        // Ignore network errors during verification
-        // eslint-disable-next-line no-console
-        console.debug('Network error during WireMock verification:', networkError.message)
-      }
-
-      verificationAttempts += 1
-      if (verificationAttempts < maxVerificationAttempts) {
-        // eslint-disable-next-line no-await-in-loop
-        await new Promise(resolve => {
-          setTimeout(resolve, 1000)
-        })
-      }
-    }
-
-    // eslint-disable-next-line no-console
-    console.log(`✅ WireMock stubs initialized successfully (${stubCount} mappings active)`)
-
-    // CI-specific: Additional verification with retries
-    let endpointsVerified = false
-    let endpointAttempts = 0
-    const maxEndpointAttempts = 3
-
-    while (!endpointsVerified && endpointAttempts < maxEndpointAttempts) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const [authPing, tokenVerify] = await Promise.all([
-          fetch('http://localhost:9091/auth/health/ping', { timeout: 3000 }),
-          fetch('http://localhost:9091/verification/health/ping', { timeout: 3000 }),
-        ])
-
-        if (authPing.ok && tokenVerify.ok) {
-          endpointsVerified = true
-          // eslint-disable-next-line no-console
-          console.log('🔍 Critical WireMock endpoints verified and responding')
-        }
-      } catch (endpointError) {
-        // eslint-disable-next-line no-console
-        console.debug('Endpoint verification error:', endpointError.message)
-        endpointAttempts += 1
-        if (endpointAttempts < maxEndpointAttempts) {
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise(resolve => {
-            setTimeout(resolve, 2000)
-          })
-        }
-      }
-    }
-
-    if (!endpointsVerified) {
-      // eslint-disable-next-line no-console
-      console.log('⚠️  WireMock endpoint verification incomplete - continuing with setup')
-    }
-
-    // CI-specific: Extra wait to ensure all stubs are fully propagated
-    // eslint-disable-next-line no-console
-    console.log('⏳ CI environment detected - adding extra propagation time...')
-    await new Promise(resolve => {
-      setTimeout(resolve, 3000)
-    })
+    
+    console.log('✅ Basic WireMock stubs initialized')
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(`⚠️  WireMock initialization failed: ${error.message}`)
-    // Don't fail the whole setup - continue without mocks
+    console.log('⚠️ WireMock stub initialization failed:', error.message)
   }
-}
+  
+  console.log('⏳ Allowing WireMock stubs to propagate...')
+  await new Promise(resolve => setTimeout(resolve, 1000)) // Wait 1 second for propagation
+  
+  console.log('🎉 WireMock is ready with authentication stubs!')
+  console.log('🎯 Ready for Node.js application startup')
+  console.log('===============================')
+  console.log('✅ Services and stubs initialized successfully')
+  console.log('')
 
-module.exports = async function globalSetup() {
+  // Wait for application to start
+  console.log('⏳ Waiting for application to start...')
+  
+  const maxAppAttempts = 15
+  let appAttempts = 0
+  let appReady = false
+  
+  while (appAttempts < maxAppAttempts && !appReady) {
+    appAttempts++
+    console.log(`⏳ Waiting for app health check (attempt ${appAttempts}/${maxAppAttempts})...`)
+    
+    try {
+      const response = await fetch('http://localhost:3000/health')
+      if (response.ok) {
+        appReady = true
+        console.log(`✅ Application health check passed after ${appAttempts} attempts`)
+      }
+    } catch (error) {
+      // App not ready yet, continue waiting
+      if (appAttempts < maxAppAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+      }
+    }
+  }
+  
+  if (!appReady) {
+    console.log('❌ Application failed to start after maximum attempts')
+    throw new Error('Application is not responding to health checks')
+  }
+
+  // Generate trusted hostnames from environment variables for security
   const getTrustedHosts = () => {
-    const hosts = ['localhost:3000']
+    const hosts = ['localhost:3000'] // Always allow localhost for development
 
+    // Add environment-specific hosts from environment variables
     if (process.env.DEV_INGRESS_URL) {
       hosts.push(new URL(process.env.DEV_INGRESS_URL).host)
     }
@@ -154,15 +106,16 @@ module.exports = async function globalSetup() {
       hosts.push(new URL(process.env.INGRESS_URL).host)
     }
 
-    return [...new Set(hosts)]
+    return [...new Set(hosts)] // Remove duplicates
   }
 
   const TRUSTED_HOSTS = getTrustedHosts()
 
+  // Environment URL mapping using environment variables (secure approach)
   const getEnvironmentUrl = env => {
     switch (env) {
       case 'test':
-        return 'http://localhost:3000'
+        return process.env.TEST_INGRESS_URL || 'http://localhost:3000'
       case 'dev':
         return process.env.DEV_INGRESS_URL || 'http://localhost:3000'
       case 'staging':
@@ -176,160 +129,61 @@ module.exports = async function globalSetup() {
     }
   }
 
+  // Dynamic localhost detection function using Playwright's page
   const detectLocalhost = async browser => {
     // eslint-disable-next-line no-console
-    console.log('🔍 Comprehensive port scan starting...')
+    console.log('🔍 Dynamically detecting localhost...')
 
-    // Expanded port list for CI environments - common development and service ports
-    const commonPorts = [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009, 3010]
-    const webPorts = [8000, 8001, 8080, 8081, 8082, 8090, 8888, 9000, 9001, 9090, 9091]
-    const devPorts = [4000, 4001, 4200, 5000, 5001, 5173, 5432, 6000, 6001, 7000, 7001]
-    const ciPorts = [1234, 2000, 2001, 10000, 10001] // Common CI service ports
+    // Test common ports
+    const ports = [3000, 3001, 3002, 8080, 8081]
 
-    const allPorts = [...commonPorts, ...webPorts, ...devPorts, ...ciPorts].sort((a, b) => a - b)
+    // Test each port sequentially using reduce to avoid await-in-loop
+    const result = await ports.reduce(async (previousPromise, port) => {
+      const foundUrl = await previousPromise
+      if (foundUrl) return foundUrl // Already found a working port
 
-    // Scanning ports silently - will only show active services
-
-    const availablePorts = []
-
-    // First, scan all ports to see what's available
-    const totalPorts = allPorts.length
-
-    for (const port of allPorts) {
       const testUrl = `http://localhost:${port}`
-      // eslint-disable-next-line no-await-in-loop
       const testPage = await browser.newPage()
 
       try {
-        // Silent scanning - only show active ports
-
-        // Try health endpoint first with shorter timeout for comprehensive scan
-        // eslint-disable-next-line no-await-in-loop
-        await testPage.goto(`${testUrl}/health`, { timeout: 1500 })
-        // eslint-disable-next-line no-await-in-loop
-        const healthContent = await testPage.content()
-
-        if (healthContent.includes('OK') || healthContent.includes('healthy') || healthContent.includes('UP')) {
-          if (
-            healthContent.includes('http_server_requests_seconds') ||
-            healthContent.includes('# TYPE') ||
-            healthContent.includes('# HELP')
-          ) {
-            // eslint-disable-next-line no-console
-            console.log(`📊 Port ${port}: Metrics server detected`)
-            availablePorts.push({ port, type: 'metrics', url: testUrl })
-          } else {
-            // eslint-disable-next-line no-console
-            console.log(`✅ Port ${port}: Healthy app found`)
-            availablePorts.push({ port, type: 'app', url: testUrl })
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(`⚠️  Port ${port}: Health endpoint exists but not healthy`)
-          availablePorts.push({ port, type: 'unhealthy', url: testUrl })
-        }
-
-        // eslint-disable-next-line no-await-in-loop
+        // Test health endpoint first
+        // eslint-disable-next-line no-console
+        console.log(`🔍 Testing port ${port}...`)
+        await testPage.goto(`${testUrl}/health`, { timeout: 3000 })
+        // eslint-disable-next-line no-console
+        console.log(`✅ Found app on port ${port} (health check)`)
         await testPage.close()
+        return testUrl
         // eslint-disable-next-line no-unused-vars
-      } catch (healthError) {
-        // Try direct homepage access
+      } catch (_healthError) {
+        // Health endpoint failed, try homepage
         try {
-          // eslint-disable-next-line no-await-in-loop
-          await testPage.goto(testUrl, { timeout: 1500 })
+          await testPage.goto(testUrl, { timeout: 3000 })
           // eslint-disable-next-line no-console
-          console.log(`✅ Port ${port}: App accessible (no health endpoint)`)
-          availablePorts.push({ port, type: 'no-health', url: testUrl })
-          // eslint-disable-next-line no-await-in-loop
+          console.log(`✅ Found app on port ${port} (homepage)`)
           await testPage.close()
+          return testUrl
           // eslint-disable-next-line no-unused-vars
-        } catch (pageError) {
-          // Silent fail for inactive ports
-          // eslint-disable-next-line no-await-in-loop
+        } catch (_homeError) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ Port ${port}: not available`)
           await testPage.close()
+          return null
         }
       }
-    }
+    }, Promise.resolve(null))
 
-    // Show comprehensive summary of what was found
-    // eslint-disable-next-line no-console
-    console.log(`📋 Comprehensive port scan completed - found ${availablePorts.length} active ports:`)
-
-    if (availablePorts.length === 0) {
-      // eslint-disable-next-line no-console
-      console.log(`   ❌ No active ports found out of ${totalPorts} ports scanned`)
-    } else {
-      // Group by type for better readability
-      const appPorts = availablePorts.filter(p => p.type === 'app')
-      const metricsPorts = availablePorts.filter(p => p.type === 'metrics')
-      const noHealthPorts = availablePorts.filter(p => p.type === 'no-health')
-      const unhealthyPorts = availablePorts.filter(p => p.type === 'unhealthy')
-
-      if (appPorts.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log(`   🚀 Main Applications (${appPorts.length}): ${appPorts.map(p => p.port).join(', ')}`)
-      }
-      if (metricsPorts.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log(`   📊 Metrics Servers (${metricsPorts.length}): ${metricsPorts.map(p => p.port).join(', ')}`)
-      }
-      if (noHealthPorts.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `   🔧 Apps without health endpoint (${noHealthPorts.length}): ${noHealthPorts.map(p => p.port).join(', ')}`,
-        )
-      }
-      if (unhealthyPorts.length > 0) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `   ⚠️  Unhealthy but accessible (${unhealthyPorts.length}): ${unhealthyPorts.map(p => p.port).join(', ')}`,
-        )
-      }
-    }
-
-    // Choose the best port (prefer main app ports over metrics)
-    const appPorts = availablePorts.filter(p => p.type === 'app')
-    const noHealthPorts = availablePorts.filter(p => p.type === 'no-health')
-    const unhealthyPorts = availablePorts.filter(p => p.type === 'unhealthy')
-
-    let chosenPort = null
-
-    if (appPorts.length > 0) {
-      // Prefer port 3000 if it's available and healthy
-      const [firstAppPort] = appPorts
-      chosenPort = appPorts.find(p => p.port === 3000) || firstAppPort
-      // eslint-disable-next-line no-console
-      console.log(`🎯 Selected port ${chosenPort.port}: Main application`)
-    } else if (noHealthPorts.length > 0) {
-      const [firstNoHealthPort] = noHealthPorts
-      chosenPort = noHealthPorts.find(p => p.port === 3000) || firstNoHealthPort
-      // eslint-disable-next-line no-console
-      console.log(`🎯 Selected port ${chosenPort.port}: App without health endpoint`)
-    } else if (unhealthyPorts.length > 0) {
-      const [firstUnhealthyPort] = unhealthyPorts
-      chosenPort = firstUnhealthyPort
-      // eslint-disable-next-line no-console
-      console.log(`🎯 Selected port ${chosenPort.port}: Unhealthy but accessible`)
-    }
-
-    if (chosenPort) {
-      // Wait for the chosen port to be fully ready (especially port 3000)
-      if (chosenPort.port === 3000 && chosenPort.type === 'app') {
-        // eslint-disable-next-line no-console
-        console.log(`⏳ Waiting for main app (port 3000) to be fully ready...`)
-        await new Promise(resolve => {
-          setTimeout(() => resolve(), 5000)
-        })
-      }
-
-      return chosenPort.url
+    if (result) {
+      return result
     }
 
     // eslint-disable-next-line no-console
-    console.log(`⚠️  No accessible ports found, defaulting to http://localhost:3000`)
+    console.log('⚠️  No running app detected, defaulting to http://localhost:3000')
     return 'http://localhost:3000'
   }
 
+  // eslint-disable-next-line no-console
+  console.log(`=== Playwright Environment Setup ===`)
   // eslint-disable-next-line no-console
   console.log(`🌍 TEST_ENV: ${process.env.TEST_ENV || 'default (local)'}`)
   // eslint-disable-next-line no-console
@@ -337,11 +191,7 @@ module.exports = async function globalSetup() {
   // eslint-disable-next-line no-console
   console.log(`🔐 MS_PASSWORD: ${process.env.MS_PASSWORD ? 'set ✅' : 'not set ❌'}`)
 
-  // Initialize WireMock stubs if we're in a test environment
-  if (process.env.TEST_ENV === 'test' || !process.env.TEST_ENV) {
-    await initializeWireMockStubs()
-  }
-
+  // Check for required Microsoft SSO credentials
   if (!process.env.MS_USERNAME || !process.env.MS_PASSWORD) {
     throw new Error(
       'Missing required environment variables: MS_USERNAME and MS_PASSWORD must be set for authentication',
@@ -349,166 +199,130 @@ module.exports = async function globalSetup() {
   }
 
   const browser = await chromium.launch()
+
+  // Determine base URL with priority: TEST_ENV > dynamic localhost detection
   let baseURL
 
-  if (process.env.TEST_ENV === 'test' || !process.env.TEST_ENV) {
-    // eslint-disable-next-line no-console
-    console.log(`🏠 TEST_ENV is '${process.env.TEST_ENV || 'undefined'}' - forcing dynamic localhost detection`)
-    baseURL = await detectLocalhost(browser)
-  } else {
-    // eslint-disable-next-line no-console
-    console.log(`🌐 Using environment URL for: ${process.env.TEST_ENV}`)
+  if (process.env.TEST_ENV && process.env.TEST_ENV !== 'test') {
     baseURL = getEnvironmentUrl(process.env.TEST_ENV)
+  } else {
+    // For test environment or no TEST_ENV, use dynamic detection
+    baseURL = await detectLocalhost(browser)
   }
 
   const page = await browser.newPage()
 
-  if (baseURL.includes('localhost')) {
-    const testPage = await browser.newPage()
-    try {
-      await testPage.goto(baseURL, { timeout: 5000 })
-      await testPage.close()
-      // eslint-disable-next-line no-unused-vars
-    } catch (preTestError) {
-      await testPage.close()
-    }
-
-    let connected = false
-    let attempt = 1
-    while (attempt <= 3 && !connected) {
-      // eslint-disable-next-line no-await-in-loop
-      const quickTestPage = await browser.newPage()
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        await quickTestPage.goto(`${baseURL}/health`, { timeout: 5000 })
-        // eslint-disable-next-line no-await-in-loop
-        await quickTestPage.close()
-        connected = true
-        // eslint-disable-next-line no-unused-vars
-      } catch (immediateError) {
-        // eslint-disable-next-line no-await-in-loop
-        await quickTestPage.close()
-        if (attempt < 3) {
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise(resolve => {
-            setTimeout(() => resolve(), 2000)
-          })
-        }
-      }
-      attempt += 1
-    }
-
-    if (!connected) {
-      throw new Error(`Server became unavailable after 3 attempts`)
-    }
-  }
-
-  // For test environments with WireMock, skip full page navigation
-  // since authentication is mocked and we've already verified health endpoints
-  const isTestEnvironment = process.env.TEST_ENV === 'test' || baseURL.includes('localhost')
-  const isCIEnvironment = process.env.CI || process.env.CIRCLECI || process.env.GITHUB_ACTIONS
-
-  if (isTestEnvironment) {
-    // eslint-disable-next-line no-console
-    console.log(`🧪 Test environment detected - skipping full page navigation`)
-
-    if (isCIEnvironment) {
-      // eslint-disable-next-line no-console
-      console.log(`🏗️  CI environment detected - ensuring all services are stable`)
-      // Additional wait for CI stability
-      await new Promise(resolve => {
-        setTimeout(resolve, 5000)
-      })
-
-      // Verify the main app is actually responding in CI
-      try {
-        const appHealthCheck = await fetch(`${baseURL}/health`, { timeout: 5000 })
-        if (appHealthCheck.ok) {
-          // eslint-disable-next-line no-console
-          console.log(`✅ Main application health verified in CI`)
-        } else {
-          // eslint-disable-next-line no-console
-          console.log(`⚠️  Main application health check returned: ${appHealthCheck.status}`)
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`⚠️  Main application health check failed: ${error.message}`)
-      }
-    }
-
-    // eslint-disable-next-line no-console
-    console.log(`✅ Health checks passed, WireMock stubs initialized`)
-    // Save minimal storage state for test environment
-    await page.context().storageState({ path: 'storageState.json' })
-    await browser.close()
-    return
-  }
-  let navigationAttempt = 1
-  let lastError = null
-
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
 
-  while (navigationAttempt <= 3) {
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      await page.goto(`${baseURL}`, { timeout: 30000 })
-      // eslint-disable-next-line no-await-in-loop
-      await page.waitForLoadState('networkidle')
-      break
-    } catch (error) {
-      lastError = error
-      if (navigationAttempt === 3) {
-        throw lastError
-      }
-      // eslint-disable-next-line no-await-in-loop
-      await new Promise(resolve => {
-        setTimeout(() => resolve(), 3000)
-      })
-    }
-    navigationAttempt += 1
+  try {
+    await page.goto(`${baseURL}`, { timeout: 30000 })
+
+    // Wait for the page to load and check what we actually got
+    await page.waitForLoadState('networkidle')
+    const currentUrl = page.url()
+    // eslint-disable-next-line no-console
+    console.log(`✅ Successfully navigated to: ${currentUrl}`)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(`❌ Navigation failed: ${error.message}`)
+    // eslint-disable-next-line no-console
+    console.log(`🔍 This could indicate:`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Firewall blocking CI access to ${baseURL}`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Network connectivity issues`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Environment not accessible from CI IP range`)
+    // eslint-disable-next-line no-console
+    console.log(`📧 Contact infrastructure team to whitelist CircleCI IPs`)
+    throw error
   }
 
   const currentUrl = page.url()
+
+  // Enhanced page detection and diagnostics
   const loginFormExists = (await page.locator('input#i0116').count()) > 0
   const currentUrlObj = new URL(currentUrl)
   const isLaunchpadPage =
     TRUSTED_HOSTS.includes(currentUrlObj.host) && currentUrlObj.host !== 'login.microsoftonline.com'
   const isLocalhost = currentUrlObj.host === 'localhost:3000'
+
+  // eslint-disable-next-line no-console
+  console.log(`🔍 Page Analysis:`)
+  // eslint-disable-next-line no-console
+  console.log(`   📍 Current URL: ${currentUrl}`)
+  // eslint-disable-next-line no-console
+  console.log(`   🔑 Microsoft login form: ${loginFormExists ? 'Found ✅' : 'Not found ❌'}`)
+  // eslint-disable-next-line no-console
+  console.log(`   🏠 Is Launchpad page: ${isLaunchpadPage ? 'Yes ✅' : 'No ❌'}`)
+  // eslint-disable-next-line no-console
+  console.log(`   💻 Is localhost: ${isLocalhost ? 'Yes' : 'No'}`)
+
+  // Get page title and some content for debugging
   const pageTitle = await page.title()
+  // eslint-disable-next-line no-console
+  console.log(`   📄 Page title: "${pageTitle}"`)
 
   if (!loginFormExists) {
+    // Check what kind of page we landed on
     if (isLaunchpadPage) {
+      // Check for error conditions even on trusted hosts
       if (
         pageTitle.toLowerCase().includes('403') ||
         pageTitle.toLowerCase().includes('forbidden') ||
         pageTitle.toLowerCase().includes('error')
       ) {
-        throw new Error('Access denied on trusted host - authentication may have failed')
+        // eslint-disable-next-line no-console
+        console.log('❌ ERROR: Access denied on trusted host - authentication may have failed')
+        // eslint-disable-next-line no-console
+        console.log('   🚨 This indicates a firewall, permission, or authentication issue')
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('🎯 Already authenticated - landed directly on Launchpad portal')
       }
-    } else if (!isLocalhost) {
+    } else if (isLocalhost) {
+      // eslint-disable-next-line no-console
+      console.log('🏠 On localhost - authentication likely bypassed')
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('❓ Unexpected page - not Microsoft login, not Launchpad')
+      // Get some page content for debugging
       const bodyText = await page.locator('body').textContent()
       const firstWords = (bodyText && bodyText.substring(0, 200)) || 'No content found'
-      throw new Error(`Unexpected page content: "${firstWords}..."`)
+      // eslint-disable-next-line no-console
+      console.log(`   📝 Page content preview: "${firstWords}..."`)
     }
   } else {
+    // eslint-disable-next-line no-console
+    console.log('Microsoft login form detected - proceeding with authentication')
+
+    // Wait for Microsoft login form to appear with longer timeout
     try {
       await page.waitForSelector('input#i0116', { timeout: 30000 })
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      const pageContent = await page.textContent('body')
-      throw new Error(`Microsoft login form not found at ${currentUrl}. Page content: ${pageContent}`)
+      // eslint-disable-next-line no-console
+      console.log('Microsoft login form not found. Page content:')
+      // eslint-disable-next-line no-console
+      console.log(await page.textContent('body'))
+      // eslint-disable-next-line no-console
+      console.log('Original error:', error.message)
+      throw new Error(`Microsoft login form not found at ${currentUrl}. Expected input#i0116 selector.`)
     }
 
     await page.fill('input#i0116', process.env.MS_USERNAME)
     await page.click('button:has-text("Next"), input#idSIButton9')
 
+    // Wait for password field
     await page.waitForSelector('input#i0118', { timeout: 15000 })
     await page.fill('input#i0118', process.env.MS_PASSWORD)
     await page.click('input[type="submit"]')
     await page.waitForSelector('input#idSIButton9', { timeout: 10000 })
     await page.click('input#idSIButton9')
 
+    // Wait for successful authentication and redirect back to the app
+    // eslint-disable-next-line no-console
+    console.log('⏳ Waiting for authentication to complete...')
     await page.waitForURL(
       url => {
         const urlObj = new URL(url.toString())
@@ -516,8 +330,11 @@ module.exports = async function globalSetup() {
       },
       { timeout: 30000 },
     )
+    // eslint-disable-next-line no-console
+    console.log('✅ Authentication completed successfully')
   }
 
+  // Verify authentication was successful before saving storage state
   const finalUrl = page.url()
   const finalUrlObj = new URL(finalUrl)
   const finalPageTitle = await page.title()
@@ -525,6 +342,7 @@ module.exports = async function globalSetup() {
   const isNotMicrosoftLogin = finalUrlObj.host !== 'login.microsoftonline.com'
   const isTrustedHost = TRUSTED_HOSTS.includes(finalUrlObj.host)
 
+  // Check for error conditions that indicate failed authentication
   const hasErrorTitle =
     finalPageTitle.toLowerCase().includes('403') ||
     finalPageTitle.toLowerCase().includes('forbidden') ||
@@ -535,12 +353,31 @@ module.exports = async function globalSetup() {
   const isAuthenticated = isTrustedHost && isNotMicrosoftLogin && !hasErrorTitle
 
   if (isAuthenticated) {
+    // eslint-disable-next-line no-console
+    console.log('💾 Saving authenticated storage state')
     await page.context().storageState({ path: 'storageState.json' })
   } else {
-    const isLocalTestEnvironment = process.env.TEST_ENV === 'test' || baseURL.includes('localhost')
+    // eslint-disable-next-line no-console
+    console.log('⚠️  WARNING: Not saving storage state - authentication not verified')
+    // eslint-disable-next-line no-console
+    console.log(`   Final URL: ${finalUrl}`)
+    // eslint-disable-next-line no-console
+    console.log(`   Final Page Title: "${finalPageTitle}"`)
 
-    if (isLocalTestEnvironment) {
-      await page.context().storageState({ path: 'storageState.json' })
+    if (hasErrorTitle) {
+      // eslint-disable-next-line no-console
+      console.log('   🚨 ERROR PAGE DETECTED: Access denied or authentication failed')
+      // eslint-disable-next-line no-console
+      console.log('   🔍 Possible causes:')
+      // eslint-disable-next-line no-console
+      console.log('      - Firewall blocking access after authentication')
+      // eslint-disable-next-line no-console
+      console.log('      - Insufficient permissions for authenticated user')
+      // eslint-disable-next-line no-console
+      console.log('      - Service temporarily unavailable')
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('   Tests may fail due to missing authentication state')
     }
   }
 

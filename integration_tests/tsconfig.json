@@ -9,10 +9,10 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "strict": false,
-    "baseUrl": "playwright/test",
+    "baseUrl": ".",
     "paths": {
-      "pages/launchpad/launchlinks": ["pages/Launchpad_Portal/launchpadExternalLinksLocators"],
-      "pages/launchpad/portal": ["pages/Launchpad_Portal/launchpadPortalLocators"]
+      "pages/launchpad/launchlinks": ["playwright/test/pages/Launchpad_Portal/launchpadExternalLinksLocators"],
+      "pages/launchpad/portal": ["playwright/test/pages/Launchpad_Portal/launchpadPortalLocators"]
     }
   },
   "include": [
