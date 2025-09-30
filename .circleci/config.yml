@@ -124,20 +124,55 @@ jobs:
             echo "export TEST_ENV=\"$TEST_ENV\"" >> "$BASH_ENV"
             echo "Testing against environment: $TEST_ENV"
             
-            # Set environment-specific URL variables that Playwright expects
+            # Dynamic localhost detection for CI
+            LOCALHOST_URL="http://localhost:3000"
+            
+            # Verify local app is actually running and get the correct port
+            echo "=== Dynamic Localhost Detection ==="
+            for PORT in 3000 3001 3002 8080 8081; do
+              if curl -s --connect-timeout 2 "http://localhost:$PORT/health" > /dev/null 2>&1; then
+                LOCALHOST_URL="http://localhost:$PORT"
+                echo "✅ Found running app on port $PORT"
+                break
+              elif curl -s --connect-timeout 2 "http://localhost:$PORT/" > /dev/null 2>&1; then
+                LOCALHOST_URL="http://localhost:$PORT"
+                echo "✅ Found running app on port $PORT (no health endpoint)"
+                break
+              else
+                echo "❌ No app found on port $PORT"
+              fi
+            done
+            
+            echo "Detected localhost URL: $LOCALHOST_URL"
+            
+            # Default to localhost for CI, but allow override for manual testing
             case "$TEST_ENV" in
               "dev")
-                TARGET_URL="${DEV_INGRESS_URL:-$INGRESS_URL}"
-                echo "export DEV_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                if [ -n "$DEV_INGRESS_URL" ] && [ "$DEV_INGRESS_URL" != "$LOCALHOST_URL" ]; then
+                  TARGET_URL="$DEV_INGRESS_URL"
+                  echo "export DEV_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                  echo "Using remote DEV environment: $TARGET_URL"
+                else
+                  TARGET_URL="$LOCALHOST_URL"
+                  echo "export TEST_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                  echo "Using dynamic localhost for DEV: $TARGET_URL"
+                fi
                 ;;
               "staging")
-                TARGET_URL="${STAGING_INGRESS_URL:-$INGRESS_URL}"
-                echo "export STAGING_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                if [ -n "$STAGING_INGRESS_URL" ] && [ "$STAGING_INGRESS_URL" != "$LOCALHOST_URL" ]; then
+                  TARGET_URL="$STAGING_INGRESS_URL"
+                  echo "export STAGING_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                  echo "Using remote STAGING environment: $TARGET_URL"
+                else
+                  TARGET_URL="$LOCALHOST_URL"
+                  echo "export TEST_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                  echo "Using dynamic localhost for STAGING: $TARGET_URL"
+                fi
                 ;;
-              *)
-                echo "Unknown environment: $TEST_ENV, using default INGRESS_URL"
-                TARGET_URL="$INGRESS_URL"
-                echo "export INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+              "test"|*)
+                TARGET_URL="$LOCALHOST_URL"
+                echo "export TEST_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
+                echo "Using dynamic localhost environment: $TARGET_URL"
                 ;;
             esac
             
@@ -145,30 +180,71 @@ jobs:
             echo "Target URL: $TARGET_URL"
             source "$BASH_ENV"
       - run:
-          name: Network connectivity check
+          name: Dynamic environment connectivity check
           command: |
-            echo "=== Network Connectivity Diagnostics ==="
-            echo "Testing connectivity to target environment..."
+            echo "=== Dynamic Environment Connectivity Check ==="
             
-            # Extract hostname from target URL
-            if [[ "$TARGET_URL" =~ https?://([^/]+) ]]; then
-              HOSTNAME="${BASH_REMATCH[1]}"
-              echo "Target hostname: $HOSTNAME"
+            # Re-detect the localhost URL to ensure consistency
+            DETECTED_URL=""
+            for PORT in 3000 3001 3002 8080 8081; do
+              if curl -s --connect-timeout 2 "http://localhost:$PORT/health" > /dev/null 2>&1; then
+                DETECTED_URL="http://localhost:$PORT"
+                echo "✅ Confirmed app running on port $PORT"
+                break
+              elif curl -s --connect-timeout 2 "http://localhost:$PORT/" > /dev/null 2>&1; then
+                DETECTED_URL="http://localhost:$PORT"
+                echo "✅ Confirmed app running on port $PORT (no health endpoint)"
+                break
+              fi
+            done
+            
+            if [ -n "$DETECTED_URL" ]; then
+              echo "=== Testing Detected Local App ==="
+              echo "Detected URL: $DETECTED_URL"
               
-              # Test DNS resolution
-              echo "DNS resolution test:"
-              nslookup "$HOSTNAME" || echo "DNS resolution failed"
+              # Test health endpoint
+              echo "Health check:"
+              curl -f "$DETECTED_URL/health" 2>/dev/null && echo "✅ Health check passed" || echo "❌ Health check failed"
               
-              # Test basic connectivity
-              echo "Basic connectivity test:"
-              curl -I --connect-timeout 10 --max-time 30 "$TARGET_URL" || echo "HTTP connectivity failed"
+              # Test homepage
+              echo "Homepage check:"
+              curl -I "$DETECTED_URL/" 2>/dev/null && echo "✅ Homepage accessible" || echo "❌ Homepage failed"
               
-              # Test specific login endpoints
-              echo "Microsoft login endpoint test:"
-              curl -I --connect-timeout 10 --max-time 30 "https://login.microsoftonline.com/" || echo "Microsoft login unreachable"
-              
+              # Test specific endpoints
+              echo "Testing common endpoints:"
+              for ENDPOINT in "/ping" "/status" "/ready"; do
+                if curl -s --connect-timeout 2 "$DETECTED_URL$ENDPOINT" > /dev/null 2>&1; then
+                  echo "✅ $ENDPOINT endpoint available"
+                fi
+              done
             else
-              echo "Could not extract hostname from: $TARGET_URL"
+              echo "❌ No running app detected on common ports"
+              echo "Checking what's running on localhost:"
+              netstat -tlnp 2>/dev/null | grep ":3000\|:3001\|:3002\|:8080\|:8081" || echo "No services found on expected ports"
+            fi
+            
+            # If testing against remote environment, also check that
+            if [[ "$TARGET_URL" != "$DETECTED_URL" ]] && [[ "$TARGET_URL" =~ ^https?:// ]]; then
+              echo "=== Remote Environment Check ==="
+              echo "Also testing connectivity to: $TARGET_URL"
+              
+              # Extract hostname from target URL
+              if [[ "$TARGET_URL" =~ https?://([^/]+) ]]; then
+                HOSTNAME="${BASH_REMATCH[1]}"
+                echo "Target hostname: $HOSTNAME"
+                
+                # Test DNS resolution
+                echo "DNS resolution test:"
+                nslookup "$HOSTNAME" || echo "DNS resolution failed"
+                
+                # Test basic connectivity
+                echo "Basic connectivity test:"
+                curl -I --connect-timeout 10 --max-time 30 "$TARGET_URL" || echo "HTTP connectivity failed"
+                
+                # Test Microsoft login endpoint
+                echo "Microsoft login endpoint test:"
+                curl -I --connect-timeout 10 --max-time 30 "https://login.microsoftonline.com/" || echo "Microsoft login unreachable"
+              fi
             fi
       - run:
           name: integration tests
