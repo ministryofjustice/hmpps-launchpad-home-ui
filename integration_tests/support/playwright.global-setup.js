@@ -28,7 +28,8 @@ module.exports = async function globalSetup() {
   const getEnvironmentUrl = env => {
     switch (env) {
       case 'test':
-        return process.env.TEST_INGRESS_URL || 'http://localhost:3000'
+        // For test environment, ALWAYS use dynamic detection, ignore environment URLs
+        return 'http://localhost:3000' // This will be overridden by dynamic detection anyway
       case 'dev':
         return process.env.DEV_INGRESS_URL || 'http://localhost:3000'
       case 'staging':
@@ -136,11 +137,18 @@ module.exports = async function globalSetup() {
   // Determine base URL with priority: TEST_ENV > dynamic localhost detection
   let baseURL
 
-  if (process.env.TEST_ENV && process.env.TEST_ENV !== 'test') {
-    baseURL = getEnvironmentUrl(process.env.TEST_ENV)
-  } else {
-    // For test environment or no TEST_ENV, use dynamic detection
+  if (process.env.TEST_ENV === 'test' || !process.env.TEST_ENV) {
+    // For test environment or no TEST_ENV, ALWAYS use dynamic detection
+    // eslint-disable-next-line no-console
+    console.log(`🏠 TEST_ENV is '${process.env.TEST_ENV || 'undefined'}' - forcing dynamic localhost detection`)
     baseURL = await detectLocalhost(browser)
+    // eslint-disable-next-line no-console
+    console.log(`� Using detected localhost URL: ${baseURL}`)
+  } else {
+    // For other environments (dev, staging, prod), use environment URLs
+    baseURL = getEnvironmentUrl(process.env.TEST_ENV)
+    // eslint-disable-next-line no-console
+    console.log(`� Using remote environment URL: ${baseURL}`)
   }
 
   const page = await browser.newPage()
