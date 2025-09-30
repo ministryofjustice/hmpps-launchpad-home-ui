@@ -42,13 +42,40 @@ module.exports = async function globalSetup() {
     }
   }
 
-  // Determine base URL with priority: TEST_ENV > INGRESS_URL > default localhost
-  let baseURL
-
-  if (process.env.TEST_ENV) {
-    baseURL = getEnvironmentUrl(process.env.TEST_ENV)
-  } else {
-    baseURL = process.env.INGRESS_URL || 'http://localhost:3000'
+  // Dynamic localhost detection function using Playwright's page
+  const detectLocalhost = async (browser) => {
+    console.log('🔍 Dynamically detecting localhost...')
+    
+    // Test common ports
+    const ports = [3000, 3001, 3002, 8080, 8081]
+    
+    for (const port of ports) {
+      const testUrl = `http://localhost:${port}`
+      const testPage = await browser.newPage()
+      
+      try {
+        // Test health endpoint first
+        console.log(`🔍 Testing port ${port}...`)
+        await testPage.goto(`${testUrl}/health`, { timeout: 3000 })
+        console.log(`✅ Found app on port ${port} (health check)`)
+        await testPage.close()
+        return testUrl
+      } catch (e) {
+        // Health endpoint failed, try homepage
+        try {
+          await testPage.goto(testUrl, { timeout: 3000 })
+          console.log(`✅ Found app on port ${port} (homepage)`)
+          await testPage.close()
+          return testUrl
+        } catch (homeError) {
+          console.log(`❌ Port ${port}: not available`)
+          await testPage.close()
+        }
+      }
+    }
+    
+    console.log('⚠️  No running app detected, defaulting to http://localhost:3000')
+    return 'http://localhost:3000'
   }
 
   // eslint-disable-next-line no-console
@@ -68,6 +95,17 @@ module.exports = async function globalSetup() {
   }
 
   const browser = await chromium.launch()
+
+  // Determine base URL with priority: TEST_ENV > dynamic localhost detection
+  let baseURL
+
+  if (process.env.TEST_ENV && process.env.TEST_ENV !== 'test') {
+    baseURL = getEnvironmentUrl(process.env.TEST_ENV)
+  } else {
+    // For test environment or no TEST_ENV, use dynamic detection
+    baseURL = await detectLocalhost(browser)
+  }
+
   const page = await browser.newPage()
 
   // eslint-disable-next-line no-console

@@ -31,8 +31,8 @@ parameters:
 
   test-environment:
     type: string
-    description: "Environment to run tests against: dev, staging, preprod, prod"
-    default: "dev"
+    description: "Environment to run tests against: test (localhost), dev, staging, preprod, prod"
+    default: "test"
 
 jobs:
   build:
