@@ -74,7 +74,7 @@ initialize_wiremock_stubs() {
             }
         }' > /dev/null 2>&1
 
-    # Basic OAuth token endpoint
+    # OAuth token endpoint - matches HMPPS_AUTH_URL + /oauth/token
     curl -X POST http://localhost:9091/__admin/mappings \
         -H "Content-Type: application/json" \
         -d '{
@@ -95,7 +95,7 @@ initialize_wiremock_stubs() {
             }
         }' > /dev/null 2>&1
 
-    # Basic token verification endpoint
+    # Token verification endpoint - matches TOKEN_VERIFICATION_API_URL + /token/verify
     curl -X POST http://localhost:9091/__admin/mappings \
         -H "Content-Type: application/json" \
         -d '{
@@ -121,7 +121,7 @@ initialize_wiremock_stubs() {
 echo -e "${BLUE}🚀 Starting CI service health checks...${NC}"
 
 # Step 1: Wait for WireMock to be ready
-if check_service "http://localhost:9091/__admin/health" "WireMock" 15 2; then
+if check_service "http://localhost:9091/__admin/mappings" "WireMock" 15 2; then
     # Step 2: Initialize basic stubs
     initialize_wiremock_stubs
     
@@ -129,16 +129,11 @@ if check_service "http://localhost:9091/__admin/health" "WireMock" 15 2; then
     echo -e "${BLUE}⏳ Allowing WireMock stubs to propagate...${NC}"
     sleep 3
     
-    # Step 4: Wait for the main application
-    if check_service "http://localhost:3000/health" "Main Application" 30 2; then
-        echo -e "${GREEN}🎉 All services are ready!${NC}"
-        echo "==============================="
-        exit 0
-    else
-        echo -e "${RED}❌ Main application failed to start${NC}"
-        echo -e "${YELLOW}💡 Try checking application logs for authentication errors${NC}"
-        exit 1
-    fi
+    # Step 4: Stubs are ready - main application should start successfully now
+    echo -e "${GREEN}🎉 WireMock is ready with authentication stubs!${NC}"
+    echo -e "${BLUE}� Ready for Node.js application startup${NC}"
+    echo "==============================="
+    exit 0
 else
     echo -e "${RED}❌ WireMock failed to start${NC}"
     exit 1

@@ -111,6 +111,9 @@ jobs:
           command: java -jar wiremock.jar --port 9091
           background: true
       - run:
+          name: Initialize services and stubs
+          command: chmod +x scripts/wait-for-services.sh && ./scripts/wait-for-services.sh
+      - run:
           name: Run the node app.
           command: npm run start-feature
           background: true
@@ -118,14 +121,13 @@ jobs:
           name: Wait for node app to start
           command: |
             echo "Waiting for application to start..."
-            sleep 10
-            # Additional health check validation
-            for i in {1..30}; do
+            # Simple wait since stubs are already initialized
+            for i in {1..15}; do
               if curl -f -s --connect-timeout 2 "http://localhost:3000/health" > /dev/null; then
                 echo "✅ Application health check passed after ${i} attempts"
                 break
               fi
-              echo "⏳ Waiting for app health check (attempt $i/30)..."
+              echo "⏳ Waiting for app health check (attempt $i/15)..."
               sleep 2
             done
       - run:
