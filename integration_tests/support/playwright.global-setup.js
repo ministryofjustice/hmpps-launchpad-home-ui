@@ -70,10 +70,22 @@ module.exports = async function globalSetup() {
         if (healthContent.includes('OK') || healthContent.includes('healthy') || healthContent.includes('UP')) {
           // eslint-disable-next-line no-console
           console.log(`✅ Found healthy app on port ${port}`)
-          // eslint-disable-next-line no-console
-          console.log(`🔍 DEBUG: Returning URL from health check: ${testUrl}`)
-          await testPage.close()
-          return testUrl
+
+          // Double-check: try homepage to ensure full app is ready
+          try {
+            await testPage.goto(testUrl, { timeout: 3000 })
+            // eslint-disable-next-line no-console
+            console.log(`✅ Double-validated: Homepage also accessible on port ${port}`)
+            // eslint-disable-next-line no-console
+            console.log(`🔍 DEBUG: Returning URL from double validation: ${testUrl}`)
+            await testPage.close()
+            return testUrl
+            // eslint-disable-next-line no-unused-vars
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.log(`⚠️  Health check passed but homepage failed on port ${port}, continuing...`)
+            // Fall through to try homepage directly
+          }
         }
 
         // Health endpoint exists but not healthy, try homepage
@@ -177,25 +189,112 @@ module.exports = async function globalSetup() {
     }
   }
 
+  // Final connectivity test if using localhost
+  if (baseURL.includes('localhost')) {
+    // eslint-disable-next-line no-console
+    console.log(`🔍 Pre-navigation connectivity test...`)
+    const testPage = await browser.newPage()
+    try {
+      await testPage.goto(baseURL, { timeout: 5000 })
+      // eslint-disable-next-line no-console
+      console.log(`✅ Pre-navigation test successful`)
+      await testPage.close()
+    } catch (preTestError) {
+      // eslint-disable-next-line no-console
+      console.log(`❌ Pre-navigation test failed: ${preTestError.message}`)
+      // eslint-disable-next-line no-console
+      console.log(`⚠️  App may have stopped or restarted since detection`)
+      await testPage.close()
+      // Continue anyway, but user is warned
+    }
+  }
+
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
 
-  try {
+  // Immediate pre-navigation connectivity test with retries
+  if (baseURL.includes('localhost')) {
     // eslint-disable-next-line no-console
-    console.log(`🔍 DEBUG: About to navigate to baseURL: ${baseURL}`)
-    // eslint-disable-next-line no-console
-    console.log(`🔍 DEBUG: baseURL type: ${typeof baseURL}, length: ${baseURL.length}`)
+    console.log(`🔍 Immediate connectivity check before navigation...`)
+    let connected = false
+    let attempt = 1
+    while (attempt <= 3 && !connected) {
+      // eslint-disable-next-line no-await-in-loop
+      const quickTestPage = await browser.newPage()
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await quickTestPage.goto(`${baseURL}/health`, { timeout: 5000 })
+        // eslint-disable-next-line no-console
+        console.log(`✅ Immediate health check passed (attempt ${attempt})`)
+        // eslint-disable-next-line no-await-in-loop
+        await quickTestPage.close()
+        connected = true
+      } catch (immediateError) {
+        // eslint-disable-next-line no-console
+        console.log(`❌ Immediate health check failed (attempt ${attempt}): ${immediateError.message}`)
+        // eslint-disable-next-line no-await-in-loop
+        await quickTestPage.close()
+        if (attempt < 3) {
+          // eslint-disable-next-line no-console
+          console.log(`⏳ Waiting 2 seconds before retry...`)
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            setTimeout(() => resolve(), 2000)
+          })
+        }
+      }
+      attempt += 1
+    }
 
-    await page.goto(`${baseURL}`, { timeout: 30000 })
+    if (!connected) {
+      // eslint-disable-next-line no-console
+      console.log(`⚠️  Server appears to have stopped between detection and navigation`)
+      throw new Error(`Server became unavailable after 3 attempts`)
+    }
+  }
 
-    // Wait for the page to load and check what we actually got
-    await page.waitForLoadState('networkidle')
-    const currentUrl = page.url()
+  // Navigation with retry logic
+  let navigationSuccess = false
+  let lastError = null
+  let attempt = 1
+
+  while (attempt <= 3 && !navigationSuccess) {
+    try {
+      // eslint-disable-next-line no-console
+      console.log(`🔍 DEBUG: Navigation attempt ${attempt} to baseURL: ${baseURL}`)
+      // eslint-disable-next-line no-console
+      console.log(`🔍 DEBUG: baseURL type: ${typeof baseURL}, length: ${baseURL.length}`)
+
+      // eslint-disable-next-line no-await-in-loop
+      await page.goto(`${baseURL}`, { timeout: 30000 })
+
+      // Wait for the page to load and check what we actually got
+      // eslint-disable-next-line no-await-in-loop
+      await page.waitForLoadState('networkidle')
+      const currentUrl = page.url()
+      // eslint-disable-next-line no-console
+      console.log(`✅ Successfully navigated to: ${currentUrl}`)
+      navigationSuccess = true
+    } catch (error) {
+      lastError = error
+      // eslint-disable-next-line no-console
+      console.log(`❌ Navigation attempt ${attempt} failed: ${error.message}`)
+
+      if (attempt < 3) {
+        // eslint-disable-next-line no-console
+        console.log(`⏳ Waiting 3 seconds before retry...`)
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise(resolve => {
+          setTimeout(() => resolve(), 3000)
+        })
+      }
+    }
+    attempt += 1
+  }
+
+  if (!navigationSuccess) {
     // eslint-disable-next-line no-console
-    console.log(`✅ Successfully navigated to: ${currentUrl}`)
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(`❌ Navigation failed: ${error.message}`)
+    console.log(`❌ All navigation attempts failed: ${lastError.message}`)
     // eslint-disable-next-line no-console
     console.log(`🔍 DEBUG: Failed baseURL was: ${baseURL}`)
     // eslint-disable-next-line no-console
@@ -207,8 +306,10 @@ module.exports = async function globalSetup() {
     // eslint-disable-next-line no-console
     console.log(`   - Docker container networking problem`)
     // eslint-disable-next-line no-console
+    console.log(`   - Server startup timing issue in CI environment`)
+    // eslint-disable-next-line no-console
     console.log(`📧 Check if localhost is accessible in CI environment`)
-    throw error
+    throw lastError
   }
 
   const currentUrl = page.url()
