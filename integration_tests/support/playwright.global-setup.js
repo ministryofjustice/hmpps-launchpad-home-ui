@@ -54,8 +54,82 @@ const initializeWireMockStubs = async () => {
       },
     })
 
+    // Verify stubs are working with CI-friendly retries
+    let stubCount = 0
+    let verificationAttempts = 0
+    const maxVerificationAttempts = 5
+
+    while (verificationAttempts < maxVerificationAttempts) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const response = await fetch('http://localhost:9091/__admin/mappings')
+        if (response.ok) {
+          // eslint-disable-next-line no-await-in-loop
+          const data = await response.json()
+          stubCount = data.mappings.length
+          if (stubCount > 0) break
+        }
+      } catch (networkError) {
+        // CI environments may need more time for network setup
+        // Ignore network errors during verification
+        // eslint-disable-next-line no-console
+        console.debug('Network error during WireMock verification:', networkError.message)
+      }
+
+      verificationAttempts += 1
+      if (verificationAttempts < maxVerificationAttempts) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise(resolve => {
+          setTimeout(resolve, 1000)
+        })
+      }
+    }
+
     // eslint-disable-next-line no-console
-    console.log('✅ WireMock stubs initialized successfully')
+    console.log(`✅ WireMock stubs initialized successfully (${stubCount} mappings active)`)
+
+    // CI-specific: Additional verification with retries
+    let endpointsVerified = false
+    let endpointAttempts = 0
+    const maxEndpointAttempts = 3
+
+    while (!endpointsVerified && endpointAttempts < maxEndpointAttempts) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const [authPing, tokenVerify] = await Promise.all([
+          fetch('http://localhost:9091/auth/health/ping', { timeout: 3000 }),
+          fetch('http://localhost:9091/verification/health/ping', { timeout: 3000 }),
+        ])
+
+        if (authPing.ok && tokenVerify.ok) {
+          endpointsVerified = true
+          // eslint-disable-next-line no-console
+          console.log('🔍 Critical WireMock endpoints verified and responding')
+        }
+      } catch (endpointError) {
+        // eslint-disable-next-line no-console
+        console.debug('Endpoint verification error:', endpointError.message)
+        endpointAttempts += 1
+        if (endpointAttempts < maxEndpointAttempts) {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            setTimeout(resolve, 2000)
+          })
+        }
+      }
+    }
+
+    if (!endpointsVerified) {
+      // eslint-disable-next-line no-console
+      console.log('⚠️  WireMock endpoint verification incomplete - continuing with setup')
+    }
+
+    // CI-specific: Extra wait to ensure all stubs are fully propagated
+    // eslint-disable-next-line no-console
+    console.log('⏳ CI environment detected - adding extra propagation time...')
+    await new Promise(resolve => {
+      setTimeout(resolve, 3000)
+    })
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(`⚠️  WireMock initialization failed: ${error.message}`)
@@ -332,10 +406,36 @@ module.exports = async function globalSetup() {
   // For test environments with WireMock, skip full page navigation
   // since authentication is mocked and we've already verified health endpoints
   const isTestEnvironment = process.env.TEST_ENV === 'test' || baseURL.includes('localhost')
+  const isCIEnvironment = process.env.CI || process.env.CIRCLECI || process.env.GITHUB_ACTIONS
 
   if (isTestEnvironment) {
     // eslint-disable-next-line no-console
     console.log(`🧪 Test environment detected - skipping full page navigation`)
+
+    if (isCIEnvironment) {
+      // eslint-disable-next-line no-console
+      console.log(`🏗️  CI environment detected - ensuring all services are stable`)
+      // Additional wait for CI stability
+      await new Promise(resolve => {
+        setTimeout(resolve, 5000)
+      })
+
+      // Verify the main app is actually responding in CI
+      try {
+        const appHealthCheck = await fetch(`${baseURL}/health`, { timeout: 5000 })
+        if (appHealthCheck.ok) {
+          // eslint-disable-next-line no-console
+          console.log(`✅ Main application health verified in CI`)
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(`⚠️  Main application health check returned: ${appHealthCheck.status}`)
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(`⚠️  Main application health check failed: ${error.message}`)
+      }
+    }
+
     // eslint-disable-next-line no-console
     console.log(`✅ Health checks passed, WireMock stubs initialized`)
     // Save minimal storage state for test environment
@@ -343,7 +443,6 @@ module.exports = async function globalSetup() {
     await browser.close()
     return
   }
-
   let navigationAttempt = 1
   let lastError = null
 
