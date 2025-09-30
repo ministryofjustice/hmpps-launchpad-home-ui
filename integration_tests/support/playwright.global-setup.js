@@ -71,9 +71,104 @@ module.exports = async function globalSetup() {
           // eslint-disable-next-line no-console
           console.log(`✅ Found healthy app on port ${port}`)
 
-          // Double-check: try homepage to ensure full app is ready
+          // Check if this is metrics server (contains Prometheus metrics)
+          if (
+            healthContent.includes('http_server_requests_seconds') ||
+            healthContent.includes('# TYPE') ||
+            healthContent.includes('# HELP')
+          ) {
+            // eslint-disable-next-line no-console
+            console.log(`📊 Port ${port} appears to be metrics server, continuing search...`)
+            await testPage.close()
+            return null // Continue searching for main app
+          }
+
+          // For main app port (3000), do additional validation in CI-like environments
+          if (port === 3000) {
+            // In CI, verify the homepage can at least be reached (even if it redirects)
+            try {
+              // eslint-disable-next-line no-console
+              console.log(`🔍 Validating main app port ${port} homepage accessibility...`)
+              await testPage.goto(testUrl, { timeout: 8000 }) // Longer timeout for CI
+
+              // Check if we get a proper response (even auth redirect is good)
+              const finalUrl = testPage.url()
+
+              // Authentication redirect is success for main app
+              if (
+                finalUrl.includes('microsoftonline.com') ||
+                finalUrl.includes('/sign-in') ||
+                finalUrl.includes('/oauth2') ||
+                finalUrl.includes('localhost:8080')
+              ) {
+                // eslint-disable-next-line no-console
+                console.log(`✅ Port ${port} main app redirected to auth (${finalUrl}) - this is correct!`)
+                // eslint-disable-next-line no-console
+                console.log(`🔍 DEBUG: Returning validated main app URL: ${testUrl}`)
+                await testPage.close()
+                return testUrl
+              }
+
+              // Also check if we're still on localhost (might be immediate page load)
+              if (finalUrl.includes('localhost') || finalUrl.includes('127.0.0.1')) {
+                // eslint-disable-next-line no-console
+                console.log(`✅ Port ${port} main app is accessible on localhost`)
+                // eslint-disable-next-line no-console
+                console.log(`🔍 DEBUG: Returning validated main app URL: ${testUrl}`)
+                await testPage.close()
+                return testUrl
+              }
+
+              // eslint-disable-next-line no-console
+              console.log(`⚠️  Port ${port} redirected to unexpected URL: ${finalUrl}`)
+            } catch (homepageError) {
+              // eslint-disable-next-line no-console
+              console.log(`⚠️  Port ${port} homepage validation failed: ${homepageError.message}`)
+              // eslint-disable-next-line no-console
+              console.log(`🔍 This might be a CI startup timing issue, but health check passed...`)
+            }
+
+            // If validation fails, still prefer port 3000 but with warning
+            // eslint-disable-next-line no-console
+            console.log(`🎯 Port ${port} has healthy endpoint but homepage issues - accepting anyway (main app port)`)
+            // eslint-disable-next-line no-console
+            console.log(`🔍 DEBUG: Returning main app URL with warning: ${testUrl}`)
+            await testPage.close()
+            return testUrl
+          }
+
+          // For other ports, double-check homepage
           try {
-            await testPage.goto(testUrl, { timeout: 3000 })
+            await testPage.goto(testUrl, { timeout: 5000 })
+            const finalUrl = testPage.url()
+            const pageContent = await testPage.content()
+
+            // Skip if this looks like metrics server
+            if (
+              pageContent.includes('http_server_requests_seconds') ||
+              pageContent.includes('# TYPE') ||
+              pageContent.includes('# HELP')
+            ) {
+              // eslint-disable-next-line no-console
+              console.log(`📊 Port ${port} homepage is metrics server, continuing search...`)
+              await testPage.close()
+              return null
+            }
+
+            // Check if we got redirected to auth (this is actually success!)
+            if (
+              finalUrl.includes('microsoftonline.com') ||
+              finalUrl.includes('/sign-in') ||
+              finalUrl.includes('/oauth2')
+            ) {
+              // eslint-disable-next-line no-console
+              console.log(`✅ Port ${port} redirected to authentication - this is the main app!`)
+              // eslint-disable-next-line no-console
+              console.log(`🔍 DEBUG: Auth redirect detected, returning URL: ${testUrl}`)
+              await testPage.close()
+              return testUrl
+            }
+
             // eslint-disable-next-line no-console
             console.log(`✅ Double-validated: Homepage also accessible on port ${port}`)
             // eslint-disable-next-line no-console

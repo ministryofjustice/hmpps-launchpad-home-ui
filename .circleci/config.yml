@@ -116,7 +116,18 @@ jobs:
           background: true
       - run:
           name: Wait for node app to start
-          command: sleep 5
+          command: |
+            echo "Waiting for application to start..."
+            sleep 10
+            # Additional health check validation
+            for i in {1..30}; do
+              if curl -f -s --connect-timeout 2 "http://localhost:3000/health" > /dev/null; then
+                echo "✅ Application health check passed after ${i} attempts"
+                break
+              fi
+              echo "⏳ Waiting for app health check (attempt $i/30)..."
+              sleep 2
+            done
       - run:
           name: Set environment for tests
           command: |
