@@ -3,87 +3,119 @@ const { chromium } = require('@playwright/test')
 module.exports = async function globalSetup() {
   // 🏗️  CI Service Startup Script
   // ===============================
+  // eslint-disable-next-line no-console
   console.log('🚀 Starting CI service health checks...')
+  // eslint-disable-next-line no-console
   console.log('🔍 Checking WireMock...')
-  
+
   // Wait for WireMock to be ready
   const maxAttempts = 15
   let attempts = 0
   let wiremockReady = false
-  
+
   while (attempts < maxAttempts && !wiremockReady) {
-    attempts++
+    attempts += 1
+    // eslint-disable-next-line no-console
     console.log(`⏳ Waiting for WireMock (attempt ${attempts}/${maxAttempts})...`)
-    
+
     try {
+      // eslint-disable-next-line no-await-in-loop
       const response = await fetch('http://localhost:9091/__admin/health')
       if (response.ok) {
         wiremockReady = true
+        // eslint-disable-next-line no-console
         console.log(`✅ WireMock is ready after ${attempts} attempts`)
       }
-    } catch (error) {
+      // eslint-disable-next-line no-unused-vars
+    } catch (_error) {
       // WireMock not ready yet, continue waiting
       if (attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise(resolve => {
+          setTimeout(resolve, 2000) // Wait 2 seconds
+        })
       }
     }
   }
-  
+
   if (!wiremockReady) {
+    // eslint-disable-next-line no-console
     console.log('❌ WireMock failed to start after maximum attempts')
     throw new Error('WireMock service is not available')
   }
-  
+
+  // eslint-disable-next-line no-console
   console.log('🎭 Initializing basic WireMock stubs for CI...')
-  
+
   try {
+    // eslint-disable-next-line global-require
     const auth = require('../../dist/integration_tests/mockApis/auth')
+    // eslint-disable-next-line global-require
     const tokenVerification = require('../../dist/integration_tests/mockApis/tokenVerification')
-    
+
     await auth.default.stubSignIn()
     await auth.default.stubAuthUser()
     await tokenVerification.default.stubVerifyToken()
-    
+
+    // eslint-disable-next-line no-console
     console.log('✅ Basic WireMock stubs initialized')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log('⚠️ WireMock stub initialization failed:', error.message)
   }
-  
+
+  // eslint-disable-next-line no-console
   console.log('⏳ Allowing WireMock stubs to propagate...')
-  await new Promise(resolve => setTimeout(resolve, 1000)) // Wait 1 second for propagation
-  
+  await new Promise(resolve => {
+    setTimeout(resolve, 1000) // Wait 1 second for propagation
+  })
+
+  // eslint-disable-next-line no-console
   console.log('🎉 WireMock is ready with authentication stubs!')
+  // eslint-disable-next-line no-console
   console.log('🎯 Ready for Node.js application startup')
+  // eslint-disable-next-line no-console
   console.log('===============================')
+  // eslint-disable-next-line no-console
   console.log('✅ Services and stubs initialized successfully')
+  // eslint-disable-next-line no-console
   console.log('')
 
   // Wait for application to start
+  // eslint-disable-next-line no-console
   console.log('⏳ Waiting for application to start...')
-  
+
   const maxAppAttempts = 15
   let appAttempts = 0
   let appReady = false
-  
+
   while (appAttempts < maxAppAttempts && !appReady) {
-    appAttempts++
+    appAttempts += 1
+    // eslint-disable-next-line no-console
     console.log(`⏳ Waiting for app health check (attempt ${appAttempts}/${maxAppAttempts})...`)
-    
+
     try {
+      // eslint-disable-next-line no-await-in-loop
       const response = await fetch('http://localhost:3000/health')
       if (response.ok) {
         appReady = true
+        // eslint-disable-next-line no-console
         console.log(`✅ Application health check passed after ${appAttempts} attempts`)
       }
-    } catch (error) {
+      // eslint-disable-next-line no-unused-vars
+    } catch (_error) {
       // App not ready yet, continue waiting
       if (appAttempts < maxAppAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise(resolve => {
+          setTimeout(resolve, 2000) // Wait 2 seconds
+        })
       }
     }
   }
-  
+
   if (!appReady) {
+    // eslint-disable-next-line no-console
     console.log('❌ Application failed to start after maximum attempts')
     throw new Error('Application is not responding to health checks')
   }
