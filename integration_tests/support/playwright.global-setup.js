@@ -70,6 +70,8 @@ module.exports = async function globalSetup() {
         if (healthContent.includes('OK') || healthContent.includes('healthy') || healthContent.includes('UP')) {
           // eslint-disable-next-line no-console
           console.log(`✅ Found healthy app on port ${port}`)
+          // eslint-disable-next-line no-console
+          console.log(`🔍 DEBUG: Returning URL from health check: ${testUrl}`)
           await testPage.close()
           return testUrl
         }
@@ -78,6 +80,8 @@ module.exports = async function globalSetup() {
         await testPage.goto(testUrl, { timeout: 5000 })
         // eslint-disable-next-line no-console
         console.log(`✅ Found app on port ${port} (homepage)`)
+        // eslint-disable-next-line no-console
+        console.log(`🔍 DEBUG: Returning URL from homepage check: ${testUrl}`)
         await testPage.close()
         return testUrl
 
@@ -108,11 +112,15 @@ module.exports = async function globalSetup() {
     }, Promise.resolve(null))
 
     if (result) {
+      // eslint-disable-next-line no-console
+      console.log(`🔍 DEBUG: detectLocalhost returning: ${result}`)
       return result
     }
 
     // eslint-disable-next-line no-console
     console.log('⚠️  No running app detected, defaulting to http://localhost:3000')
+    // eslint-disable-next-line no-console
+    console.log(`🔍 DEBUG: detectLocalhost returning default: http://localhost:3000`)
     return 'http://localhost:3000'
   }
 
@@ -173,6 +181,11 @@ module.exports = async function globalSetup() {
   console.log(`🚀 Navigating to: ${baseURL}`)
 
   try {
+    // eslint-disable-next-line no-console
+    console.log(`🔍 DEBUG: About to navigate to baseURL: ${baseURL}`)
+    // eslint-disable-next-line no-console
+    console.log(`🔍 DEBUG: baseURL type: ${typeof baseURL}, length: ${baseURL.length}`)
+
     await page.goto(`${baseURL}`, { timeout: 30000 })
 
     // Wait for the page to load and check what we actually got
@@ -184,15 +197,17 @@ module.exports = async function globalSetup() {
     // eslint-disable-next-line no-console
     console.log(`❌ Navigation failed: ${error.message}`)
     // eslint-disable-next-line no-console
+    console.log(`🔍 DEBUG: Failed baseURL was: ${baseURL}`)
+    // eslint-disable-next-line no-console
     console.log(`🔍 This could indicate:`)
     // eslint-disable-next-line no-console
-    console.log(`   - Firewall blocking CI access to ${baseURL}`)
+    console.log(`   - App stopped/restarted after health check passed`)
     // eslint-disable-next-line no-console
-    console.log(`   - Network connectivity issues`)
+    console.log(`   - Port conflict or networking issue in CI`)
     // eslint-disable-next-line no-console
-    console.log(`   - Environment not accessible from CI IP range`)
+    console.log(`   - Docker container networking problem`)
     // eslint-disable-next-line no-console
-    console.log(`📧 Contact infrastructure team to whitelist CircleCI IPs`)
+    console.log(`📧 Check if localhost is accessible in CI environment`)
     throw error
   }
 
