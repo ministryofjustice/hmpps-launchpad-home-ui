@@ -60,10 +60,10 @@ module.exports = async function globalSetup() {
       try {
         // eslint-disable-next-line no-console
         console.log(`🔍 Testing port ${port}... (attempt ${attempt}/${maxRetries})`)
-        
+
         // First try health endpoint with longer timeout
         await testPage.goto(`${testUrl}/health`, { timeout: 5000 })
-        
+
         // Validate the health response is actually successful
         const healthContent = await testPage.content()
         if (healthContent.includes('OK') || healthContent.includes('healthy') || healthContent.includes('UP')) {
@@ -72,26 +72,26 @@ module.exports = async function globalSetup() {
           await testPage.close()
           return testUrl
         }
-        
+
         // Health endpoint exists but not healthy, try homepage
         await testPage.goto(testUrl, { timeout: 5000 })
         // eslint-disable-next-line no-console
         console.log(`✅ Found app on port ${port} (homepage)`)
         await testPage.close()
         return testUrl
-        
+
         // eslint-disable-next-line no-unused-vars
       } catch (_error) {
         await testPage.close()
-        
+
         if (attempt < maxRetries) {
           // eslint-disable-next-line no-console
-          console.log(`⏳ Port ${port} not ready, waiting ${retryDelay/1000}s before retry...`)
+          console.log(`⏳ Port ${port} not ready, waiting ${retryDelay / 1000}s before retry...`)
           // eslint-disable-next-line no-promise-executor-return
           await new Promise(resolve => setTimeout(resolve, retryDelay))
           return testPort(port, attempt + 1)
         }
-        
+
         // eslint-disable-next-line no-console
         console.log(`❌ Port ${port}: not available after ${maxRetries} attempts`)
         return null
@@ -102,7 +102,7 @@ module.exports = async function globalSetup() {
     const result = await ports.reduce(async (previousPromise, port) => {
       const foundUrl = await previousPromise
       if (foundUrl) return foundUrl // Already found a working port
-      
+
       return testPort(port)
     }, Promise.resolve(null))
 
