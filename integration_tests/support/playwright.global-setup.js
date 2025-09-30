@@ -43,37 +43,54 @@ module.exports = async function globalSetup() {
   }
 
   // Dynamic localhost detection function using Playwright's page
-  const detectLocalhost = async (browser) => {
+  const detectLocalhost = async browser => {
+    // eslint-disable-next-line no-console
     console.log('🔍 Dynamically detecting localhost...')
-    
+
     // Test common ports
     const ports = [3000, 3001, 3002, 8080, 8081]
-    
-    for (const port of ports) {
+
+    // Test each port sequentially using reduce to avoid await-in-loop
+    const result = await ports.reduce(async (previousPromise, port) => {
+      const foundUrl = await previousPromise
+      if (foundUrl) return foundUrl // Already found a working port
+
       const testUrl = `http://localhost:${port}`
       const testPage = await browser.newPage()
-      
+
       try {
         // Test health endpoint first
+        // eslint-disable-next-line no-console
         console.log(`🔍 Testing port ${port}...`)
         await testPage.goto(`${testUrl}/health`, { timeout: 3000 })
+        // eslint-disable-next-line no-console
         console.log(`✅ Found app on port ${port} (health check)`)
         await testPage.close()
         return testUrl
-      } catch (e) {
+        // eslint-disable-next-line no-unused-vars
+      } catch (_healthError) {
         // Health endpoint failed, try homepage
         try {
           await testPage.goto(testUrl, { timeout: 3000 })
+          // eslint-disable-next-line no-console
           console.log(`✅ Found app on port ${port} (homepage)`)
           await testPage.close()
           return testUrl
-        } catch (homeError) {
+          // eslint-disable-next-line no-unused-vars
+        } catch (_homeError) {
+          // eslint-disable-next-line no-console
           console.log(`❌ Port ${port}: not available`)
           await testPage.close()
+          return null
         }
       }
+    }, Promise.resolve(null))
+
+    if (result) {
+      return result
     }
-    
+
+    // eslint-disable-next-line no-console
     console.log('⚠️  No running app detected, defaulting to http://localhost:3000')
     return 'http://localhost:3000'
   }
