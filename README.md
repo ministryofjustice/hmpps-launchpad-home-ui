@@ -1,25 +1,25 @@
 # HMPPS Launchpad
 ## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
+The easiest way to run the app is to use docker compose to create the service and all dependencies.
 
 `docker-compose pull`
 
 `docker-compose up`
 
 ### Dependencies
-The app requires: 
+The app requires:
 * hmpps-auth - for authentication
 * redis - session store and token caching
 
 ### Running the app for development
 
-To start the main services excluding the example typescript template app: 
+To start the main services excluding the example typescript template app:
 
 `docker-compose up --scale=app=0`
 
 Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
 
-Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the CircleCI build config.
+Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the GitHub actions build config.
 
 And then, to build the assets and start the app with nodemon:
 
@@ -46,16 +46,11 @@ Then run the server in test mode by:
 And then either, run tests in headless mode with:
 
 `npm run int-test`
- 
+
 Or run tests with the cypress UI:
 
 `npm run int-test-ui`
 
-
-### Dependency Checks
-
-The template project has implemented some scheduled checks to ensure that key dependencies are kept up to date.
-If these are not desired in the cloned project, remove references to `check_outdated` job from `.circleci/config.yml`
 
 ## Maintenance page
 See the [maintenance page README](./maintenance_page/README.md) for how to turn this on/off and update the content.
