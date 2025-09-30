@@ -33,14 +33,13 @@ const initializeWireMockStubs = async () => {
     await wiremock.resetStubs()
 
     // Set up auth stubs
-    await auth.ping()
-    await auth.token()
-    await auth.redirect()
-    await auth.favicon()
+    await auth.default.stubAuthPing()
+    await auth.default.stubSignIn()
+    await auth.default.stubAuthUser()
 
     // Set up token verification stubs
-    await tokenVerification.stubVerifyToken()
-    await tokenVerification.stubPing()
+    await tokenVerification.default.stubVerifyToken()
+    await tokenVerification.default.stubTokenVerificationPing()
 
     // eslint-disable-next-line no-console
     console.log('✅ WireMock stubs initialized successfully')
