@@ -48,10 +48,10 @@ module.exports = async function globalSetup() {
   console.log('🎭 Initializing basic WireMock stubs for CI...')
 
   try {
-    // eslint-disable-next-line global-require
-    const auth = require('../../dist/integration_tests/mockApis/auth')
-    // eslint-disable-next-line global-require
-    const tokenVerification = require('../../dist/integration_tests/mockApis/tokenVerification')
+    // eslint-disable-next-line global-require, import/extensions
+    const auth = require('../../dist/integration_tests/mockApis/auth.js')
+    // eslint-disable-next-line global-require, import/extensions
+    const tokenVerification = require('../../dist/integration_tests/mockApis/tokenVerification.js')
 
     await auth.default.stubSignIn()
     await auth.default.stubAuthUser()
