@@ -1,4 +1,6 @@
-#!/bin/bash -eo pipefail
+#!/bin/bash
+
+set -eo pipefail
 
 echo "🏗️  CI Service Startup Script"
 echo "==============================="

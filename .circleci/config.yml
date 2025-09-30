@@ -112,7 +112,15 @@ jobs:
           background: true
       - run:
           name: Initialize services and stubs
-          command: chmod +x scripts/wait-for-services.sh && ./scripts/wait-for-services.sh
+          command: |
+            chmod +x scripts/wait-for-services.sh
+            # Use bash explicitly for better CI compatibility
+            if bash scripts/wait-for-services.sh; then
+              echo "✅ Services and stubs initialized successfully"
+            else
+              echo "❌ Service initialization failed"
+              exit 1
+            fi
       - run:
           name: Run the node app.
           command: npm run start-feature
