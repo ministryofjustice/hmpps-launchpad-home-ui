@@ -83,54 +83,74 @@ module.exports = async function globalSetup() {
             return null // Continue searching for main app
           }
 
-          // For main app port (3000), do additional validation in CI-like environments
+          // For main app port (3000), wait for it to be fully ready
           if (port === 3000) {
-            // In CI, verify the homepage can at least be reached (even if it redirects)
-            try {
-              // eslint-disable-next-line no-console
-              console.log(`🔍 Validating main app port ${port} homepage accessibility...`)
-              await testPage.goto(testUrl, { timeout: 8000 }) // Longer timeout for CI
+            // eslint-disable-next-line no-console
+            console.log(`🎯 Port ${port} is main app port - waiting for full startup...`)
 
-              // Check if we get a proper response (even auth redirect is good)
-              const finalUrl = testPage.url()
+            // Wait a bit for full app initialization after health check passes
+            await new Promise(resolve => {
+              setTimeout(() => resolve(), 3000) // 3 second grace period
+            })
 
-              // Authentication redirect is success for main app
-              if (
-                finalUrl.includes('microsoftonline.com') ||
-                finalUrl.includes('/sign-in') ||
-                finalUrl.includes('/oauth2') ||
-                finalUrl.includes('localhost:8080')
-              ) {
+            // Function to validate homepage accessibility
+            const validateHomepage = async attemptNum => {
+              try {
                 // eslint-disable-next-line no-console
-                console.log(`✅ Port ${port} main app redirected to auth (${finalUrl}) - this is correct!`)
+                console.log(`🔍 Validating main app homepage (attempt ${attemptNum}/3)...`)
+                await testPage.goto(testUrl, { timeout: 10000 })
+
+                const finalUrl = testPage.url()
+
+                // Authentication redirect is success for main app
+                if (
+                  finalUrl.includes('microsoftonline.com') ||
+                  finalUrl.includes('/sign-in') ||
+                  finalUrl.includes('/oauth2') ||
+                  finalUrl.includes('localhost:8080') ||
+                  finalUrl.includes('localhost') ||
+                  finalUrl.includes('127.0.0.1')
+                ) {
+                  // eslint-disable-next-line no-console
+                  console.log(`✅ Port ${port} main app is ready! (final URL: ${finalUrl})`)
+                  return true
+                }
+                return false
+              } catch (validateError) {
                 // eslint-disable-next-line no-console
-                console.log(`🔍 DEBUG: Returning validated main app URL: ${testUrl}`)
-                await testPage.close()
-                return testUrl
+                console.log(`⚠️  Homepage validation attempt ${attemptNum} failed: ${validateError.message}`)
+                return false
               }
-
-              // Also check if we're still on localhost (might be immediate page load)
-              if (finalUrl.includes('localhost') || finalUrl.includes('127.0.0.1')) {
-                // eslint-disable-next-line no-console
-                console.log(`✅ Port ${port} main app is accessible on localhost`)
-                // eslint-disable-next-line no-console
-                console.log(`🔍 DEBUG: Returning validated main app URL: ${testUrl}`)
-                await testPage.close()
-                return testUrl
-              }
-
-              // eslint-disable-next-line no-console
-              console.log(`⚠️  Port ${port} redirected to unexpected URL: ${finalUrl}`)
-            } catch (homepageError) {
-              // eslint-disable-next-line no-console
-              console.log(`⚠️  Port ${port} homepage validation failed: ${homepageError.message}`)
-              // eslint-disable-next-line no-console
-              console.log(`🔍 This might be a CI startup timing issue, but health check passed...`)
             }
 
-            // If validation fails, still prefer port 3000 but with warning
+            // Try validation with delays between attempts (avoiding await-in-loop)
+            let homepageReady = await validateHomepage(1)
+            if (!homepageReady) {
+              // eslint-disable-next-line no-console
+              console.log(`⏳ Waiting 2 seconds before retry...`)
+              await new Promise(resolve => {
+                setTimeout(() => resolve(), 2000)
+              })
+              homepageReady = await validateHomepage(2)
+            }
+            if (!homepageReady) {
+              // eslint-disable-next-line no-console
+              console.log(`⏳ Waiting 2 seconds before final retry...`)
+              await new Promise(resolve => {
+                setTimeout(() => resolve(), 2000)
+              })
+              homepageReady = await validateHomepage(3)
+            }
+
+            if (homepageReady) {
+              // eslint-disable-next-line no-console
+              console.log(`🔍 DEBUG: Returning fully validated main app URL: ${testUrl}`)
+              await testPage.close()
+              return testUrl
+            }
+            // Even if homepage validation fails, still use port 3000 for main app
             // eslint-disable-next-line no-console
-            console.log(`🎯 Port ${port} has healthy endpoint but homepage issues - accepting anyway (main app port)`)
+            console.log(`🎯 Homepage validation failed but health check passed - using port ${port} anyway (main app)`)
             // eslint-disable-next-line no-console
             console.log(`🔍 DEBUG: Returning main app URL with warning: ${testUrl}`)
             await testPage.close()
