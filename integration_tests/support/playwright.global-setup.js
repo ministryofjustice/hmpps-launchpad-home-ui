@@ -42,48 +42,68 @@ module.exports = async function globalSetup() {
     }
   }
 
-  // Dynamic localhost detection function using Playwright's page
+  // Enhanced localhost detection with retries and better validation
   const detectLocalhost = async browser => {
     // eslint-disable-next-line no-console
     console.log('🔍 Dynamically detecting localhost...')
 
     // Test common ports
     const ports = [3000, 3001, 3002, 8080, 8081]
+    const maxRetries = 3
+    const retryDelay = 2000 // 2 seconds between retries
 
-    // Test each port sequentially using reduce to avoid await-in-loop
-    const result = await ports.reduce(async (previousPromise, port) => {
-      const foundUrl = await previousPromise
-      if (foundUrl) return foundUrl // Already found a working port
-
+    // Enhanced port testing with retries
+    const testPort = async (port, attempt = 1) => {
       const testUrl = `http://localhost:${port}`
       const testPage = await browser.newPage()
 
       try {
-        // Test health endpoint first
         // eslint-disable-next-line no-console
-        console.log(`🔍 Testing port ${port}...`)
-        await testPage.goto(`${testUrl}/health`, { timeout: 3000 })
-        // eslint-disable-next-line no-console
-        console.log(`✅ Found app on port ${port} (health check)`)
-        await testPage.close()
-        return testUrl
-        // eslint-disable-next-line no-unused-vars
-      } catch (_healthError) {
-        // Health endpoint failed, try homepage
-        try {
-          await testPage.goto(testUrl, { timeout: 3000 })
+        console.log(`🔍 Testing port ${port}... (attempt ${attempt}/${maxRetries})`)
+        
+        // First try health endpoint with longer timeout
+        await testPage.goto(`${testUrl}/health`, { timeout: 5000 })
+        
+        // Validate the health response is actually successful
+        const healthContent = await testPage.content()
+        if (healthContent.includes('OK') || healthContent.includes('healthy') || healthContent.includes('UP')) {
           // eslint-disable-next-line no-console
-          console.log(`✅ Found app on port ${port} (homepage)`)
+          console.log(`✅ Found healthy app on port ${port}`)
           await testPage.close()
           return testUrl
-          // eslint-disable-next-line no-unused-vars
-        } catch (_homeError) {
-          // eslint-disable-next-line no-console
-          console.log(`❌ Port ${port}: not available`)
-          await testPage.close()
-          return null
         }
+        
+        // Health endpoint exists but not healthy, try homepage
+        await testPage.goto(testUrl, { timeout: 5000 })
+        // eslint-disable-next-line no-console
+        console.log(`✅ Found app on port ${port} (homepage)`)
+        await testPage.close()
+        return testUrl
+        
+        // eslint-disable-next-line no-unused-vars
+      } catch (_error) {
+        await testPage.close()
+        
+        if (attempt < maxRetries) {
+          // eslint-disable-next-line no-console
+          console.log(`⏳ Port ${port} not ready, waiting ${retryDelay/1000}s before retry...`)
+          // eslint-disable-next-line no-promise-executor-return
+          await new Promise(resolve => setTimeout(resolve, retryDelay))
+          return testPort(port, attempt + 1)
+        }
+        
+        // eslint-disable-next-line no-console
+        console.log(`❌ Port ${port}: not available after ${maxRetries} attempts`)
+        return null
       }
+    }
+
+    // Test each port sequentially with retries
+    const result = await ports.reduce(async (previousPromise, port) => {
+      const foundUrl = await previousPromise
+      if (foundUrl) return foundUrl // Already found a working port
+      
+      return testPort(port)
     }, Promise.resolve(null))
 
     if (result) {
@@ -124,6 +144,22 @@ module.exports = async function globalSetup() {
   }
 
   const page = await browser.newPage()
+
+  // Final validation if using localhost - ensure app is fully ready
+  if (baseURL.includes('localhost')) {
+    // eslint-disable-next-line no-console
+    console.log(`🔍 Final validation of ${baseURL}...`)
+    try {
+      await page.goto(baseURL, { timeout: 10000 })
+      // eslint-disable-next-line no-console
+      console.log(`✅ Final validation successful`)
+      // Navigate back to start fresh
+      await page.goto('about:blank')
+    } catch (validationError) {
+      // eslint-disable-next-line no-console
+      console.log(`⚠️  Final validation failed, but proceeding anyway: ${validationError.message}`)
+    }
+  }
 
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
