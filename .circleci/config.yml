@@ -319,14 +319,49 @@ jobs:
             
             # Verify WireMock is still running
             if ! curl -f -s --connect-timeout 5 "http://localhost:9091/__admin/health" > /dev/null; then
-              echo "❌ WireMock not responding, this may cause test failures"
+              echo "❌ WireMock not responding, attempting restart..."
+              
+              # Kill any existing WireMock processes
+              pkill -f "wiremock.jar" || true
+              sleep 2
+              
+              # Restart WireMock in background
+              java -jar wiremock.jar --port 9091 &
+              WIREMOCK_PID=$!
+              echo "Started WireMock with PID: $WIREMOCK_PID"
+              
+              # Wait for WireMock to start
+              for i in {1..15}; do
+                if curl -f -s --connect-timeout 5 "http://localhost:9091/__admin/health" > /dev/null; then
+                  echo "✅ WireMock restarted successfully after ${i} attempts"
+                  break
+                fi
+                sleep 2
+              done
+              
+              # Re-initialize basic stubs after restart
+              echo "🎭 Re-initializing WireMock stubs after restart..."
+              bash scripts/wait-for-services.sh || echo "⚠️ Stub initialization warning (continuing anyway)"
             else
               echo "✅ WireMock is responding normally"
             fi
             
             echo "=== Environment Status Summary ==="
-            echo "App (3000): $(curl -f -s --connect-timeout 2 'http://localhost:3000/health' > /dev/null && echo 'OK' || echo 'FAIL')"
-            echo "WireMock (9091): $(curl -f -s --connect-timeout 2 'http://localhost:9091/__admin/health' > /dev/null && echo 'OK' || echo 'FAIL')"
+            APP_STATUS=$(curl -f -s --connect-timeout 2 'http://localhost:3000/health' > /dev/null && echo 'OK' || echo 'FAIL')
+            WIREMOCK_STATUS=$(curl -f -s --connect-timeout 2 'http://localhost:9091/__admin/health' > /dev/null && echo 'OK' || echo 'FAIL')
+            echo "App (3000): $APP_STATUS"
+            echo "WireMock (9091): $WIREMOCK_STATUS"
+            
+            # Fail the build if app is not responding (critical)
+            if [ "$APP_STATUS" = "FAIL" ]; then
+              echo "❌ CRITICAL: Main application not responding - failing build"
+              exit 1
+            fi
+            
+            # Continue with warning if WireMock is not responding (tests may still work with mocked external services)
+            if [ "$WIREMOCK_STATUS" = "FAIL" ]; then
+              echo "⚠️ WARNING: WireMock not responding - some tests may fail but continuing..."
+            fi
       - run:
           name: integration tests
           command: |

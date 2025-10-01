@@ -5,6 +5,26 @@ module.exports = async function globalSetup() {
   // ===============================
   // eslint-disable-next-line no-console
   console.log('🚀 Starting CI service health checks...')
+
+  // Enhanced CI Environment Debugging
+  // eslint-disable-next-line no-console
+  console.log('=== CI Environment Debug Information ===')
+  // eslint-disable-next-line no-console
+  console.log(`🖥️  CI: ${process.env.CI || 'false'}`)
+  // eslint-disable-next-line no-console
+  console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'undefined'}`)
+  // eslint-disable-next-line no-console
+  console.log(`🔧 TEST_ENV: ${process.env.TEST_ENV || 'undefined'}`)
+  // eslint-disable-next-line no-console
+  console.log(`📍 Working Directory: ${process.cwd()}`)
+  // eslint-disable-next-line no-console
+  console.log(`🏠 HOME: ${process.env.HOME || 'undefined'}`)
+  // eslint-disable-next-line no-console
+  console.log(`🌐 HOSTNAME: ${process.env.HOSTNAME || 'undefined'}`)
+  // eslint-disable-next-line no-console
+  console.log(`🐳 DOCKER: ${process.env.DOCKER ? 'true' : 'false'}`)
+  // eslint-disable-next-line no-console
+  console.log('=============================================')
   // eslint-disable-next-line no-console
   console.log('🔍 Checking WireMock...')
 
@@ -48,10 +68,28 @@ module.exports = async function globalSetup() {
   console.log('🎭 Initializing basic WireMock stubs for CI...')
 
   try {
-    // eslint-disable-next-line global-require, import/extensions
-    const auth = require('../../dist/integration_tests/mockApis/auth.js')
-    // eslint-disable-next-line global-require, import/extensions
-    const tokenVerification = require('../../dist/integration_tests/mockApis/tokenVerification.js')
+    // Try multiple possible paths for the compiled modules
+    let auth
+    let tokenVerification
+
+    try {
+      // eslint-disable-next-line global-require, import/extensions
+      auth = require('../../dist/integration_tests/mockApis/auth.js')
+      // eslint-disable-next-line global-require, import/extensions
+      tokenVerification = require('../../dist/integration_tests/mockApis/tokenVerification.js')
+    } catch (distError) {
+      try {
+        // Fallback to source files
+        // eslint-disable-next-line global-require, import/extensions
+        auth = require('../mockApis/auth.ts')
+        // eslint-disable-next-line global-require, import/extensions
+        tokenVerification = require('../mockApis/tokenVerification.ts')
+      } catch (srcError) {
+        throw new Error(
+          `Cannot find auth modules. Tried dist and src paths. Dist error: ${distError.message}, Src error: ${srcError.message}`,
+        )
+      }
+    }
 
     await auth.default.stubSignIn()
     await auth.default.stubAuthUser()
@@ -62,6 +100,8 @@ module.exports = async function globalSetup() {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('⚠️ WireMock stub initialization failed:', error.message)
+    // eslint-disable-next-line no-console
+    console.log('⚠️ Continuing without custom stubs - using basic HTTP stubs only')
   }
 
   // eslint-disable-next-line no-console
@@ -101,6 +141,14 @@ module.exports = async function globalSetup() {
         appReady = true
         // eslint-disable-next-line no-console
         console.log(`✅ Application health check passed after ${appAttempts} attempts`)
+
+        // Extra wait to ensure app is fully stable after health check
+        // eslint-disable-next-line no-console
+        console.log(`⏳ Waiting additional 3 seconds for app stabilization...`)
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise(resolve => {
+          setTimeout(resolve, 3000)
+        })
       }
       // eslint-disable-next-line no-unused-vars
     } catch (_error) {
@@ -244,8 +292,27 @@ module.exports = async function globalSetup() {
 
   const page = await browser.newPage()
 
+  // Final health check right before navigation
+  // eslint-disable-next-line no-console
+  console.log(`🔍 Final health check before navigation...`)
+  try {
+    const finalHealthCheck = await fetch('http://localhost:3000/health')
+    if (finalHealthCheck.ok) {
+      // eslint-disable-next-line no-console
+      console.log(`✅ App still healthy immediately before navigation`)
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`⚠️ App health check returned ${finalHealthCheck.status}`)
+    }
+  } catch (finalError) {
+    // eslint-disable-next-line no-console
+    console.log(`❌ Final health check failed: ${finalError.message}`)
+  }
+
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
+  // eslint-disable-next-line no-console
+  console.log(`🔍 Exact URL being navigated to: "${baseURL}"`)
 
   try {
     await page.goto(`${baseURL}`, { timeout: 30000 })
@@ -253,21 +320,138 @@ module.exports = async function globalSetup() {
     // Wait for the page to load and check what we actually got
     await page.waitForLoadState('networkidle')
     const currentUrl = page.url()
+    const pageTitle = await page.title()
+
     // eslint-disable-next-line no-console
     console.log(`✅ Successfully navigated to: ${currentUrl}`)
+    // eslint-disable-next-line no-console
+    console.log(`🔍 Page title: "${pageTitle}"`)
+    // eslint-disable-next-line no-console
+    console.log(`🔍 URL comparison - Expected: "${baseURL}", Actual: "${currentUrl}"`)
+
+    // Parse and show URL components
+    try {
+      const urlObj = new URL(currentUrl)
+      // eslint-disable-next-line no-console
+      console.log(`🔍 Final URL breakdown:`)
+      // eslint-disable-next-line no-console
+      console.log(`   - Protocol: ${urlObj.protocol}`)
+      // eslint-disable-next-line no-console
+      console.log(`   - Host: ${urlObj.host}`)
+      // eslint-disable-next-line no-console
+      console.log(`   - Pathname: ${urlObj.pathname}`)
+      // eslint-disable-next-line no-console
+      console.log(`   - Search: ${urlObj.search || '(none)'}`)
+      // eslint-disable-next-line no-console
+      console.log(`   - Hash: ${urlObj.hash || '(none)'}`)
+    } catch (urlParseError) {
+      // eslint-disable-next-line no-console
+      console.log(`⚠️ Could not parse final URL: ${urlParseError.message}`)
+    }
+
+    // Capture success screenshot for CI verification
+    if (process.env.CI) {
+      try {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+        const screenshotPath = `integration_tests/screenshots/ci-navigation-success-${timestamp}.png`
+        await page.screenshot({ path: screenshotPath, fullPage: true })
+        // eslint-disable-next-line no-console
+        console.log(`📸 Success screenshot saved to: ${screenshotPath}`)
+      } catch (screenshotError) {
+        // eslint-disable-next-line no-console
+        console.log(`⚠️ Could not capture success screenshot: ${screenshotError.message}`)
+      }
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(`❌ Navigation failed: ${error.message}`)
     // eslint-disable-next-line no-console
-    console.log(`🔍 This could indicate:`)
+    console.log(`🔍 Failed URL was: "${baseURL}"`)
+
+    // Capture screenshot on failure for CI debugging
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+      const screenshotPath = `integration_tests/screenshots/ci-navigation-failure-${timestamp}.png`
+      await page.screenshot({ path: screenshotPath, fullPage: true })
+      // eslint-disable-next-line no-console
+      console.log(`📸 Screenshot saved to: ${screenshotPath}`)
+    } catch (screenshotError) {
+      // eslint-disable-next-line no-console
+      console.log(`⚠️ Could not capture screenshot: ${screenshotError.message}`)
+    }
+
+    // Try to get current page URL and title even on failure
+    try {
+      const failedUrl = page.url()
+      const failedTitle = await page.title()
+      // eslint-disable-next-line no-console
+      console.log(`🔍 Page URL after failure: "${failedUrl}"`)
+      // eslint-disable-next-line no-console
+      console.log(`🔍 Page title after failure: "${failedTitle}"`)
+    } catch (pageInfoError) {
+      // eslint-disable-next-line no-console
+      console.log(`⚠️ Could not get page info: ${pageInfoError.message}`)
+    }
+
+    // Additional debugging for CI
     // eslint-disable-next-line no-console
-    console.log(`   - Firewall blocking CI access to ${baseURL}`)
+    console.log(`🔍 Debugging navigation failure:`)
+
+    // Test multiple URL variations
+    const urlsToTest = [baseURL, 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://0.0.0.0:3000']
+
+    for (const testUrl of urlsToTest) {
+      if (testUrl !== baseURL) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const testPage = await browser.newPage()
+          // eslint-disable-next-line no-console
+          console.log(`🔍 Testing URL: "${testUrl}"`)
+          // eslint-disable-next-line no-await-in-loop
+          await testPage.goto(testUrl, { timeout: 5000 })
+          // eslint-disable-next-line no-console
+          console.log(`✅ "${testUrl}" is accessible from browser`)
+          // eslint-disable-next-line no-await-in-loop
+          await testPage.close()
+          break // Found a working URL
+        } catch (testError) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ "${testUrl}" failed: ${testError.message}`)
+        }
+      }
+    }
+
+    // Test health endpoint specifically
+    try {
+      const healthPage = await browser.newPage()
+      // eslint-disable-next-line no-console
+      console.log(`🔍 Testing health endpoint: "${baseURL}/health"`)
+      await healthPage.goto(`${baseURL}/health`, { timeout: 10000 })
+      const healthContent = await healthPage.textContent('body')
+      // eslint-disable-next-line no-console
+      console.log(`✅ Health endpoint accessible from browser context`)
+      // eslint-disable-next-line no-console
+      console.log(`🔍 Health response preview: ${healthContent.substring(0, 200)}...`)
+      await healthPage.close()
+    } catch (healthError) {
+      // eslint-disable-next-line no-console
+      console.log(`❌ Health endpoint also not accessible from browser: ${healthError.message}`)
+    }
+
+    // Check if the app is using 127.0.0.1 vs 0.0.0.0 binding
     // eslint-disable-next-line no-console
-    console.log(`   - Network connectivity issues`)
+    console.log(`🔍 Possible causes:`)
     // eslint-disable-next-line no-console
-    console.log(`   - Environment not accessible from CI IP range`)
+    console.log(`   - App bound to 127.0.0.1 instead of 0.0.0.0 (CI containers need 0.0.0.0)`)
     // eslint-disable-next-line no-console
-    console.log(`📧 Contact infrastructure team to whitelist CircleCI IPs`)
+    console.log(`   - Port 3000 not exposed in CI container`)
+    // eslint-disable-next-line no-console
+    console.log(`   - App process terminated between health check and navigation`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Network policy blocking browser access vs curl access`)
+    // eslint-disable-next-line no-console
+    console.log(`   - Browser security policy preventing localhost access`)
+
     throw error
   }
 
