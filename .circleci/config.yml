@@ -110,7 +110,7 @@ jobs:
           name: Run wiremock
           command: |
             echo "🚀 Starting WireMock with monitoring..."
-            nohup java -jar wiremock.jar --port 9091 --verbose > wiremock-startup.log 2>&1 &
+            nohup java -jar wiremock.jar --port 9091 --bind-address 0.0.0.0 --verbose > wiremock-startup.log 2>&1 &
             WIREMOCK_PID=$!
             echo "WireMock started with PID: $WIREMOCK_PID"
             echo $WIREMOCK_PID > wiremock.pid
@@ -354,7 +354,8 @@ jobs:
               
               # Investigate why WireMock stopped working
               echo "🔍 WireMock Process Investigation:"
-              WIREMOCK_PIDS=$(pgrep -f "wiremock.jar" || true)
+              # Only match actual Java processes running wiremock.jar, not bash scripts mentioning it
+              WIREMOCK_PIDS=$(pgrep -f "java.*wiremock.jar" || true)
               if [ -n "$WIREMOCK_PIDS" ]; then
                 echo "   ✅ WireMock processes still running: $WIREMOCK_PIDS"
                 echo "   🔍 Process details:"
@@ -388,22 +389,33 @@ jobs:
                 echo "❌ WireMock still not responding - attempting gentle restart..."
                 
                 # First, try to check if WireMock process exists
-                WIREMOCK_PIDS=$(pgrep -f "wiremock.jar" || true)
+                # Only match actual Java processes, not bash scripts
+                WIREMOCK_PIDS=$(pgrep -f "java.*wiremock.jar" || true)
                 if [ -n "$WIREMOCK_PIDS" ]; then
                   echo "Found existing WireMock processes: $WIREMOCK_PIDS"
                   # Kill processes safely, one by one to avoid the error we saw
                   echo "$WIREMOCK_PIDS" | while read -r pid; do
                     if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-                      echo "Stopping process $pid..."
-                      kill -TERM "$pid" 2>/dev/null || echo "Process $pid already stopped"
+                      # Double-check this is actually a Java process before killing
+                      if ps -p "$pid" -o cmd --no-headers 2>/dev/null | grep -q "java.*wiremock.jar"; then
+                        echo "Stopping WireMock process $pid..."
+                        kill -TERM "$pid" 2>/dev/null || echo "Process $pid already stopped"
+                      else
+                        echo "Skipping process $pid (not a WireMock Java process)"
+                      fi
                     fi
                   done
                   sleep 3
                   # Force kill any remaining processes
                   echo "$WIREMOCK_PIDS" | while read -r pid; do
                     if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-                      echo "Force stopping process $pid..."
-                      kill -KILL "$pid" 2>/dev/null || true
+                      # Double-check this is actually a Java process before force killing
+                      if ps -p "$pid" -o cmd --no-headers 2>/dev/null | grep -q "java.*wiremock.jar"; then
+                        echo "Force stopping WireMock process $pid..."
+                        kill -KILL "$pid" 2>/dev/null || true
+                      else
+                        echo "Skipping force kill of process $pid (not a WireMock Java process)"
+                      fi
                     fi
                   done
                 else
@@ -421,7 +433,7 @@ jobs:
                 
                 # Restart WireMock with explicit logging
                 echo "🔄 Starting WireMock with explicit configuration..."
-                nohup java -jar wiremock.jar --port 9091 --verbose > wiremock.log 2>&1 &
+                nohup java -jar wiremock.jar --port 9091 --bind-address 0.0.0.0 --verbose > wiremock.log 2>&1 &
                 WIREMOCK_PID=$!
                 echo "Started WireMock with PID: $WIREMOCK_PID"
                 
