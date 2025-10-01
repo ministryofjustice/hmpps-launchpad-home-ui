@@ -358,7 +358,12 @@ jobs:
               if [ -n "$WIREMOCK_PIDS" ]; then
                 echo "   ✅ WireMock processes still running: $WIREMOCK_PIDS"
                 echo "   🔍 Process details:"
-                ps -p $WIREMOCK_PIDS -o pid,ppid,etime,cmd || true
+                # Handle multiple PIDs correctly for ps command
+                echo "$WIREMOCK_PIDS" | while read -r pid; do
+                  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+                    ps -p "$pid" -o pid,ppid,etime,cmd 2>/dev/null || echo "   Process $pid details unavailable"
+                  fi
+                done
                 echo "   🔍 This suggests network/connectivity issue, not process death"
               else
                 echo "   ❌ No WireMock processes found - process died unexpectedly"
@@ -373,65 +378,84 @@ jobs:
               free -h || echo "   Memory info unavailable"
               df -h . || echo "   Disk info unavailable"
               
-              echo "❌ WireMock failed but was working initially - attempting gentle restart..."
+              # Before restarting, check if WireMock is actually broken or just temporarily unresponsive
+              echo "🔍 Checking if WireMock recovery is possible..."
+              sleep 2  # Brief wait in case it's just temporary network hiccup
               
-              # First, try to check if WireMock process exists
-              WIREMOCK_PIDS=$(pgrep -f "wiremock.jar" || true)
-              if [ -n "$WIREMOCK_PIDS" ]; then
-                echo "Found existing WireMock processes: $WIREMOCK_PIDS"
-                # Try gentle termination first
-                echo "$WIREMOCK_PIDS" | xargs -r kill -TERM || true
-                sleep 3
-                # Force kill if still running
-                echo "$WIREMOCK_PIDS" | xargs -r kill -KILL 2>/dev/null || true
+              if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/health" > /dev/null; then
+                echo "✅ WireMock recovered on its own - no restart needed!"
               else
-                echo "No existing WireMock processes found"
-              fi
-              
-              # Wait a bit longer for cleanup
-              sleep 5
-              
-              # Check if port is still in use
-              if netstat -tlnp | grep -q ":9091"; then
-                echo "⚠️ Port 9091 still in use, waiting for cleanup..."
-                sleep 5
-              fi
-              
-              # Restart WireMock with explicit logging
-              echo "🔄 Starting WireMock with explicit configuration..."
-              nohup java -jar wiremock.jar --port 9091 --verbose > wiremock.log 2>&1 &
-              WIREMOCK_PID=$!
-              echo "Started WireMock with PID: $WIREMOCK_PID"
-              
-              # Store PID for potential cleanup
-              echo $WIREMOCK_PID > wiremock.pid
-              
-              # Wait longer for WireMock to fully start
-              WIREMOCK_READY=false
-              for i in {1..20}; do
-                if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/health" > /dev/null 2>&1; then
-                  echo "✅ WireMock restarted successfully after ${i} attempts"
-                  WIREMOCK_READY=true
-                  break
-                fi
-                echo "⏳ Waiting for WireMock restart (attempt $i/20)..."
-                sleep 3
-              done
-              
-              if [ "$WIREMOCK_READY" = false ]; then
-                echo "⚠️ WireMock restart failed, checking logs..."
-                if [ -f wiremock.log ]; then
-                  echo "=== WireMock Log (last 20 lines) ==="
-                  tail -20 wiremock.log || echo "Could not read wiremock.log"
-                fi
-                echo "Continuing without WireMock restart..."
-              else
-                # Re-initialize basic stubs after successful restart
-                echo "🎭 Re-initializing WireMock stubs after restart..."
-                if bash scripts/wait-for-services.sh; then
-                  echo "✅ Stub re-initialization successful"
+                echo "❌ WireMock still not responding - attempting gentle restart..."
+                
+                # First, try to check if WireMock process exists
+                WIREMOCK_PIDS=$(pgrep -f "wiremock.jar" || true)
+                if [ -n "$WIREMOCK_PIDS" ]; then
+                  echo "Found existing WireMock processes: $WIREMOCK_PIDS"
+                  # Kill processes safely, one by one to avoid the error we saw
+                  echo "$WIREMOCK_PIDS" | while read -r pid; do
+                    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+                      echo "Stopping process $pid..."
+                      kill -TERM "$pid" 2>/dev/null || echo "Process $pid already stopped"
+                    fi
+                  done
+                  sleep 3
+                  # Force kill any remaining processes
+                  echo "$WIREMOCK_PIDS" | while read -r pid; do
+                    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+                      echo "Force stopping process $pid..."
+                      kill -KILL "$pid" 2>/dev/null || true
+                    fi
+                  done
                 else
-                  echo "⚠️ Stub re-initialization failed, continuing anyway..."
+                  echo "No existing WireMock processes found"
+                fi
+                
+                # Wait a bit longer for cleanup
+                sleep 5
+                
+                # Check if port is still in use
+                if netstat -tlnp | grep -q ":9091"; then
+                  echo "⚠️ Port 9091 still in use, waiting for cleanup..."
+                  sleep 5
+                fi
+                
+                # Restart WireMock with explicit logging
+                echo "🔄 Starting WireMock with explicit configuration..."
+                nohup java -jar wiremock.jar --port 9091 --verbose > wiremock.log 2>&1 &
+                WIREMOCK_PID=$!
+                echo "Started WireMock with PID: $WIREMOCK_PID"
+                
+                # Store PID for potential cleanup
+                echo $WIREMOCK_PID > wiremock.pid
+                
+                # Wait longer for WireMock to fully start
+                WIREMOCK_READY=false
+                for i in {1..20}; do
+                  if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/health" > /dev/null 2>&1; then
+                    echo "✅ WireMock restarted successfully after ${i} attempts"
+                    WIREMOCK_READY=true
+                    break
+                  fi
+                  echo "⏳ Waiting for WireMock restart (attempt $i/20)..."
+                  sleep 3
+                done
+                
+                if [ "$WIREMOCK_READY" = false ]; then
+                  echo "⚠️ WireMock restart failed, checking logs..."
+                  if [ -f wiremock.log ]; then
+                    echo "=== WireMock Log (last 20 lines) ==="
+                    tail -20 wiremock.log || echo "Could not read wiremock.log"
+                  fi
+                  echo "Continuing without WireMock restart..."
+                else
+                  echo "✅ WireMock restart completed successfully"
+                  # Re-initialize basic stubs after successful restart
+                  echo "🎭 Re-initializing WireMock stubs after restart..."
+                  if bash scripts/wait-for-services.sh; then
+                    echo "✅ Stub re-initialization successful"
+                  else
+                    echo "⚠️ Stub re-initialization failed, continuing anyway..."
+                  fi
                 fi
               fi
             else
