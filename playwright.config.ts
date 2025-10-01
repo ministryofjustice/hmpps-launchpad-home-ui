@@ -28,7 +28,7 @@ if (process.env.TEST_ENV) {
 }
 
 export default defineConfig({
-  workers: 2,
+  workers: process.env.CI ? 2 : 1, // Use 1 worker for local development, 2 for CI
   globalSetup: path.resolve(__dirname, 'integration_tests/support/playwright.global-setup.js'),
   globalTeardown: path.resolve(__dirname, 'integration_tests/support/playwright.global-teardown.js'),
 
@@ -48,7 +48,7 @@ export default defineConfig({
   },
 
   timeout: 60000,
-  retries: 3,
+  retries: process.env.CI ? 3 : 1, // Fewer retries locally to avoid overwhelming the app
 
   reporter: [
     ['html', { open: 'never', outputFolder: 'integration_tests/videos' }],

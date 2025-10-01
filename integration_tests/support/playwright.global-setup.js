@@ -20,7 +20,7 @@ module.exports = async function globalSetup() {
 
     try {
       // eslint-disable-next-line no-await-in-loop
-      const response = await fetch('http://localhost:9091/__admin/health')
+      const response = await fetch('http://localhost:9091/__admin/mappings')
       if (response.ok) {
         wiremockReady = true
         // eslint-disable-next-line no-console
@@ -32,7 +32,7 @@ module.exports = async function globalSetup() {
       if (attempts < maxAttempts) {
         // eslint-disable-next-line no-await-in-loop
         await new Promise(resolve => {
-          setTimeout(resolve, 2000) // Wait 2 seconds
+          setTimeout(resolve, 3000) // Wait 3 seconds to match working script
         })
       }
     }
