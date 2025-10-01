@@ -22,7 +22,7 @@ check_service() {
     echo -e "${BLUE}🔍 Checking ${service_name}...${NC}"
     
     for i in $(seq 1 $max_attempts); do
-        if curl -f -s --connect-timeout 2 "$url" > /dev/null 2>&1; then
+        if curl -f -s --connect-timeout 5 --max-time 10 "$url" > /dev/null 2>&1; then
             echo -e "${GREEN}✅ ${service_name} is ready after ${i} attempts${NC}"
             return 0
         fi
@@ -31,6 +31,13 @@ check_service() {
     done
     
     echo -e "${RED}❌ ${service_name} failed to start after $max_attempts attempts${NC}"
+    echo -e "${RED}🔍 Debugging ${service_name}:${NC}"
+    echo "URL: $url"
+    echo "Port check:"
+    local port=$(echo "$url" | sed -n 's/.*:\([0-9]*\).*/\1/p')
+    if [ -n "$port" ]; then
+        netstat -tlnp 2>/dev/null | grep ":$port" || echo "No process listening on port $port"
+    fi
     return 1
 }
 

@@ -27,8 +27,24 @@ if (process.env.TEST_ENV) {
   configBaseURL = process.env.INGRESS_URL || 'http://localhost:3000'
 }
 
+// Validate base URL format
+if (!configBaseURL.startsWith('http://') && !configBaseURL.startsWith('https://')) {
+  configBaseURL = `http://${configBaseURL}`
+}
+
+// Log configuration info for debugging (only in CI or when DEBUG is set)
+if (process.env.CI || process.env.DEBUG) {
+  // eslint-disable-next-line no-console
+  console.log(`🎯 Playwright configured with base URL: ${configBaseURL}`)
+  // eslint-disable-next-line no-console
+  console.log(`🌍 Environment: ${process.env.TEST_ENV || 'default (local)'}`)
+  // eslint-disable-next-line no-console
+  console.log(`🔧 CI Mode: ${process.env.CI ? 'enabled' : 'disabled'}`)
+}
+
 export default defineConfig({
-  workers: process.env.CI ? 2 : 1, // Use 1 worker for local development, 2 for CI
+  workers: 1, // Always use 1 worker to avoid race conditions and ensure shared state
+  fullyParallel: false, // Disable parallel execution to maintain service stability
   globalSetup: path.resolve(__dirname, 'integration_tests/support/playwright.global-setup.js'),
   globalTeardown: path.resolve(__dirname, 'integration_tests/support/playwright.global-teardown.js'),
 
@@ -44,7 +60,8 @@ export default defineConfig({
       size: { width: 640, height: 480 },
     },
     actionTimeout: 30000,
-    navigationTimeout: 30000,
+    navigationTimeout: 60000, // Increased timeout for slower CI environments
+    trace: 'retain-on-failure',
   },
 
   timeout: 60000,

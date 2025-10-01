@@ -130,14 +130,34 @@ jobs:
           command: |
             echo "Waiting for application to start..."
             # Simple wait since stubs are already initialized
+            APP_READY=false
             for i in {1..15}; do
-              if curl -f -s --connect-timeout 2 "http://localhost:3000/health" > /dev/null; then
+              if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
                 echo "✅ Application health check passed after ${i} attempts"
+                APP_READY=true
+                break
+              elif curl -f -s --connect-timeout 5 "http://localhost:3000/" > /dev/null; then
+                echo "✅ Application root endpoint responding after ${i} attempts"
+                APP_READY=true
                 break
               fi
               echo "⏳ Waiting for app health check (attempt $i/15)..."
-              sleep 2
+              sleep 3
             done
+            
+            if [ "$APP_READY" = false ]; then
+              echo "❌ Application failed to start after 15 attempts"
+              echo "Checking what's running on port 3000:"
+              netstat -tlnp | grep :3000 || echo "No process on port 3000"
+              echo "Checking application logs:"
+              ps aux | grep node || echo "No node processes found"
+              exit 1
+            fi
+            
+            # Final connectivity test
+            echo "Final connectivity verification:"
+            curl -I "http://localhost:3000/" || echo "Warning: Root endpoint not accessible"
+            curl -I "http://localhost:3000/health" || echo "Warning: Health endpoint not accessible"
       - run:
           name: Set environment for tests
           command: |
@@ -268,8 +288,50 @@ jobs:
               fi
             fi
       - run:
+          name: Pre-test connectivity verification
+          command: |
+            echo "=== Pre-Test Connectivity Verification ==="
+            
+            # Verify app is still running
+            if ! curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
+              echo "❌ App not responding on health endpoint, attempting restart..."
+              
+              # Kill any existing node processes
+              pkill -f "node.*dist/server.js" || true
+              sleep 2
+              
+              # Restart the app
+              npm run start-feature &
+              APP_PID=$!
+              echo "Started app with PID: $APP_PID"
+              
+              # Wait for restart
+              for i in {1..20}; do
+                if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
+                  echo "✅ App restarted successfully after ${i} attempts"
+                  break
+                fi
+                sleep 3
+              done
+            else
+              echo "✅ App is responding normally"
+            fi
+            
+            # Verify WireMock is still running
+            if ! curl -f -s --connect-timeout 5 "http://localhost:9091/__admin/health" > /dev/null; then
+              echo "❌ WireMock not responding, this may cause test failures"
+            else
+              echo "✅ WireMock is responding normally"
+            fi
+            
+            echo "=== Environment Status Summary ==="
+            echo "App (3000): $(curl -f -s --connect-timeout 2 'http://localhost:3000/health' > /dev/null && echo 'OK' || echo 'FAIL')"
+            echo "WireMock (9091): $(curl -f -s --connect-timeout 2 'http://localhost:9091/__admin/health' > /dev/null && echo 'OK' || echo 'FAIL')"
+      - run:
           name: integration tests
-          command: npm run int-test
+          command: |
+            echo "Starting integration tests with verified connectivity..."
+            npm run int-test
       - store_test_results:
           path: test_results
       - store_artifacts:
