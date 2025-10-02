@@ -61,14 +61,26 @@ jobs:
           nohup java -jar wiremock.jar --port 9091 &
           nohup npm run start-feature &
           sleep 10
-          echo "Waiting for server to be available at http://localhost:3000 ..."
-          npx wait-on --timeout 60000 http://localhost:3000
-          if [ $? -ne 0 ]; then
-            echo "Server did not start within 60 seconds. Failing the job."
-            exit 1
-          fi
-          echo "Server is up! Starting integration tests..."
-          npm run int-test
+          # Wait up to 90 seconds for the server to be ready
+          npx wait-on http://localhost:3000 --timeout 90000
+
+          # If wait-on fails, do a simple retry loop with curl (max 3 tries)
+            if ! curl -sf http://localhost:3000 > /dev/null; then
+            echo "Initial wait-on failed, retrying manually..."
+          for i in 1 2 3; do
+          sleep 5
+            if curl -sf http://localhost:3000 > /dev/null; then
+              echo "Server became ready on retry $i"
+              break
+            fi
+            if [ "$i" -eq 3 ]; then
+              echo "Server never became ready, exiting..."
+              exit 1
+            fi
+          done
+        fi
+        # Run your tests after server is confirmed ready
+        npm run int-test
       - name: upload results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
