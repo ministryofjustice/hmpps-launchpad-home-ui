@@ -1,39 +1,28 @@
-main_branch: &main_branch
+main_branch:
   filters:
     branches:
       only: main
-feature_branch: &feature_branch
+feature_branch:
   filters:
     branches:
       ignore: main
-
 version: 2.1
-
 orbs:
   hmpps: ministryofjustice/hmpps@11
   slack: circleci/slack@4.12.5
-
 parameters:
   alerts-slack-channel:
     type: string
     # Normally team specific alert channel e.g. hmpps_tech_alerts, syscon-alerts, dps_sed_alerts
     # This is to avoid a general alert dumping ground that no-one then monitors
     default: launchpad-alerts-nonprod
-
   releases-slack-channel:
     type: string
     # Normally dps-releases for most teams / projects
     default: prisoner_facing_services_releases
-
   node-version:
     type: string
     default: 22.13-browsers
-
-  test-environment:
-    type: string
-    description: "Environment to run tests against: test (localhost), dev, staging, preprod, prod"
-    default: "test"
-
 jobs:
   build:
     executor:
@@ -72,7 +61,6 @@ jobs:
             - build
             - dist
             - .cache/Cypress
-
   unit_test:
     executor:
       name: hmpps/node
@@ -88,7 +76,6 @@ jobs:
           path: test_results
       - store_artifacts:
           path: test_results/unit-test-reports.html
-
   integration_test:
     executor:
       name: hmpps/node_redis
@@ -105,426 +92,26 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get wiremock
-          command: |
-            echo "🔍 Environment check before WireMock download:"
-            echo "Java version:"
-            java -version || echo "Java not found"
-            echo "Available disk space:"
-            df -h . || echo "Disk check failed"
-            echo "📥 Downloading WireMock..."
-            curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
-            echo "✅ WireMock downloaded, file size:"
-            ls -lh wiremock.jar
+          command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
       - run:
           name: Run wiremock
-          command: |
-            echo "🚀 Starting WireMock..."
-            nohup java -jar wiremock.jar --port 9091 --bind-address 0.0.0.0 --verbose > wiremock.log 2>&1 &
-            WIREMOCK_PID=$!
-            echo "WireMock started with PID: $WIREMOCK_PID"
-            
-            # Basic startup verification (no complex restart logic)
-            echo "⏳ Waiting for WireMock to start..."
-            WIREMOCK_READY=false
-            for i in {1..15}; do
-              if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/mappings" > /dev/null 2>&1; then
-                echo "✅ WireMock is ready after ${i} attempts"
-                WIREMOCK_READY=true
-                break
-              fi
-              echo "⏳ Waiting for WireMock (attempt $i/15)..."
-              sleep 2
-            done
-            
-            if [ "$WIREMOCK_READY" = false ]; then
-              echo "❌ WireMock failed to start after 15 attempts"
-              echo "🔍 Debugging WireMock:"
-              echo "URL: http://localhost:9091/__admin/mappings"
-              echo "Port check:"
-              netstat -tlnp | grep :9091 || echo "No process listening on port 9091"
-              echo "Process check:"
-              if kill -0 $WIREMOCK_PID 2>/dev/null; then
-                echo "WireMock process (PID: $WIREMOCK_PID) is still running"
-                echo "WireMock log (last 20 lines):"
-                tail -20 wiremock.log || echo "No log available"
-              else
-                echo "WireMock process (PID: $WIREMOCK_PID) has died"
-                echo "WireMock log (full):"
-                cat wiremock.log || echo "No log available"
-              fi
-              echo "❌ WireMock failed to start"
-              exit 1
-            fi
-      - run:
-          name: Initialize services and stubs
-          command: |
-            chmod +x scripts/wait-for-services.sh
-            # Use bash explicitly for better CI compatibility
-            if bash scripts/wait-for-services.sh; then
-              echo "✅ Services and stubs initialized successfully"
-            else
-              echo "❌ Service initialization failed"
-              exit 1
-            fi
+          command: java -jar wiremock.jar --port 9091
+          background: true
       - run:
           name: Run the node app.
-          command: |
-            export PORT=3000
-            export HMPPS_AUTH_URL=http://localhost:9091/auth
-            export TOKEN_VERIFICATION_API_URL=http://localhost:9091/verification
-            export TOKEN_VERIFICATION_ENABLED=true
-            export NODE_ENV=development
-            export API_CLIENT_ID=clientid
-            export API_CLIENT_SECRET=clientsecret
-            export SYSTEM_CLIENT_ID=clientid
-            export SYSTEM_CLIENT_SECRET=clientsecret
-            export BASE_URL=
-            npm start &
+          command: npm run start-feature
           background: true
       - run:
           name: Wait for node app to start
-          command: |
-            echo "Waiting for application to start..."
-            sleep 10
-            
-            if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
-              echo "✅ Application is ready"
-            elif curl -f -s --connect-timeout 5 "http://localhost:3000/" > /dev/null; then
-              echo "✅ Application is ready (no health endpoint)"
-            else
-              echo "❌ Application not responding"
-              echo "Processes on port 3000:"
-              netstat -tlnp | grep :3000 || echo "None"
-              echo "Node processes:"
-              ps aux | grep node || echo "None"
-              exit 1
-            fi
-      - run:
-          name: Set environment for tests
-          command: |
-            TEST_ENV="<< pipeline.parameters.test-environment >>"
-            echo "export TEST_ENV=\"$TEST_ENV\"" >> "$BASH_ENV"
-            echo "Testing against environment: $TEST_ENV"
-            
-            # Dynamic localhost detection for CI
-            LOCALHOST_URL="http://localhost:3000"
-            
-            # Verify local app is actually running and get the correct port
-            echo "=== Dynamic Localhost Detection ==="
-            for PORT in 3000 3001 3002 8080 8081; do
-              if curl -s --connect-timeout 2 "http://localhost:$PORT/health" > /dev/null 2>&1; then
-                LOCALHOST_URL="http://localhost:$PORT"
-                echo "✅ Found running app on port $PORT"
-                break
-              elif curl -s --connect-timeout 2 "http://localhost:$PORT/" > /dev/null 2>&1; then
-                LOCALHOST_URL="http://localhost:$PORT"
-                echo "✅ Found running app on port $PORT (no health endpoint)"
-                break
-              else
-                echo "❌ No app found on port $PORT"
-              fi
-            done
-            
-            echo "Detected localhost URL: $LOCALHOST_URL"
-            
-            # Default to localhost for CI, but allow override for manual testing
-            case "$TEST_ENV" in
-              "dev")
-                if [ -n "$DEV_INGRESS_URL" ] && [ "$DEV_INGRESS_URL" != "$LOCALHOST_URL" ]; then
-                  TARGET_URL="$DEV_INGRESS_URL"
-                  echo "export DEV_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
-                  echo "Using remote DEV environment: $TARGET_URL"
-                else
-                  TARGET_URL="$LOCALHOST_URL"
-                  echo "export TEST_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
-                  echo "Using dynamic localhost for DEV: $TARGET_URL"
-                fi
-                ;;
-              "staging")
-                if [ -n "$STAGING_INGRESS_URL" ] && [ "$STAGING_INGRESS_URL" != "$LOCALHOST_URL" ]; then
-                  TARGET_URL="$STAGING_INGRESS_URL"
-                  echo "export STAGING_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
-                  echo "Using remote STAGING environment: $TARGET_URL"
-                else
-                  TARGET_URL="$LOCALHOST_URL"
-                  echo "export TEST_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
-                  echo "Using dynamic localhost for STAGING: $TARGET_URL"
-                fi
-                ;;
-              "test"|*)
-                TARGET_URL="$LOCALHOST_URL"
-                echo "export TEST_INGRESS_URL=\"$TARGET_URL\"" >> "$BASH_ENV"
-                echo "Using dynamic localhost environment: $TARGET_URL"
-                ;;
-            esac
-            
-            echo "Environment parameter: $TEST_ENV"
-            echo "Target URL: $TARGET_URL"
-            source "$BASH_ENV"
-      - run:
-          name: Dynamic environment connectivity check
-          command: |
-            echo "=== Dynamic Environment Connectivity Check ==="
-            
-            # Re-detect the localhost URL to ensure consistency
-            DETECTED_URL=""
-            for PORT in 3000 3001 3002 8080 8081; do
-              if curl -s --connect-timeout 2 "http://localhost:$PORT/health" > /dev/null 2>&1; then
-                DETECTED_URL="http://localhost:$PORT"
-                echo "✅ Confirmed app running on port $PORT"
-                break
-              elif curl -s --connect-timeout 2 "http://localhost:$PORT/" > /dev/null 2>&1; then
-                DETECTED_URL="http://localhost:$PORT"
-                echo "✅ Confirmed app running on port $PORT (no health endpoint)"
-                break
-              fi
-            done
-            
-            if [ -n "$DETECTED_URL" ]; then
-              echo "=== Testing Detected Local App ==="
-              echo "Detected URL: $DETECTED_URL"
-              
-              # Test health endpoint
-              echo "Health check:"
-              curl -f "$DETECTED_URL/health" 2>/dev/null && echo "✅ Health check passed" || echo "❌ Health check failed"
-              
-              # Test homepage
-              echo "Homepage check:"
-              curl -I "$DETECTED_URL/" 2>/dev/null && echo "✅ Homepage accessible" || echo "❌ Homepage failed"
-              
-              # Test specific endpoints
-              echo "Testing common endpoints:"
-              for ENDPOINT in "/ping" "/status" "/ready"; do
-                if curl -s --connect-timeout 2 "$DETECTED_URL$ENDPOINT" > /dev/null 2>&1; then
-                  echo "✅ $ENDPOINT endpoint available"
-                fi
-              done
-            else
-              echo "❌ No running app detected on common ports"
-              echo "Checking what's running on localhost:"
-              netstat -tlnp 2>/dev/null | grep ":3000\|:3001\|:3002\|:8080\|:8081" || echo "No services found on expected ports"
-            fi
-            
-            # If testing against remote environment, also check that
-            if [[ "$TARGET_URL" != "$DETECTED_URL" ]] && [[ "$TARGET_URL" =~ ^https?:// ]]; then
-              echo "=== Remote Environment Check ==="
-              echo "Also testing connectivity to: $TARGET_URL"
-              
-              # Extract hostname from target URL
-              if [[ "$TARGET_URL" =~ https?://([^/]+) ]]; then
-                HOSTNAME="${BASH_REMATCH[1]}"
-                echo "Target hostname: $HOSTNAME"
-                
-                # Test DNS resolution
-                echo "DNS resolution test:"
-                nslookup "$HOSTNAME" || echo "DNS resolution failed"
-                
-                # Test basic connectivity
-                echo "Basic connectivity test:"
-                curl -I --connect-timeout 10 --max-time 30 "$TARGET_URL" || echo "HTTP connectivity failed"
-                
-                # Test Microsoft login endpoint
-                echo "Microsoft login endpoint test:"
-                curl -I --connect-timeout 10 --max-time 30 "https://login.microsoftonline.com/" || echo "Microsoft login unreachable"
-              fi
-            fi
-      - run:
-          name: Simple connectivity check
-          command: |
-            echo "=== Basic Connectivity Check ==="
-            
-            # Simple app check
-            if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
-              echo "✅ App is responding on localhost:3000"
-            else
-              echo "⚠️ App health check failed - will proceed with tests anyway"
-            fi
-            
-            # Simple WireMock check  
-            if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/mappings" > /dev/null; then
-              echo "✅ WireMock is responding on localhost:9091"
-            else
-              echo "⚠️ WireMock health check failed - will proceed with tests anyway"
-            fi
-            
-            echo "🚀 Ready to run integration tests!"
+          command: sleep 5
       - run:
           name: integration tests
-          command: |
-            echo "Starting integration tests with verified connectivity..."
-            npm run int-test
+          command: npm run int-test
       - store_test_results:
           path: test_results
       - store_artifacts:
           path: integration-tests/videos
       - store_artifacts:
           path: integration-tests/screenshots
-
 workflows:
   version: 2
-  build-test-and-deploy:
-    jobs:
-      - build:
-          filters:
-            tags:
-              ignore: /.*/
-      - unit_test:
-          requires:
-            - build
-      - integration_test:
-          context: hmpps-common-vars
-          requires:
-            - build
-      - hmpps/helm_lint:
-          name: helm_lint
-      - hmpps/build_docker:
-          name: build_docker
-
-      - request-dev-preview-approval:
-          <<: *feature_branch
-          type: approval
-          requires:
-            - helm_lint
-            - unit_test
-            - integration_test
-            - build_docker
-      - hmpps/deploy_env:
-          <<: *feature_branch
-          name: deploy_dev_preview
-          env: "dev"
-          jira_update: true
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context: hmpps-common-vars
-          requires:
-            - request-dev-preview-approval
-          helm_timeout: 5m
-      - request-staging-preview-approval:
-          <<: *feature_branch
-          type: approval
-          requires:
-            - deploy_dev_preview
-      - hmpps/deploy_env:
-          <<: *feature_branch
-          name: deploy_staging_preview
-          env: "staging"
-          jira_update: true
-          jira_env_type: staging
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context:
-            - hmpps-common-vars
-            - hmpps-launchpad-home-ui-stage
-          requires:
-            - request-staging-preview-approval
-          helm_timeout: 5m
-
-      - hmpps/deploy_env:
-          <<: *main_branch
-          name: deploy_dev
-          env: "dev"
-          jira_update: true
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context: hmpps-common-vars
-          requires:
-            - helm_lint
-            - unit_test
-            - integration_test
-            - build_docker
-          helm_timeout: 5m
-      - request-staging-approval:
-          <<: *main_branch
-          type: approval
-          requires:
-            - deploy_dev
-      - hmpps/deploy_env:
-          <<: *main_branch
-          name: deploy_staging
-          env: "staging"
-          jira_update: true
-          jira_env_type: staging
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context:
-            - hmpps-common-vars
-            - hmpps-launchpad-home-ui-stage
-          requires:
-            - request-staging-approval
-      - request-preprod-approval:
-          <<: *main_branch
-          type: approval
-          requires:
-            - deploy_staging
-      - hmpps/deploy_env:
-          <<: *main_branch
-          name: deploy_preprod
-          env: "preprod"
-          jira_update: true
-          jira_env_type: staging
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context:
-            - hmpps-common-vars
-            - hmpps-launchpad-home-ui-preprod
-          requires:
-            - request-preprod-approval
-          helm_timeout: 5m
-      - request-prod-approval:
-          <<: *main_branch
-          type: approval
-          requires:
-            - deploy_preprod
-      - hmpps/deploy_env:
-          <<: *main_branch
-          name: deploy_prod
-          env: "prod"
-          jira_update: true
-          jira_env_type: production
-          slack_notification: true
-          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context:
-            - hmpps-common-vars
-            - hmpps-launchpad-home-ui-prod
-          requires:
-            - request-prod-approval
-          helm_timeout: 5m
-
-  security:
-    triggers:
-      - schedule:
-          cron: "30 5 * * 1-5"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/npm_security_audit:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - hmpps-common-vars
-      - hmpps/trivy_latest_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - hmpps-common-vars
-      - hmpps/veracode_pipeline_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - veracode-credentials
-            - hmpps-common-vars
-  security-weekly:
-    triggers:
-      - schedule:
-          cron: "0 5 * * 1"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/veracode_policy_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - veracode-credentials
-            - hmpps-common-vars
