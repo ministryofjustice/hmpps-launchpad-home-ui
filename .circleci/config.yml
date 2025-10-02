@@ -169,7 +169,6 @@ jobs:
       - run:
           name: Run the node app.
           command: |
-            # Load environment and start app - use npm start which has bunyan as dependency
             export PORT=3000
             export HMPPS_AUTH_URL=http://localhost:9091/auth
             export TOKEN_VERIFICATION_API_URL=http://localhost:9091/verification
@@ -180,97 +179,25 @@ jobs:
             export SYSTEM_CLIENT_ID=clientid
             export SYSTEM_CLIENT_SECRET=clientsecret
             export BASE_URL=
-            
-            # Use npm start which should have bunyan available via node_modules
-            npm start > app.log 2>&1 &
-            echo "App started with npm start"
+            npm start &
           background: true
       - run:
           name: Wait for node app to start
           command: |
             echo "Waiting for application to start..."
-            # Check if app process is still alive first
-            if [ -f app.pid ]; then
-              APP_PID=$(cat app.pid)
-              if kill -0 $APP_PID 2>/dev/null; then
-                echo "✅ App process (PID: $APP_PID) is still running"
-              else
-                echo "❌ App process (PID: $APP_PID) has died during startup!"
-                echo "App startup log:"
-                cat app.log || echo "No app log available"
-                exit 1
-              fi
-            fi
+            sleep 10
             
-            # Simple wait since stubs are already initialized
-            APP_READY=false
-            for i in {1..15}; do
-              if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
-                echo "✅ Application health check passed after ${i} attempts"
-                APP_READY=true
-                break
-              elif curl -f -s --connect-timeout 5 "http://localhost:3000/" > /dev/null; then
-                echo "✅ Application root endpoint responding after ${i} attempts"
-                APP_READY=true
-                break
-              fi
-              echo "⏳ Waiting for app health check (attempt $i/15)..."
-              sleep 3
-            done
-            
-            if [ "$APP_READY" = false ]; then
-              echo "❌ Application failed to start after 15 attempts"
-              echo "🔍 Comprehensive app debugging:"
-              echo "Port 3000 check:"
-              netstat -tlnp | grep :3000 || echo "No process on port 3000"
-              echo "All listening ports:"
-              netstat -tlnp | head -10
-              echo "Node processes:"
-              ps aux | grep -E "node|npm" || echo "No node/npm processes found"
-              echo "Application directory contents:"
-              ls -la
-              echo "Package.json scripts:"
-              cat package.json | grep -A 10 '"scripts"' || echo "No scripts found"
-              echo "Application log (if available):"
-              if [ -f app.log ]; then
-                echo "App log content:"
-                cat app.log
-              else
-                echo "No app.log file found"
-              fi
-              echo "Process status:"
-              if [ -f app.pid ]; then
-                APP_PID=$(cat app.pid)
-                if kill -0 $APP_PID 2>/dev/null; then
-                  echo "App process (PID: $APP_PID) is still running but not responding"
-                else
-                  echo "App process (PID: $APP_PID) has died"
-                fi
-              else
-                echo "No app.pid file found"
-              fi
-              exit 1
-            fi
-            
-            # Final connectivity test
-            echo "Final connectivity verification:"
-            curl -I "http://localhost:3000/" || echo "Warning: Root endpoint not accessible"
-            curl -I "http://localhost:3000/health" || echo "Warning: Health endpoint not accessible"
-            
-            # Also check WireMock status after app startup
-            echo "WireMock status after app startup:"
-            if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/mappings" > /dev/null; then
-              echo "✅ WireMock still responding after app startup"
+            if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
+              echo "✅ Application is ready"
+            elif curl -f -s --connect-timeout 5 "http://localhost:3000/" > /dev/null; then
+              echo "✅ Application is ready (no health endpoint)"
             else
-              echo "⚠️ WireMock not responding after app startup - this may cause issues later"
-              if [ -f wiremock.pid ]; then
-                WIREMOCK_PID=$(cat wiremock.pid)
-                if kill -0 $WIREMOCK_PID 2>/dev/null; then
-                  echo "   WireMock process (PID: $WIREMOCK_PID) still running but not responding"
-                else
-                  echo "   WireMock process (PID: $WIREMOCK_PID) has died"
-                fi
-              fi
+              echo "❌ Application not responding"
+              echo "Processes on port 3000:"
+              netstat -tlnp | grep :3000 || echo "None"
+              echo "Node processes:"
+              ps aux | grep node || echo "None"
+              exit 1
             fi
       - run:
           name: Set environment for tests
