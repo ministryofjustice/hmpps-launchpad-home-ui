@@ -95,15 +95,29 @@ jobs:
           command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
       - run:
           name: Run wiremock
-          command: java -jar wiremock.jar --port 9091
+          command: java -jar wiremock.jar --port 9091 --bind-address 0.0.0.0
           background: true
+      - run:
+          name: Initialize services and stubs
+          command: |
+            chmod +x scripts/wait-for-services.sh
+            ./scripts/wait-for-services.sh
       - run:
           name: Run the node app.
           command: npm run start-feature
           background: true
       - run:
           name: Wait for node app to start
-          command: sleep 5
+          command: |
+            echo "Waiting for application to start..."
+            for i in {1..30}; do
+              if curl -f -s --connect-timeout 5 "http://localhost:3000/health" > /dev/null; then
+                echo "✅ Application is ready"
+                break
+              fi
+              echo "⏳ Waiting for app (attempt $i/30)..."
+              sleep 2
+            done
       - run:
           name: integration tests
           command: npm run int-test
