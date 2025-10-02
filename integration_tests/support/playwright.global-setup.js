@@ -1,4 +1,5 @@
 const { chromium } = require('@playwright/test')
+const fs = require('fs')
 
 module.exports = async function globalSetup() {
   // 🏗️  CI Service Startup Script
@@ -388,6 +389,55 @@ module.exports = async function globalSetup() {
       console.log(`🔍 Page URL after failure: "${failedUrl}"`)
       // eslint-disable-next-line no-console
       console.log(`🔍 Page title after failure: "${failedTitle}"`)
+
+      // NEW: Capture page content to see what's actually being served
+      try {
+        const pageContent = await page.content()
+        const bodyText = await page.textContent('body').catch(() => 'Could not extract body text')
+
+        // eslint-disable-next-line no-console
+        console.log(`🔍 Page content analysis:`)
+        // eslint-disable-next-line no-console
+        console.log(`   - Content length: ${pageContent.length} characters`)
+        // eslint-disable-next-line no-console
+        console.log(`   - Body text preview: ${bodyText.substring(0, 300)}...`)
+
+        // Check for common error patterns
+        if (pageContent.includes('Cannot GET')) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ DETECTED: Express.js "Cannot GET" error - route not found`)
+        } else if (pageContent.includes('ERR_CONNECTION_REFUSED')) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ DETECTED: Connection refused error`)
+        } else if (pageContent.includes('ENOTFOUND') || pageContent.includes('DNS')) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ DETECTED: DNS resolution failure`)
+        } else if (pageContent.includes('timeout')) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ DETECTED: Timeout error`)
+        } else if (pageContent.includes('500') || pageContent.includes('Internal Server Error')) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ DETECTED: Server error (500)`)
+        } else if (pageContent.length < 100) {
+          // eslint-disable-next-line no-console
+          console.log(`❌ DETECTED: Very short response - likely error page`)
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(`🔍 Page loaded but navigation failed - content looks normal`)
+        }
+
+        // Save page HTML for detailed analysis
+        if (process.env.CI) {
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+          const htmlPath = `integration_tests/screenshots/ci-page-content-${timestamp}.html`
+          fs.writeFileSync(htmlPath, pageContent)
+          // eslint-disable-next-line no-console
+          console.log(`📄 Page HTML saved to: ${htmlPath}`)
+        }
+      } catch (contentError) {
+        // eslint-disable-next-line no-console
+        console.log(`⚠️ Could not capture page content: ${contentError.message}`)
+      }
     } catch (pageInfoError) {
       // eslint-disable-next-line no-console
       console.log(`⚠️ Could not get page info: ${pageInfoError.message}`)
