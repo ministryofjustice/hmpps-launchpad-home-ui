@@ -47,6 +47,14 @@ jobs:
       - name: Prepare and run integration tests
         id: integration-tests
         shell: bash
+        env:
+          MS_USERNAME: ${{ secrets.MS_USERNAME }}
+          MS_PASSWORD: ${{ secrets.MS_PASSWORD }}
+          SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
+          SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
+          LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
+          LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
         run: |
           nohup java -jar wiremock.jar --port 9091 &
           nohup npm run start-feature &
