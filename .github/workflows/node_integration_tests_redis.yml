@@ -114,6 +114,20 @@ jobs:
             }'
           
           echo "Wiremock stubs configured successfully"
+          
+          # Verify stubs are working
+          echo "Testing wiremock stubs..."
+          AUTH_PING=$(curl -s http://localhost:9091/auth/health/ping)
+          VERIFICATION_PING=$(curl -s http://localhost:9091/verification/health/ping)
+          
+          if [ "$AUTH_PING" = "pong" ] && [ "$VERIFICATION_PING" = "pong" ]; then
+            echo "✅ Wiremock stubs verified working"
+          else
+            echo "❌ Wiremock stubs not working properly"
+            echo "Auth ping response: '$AUTH_PING'"
+            echo "Verification ping response: '$VERIFICATION_PING'"
+            exit 1
+          fi
 
           # Start the Node.js app
           echo "Starting Node.js app..."
@@ -130,6 +144,19 @@ jobs:
           APP_PID=$!
           echo "Started Node.js app with PID: $APP_PID"
           
+          # Give app a moment to start
+          sleep 2
+          
+          # Check if process is still running
+          if kill -0 $APP_PID 2>/dev/null; then
+            echo "Node.js app process is running"
+          else
+            echo "ERROR: Node.js app process died immediately"
+            echo "=== Server logs (immediate failure) ==="
+            cat server.log
+            exit 1
+          fi
+          
           # Wait for the Node.js app to be ready (up to 60 seconds)
           echo "Waiting for Node.js app to be ready on port 3000..."
           for i in {1..60}; do
@@ -142,13 +169,22 @@ jobs:
             fi
             
             # Test health endpoint and verify it's actually healthy
-            HEALTH_RESPONSE=$(curl -s http://localhost:3000/health)
-            if echo "$HEALTH_RESPONSE" | grep -q '"healthy":true'; then
+            HEALTH_RESPONSE=$(curl -s http://localhost:3000/health 2>&1)
+            CURL_EXIT_CODE=$?
+            
+            if [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy":true'; then
               echo "Node.js app is healthy after ${i} seconds"
               echo "Health check response: $HEALTH_RESPONSE"
               break
-            elif echo "$HEALTH_RESPONSE" | grep -q '"healthy":false'; then
+            elif [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy":false'; then
               echo "Node.js app responding but unhealthy after ${i} seconds (will retry)"
+              echo "Health response: $HEALTH_RESPONSE"
+            elif [ $CURL_EXIT_CODE -ne 0 ]; then
+              echo "Cannot connect to Node.js app after ${i} seconds (curl exit code: $CURL_EXIT_CODE)"
+              echo "Curl error: $HEALTH_RESPONSE"
+            else
+              echo "Unexpected health response after ${i} seconds"
+              echo "Response: $HEALTH_RESPONSE"
             fi
             if [ "$i" -eq 60 ]; then
               echo "Node.js app failed to start within 60 seconds"
