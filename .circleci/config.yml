@@ -105,13 +105,56 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get wiremock
-          command: curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
+          command: |
+            echo "🔍 Environment check before WireMock download:"
+            echo "Java version:"
+            java -version || echo "Java not found"
+            echo "Available disk space:"
+            df -h . || echo "Disk check failed"
+            echo "📥 Downloading WireMock..."
+            curl -o wiremock.jar https://repo1.maven.org/maven2/com/github/tomakehurst/wiremock-standalone/2.27.1/wiremock-standalone-2.27.1.jar
+            echo "✅ WireMock downloaded, file size:"
+            ls -lh wiremock.jar
       - run:
           name: Run wiremock
           command: |
             echo "🚀 Starting WireMock..."
             nohup java -jar wiremock.jar --port 9091 --bind-address 0.0.0.0 --verbose > wiremock.log 2>&1 &
-            echo "✅ WireMock started"
+            WIREMOCK_PID=$!
+            echo "WireMock started with PID: $WIREMOCK_PID"
+            
+            # Basic startup verification (no complex restart logic)
+            echo "⏳ Waiting for WireMock to start..."
+            WIREMOCK_READY=false
+            for i in {1..15}; do
+              if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/mappings" > /dev/null 2>&1; then
+                echo "✅ WireMock is ready after ${i} attempts"
+                WIREMOCK_READY=true
+                break
+              fi
+              echo "⏳ Waiting for WireMock (attempt $i/15)..."
+              sleep 2
+            done
+            
+            if [ "$WIREMOCK_READY" = false ]; then
+              echo "❌ WireMock failed to start after 15 attempts"
+              echo "🔍 Debugging WireMock:"
+              echo "URL: http://localhost:9091/__admin/mappings"
+              echo "Port check:"
+              netstat -tlnp | grep :9091 || echo "No process listening on port 9091"
+              echo "Process check:"
+              if kill -0 $WIREMOCK_PID 2>/dev/null; then
+                echo "WireMock process (PID: $WIREMOCK_PID) is still running"
+                echo "WireMock log (last 20 lines):"
+                tail -20 wiremock.log || echo "No log available"
+              else
+                echo "WireMock process (PID: $WIREMOCK_PID) has died"
+                echo "WireMock log (full):"
+                cat wiremock.log || echo "No log available"
+              fi
+              echo "❌ WireMock failed to start"
+              exit 1
+            fi
       - run:
           name: Initialize services and stubs
           command: |
@@ -163,7 +206,7 @@ jobs:
             
             # Also check WireMock status after app startup
             echo "WireMock status after app startup:"
-            if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/health" > /dev/null; then
+            if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/mappings" > /dev/null; then
               echo "✅ WireMock still responding after app startup"
             else
               echo "⚠️ WireMock not responding after app startup - this may cause issues later"
@@ -318,7 +361,7 @@ jobs:
             fi
             
             # Simple WireMock check  
-            if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/health" > /dev/null; then
+            if curl -f -s --connect-timeout 3 "http://localhost:9091/__admin/mappings" > /dev/null; then
               echo "✅ WireMock is responding on localhost:9091"
             else
               echo "⚠️ WireMock health check failed - will proceed with tests anyway"
