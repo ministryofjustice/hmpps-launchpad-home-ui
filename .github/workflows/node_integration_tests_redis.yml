@@ -58,30 +58,61 @@ jobs:
           HOST: 0.0.0.0
           PORT: 3000
         run: |
-          nohup java -jar wiremock.jar --port 9091 &
+          # Start wiremock and wait for it to be ready
+          echo "Starting wiremock on port 9091..."
+          nohup java -jar wiremock.jar --port 9091 > wiremock.log 2>&1 &
+          WIREMOCK_PID=$!
+          
+          # Wait for wiremock to be ready (up to 30 seconds)
+          echo "Waiting for wiremock to be ready..."
+          for i in {1..30}; do
+            if curl -sf http://localhost:9091/__admin/health > /dev/null 2>&1; then
+              echo "Wiremock is ready after ${i} seconds"
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "Wiremock failed to start within 30 seconds"
+              echo "=== Wiremock logs ==="
+              cat wiremock.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          # Start the Node.js app
+          echo "Starting Node.js app..."
           nohup npm run start-feature > server.log 2>&1 &
-          sleep 10
-          # Wait up to 90 seconds for the server to be ready
-          npx wait-on http://0.0.0.0:3000 --timeout 90000
+          APP_PID=$!
+          
+          # Wait for the Node.js app to be ready (up to 60 seconds)
+          echo "Waiting for Node.js app to be ready on port 3000..."
+          for i in {1..60}; do
+            if curl -sf http://0.0.0.0:3000 > /dev/null 2>&1; then
+              echo "Node.js app is ready after ${i} seconds"
+              break
+            fi
+            if [ "$i" -eq 60 ]; then
+              echo "Node.js app failed to start within 60 seconds"
+              echo "=== Server logs ==="
+              cat server.log
+              echo "=== Process status ==="
+              ps aux | grep -E "(node|java)" | grep -v grep
+              exit 1
+            fi
+            sleep 1
+          done
 
-          # If wait-on fails, do a simple retry loop with curl (max 3 tries)
-          if ! curl -sf http://0.0.0.0:3000 > /dev/null; then
-            echo "Initial wait-on failed, retrying manually..."
-            for i in 1 2 3; do
-              sleep 5
-              if curl -sf http://0.0.0.0:3000 > /dev/null; then
-                echo "Server became ready on retry $i"
-                break
-              fi
-              if [ "$i" -eq 3 ]; then
-                echo "Server never became ready, exiting..."
-                exit 1
-              fi
-            done
-          fi
-
-          # Run your tests after server is confirmed ready
+          # Run the integration tests
+          echo "Running integration tests..."
           npm run int-test
+      - name: cleanup processes
+        if: ${{ always() }}
+        run: |
+          echo "Cleaning up background processes..."
+          pkill -f "wiremock" || true
+          pkill -f "node.*dist/server.js" || true
+          echo "=== Final server logs (last 50 lines) ==="
+          tail -n 50 server.log || echo "No server logs found"
       - name: upload results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
