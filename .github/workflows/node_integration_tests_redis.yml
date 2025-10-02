@@ -55,10 +55,12 @@ jobs:
           LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
           LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          HOST: 0.0.0.0
+          PORT: 3000
         run: |
           nohup java -jar wiremock.jar --port 9091 &
           nohup npm run start-feature &
-          sleep 5
+          sleep 10
           npm run int-test
       - name: upload results
         if: ${{ !cancelled() }}
