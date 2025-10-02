@@ -169,18 +169,21 @@ jobs:
       - run:
           name: Run the node app.
           command: |
-            echo "🚀 Starting Node.js application..."
-            # Load environment variables directly (more reliable than export $(cat))
-            set -a
-            source feature.env
-            set +a
+            # Load environment and start app - use npm start which has bunyan as dependency
+            export PORT=3000
+            export HMPPS_AUTH_URL=http://localhost:9091/auth
+            export TOKEN_VERIFICATION_API_URL=http://localhost:9091/verification
+            export TOKEN_VERIFICATION_ENABLED=true
+            export NODE_ENV=development
+            export API_CLIENT_ID=clientid
+            export API_CLIENT_SECRET=clientsecret
+            export SYSTEM_CLIENT_ID=clientid
+            export SYSTEM_CLIENT_SECRET=clientsecret
+            export BASE_URL=
             
-            # Start the app directly instead of using the problematic npm script
-            echo "Starting app with loaded environment..."
-            node dist/server.js | bunyan -o short > app.log 2>&1 &
-            APP_PID=$!
-            echo "Application started with PID: $APP_PID"
-            echo $APP_PID > app.pid
+            # Use npm start which should have bunyan available via node_modules
+            npm start > app.log 2>&1 &
+            echo "App started with npm start"
           background: true
       - run:
           name: Wait for node app to start
