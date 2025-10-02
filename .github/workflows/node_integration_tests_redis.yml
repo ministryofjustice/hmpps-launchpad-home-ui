@@ -61,7 +61,13 @@ jobs:
           nohup java -jar wiremock.jar --port 9091 &
           nohup npm run start-feature &
           sleep 10
-          npx wait-on http://localhost:3000
+          echo "Waiting for server to be available at http://localhost:3000 ..."
+          npx wait-on --timeout 60000 http://localhost:3000
+          if [ $? -ne 0 ]; then
+            echo "Server did not start within 60 seconds. Failing the job."
+            exit 1
+          fi
+          echo "Server is up! Starting integration tests..."
           npm run int-test
       - name: upload results
         if: ${{ !cancelled() }}
