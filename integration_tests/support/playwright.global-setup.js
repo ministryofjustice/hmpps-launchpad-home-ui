@@ -94,7 +94,9 @@ module.exports = async function globalSetup() {
 
     await auth.default.stubSignIn()
     await auth.default.stubAuthUser()
+    await auth.default.stubAuthPing()
     await tokenVerification.default.stubVerifyToken()
+    await tokenVerification.default.stubTokenVerificationPing()
 
     // eslint-disable-next-line no-console
     console.log('✅ Basic WireMock stubs initialized')
