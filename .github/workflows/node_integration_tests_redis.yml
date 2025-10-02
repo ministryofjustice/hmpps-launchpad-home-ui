@@ -62,14 +62,14 @@ jobs:
           nohup npm run start-feature &
           sleep 10
           # Wait up to 90 seconds for the server to be ready
-          npx wait-on http://localhost:3000/health --timeout 90000
+          npx wait-on http://127.0.0.1:3000/ --timeout 90000
 
           # If wait-on fails, do a simple retry loop with curl (max 3 tries)
-          if ! curl -sf http://localhost:3000/health > /dev/null; then
+          if ! curl -sf http://127.0.0.1:3000/ > /dev/null; then
             echo "Initial wait-on failed, retrying manually..."
             for i in 1 2 3; do
               sleep 5
-              if curl -sf http://localhost:3000/health > /dev/null; then
+              if curl -sf http://127.0.0.1:3000/ > /dev/null; then
                 echo "Server became ready on retry $i"
                 break
               fi
