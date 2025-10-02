@@ -79,6 +79,42 @@ jobs:
             sleep 1
           done
 
+          # Set up basic wiremock stubs for health checks
+          echo "Setting up basic wiremock stubs..."
+          curl -X POST http://localhost:9091/__admin/mappings \
+            -H "Content-Type: application/json" \
+            -d '{
+              "request": {
+                "method": "GET",
+                "urlPattern": "/auth/health/ping"
+              },
+              "response": {
+                "status": 200,
+                "headers": {
+                  "Content-Type": "text/plain"
+                },
+                "body": "pong"
+              }
+            }'
+          
+          curl -X POST http://localhost:9091/__admin/mappings \
+            -H "Content-Type: application/json" \
+            -d '{
+              "request": {
+                "method": "GET", 
+                "urlPattern": "/verification/health/ping"
+              },
+              "response": {
+                "status": 200,
+                "headers": {
+                  "Content-Type": "text/plain"
+                },
+                "body": "pong"
+              }
+            }'
+          
+          echo "Wiremock stubs configured successfully"
+
           # Start the Node.js app
           echo "Starting Node.js app..."
           echo "Environment check before starting app:"
@@ -105,12 +141,14 @@ jobs:
               exit 1
             fi
             
-            # Test health endpoint from multiple interfaces
-            if curl -sf http://localhost:3000/health > /dev/null 2>&1 && \
-               curl -sf http://127.0.0.1:3000/health > /dev/null 2>&1 && \
-               curl -sf http://0.0.0.0:3000/health > /dev/null 2>&1; then
-              echo "Node.js app is ready after ${i} seconds on all interfaces"
+            # Test health endpoint and verify it's actually healthy
+            HEALTH_RESPONSE=$(curl -s http://localhost:3000/health)
+            if echo "$HEALTH_RESPONSE" | grep -q '"healthy":true'; then
+              echo "Node.js app is healthy after ${i} seconds"
+              echo "Health check response: $HEALTH_RESPONSE"
               break
+            elif echo "$HEALTH_RESPONSE" | grep -q '"healthy":false'; then
+              echo "Node.js app responding but unhealthy after ${i} seconds (will retry)"
             fi
             if [ "$i" -eq 60 ]; then
               echo "Node.js app failed to start within 60 seconds"
