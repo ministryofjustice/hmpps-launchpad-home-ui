@@ -18,6 +18,7 @@ generic-service:
     NOMIS_MAPPING_API_URL: 'https://nomis-sync-prisoner-mapping.hmpps.service.justice.gov.uk'
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth.hmpps.service.justice.gov.uk'
     GA4_SITE_ID: 'G-7M5BW140G4'
+    ENVIRONMENT_NAME: PROD
     AUDIT_SQS_QUEUE_URL: '' # required, but unused as auditing is disabled
 
   allowlist:
