@@ -116,7 +116,7 @@ jobs:
                 break
               fi
               echo "⏳ Waiting for app (attempt $i/30)..."
-              sleep 2
+              sleep 10
             done
       - run:
           name: integration tests
