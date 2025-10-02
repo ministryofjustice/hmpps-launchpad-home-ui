@@ -168,12 +168,37 @@ jobs:
             fi
       - run:
           name: Run the node app.
-          command: npm run start-feature
+          command: |
+            echo "🚀 Starting Node.js application..."
+            echo "Environment check:"
+            echo "NODE_ENV: ${NODE_ENV:-not set}"
+            echo "PORT: ${PORT:-not set}"
+            echo "Current directory: $(pwd)"
+            echo "Available scripts:"
+            npm run | grep start || echo "No start scripts found"
+            echo "Starting application with: npm run start-feature"
+            npm run start-feature > app.log 2>&1 &
+            APP_PID=$!
+            echo "Application started with PID: $APP_PID"
+            echo $APP_PID > app.pid
           background: true
       - run:
           name: Wait for node app to start
           command: |
             echo "Waiting for application to start..."
+            # Check if app process is still alive first
+            if [ -f app.pid ]; then
+              APP_PID=$(cat app.pid)
+              if kill -0 $APP_PID 2>/dev/null; then
+                echo "✅ App process (PID: $APP_PID) is still running"
+              else
+                echo "❌ App process (PID: $APP_PID) has died during startup!"
+                echo "App startup log:"
+                cat app.log || echo "No app log available"
+                exit 1
+              fi
+            fi
+            
             # Simple wait since stubs are already initialized
             APP_READY=false
             for i in {1..15}; do
@@ -192,10 +217,35 @@ jobs:
             
             if [ "$APP_READY" = false ]; then
               echo "❌ Application failed to start after 15 attempts"
-              echo "Checking what's running on port 3000:"
+              echo "🔍 Comprehensive app debugging:"
+              echo "Port 3000 check:"
               netstat -tlnp | grep :3000 || echo "No process on port 3000"
-              echo "Checking application logs:"
-              ps aux | grep node || echo "No node processes found"
+              echo "All listening ports:"
+              netstat -tlnp | head -10
+              echo "Node processes:"
+              ps aux | grep -E "node|npm" || echo "No node/npm processes found"
+              echo "Application directory contents:"
+              ls -la
+              echo "Package.json scripts:"
+              cat package.json | grep -A 10 '"scripts"' || echo "No scripts found"
+              echo "Application log (if available):"
+              if [ -f app.log ]; then
+                echo "App log content:"
+                cat app.log
+              else
+                echo "No app.log file found"
+              fi
+              echo "Process status:"
+              if [ -f app.pid ]; then
+                APP_PID=$(cat app.pid)
+                if kill -0 $APP_PID 2>/dev/null; then
+                  echo "App process (PID: $APP_PID) is still running but not responding"
+                else
+                  echo "App process (PID: $APP_PID) has died"
+                fi
+              else
+                echo "No app.pid file found"
+              fi
               exit 1
             fi
             
