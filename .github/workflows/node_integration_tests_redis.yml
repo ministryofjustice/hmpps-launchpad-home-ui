@@ -61,6 +61,7 @@ jobs:
           nohup java -jar wiremock.jar --port 9091 &
           nohup npm run start-feature &
           sleep 10
+          npx wait-on http://localhost:3000
           npm run int-test
       - name: upload results
         if: ${{ !cancelled() }}
