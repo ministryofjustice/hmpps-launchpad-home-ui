@@ -170,14 +170,14 @@ jobs:
           name: Run the node app.
           command: |
             echo "🚀 Starting Node.js application..."
-            echo "Environment check:"
-            echo "NODE_ENV: ${NODE_ENV:-not set}"
-            echo "PORT: ${PORT:-not set}"
-            echo "Current directory: $(pwd)"
-            echo "Available scripts:"
-            npm run | grep start || echo "No start scripts found"
-            echo "Starting application with: npm run start-feature"
-            npm run start-feature > app.log 2>&1 &
+            # Load environment variables directly (more reliable than export $(cat))
+            set -a
+            source feature.env
+            set +a
+            
+            # Start the app directly instead of using the problematic npm script
+            echo "Starting app with loaded environment..."
+            node dist/server.js | bunyan -o short > app.log 2>&1 &
             APP_PID=$!
             echo "Application started with PID: $APP_PID"
             echo $APP_PID > app.pid
