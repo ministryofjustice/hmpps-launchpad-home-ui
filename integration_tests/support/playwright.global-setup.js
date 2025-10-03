@@ -1,4 +1,5 @@
 const { chromium } = require('@playwright/test')
+const { execSync } = require('child_process')
 const fs = require('fs')
 
 module.exports = async function globalSetup() {
@@ -324,12 +325,43 @@ module.exports = async function globalSetup() {
     console.log(`❌ Final health check failed: ${finalError.message}`)
   }
 
+  // Also test the main page endpoint via fetch in CI
+  if (process.env.CI) {
+    try {
+      // eslint-disable-next-line no-console
+      console.log(`🔍 Testing main page endpoint via fetch...`)
+      const mainPageUrl = baseURL
+      const mainPageCheck = await fetch(mainPageUrl, {
+        redirect: 'manual', // Don't follow redirects to see what the app returns
+      })
+      // eslint-disable-next-line no-console
+      console.log(`📍 Main page fetch response: ${mainPageCheck.status} ${mainPageCheck.statusText}`)
+      if (mainPageCheck.status === 302) {
+        const location = mainPageCheck.headers.get('location')
+        // eslint-disable-next-line no-console
+        console.log(`🔄 Redirect location: ${location}`)
+      }
+    } catch (mainPageError) {
+      // eslint-disable-next-line no-console
+      console.log(`❌ Main page fetch failed: ${mainPageError.message}`)
+    }
+  }
+
   // eslint-disable-next-line no-console
   console.log(`🚀 Navigating to: ${baseURL}`)
   // eslint-disable-next-line no-console
   console.log(`🔍 Exact URL being navigated to: "${baseURL}"`)
 
   try {
+    // In CI, add an extra delay before navigation to ensure app is fully ready
+    if (process.env.CI) {
+      // eslint-disable-next-line no-console
+      console.log('⏳ CI environment: adding 5 second delay before navigation...')
+      await new Promise(resolve => {
+        setTimeout(resolve, 5000)
+      })
+    }
+
     await page.goto(`${baseURL}`, { timeout: 30000 })
 
     // Wait for the page to load and check what we actually got
@@ -460,6 +492,20 @@ module.exports = async function globalSetup() {
     // Additional debugging for CI
     // eslint-disable-next-line no-console
     console.log(`🔍 Debugging navigation failure:`)
+
+    // First check if the Node.js process is still running
+    if (process.env.CI) {
+      try {
+        const psOutput = execSync('ps aux | grep "node.*dist/server.js" | grep -v grep', { encoding: 'utf8' })
+        // eslint-disable-next-line no-console
+        console.log(`🔍 Node.js processes running:`)
+        // eslint-disable-next-line no-console
+        console.log(psOutput.trim() || '   None found')
+      } catch (psProcessError) {
+        // eslint-disable-next-line no-console
+        console.log(`🔍 No Node.js server processes found: ${psProcessError.message}`)
+      }
+    }
 
     // Test multiple URL variations
     const urlsToTest = [baseURL, 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://0.0.0.0:3000']

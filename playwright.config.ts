@@ -63,6 +63,9 @@ export default defineConfig({
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
             '--disable-renderer-backgrounding',
+            // Additional flags for CI containers
+            '--disable-features=TranslateUI',
+            '--disable-ipc-flooding-protection',
           ],
         }
       : undefined,
