@@ -182,11 +182,11 @@ jobs:
             HEALTH_RESPONSE=$(curl -s http://127.0.0.1:3000/health 2>&1)
             CURL_EXIT_CODE=$?
             
-            if [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy":true'; then
+            if [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy": true'; then
               echo "Node.js app is healthy after ${i} seconds"
               echo "Health check response: $HEALTH_RESPONSE"
               break
-            elif [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy":false'; then
+            elif [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy": false'; then
               echo "Node.js app responding but unhealthy after ${i} seconds (will retry)"
               echo "Health response: $HEALTH_RESPONSE"
             elif [ $CURL_EXIT_CODE -ne 0 ]; then
