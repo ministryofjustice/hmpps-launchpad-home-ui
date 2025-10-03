@@ -138,12 +138,14 @@ module.exports = async function globalSetup() {
     console.log(`⏳ Waiting for app health check (attempt ${appAttempts}/${maxAppAttempts})...`)
 
     try {
+      // Use 127.0.0.1 for consistency with service URLs in CI
+      const healthUrl = process.env.CI ? 'http://127.0.0.1:3000/health' : 'http://localhost:3000/health'
       // eslint-disable-next-line no-await-in-loop
-      const response = await fetch('http://localhost:3000/health')
+      const response = await fetch(healthUrl)
       if (response.ok) {
         appReady = true
         // eslint-disable-next-line no-console
-        console.log(`✅ Application health check passed after ${appAttempts} attempts`)
+        console.log(`✅ Application health check passed after ${appAttempts} attempts (using ${healthUrl})`)
 
         // Extra wait to ensure app is fully stable after health check
         // eslint-disable-next-line no-console
@@ -173,7 +175,8 @@ module.exports = async function globalSetup() {
 
   // Generate trusted hostnames from environment variables for security
   const getTrustedHosts = () => {
-    const hosts = ['localhost:3000'] // Always allow localhost for development
+    // Use 127.0.0.1 in CI for consistency, localhost for development
+    const hosts = process.env.CI ? ['127.0.0.1:3000'] : ['localhost:3000']
 
     // Add environment-specific hosts from environment variables
     if (process.env.DEV_INGRESS_URL) {
@@ -196,19 +199,22 @@ module.exports = async function globalSetup() {
 
   // Environment URL mapping using environment variables (secure approach)
   const getEnvironmentUrl = env => {
+    // Use 127.0.0.1 in CI for DNS consistency, localhost for development
+    const defaultUrl = process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000'
+    
     switch (env) {
       case 'test':
-        return process.env.TEST_INGRESS_URL || 'http://localhost:3000'
+        return process.env.TEST_INGRESS_URL || defaultUrl
       case 'dev':
-        return process.env.DEV_INGRESS_URL || 'http://localhost:3000'
+        return process.env.DEV_INGRESS_URL || defaultUrl
       case 'staging':
-        return process.env.STAGING_INGRESS_URL || 'http://localhost:3000'
+        return process.env.STAGING_INGRESS_URL || defaultUrl
       case 'preprod':
-        return process.env.PREPROD_INGRESS_URL || 'http://localhost:3000'
+        return process.env.PREPROD_INGRESS_URL || defaultUrl
       case 'prod':
-        return process.env.PROD_INGRESS_URL || 'http://localhost:3000'
+        return process.env.PROD_INGRESS_URL || defaultUrl
       default:
-        return process.env.INGRESS_URL || 'http://localhost:3000'
+        return process.env.INGRESS_URL || defaultUrl
     }
   }
 
@@ -225,7 +231,9 @@ module.exports = async function globalSetup() {
       const foundUrl = await previousPromise
       if (foundUrl) return foundUrl // Already found a working port
 
-      const testUrl = `http://localhost:${port}`
+      // Use 127.0.0.1 in CI for DNS consistency, localhost for development
+      const hostname = process.env.CI ? '127.0.0.1' : 'localhost'
+      const testUrl = `http://${hostname}:${port}`
       const testPage = await browser.newPage()
 
       try {
@@ -260,9 +268,11 @@ module.exports = async function globalSetup() {
       return result
     }
 
+    // Use 127.0.0.1 in CI for DNS consistency, localhost for development
+    const defaultUrl = process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000'
     // eslint-disable-next-line no-console
-    console.log('⚠️  No running app detected, defaulting to http://localhost:3000')
-    return 'http://localhost:3000'
+    console.log(`⚠️  No running app detected, defaulting to ${defaultUrl}`)
+    return defaultUrl
   }
 
   // eslint-disable-next-line no-console
@@ -299,13 +309,15 @@ module.exports = async function globalSetup() {
   // eslint-disable-next-line no-console
   console.log(`🔍 Final health check before navigation...`)
   try {
-    const finalHealthCheck = await fetch('http://localhost:3000/health')
+    // Use 127.0.0.1 in CI for consistency with service URLs
+    const finalHealthUrl = process.env.CI ? 'http://127.0.0.1:3000/health' : 'http://localhost:3000/health'
+    const finalHealthCheck = await fetch(finalHealthUrl)
     if (finalHealthCheck.ok) {
       // eslint-disable-next-line no-console
-      console.log(`✅ App still healthy immediately before navigation`)
+      console.log(`✅ App still healthy immediately before navigation (using ${finalHealthUrl})`)
     } else {
       // eslint-disable-next-line no-console
-      console.log(`⚠️ App health check returned ${finalHealthCheck.status}`)
+      console.log(`⚠️ App health check returned ${finalHealthCheck.status} (using ${finalHealthUrl})`)
     }
   } catch (finalError) {
     // eslint-disable-next-line no-console

@@ -19,13 +19,9 @@ const getEnvironmentUrl = (env: string): string => {
   }
 }
 
-// Determine base URL with priority: TEST_ENV > INGRESS_URL > default localhost
-let configBaseURL: string
-if (process.env.TEST_ENV) {
-  configBaseURL = getEnvironmentUrl(process.env.TEST_ENV)
-} else {
-  configBaseURL = process.env.INGRESS_URL || 'http://localhost:3000'
-}
+// Determine the base URL based on the context
+// Use 127.0.0.1 in CI for DNS consistency with service URLs
+let configBaseURL = process.env.INGRESS_URL || (process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000')
 
 // Validate base URL format
 if (!configBaseURL.startsWith('http://') && !configBaseURL.startsWith('https://')) {
