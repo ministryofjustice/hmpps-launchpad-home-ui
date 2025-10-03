@@ -145,7 +145,12 @@ jobs:
           echo "Started Node.js app with PID: $APP_PID"
           
           # Give app a moment to start
-          sleep 2
+          sleep 5
+          
+          # Test connectivity between app and wiremock while app is starting
+          echo "Testing connectivity from app's perspective..."
+          echo "Can reach wiremock auth: $(curl -s http://127.0.0.1:9091/auth/health/ping || echo "FAILED")"
+          echo "Can reach wiremock verification: $(curl -s http://127.0.0.1:9091/verification/health/ping || echo "FAILED")"
           
           # Check if process is still running
           if kill -0 $APP_PID 2>/dev/null; then
@@ -159,6 +164,11 @@ jobs:
           
           # Wait for the Node.js app to be ready (up to 60 seconds)
           echo "Waiting for Node.js app to be ready on port 3000..."
+          
+          # First, let's see what's in the server logs immediately
+          echo "=== Initial server logs (first 10 lines) ==="
+          head -n 10 server.log || echo "No server logs yet"
+          
           for i in {1..60}; do
             # Test if process is still running
             if ! kill -0 $APP_PID 2>/dev/null; then
@@ -185,6 +195,16 @@ jobs:
             else
               echo "Unexpected health response after ${i} seconds"
               echo "Response: $HEALTH_RESPONSE"
+            fi
+            
+            # Show progress every 10 seconds and check server logs
+            if [ $((i % 10)) -eq 0 ]; then
+              echo "=== Progress check at ${i} seconds ==="
+              echo "Process status: $(kill -0 $APP_PID 2>/dev/null && echo "running" || echo "dead")"
+              echo "Port status: $(netstat -tlnp | grep :3000 || echo "port not bound")"
+              echo "Recent server logs:"
+              tail -n 5 server.log || echo "No recent logs"
+              echo "========================"
             fi
             if [ "$i" -eq 60 ]; then
               echo "Node.js app failed to start within 60 seconds"
