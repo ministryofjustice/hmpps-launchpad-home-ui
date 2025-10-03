@@ -175,8 +175,8 @@ module.exports = async function globalSetup() {
 
   // Generate trusted hostnames from environment variables for security
   const getTrustedHosts = () => {
-    // Use 127.0.0.1 in CI for consistency, localhost for development
-    const hosts = process.env.CI ? ['127.0.0.1:3000'] : ['localhost:3000']
+    // Include both 127.0.0.1 and localhost for CI compatibility (auth redirects may use either)
+    const hosts = process.env.CI ? ['127.0.0.1:3000', 'localhost:3000'] : ['localhost:3000']
 
     // Add environment-specific hosts from environment variables
     if (process.env.DEV_INGRESS_URL) {
@@ -199,7 +199,7 @@ module.exports = async function globalSetup() {
 
   // Environment URL mapping using environment variables (secure approach)
   const getEnvironmentUrl = env => {
-    // Use 127.0.0.1 in CI for DNS consistency, localhost for development
+    // Use 127.0.0.1 in CI for DNS reliability, localhost for development
     const defaultUrl = process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000'
 
     switch (env) {
@@ -231,7 +231,7 @@ module.exports = async function globalSetup() {
       const foundUrl = await previousPromise
       if (foundUrl) return foundUrl // Already found a working port
 
-      // Use 127.0.0.1 in CI for DNS consistency, localhost for development
+      // Use 127.0.0.1 in CI for DNS reliability, localhost for development
       const hostname = process.env.CI ? '127.0.0.1' : 'localhost'
       const testUrl = `http://${hostname}:${port}`
       const testPage = await browser.newPage()
@@ -268,7 +268,7 @@ module.exports = async function globalSetup() {
       return result
     }
 
-    // Use 127.0.0.1 in CI for DNS consistency, localhost for development
+    // Use 127.0.0.1 in CI for DNS reliability, localhost for development
     const defaultUrl = process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000'
     // eslint-disable-next-line no-console
     console.log(`⚠️  No running app detected, defaulting to ${defaultUrl}`)

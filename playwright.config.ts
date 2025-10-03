@@ -6,7 +6,7 @@ import path from 'path'
 dotenv.config()
 
 // Determine the base URL based on the context
-// Use 127.0.0.1 in CI for DNS consistency with service URLs
+// Use 127.0.0.1 in CI for DNS reliability, localhost for development
 let configBaseURL = process.env.INGRESS_URL || (process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000')
 
 // Validate base URL format
