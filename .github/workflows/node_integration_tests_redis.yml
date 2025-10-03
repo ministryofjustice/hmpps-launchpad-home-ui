@@ -66,7 +66,7 @@ jobs:
           # Wait for wiremock to be ready (up to 30 seconds)
           echo "Waiting for wiremock to be ready..."
           for i in {1..30}; do
-            if curl -sf http://localhost:9091/__admin/health > /dev/null 2>&1; then
+            if curl -sf http://127.0.0.1:9091/__admin/health > /dev/null 2>&1; then
               echo "Wiremock is ready after ${i} seconds"
               break
             fi
@@ -81,7 +81,7 @@ jobs:
 
           # Set up basic wiremock stubs for health checks
           echo "Setting up basic wiremock stubs..."
-          curl -X POST http://localhost:9091/__admin/mappings \
+          curl -X POST http://127.0.0.1:9091/__admin/mappings \
             -H "Content-Type: application/json" \
             -d '{
               "request": {
@@ -97,7 +97,7 @@ jobs:
               }
             }'
           
-          curl -X POST http://localhost:9091/__admin/mappings \
+          curl -X POST http://127.0.0.1:9091/__admin/mappings \
             -H "Content-Type: application/json" \
             -d '{
               "request": {
@@ -117,8 +117,8 @@ jobs:
           
           # Verify stubs are working
           echo "Testing wiremock stubs..."
-          AUTH_PING=$(curl -s http://localhost:9091/auth/health/ping)
-          VERIFICATION_PING=$(curl -s http://localhost:9091/verification/health/ping)
+          AUTH_PING=$(curl -s http://127.0.0.1:9091/auth/health/ping)
+          VERIFICATION_PING=$(curl -s http://127.0.0.1:9091/verification/health/ping)
           
           if [ "$AUTH_PING" = "pong" ] && [ "$VERIFICATION_PING" = "pong" ]; then
             echo "✅ Wiremock stubs verified working"
@@ -169,7 +169,7 @@ jobs:
             fi
             
             # Test health endpoint and verify it's actually healthy
-            HEALTH_RESPONSE=$(curl -s http://localhost:3000/health 2>&1)
+            HEALTH_RESPONSE=$(curl -s http://127.0.0.1:3000/health 2>&1)
             CURL_EXIT_CODE=$?
             
             if [ $CURL_EXIT_CODE -eq 0 ] && echo "$HEALTH_RESPONSE" | grep -q '"healthy":true'; then
@@ -195,8 +195,8 @@ jobs:
               echo "=== Network status ==="
               netstat -tlnp | grep -E ":3000|:9091" || echo "No processes on ports 3000 or 9091"
               echo "=== Testing different connection methods ==="
-              curl -v http://localhost:3000/health || echo "localhost:3000 failed"
-              curl -v http://127.0.0.1:3000/health || echo "127.0.0.1:3000 failed"  
+              curl -v http://127.0.0.1:3000/health || echo "127.0.0.1:3000 failed"
+              curl -v http://localhost:3000/health || echo "localhost:3000 failed"  
               curl -v http://0.0.0.0:3000/health || echo "0.0.0.0:3000 failed"
               exit 1
             fi
