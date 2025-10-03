@@ -45,25 +45,27 @@ export default defineConfig({
     navigationTimeout: 60000, // Increased timeout for slower CI environments
     trace: 'retain-on-failure',
     // Browser launch options for CI environments
-    launchOptions: process.env.CI ? {
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-extensions',
-        '--disable-gpu',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor',
-        '--enable-local-file-accesses',
-        '--allow-running-insecure-content',
-        '--ignore-certificate-errors',
-        '--ignore-ssl-errors',
-        '--ignore-certificate-errors-spki-list',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding'
-      ]
-    } : undefined,
+    launchOptions: process.env.CI
+      ? {
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-extensions',
+            '--disable-gpu',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--enable-local-file-accesses',
+            '--allow-running-insecure-content',
+            '--ignore-certificate-errors',
+            '--ignore-ssl-errors',
+            '--ignore-certificate-errors-spki-list',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+          ],
+        }
+      : undefined,
   },
 
   timeout: 60000,
