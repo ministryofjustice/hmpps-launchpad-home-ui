@@ -201,7 +201,7 @@ module.exports = async function globalSetup() {
   const getEnvironmentUrl = env => {
     // Use 127.0.0.1 in CI for DNS consistency, localhost for development
     const defaultUrl = process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000'
-    
+
     switch (env) {
       case 'test':
         return process.env.TEST_INGRESS_URL || defaultUrl

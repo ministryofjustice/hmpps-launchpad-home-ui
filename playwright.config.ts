@@ -5,20 +5,6 @@ import path from 'path'
 
 dotenv.config()
 
-// Environment URL mapping using environment variables (secure approach)
-const getEnvironmentUrl = (env: string): string => {
-  switch (env) {
-    case 'test':
-      return process.env.TEST_INGRESS_URL || 'http://localhost:3000'
-    case 'dev':
-      return process.env.DEV_INGRESS_URL || 'http://localhost:3000'
-    case 'staging':
-      return process.env.STAGING_INGRESS_URL || 'http://localhost:3000'
-    default:
-      return process.env.INGRESS_URL || 'http://localhost:3000'
-  }
-}
-
 // Determine the base URL based on the context
 // Use 127.0.0.1 in CI for DNS consistency with service URLs
 let configBaseURL = process.env.INGRESS_URL || (process.env.CI ? 'http://127.0.0.1:3000' : 'http://localhost:3000')
