@@ -57,6 +57,8 @@ jobs:
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           HOST: 0.0.0.0
           PORT: 3000
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
         run: |
           # Start wiremock and wait for it to be ready
           echo "Starting wiremock on port 9091..."
