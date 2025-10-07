@@ -3,32 +3,6 @@ const { execSync } = require('child_process')
 const fs = require('fs')
 
 module.exports = async function globalSetup() {
-  // 🏗️  CI Service Startup Script
-  // ===============================
-  // eslint-disable-next-line no-console
-  console.log('🚀 Starting CI service health checks...')
-
-  // Enhanced CI Environment Debugging
-  // eslint-disable-next-line no-console
-  console.log('=== CI Environment Debug Information ===')
-  // eslint-disable-next-line no-console
-  console.log(`🖥️  CI: ${process.env.CI || 'false'}`)
-  // eslint-disable-next-line no-console
-  console.log(`🌍 NODE_ENV: ${process.env.NODE_ENV || 'undefined'}`)
-  // eslint-disable-next-line no-console
-  console.log(`🔧 TEST_ENV: ${process.env.TEST_ENV || 'undefined'}`)
-  // eslint-disable-next-line no-console
-  console.log(`📍 Working Directory: ${process.cwd()}`)
-  // eslint-disable-next-line no-console
-  console.log(`🏠 HOME: ${process.env.HOME || 'undefined'}`)
-  // eslint-disable-next-line no-console
-  console.log(`🌐 HOSTNAME: ${process.env.HOSTNAME || 'undefined'}`)
-  // eslint-disable-next-line no-console
-  console.log(`🐳 DOCKER: ${process.env.DOCKER ? 'true' : 'false'}`)
-  // eslint-disable-next-line no-console
-  console.log('=============================================')
-  // eslint-disable-next-line no-console
-  console.log('🔍 Checking WireMock...')
 
   // Wait for WireMock to be ready
   const maxAttempts = 15

@@ -25,7 +25,9 @@
     "test": "jest",
     "test:ci": "jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
-    "int-test": "npx playwright install-deps && npx playwright install && npx playwright test",
+    "int-test": "npx playwright test",
+    "int-test-ui": "npx playwright test --ui",
+    "int-test-init:ci": "npx playwright install",
     "clean": "rm -rf dist build node_modules stylesheets",
     "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test",
     "test:playwright:rerun-failed": "PW_TEST_PRELOAD=ts-node/register npx playwright test --last-failed"
