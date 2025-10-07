@@ -17,8 +17,8 @@
   },
   "include": [
     "playwright/**/*.ts",
-    "support/playwright.global-setup.js", 
-    "support/playwright.global-teardown.js"
+    "playwright/playwright.global-setup.ts", 
+    "playwright/playwright.global-teardown.ts"
   ],
   "exclude": [
     "e2e/**/*",

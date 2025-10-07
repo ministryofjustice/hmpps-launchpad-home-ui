@@ -27,8 +27,8 @@ if (process.env.CI || process.env.DEBUG) {
 export default defineConfig({
   workers: 1, // Always use 1 worker to avoid race conditions and ensure shared state
   fullyParallel: false, // Disable parallel execution to maintain service stability
-  globalSetup: path.resolve(__dirname, 'integration_tests/support/playwright.global-setup.js'),
-  globalTeardown: path.resolve(__dirname, 'integration_tests/support/playwright.global-teardown.js'),
+  globalSetup: path.resolve(__dirname, 'integration_tests/playwright/playwright.global-setup.ts'),
+  globalTeardown: path.resolve(__dirname, 'integration_tests/playwright/playwright.global-teardown.ts'),
 
   outputDir: 'integration_tests/screenshots',
 

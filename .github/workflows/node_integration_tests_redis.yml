@@ -45,6 +45,13 @@ jobs:
         run: |
           curl -o wiremock.jar https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.9.1/wiremock-standalone-3.9.1.jar
       - name: Prepare and run integration tests
+        env:
+          MS_USERNAME: ${{ secrets.MS_USERNAME }}
+          MS_PASSWORD: ${{ secrets.MS_PASSWORD }}
+          SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
+          SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
+          LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
+          LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
         id: integration-tests
         shell: bash
         run: |
