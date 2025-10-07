@@ -8,6 +8,7 @@ export default [
       'integration_tests/screenshots/**/*',
       'playwright-report/**/*',
       'test-results/**/*',
+      'test_results/**/*',
     ],
   }),
   {

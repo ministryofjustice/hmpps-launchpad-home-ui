@@ -3,7 +3,6 @@ const { execSync } = require('child_process')
 const fs = require('fs')
 
 module.exports = async function globalSetup() {
-
   // Wait for WireMock to be ready
   const maxAttempts = 15
   let attempts = 0
