@@ -5,6 +5,14 @@ on:
       - '**'
   workflow_dispatch:
     inputs:
+      test_environment:
+        description: Environment to run e2e tests against (staging validates prod-ready code)
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
       additional_docker_tag:
         description: Additional docker tag that can be used to specify stable or testing tags
         required: false
@@ -32,10 +40,33 @@ jobs:
     needs: [node_build]
     secrets: inherit
   node_integration_tests:
-    name: node integration tests
-    uses: ./.github/workflows/node_integration_tests_redis.yml # LOCAL_VERSION
+    name: End-to-end tests (Playwright)
+    # Using existing self-hosted runner within HMPPS network (bypasses VPN restrictions)
+    runs-on: [self-hosted, linux]
     needs: [node_build]
-    secrets: inherit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Determine test environment
+        id: test-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "env=${{ inputs.test_environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "env=staging" >> $GITHUB_OUTPUT
+          else
+            echo "env=dev" >> $GITHUB_OUTPUT
+          fi
+      - run: npx playwright test
+        env:
+          LAUNCHPAD_URL: ${{ steps.test-env.outputs.env == 'staging' && secrets.LAUNCHPAD_URL_STAGING || secrets.LAUNCHPAD_URL_DEV }}
+          MS_USERNAME: ${{ secrets.MS_USERNAME }}
+          MS_PASSWORD: ${{ secrets.MS_PASSWORD }}
   helm_lint:
     strategy:
       matrix:
@@ -49,8 +80,8 @@ jobs:
     name: Build docker image from hmpps-github-actions
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2 # WORKFLOW_VERSION
     needs:
-      - node_integration_tests
       - node_unit_tests
+      - node_integration_tests
     with:
       docker_registry: 'ghcr.io'
       registry_org: 'ministryofjustice'

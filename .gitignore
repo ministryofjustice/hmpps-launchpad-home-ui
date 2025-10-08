@@ -138,3 +138,9 @@ appsettings.json
 # Ignore Playwright and other test results
 /test-results/
 **/test-results/
+test_results/
+**/test_results/
+playwright-report/
+**/playwright-report/
+storageState.json
+**/storageState.json

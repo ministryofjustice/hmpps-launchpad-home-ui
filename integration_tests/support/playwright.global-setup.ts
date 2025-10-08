@@ -1,9 +1,9 @@
-const { chromium } = require('@playwright/test')
+import { chromium } from '@playwright/test'
 
-module.exports = async function globalSetup() {
+export default async function globalSetup() {
   const browser = await chromium.launch()
   const page = await browser.newPage()
-  await page.goto(`${process.env.BASE_URL}/login`)
+  await page.goto(`${process.env.LAUNCHPAD_URL}/login`)
   await page.fill('input#i0116', process.env.MS_USERNAME)
   await page.click('button:has-text("Next"), input#idSIButton9')
   await page.fill('input#i0118', process.env.MS_PASSWORD)

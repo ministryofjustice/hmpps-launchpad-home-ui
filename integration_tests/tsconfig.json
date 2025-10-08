@@ -7,5 +7,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "support/playwright.global-setup.js", "support/playwright.global-teardown.js"]
+  "include": ["**/*.ts", "support/playwright.global-setup.ts", "support/playwright.global-teardown.ts"]
 }
