@@ -159,6 +159,7 @@ export default {
       agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
     },
     audit: {
+      enabled: get('AUDIT_ENABLED', 'false', requiredInProduction),
       serviceName: get('AUDIT_SERVICE_NAME', serviceName, requiredInProduction),
     },
   },

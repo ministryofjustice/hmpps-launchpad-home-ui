@@ -29,15 +29,17 @@ export declare class AuditService {
 
 export const auditService: AuditService = {
   audit: async ({ what, idToken, details }: AuditEvent) => {
-    await auditClient.sendAuditMessage({
-      action: what,
-      who: idToken.sub,
-      service: config.apis.audit.serviceName,
-      details: JSON.stringify({
-        ...details,
-        bookingId: idToken.booking.id,
-        agencyId: idToken.establishment.agency_id,
-      }),
-    })
+    if (config.apis.audit.enabled === 'true') {
+      await auditClient.sendAuditMessage({
+        action: what,
+        who: idToken.sub,
+        service: config.apis.audit.serviceName,
+        details: JSON.stringify({
+          ...details,
+          bookingId: idToken.booking.id,
+          agencyId: idToken.establishment.agency_id,
+        }),
+      })
+    }
   },
 }
