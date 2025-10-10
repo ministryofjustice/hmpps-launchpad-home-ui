@@ -15,8 +15,8 @@
     "build": "npm run compile-sass && tsc && npm run copy-views",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
     "start:dev": "concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\" \"npm run watch-sass\"",
-    "start-feature": "export $(cat feature.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
-    "watch-node-feature": "export $(cat feature.env) && nodemon --watch dist/ $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
+    "start-feature": "export $(cat feature.env) && export HOST=${HOST:-0.0.0.0} && export PORT=${PORT:-3000} && node ${NODE_DEBUG_OPTION:-} dist/server.js | bunyan -o short",
+    "watch-node-feature": "export $(cat feature.env) && nodemon --watch dist/ ${NODE_DEBUG_OPTION:-} dist/server.js | bunyan -o short",
     "start-feature:dev": "concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node-feature\" \"npm run watch-sass\"",
     "record-build-info": "node ./bin/record-build-info",
     "lint": "eslint . --cache --max-warnings 0",
@@ -25,10 +25,12 @@
     "test": "jest",
     "test:ci": "jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
-    "int-test": "cypress run --config video=false",
-    "int-test-ui": "cypress open",
+    "int-test": "npx playwright test",
+    "int-test-ui": "npx playwright test --ui",
+    "int-test-init:ci": "npx playwright install",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test"
+    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test",
+    "test:playwright:rerun-failed": "PW_TEST_PRELOAD=ts-node/register npx playwright test --last-failed"
   },
   "engines": {
     "node": "^22",
