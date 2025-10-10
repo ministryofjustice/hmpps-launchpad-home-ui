@@ -1,5 +1,6 @@
 import { auditService as auditClient } from '@ministryofjustice/hmpps-audit-client'
 import { AUDIT_EVENTS, auditService } from './auditService'
+import config from '../../config'
 
 const clientSpy = jest.spyOn(auditClient, 'sendAuditMessage')
 const idToken = { sub: 'user', booking: { id: '1' }, establishment: { agency_id: '2' } }
@@ -12,7 +13,15 @@ describe('auditService', () => {
       clientSpy.mockResolvedValue()
     })
 
-    it('should send an audit using hmpps audit client', () => {
+    it('should not send an audit using hmpps audit client if audit.enabled is false', () => {
+      config.apis.audit.enabled = 'false'
+      auditService.audit({ what: AUDIT_EVENTS.VIEW_HOMEPAGE, idToken })
+
+      expect(clientSpy).toHaveBeenCalledTimes(0)
+    })
+
+    it('should send an audit using hmpps audit client if audit enabled is true', () => {
+      config.apis.audit.enabled = 'true'
       auditService.audit({ what: AUDIT_EVENTS.VIEW_HOMEPAGE, idToken })
 
       expect(clientSpy).toHaveBeenCalledTimes(1)
@@ -28,6 +37,8 @@ describe('auditService', () => {
     })
 
     it('should include any additional details', () => {
+      config.apis.audit.enabled = 'true'
+
       auditService.audit({ what: AUDIT_EVENTS.VIEW_HOMEPAGE, idToken, details: { page: '1', sort: 'asc' } })
 
       expect(clientSpy).toHaveBeenCalledTimes(1)
