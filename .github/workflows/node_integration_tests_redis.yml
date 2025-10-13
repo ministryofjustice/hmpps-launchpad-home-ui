@@ -48,9 +48,32 @@ jobs:
         id: integration-tests
         shell: bash
         run: |
+          # Start Wiremock in background
           nohup java -jar wiremock.jar --port 9091 &
+          echo "Wiremock started on port 9091"
+          
+          # Start the application in background
           nohup npm run start-feature &
-          sleep 5
+          echo "Application starting..."
+          
+          # Wait for services to be ready
+          echo "Waiting for application to be ready..."
+          timeout 60 bash -c 'until curl -f http://localhost:3000/ping > /dev/null 2>&1; do sleep 2; done' || {
+            echo "Application failed to start within 60 seconds"
+            echo "Application logs:"
+            pkill -f "npm run start-feature" || true
+            exit 1
+          }
+          
+          echo "Waiting for Wiremock to be ready..."
+          timeout 30 bash -c 'until curl -f http://localhost:9091/__admin > /dev/null 2>&1; do sleep 1; done' || {
+            echo "Wiremock failed to start within 30 seconds"
+            echo "Checking if Wiremock is running..."
+            ps aux | grep wiremock || true
+            exit 1
+          }
+          
+          echo "All services ready, running tests..."
           npm run int-test
       - name: upload results
         if: ${{ !cancelled() }}

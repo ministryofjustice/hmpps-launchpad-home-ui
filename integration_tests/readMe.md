@@ -1,20 +1,22 @@
 # Playwright E2E Testing
 
-This directory contains Playwright end-to-end tests with support for multiple environments.
+This directory contains Playwright end-to-end tests with Wiremock-based authentication bypass.
+
+## Authentication Approach
+
+**Authentication is bypassed using Wiremock stubs** - no actual Microsoft SSO login is required for testing. The global setup configures Wiremock to mock all authentication endpoints, allowing tests to access protected routes directly.
 
 ## Environment Setup
 
 Set up your `.env` file in the project root with the required environment variables:
 
 ```bash
-# Authentication (required)
-MS_USERNAME=your-test-account@justice.gov.uk
-MS_PASSWORD=your-secure-password
-
 # Environment-specific URLs (optional - defaults to localhost:3000)
 TEST_INGRESS_URL=http://localhost:3000
 DEV_INGRESS_URL=
 STAGING_INGRESS_URL=
+
+# Note: MS_USERNAME/MS_PASSWORD no longer required due to authentication bypass
 ```
 
 ## Local Development Testing
@@ -82,9 +84,9 @@ playwright/
 The test suite includes:
 
 ### Health Checks
-- Basic connectivity and authentication
+- Basic connectivity and application health
 - Environment-specific URL resolution
-- Microsoft SSO integration
+- Wiremock-based authentication bypass
 
 ### Profile Functionality
 - User profile management and navigation

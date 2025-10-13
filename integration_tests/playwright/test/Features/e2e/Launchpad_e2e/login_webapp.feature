@@ -1,6 +1,6 @@
-Feature: Microsoft SSO Login
+Feature: Authentication Bypass
 
-  Scenario: User logs in via Microsoft SSO
-    Given the user is on the login page
-    When the user logs in with valid Microsoft SSO credentials
-    Then the user should be redirected to the home page and be authenticated
+  Scenario: User can access application with bypassed authentication
+    Given the authentication is bypassed with Wiremock stubs
+    When the user navigates to the home page
+    Then the user should have access to the application without login
