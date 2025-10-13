@@ -22,5 +22,6 @@ export default defineConfig({
     ['junit', { outputFile: 'test-results/results.xml' }],
     ...(process.env.CI ? [['github'] as const] : []), // GitHub Actions annotations in CI
   ],
+  outputDir: 'test-results',
   testDir: './integration_tests/playwright/test/Features/e2e',
 })
