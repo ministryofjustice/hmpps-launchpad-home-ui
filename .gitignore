@@ -138,3 +138,26 @@ appsettings.json
 # Ignore Playwright and other test results
 /test-results/
 **/test-results/
+
+# Playwright Reports and Artifacts
+playwright-report/
+**/playwright-report/
+test-results/
+**/test-results/
+playwright/.cache/
+**/playwright/.cache/
+
+# Playwright browser downloads
+/ms-playwright/
+
+# Playwright traces, videos, and screenshots (generated during test runs)
+**/trace.zip
+**/video.webm
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/error-context.md
+
+# Storage state files (if using authentication state)
+storageState.json
+**/storageState.json
