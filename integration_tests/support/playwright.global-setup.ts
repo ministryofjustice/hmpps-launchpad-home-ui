@@ -10,8 +10,11 @@ export default async function globalSetup() {
     try {
       // Setup authentication bypass stubs for Wiremock
       // These stubs allow tests to access protected routes without actual login
+      // eslint-disable-next-line no-await-in-loop
       await auth.stubAuthPing()
+      // eslint-disable-next-line no-await-in-loop
       await auth.stubSignIn()
+      // eslint-disable-next-line no-await-in-loop
       await auth.stubAuthUser('Test User')
 
       // eslint-disable-next-line no-console
@@ -27,11 +30,13 @@ export default async function globalSetup() {
         console.log('ℹ Continuing without global Wiremock stubs - individual tests will set up auth')
         return
       }
-      
+
       // eslint-disable-next-line no-console
       console.log(`ℹ Wiremock not ready yet, retrying... (${retries}/${maxRetries})`)
       // eslint-disable-next-line no-await-in-loop
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise(resolve => {
+        setTimeout(resolve, 2000)
+      })
     }
   }
 }
