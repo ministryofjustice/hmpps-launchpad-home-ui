@@ -15,7 +15,7 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   timeout: 30000,
-  retries: process.env.CI ? 3 : 2, // More retries in CI
+  retries: process.env.CI ? 1 : 1, // More retries in CI
   reporter: [
     ['html', { open: 'never', outputFolder: 'playwright-report' }],
     ['list'],
