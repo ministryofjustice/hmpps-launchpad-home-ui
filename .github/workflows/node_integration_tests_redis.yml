@@ -47,6 +47,10 @@ jobs:
       - name: Prepare and run integration tests
         id: integration-tests
         shell: bash
+        env:
+          LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
+          LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
+          LAUNCHPAD_AUTH_URL: ${{ secrets.LAUNCHPAD_AUTH_URL }}
         run: |
           # Start Wiremock in background
           echo "Starting Wiremock..."
