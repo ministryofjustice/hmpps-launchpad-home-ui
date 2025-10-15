@@ -51,6 +51,10 @@ jobs:
           LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
           LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
           LAUNCHPAD_AUTH_URL: ${{ secrets.LAUNCHPAD_AUTH_URL }}
+          HMPPS_AUTH_URL: ${{ secrets.HMPPS_AUTH_URL }}
+          PRISON_API_URL: ${{ secrets.PRISON_API_URL }}
+          SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
+          SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
         run: |
           # Start Wiremock in background
           echo "Starting Wiremock..."
