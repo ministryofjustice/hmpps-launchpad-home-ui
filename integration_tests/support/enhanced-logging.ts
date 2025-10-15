@@ -1,12 +1,17 @@
-import { test } from '@playwright/test'
+import { Page, TestInfo } from '@playwright/test'
 
 /**
- * Global test hooks for enhanced CI logging
- * This file sets up logging that captures navigation attempts, errors, and debug information
+ * Enhanced logging setup for CI debugging
+ * This file provides functions to set up comprehensive logging for page events and navigation
  */
 
-// Global beforeEach hook to set up enhanced logging for each test
-test.beforeEach(async ({ page }, testInfo) => {
+// Helper function to check if running in CI
+export function isRunningInCI(): boolean {
+  return process.env.CI === 'true'
+}
+
+// Function to set up enhanced logging for a page
+export function setupEnhancedLogging(page: Page, testInfo: TestInfo) {
   const isCI = process.env.CI === 'true'
   const testName = testInfo.title
 
@@ -57,13 +62,6 @@ test.beforeEach(async ({ page }, testInfo) => {
   page.on('framenavigated', frame => {
     if (frame === page.mainFrame()) {
       log(`🚀 Page navigated to: ${frame.url()}`)
-    }
-  })
-
-  // Log navigation starts
-  page.on('framenavigated', frame => {
-    if (frame === page.mainFrame()) {
-      log(`🧭 Navigation started to: ${frame.url()}`)
     }
   })
 
@@ -129,80 +127,63 @@ test.beforeEach(async ({ page }, testInfo) => {
 
   // Add initial page state logging
   log(`📄 Initial page URL: ${page.url()}`)
-  log(`🎭 User Agent: ${await page.evaluate(() => navigator.userAgent)}`)
 
   // Log viewport size
   const viewportSize = page.viewportSize()
   if (viewportSize) {
     log(`📐 Viewport: ${viewportSize.width}x${viewportSize.height}`)
   }
-})
 
-// Global afterEach hook to log test completion and capture final state
-test.afterEach(async ({ page }, testInfo) => {
-  const isCI = process.env.CI === 'true'
-  const testName = testInfo.title
-  const { status } = testInfo
+  return {
+    log,
+    async logFinalState() {
+      // Log final page state
+      try {
+        const finalUrl = page.url()
+        log(`📍 Final page URL: ${finalUrl}`)
 
-  const log = (message: string, level: 'INFO' | 'ERROR' | 'WARN' = 'INFO') => {
-    const timestamp = new Date().toISOString()
-    const prefix = `[PLAYWRIGHT-${level}] [${timestamp}] [${testName}]`
-
-    if (isCI) {
-      // eslint-disable-next-line no-console
-      console.log(`${prefix} ${message}`)
-    } else if (level === 'ERROR') {
-      // eslint-disable-next-line no-console
-      console.error(`${prefix} ${message}`)
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(`${prefix} ${message}`)
-    }
-  }
-
-  // Log final page state
-  try {
-    const finalUrl = page.url()
-    log(`📍 Final page URL: ${finalUrl}`)
-
-    // Log page title if available
-    const title = await page.title().catch(() => 'Unknown')
-    log(`📝 Final page title: "${title}"`)
-  } catch (error) {
-    log(`⚠️  Could not get final page state: ${error.message}`, 'WARN')
-  }
-
-  // Log test completion with status
-  let statusEmoji = '⏭️ '
-  if (status === 'passed') {
-    statusEmoji = '✅'
-  } else if (status === 'failed') {
-    statusEmoji = '❌'
-  }
-  log(`${statusEmoji} Test ${status}: ${testName}`)
-
-  // Log duration
-  const { duration } = testInfo
-  log(`⏱️  Test duration: ${duration}ms`)
-
-  // If test failed, log additional debugging information
-  if (status === 'failed' && testInfo.errors.length > 0) {
-    log(`🔍 Test failed with ${testInfo.errors.length} error(s):`, 'ERROR')
-    testInfo.errors.forEach((error, index) => {
-      log(`   Error ${index + 1}: ${error.message}`, 'ERROR')
-      if (error.stack) {
-        // Log first few lines of stack trace
-        const stackLines = error.stack.split('\n').slice(0, 5).join('\n')
-        log(`   Stack: ${stackLines}`, 'ERROR')
+        // Log page title if available
+        const title = await page.title().catch(() => 'Unknown')
+        log(`📝 Final page title: "${title}"`)
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        log(`⚠️  Could not get final page state: ${errorMessage}`, 'WARN')
       }
-    })
-  }
 
-  // Log attachments if any were created
-  if (testInfo.attachments.length > 0) {
-    log(`📎 Test attachments: ${testInfo.attachments.length}`)
-    testInfo.attachments.forEach((attachment, index) => {
-      log(`   ${index + 1}. ${attachment.name} (${attachment.contentType})`)
-    })
+      // Log test completion with status
+      let statusEmoji = '⏭️ '
+      const { status } = testInfo
+      if (status === 'passed') {
+        statusEmoji = '✅'
+      } else if (status === 'failed') {
+        statusEmoji = '❌'
+      }
+      log(`${statusEmoji} Test ${status}: ${testName}`)
+
+      // Log duration
+      const { duration } = testInfo
+      log(`⏱️  Test duration: ${duration}ms`)
+
+      // If test failed, log additional debugging information
+      if (status === 'failed' && testInfo.errors.length > 0) {
+        log(`🔍 Test failed with ${testInfo.errors.length} error(s):`, 'ERROR')
+        testInfo.errors.forEach((error, index) => {
+          log(`   Error ${index + 1}: ${error.message}`, 'ERROR')
+          if (error.stack) {
+            // Log first few lines of stack trace
+            const stackLines = error.stack.split('\n').slice(0, 5).join('\n')
+            log(`   Stack: ${stackLines}`, 'ERROR')
+          }
+        })
+      }
+
+      // Log attachments if any were created
+      if (testInfo.attachments.length > 0) {
+        log(`📎 Test attachments: ${testInfo.attachments.length}`)
+        testInfo.attachments.forEach((attachment, index) => {
+          log(`   ${index + 1}. ${attachment.name} (${attachment.contentType})`)
+        })
+      }
+    },
   }
-})
+}

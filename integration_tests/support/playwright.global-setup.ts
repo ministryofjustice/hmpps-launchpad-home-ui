@@ -1,8 +1,5 @@
 import auth from '../mockApis/auth'
 
-// Import global hooks to ensure they are loaded
-import './global-hooks'
-
 export default async function globalSetup() {
   // Set up Wiremock authentication bypass stubs
   // This replaces Microsoft SSO with mock authentication for testing
