@@ -55,6 +55,8 @@ jobs:
           PRISON_API_URL: ${{ secrets.PRISON_API_URL }}
           SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
           SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
+          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          AUDIT_ENABLED: ${{ secrets.AUDIT_ENABLED }}
         run: |
           # Start Wiremock in background
           echo "Starting Wiremock..."
