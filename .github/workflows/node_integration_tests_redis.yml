@@ -115,83 +115,18 @@ jobs:
           sleep 5
           
           echo "🧪 Running integration tests..."
-          
-          # Set additional debugging environment variables for enhanced logging
-          export DEBUG=pw:*
-          export PLAYWRIGHT_LOG_LEVEL=info
-          export NODE_ENV=test
-          export CI=true
-          
-          # Run tests with enhanced output capture
-          npm run int-test 2>&1 | tee integration_test_output.log
-          TEST_EXIT_CODE=${PIPESTATUS[0]}
-          
-          echo "📊 Integration test run completed with exit code: $TEST_EXIT_CODE"
-          
-          # Display summary of test output for quick CI debugging
-          if [ -f "integration_test_output.log" ]; then
-            echo "🔍 Test output summary (last 50 lines):"
-            tail -50 integration_test_output.log
-            
-            # Look for specific error patterns and highlight them
-            echo "❌ Detected errors and failures:"
-            grep -i "error\|failed\|timeout\|crash" integration_test_output.log | head -20 || echo "No obvious errors found in logs"
-            
-            # Look for navigation URLs
-            echo "🧭 Navigation attempts detected:"
-            grep -i "navigat\|goto\|url" integration_test_output.log | head -10 || echo "No navigation logs found"
-          fi
-          
-          # Exit with the same code as the test run
-          exit $TEST_EXIT_CODE
+          npm run int-test
       - name: Check generated reports and screenshots
         if: ${{ !cancelled() }}
         run: |
           echo "📊 Checking for generated reports and test artifacts..."
-          
-          # Display comprehensive log information
-          if [ -f "integration_test_output.log" ]; then
-            echo "📝 Integration test log file size: $(wc -l < integration_test_output.log) lines"
-            
-            # Show critical errors from the test run
-            echo "🚨 Critical errors from test run:"
-            grep -i "error\|exception\|crash\|timeout" integration_test_output.log | tail -20 || echo "No critical errors found"
-            
-            # Show all navigation attempts
-            echo "🗺️  All navigation attempts:"
-            grep -i "navigat\|goto\|url.*http" integration_test_output.log || echo "No navigation logs found"
-          fi
-          
-          # Show application logs if available
-          if [ -f "app.log" ]; then
-            echo "📱 Application log summary (last 30 lines):"
-            tail -30 app.log
-            
-            echo "🔍 Application errors:"
-            grep -i "error\|exception\|fail" app.log | tail -10 || echo "No application errors found"
-          fi
-          
-          # Show Wiremock logs if available
-          if [ -f "wiremock.log" ]; then
-            echo "🎭 Wiremock log summary (last 20 lines):"
-            tail -20 wiremock.log
-            
-            echo "🔍 Wiremock errors:"
-            grep -i "error\|exception" wiremock.log | tail -5 || echo "No Wiremock errors found"
-          fi
-          
-          echo "📊 Playwright report directory:"
+          echo "Playwright report directory:"
           ls -la playwright-report/ 2>/dev/null || echo "No playwright-report directory found"
           echo "Test results directory (screenshots, videos, traces):"
           ls -la test-results/ 2>/dev/null || echo "No test-results directory found"
           if [ -d "test-results" ]; then
             echo "Contents of test-results:"
-            find test-results -type f -name "*.png" -o -name "*.webm" -o -name "*.zip" -o -name "*.har" | head -10
-            
-            # Show HAR file info if network debugging is enabled
-            if find test-results -name "*.har" -type f | head -1 | grep -q .; then
-              echo "🌐 Network HAR files found - these contain network request logs"
-            fi
+            find test-results -type f -name "*.png" -o -name "*.webm" -o -name "*.zip" | head -10
           fi
           echo "Legacy integration test directories:"
           ls -la integration_tests/videos/ 2>/dev/null || echo "No integration_tests/videos directory found"
@@ -208,9 +143,6 @@ jobs:
             test-results/
             coverage/
             ctrf/
-            integration_test_output.log
-            app.log
-            wiremock.log
       - name: Upload Playwright Report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

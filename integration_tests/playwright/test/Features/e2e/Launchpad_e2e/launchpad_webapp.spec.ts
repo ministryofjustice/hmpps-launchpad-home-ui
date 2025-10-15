@@ -1,54 +1,23 @@
 import dotenv from 'dotenv'
-import { test, expect } from '../../../../../support/fixtures'
+import { test, expect } from '@playwright/test'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
 
 dotenv.config()
 
 test.describe('Launchpad Web App', () => {
-  test.beforeEach(async ({ page, enhancedLogging }) => {
-    // Enhanced retry logic with detailed logging for navigation
+  test.beforeEach(async ({ page }) => {
+    // Add retry logic for navigation to handle application instability
     let retries = 3
-    const targetUrl = '/'
-
-    enhancedLogging.logNavigation(targetUrl, 'starting retry loop')
-
     while (retries > 0) {
       try {
-        enhancedLogging.logNavigation(targetUrl, `attempting (${4 - retries}/3)`)
-
         // eslint-disable-next-line no-await-in-loop
-        const response = await page.goto(targetUrl, {
-          waitUntil: 'networkidle',
-          timeout: 30000,
-        })
-
-        // Log response status
-        if (response) {
-          enhancedLogging.logNavigation(
-            `${targetUrl} -> Status: ${response.status()} ${response.statusText()}`,
-            'successful response',
-          )
-        }
-
-        // Verify page is actually loaded
-        // eslint-disable-next-line no-await-in-loop
-        await page.waitForLoadState('domcontentloaded', { timeout: 10000 })
-
-        enhancedLogging.logNavigation(page.url(), 'navigation completed successfully')
+        await page.goto('/', { waitUntil: 'networkidle', timeout: 30000 })
         break
       } catch (error) {
         retries -= 1
-        const errorMessage = error instanceof Error ? error.message : String(error)
-
-        enhancedLogging.logError(`Navigation attempt failed: ${errorMessage}`, `Retry ${4 - retries}/3`)
-
-        if (retries === 0) {
-          enhancedLogging.logError(`All navigation attempts failed for ${targetUrl}`, 'Final failure')
-          throw error
-        }
-
-        enhancedLogging.logNavigation(targetUrl, `retrying in 2s (${retries} attempts left)`)
-
+        if (retries === 0) throw error
+        // eslint-disable-next-line no-console
+        console.log(`Navigation failed, retrying... (${retries} attempts left)`)
         // eslint-disable-next-line no-await-in-loop
         await page.waitForTimeout(2000) // Wait 2 seconds before retry
       }
