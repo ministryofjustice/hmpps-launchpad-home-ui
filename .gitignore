@@ -161,3 +161,16 @@ playwright/.cache/
 # Storage state files (if using authentication state)
 storageState.json
 **/storageState.json
+
+# Local CI simulation scripts (development tools)
+scripts/run-ci-simulation.sh
+scripts/test-ci-env.sh
+scripts/ci-reference.sh
+
+# Wiremock JAR file (downloaded for local testing)
+wiremock.jar
+
+# Local test output files
+test_output.log
+app.log
+wiremock.log
