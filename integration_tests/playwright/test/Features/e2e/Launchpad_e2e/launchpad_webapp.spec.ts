@@ -10,16 +10,16 @@ test.describe('Launchpad Web App', () => {
     const targetUrl = '/'
     const baseURL = process.env.BASE_URL || 'http://localhost:3000'
     const fullUrl = `${baseURL}${targetUrl}`
-    
+
     // eslint-disable-next-line no-console
     console.log(`🌐 Navigating to: ${fullUrl}`)
-    
+
     let retries = 3
     while (retries > 0) {
       try {
         // eslint-disable-next-line no-await-in-loop
         const response = await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 30000 })
-        
+
         if (response) {
           // eslint-disable-next-line no-console
           console.log(`✅ Navigation successful: ${response.status()} ${response.statusText()} - ${page.url()}`)
@@ -28,13 +28,13 @@ test.describe('Launchpad Web App', () => {
       } catch (error) {
         retries -= 1
         const errorMessage = error instanceof Error ? error.message : String(error)
-        
+
         if (retries === 0) {
           // eslint-disable-next-line no-console
           console.log(`❌ Navigation failed permanently: ${errorMessage} - URL: ${fullUrl}`)
           throw error
         }
-        
+
         // eslint-disable-next-line no-console
         console.log(`⚠️ Navigation failed, retrying... (${retries} attempts left) - Error: ${errorMessage}`)
         // eslint-disable-next-line no-await-in-loop
