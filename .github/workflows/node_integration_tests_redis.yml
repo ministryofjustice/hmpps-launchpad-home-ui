@@ -115,7 +115,20 @@ jobs:
           sleep 5
           
           echo "🧪 Running integration tests..."
-          npm run int-test
+          
+          # Run tests with output capture for CI debugging
+          npm run int-test 2>&1 | tee test_output.log
+          TEST_EXIT_CODE=${PIPESTATUS[0]}
+          
+          echo "📊 Test run completed with exit code: $TEST_EXIT_CODE"
+          
+          # Show navigation logs if any failures occurred
+          if [ $TEST_EXIT_CODE -ne 0 ]; then
+            echo "🔍 Showing navigation logs from failed test run:"
+            grep -E "🌐|✅|❌|⚠️" test_output.log || echo "No navigation logs found"
+          fi
+          
+          exit $TEST_EXIT_CODE
       - name: Check generated reports and screenshots
         if: ${{ !cancelled() }}
         run: |
@@ -143,6 +156,7 @@ jobs:
             test-results/
             coverage/
             ctrf/
+            test_output.log
       - name: Upload Playwright Report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
