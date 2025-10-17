@@ -8,7 +8,7 @@ test.describe('Launchpad Web App', () => {
   test.beforeEach(async ({ page }) => {
     // Add retry logic for navigation to handle application instability
     const targetUrl = '/'
-    const baseURL = process.env.BASE_URL || 'http://localhost:3000'
+    const baseURL = process.env.HMPPS_AUTH_URL || 'http://localhost:3000'
     const fullUrl = `${baseURL}${targetUrl}`
 
     // eslint-disable-next-line no-console

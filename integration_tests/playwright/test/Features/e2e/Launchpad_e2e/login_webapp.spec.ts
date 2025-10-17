@@ -3,7 +3,7 @@ import { test } from '@playwright/test'
 
 dotenv.config()
 
-const baseURL = process.env.BASE_URL || 'http://localhost:3000'
+const baseURL = process.env.HMPPS_AUTH_URL || 'http://localhost:3000'
 
 test('User can access application with bypassed authentication', async ({ page }) => {
   const fullUrl = `${baseURL}/`
