@@ -15,14 +15,43 @@ export default function setUpAuth(): Router {
   router.use(passport.session())
   router.use(flash())
 
+  // Log any requests that might be OAuth2-related callbacks
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    const url = req.originalUrl.toLowerCase()
+    if (url.includes('callback') || url.includes('oauth') || url.includes('auth')) {
+      logger.info(`🔍 OAuth2-related request detected: ${req.method} ${req.originalUrl}`)
+      logger.info(`🔍 Request headers:`, {
+        'user-agent': req.get('User-Agent'),
+        referer: req.get('Referer'),
+        authorization: req.get('Authorization') ? '[PRESENT]' : '[NOT PRESENT]',
+      })
+      if (Object.keys(req.query).length > 0) {
+        logger.info(`🔍 Query parameters:`, req.query)
+      }
+    }
+    next()
+  })
+
   router.get('/autherror', (req, res) => {
     res.status(401)
     return res.render('autherror')
   })
 
-  router.get('/sign-in', passport.authenticate('openidconnect'))
+  router.get('/sign-in', (req: Request, res: Response, next: NextFunction) => {
+    logger.info(`🔐 OAuth2 Sign-in initiated from: ${req.originalUrl}`)
+    logger.info(`🔐 User-Agent: ${req.get('User-Agent')}`)
+    return passport.authenticate('openidconnect')(req, res, next)
+  })
 
   router.get('/sign-in/callback', (req: Request, res: Response, next: NextFunction) => {
+    logger.info(`🔄 OAuth2 Callback received: ${req.originalUrl}`)
+    logger.info(`🔄 Callback query params:`, req.query)
+    logger.info(`🔄 Callback headers:`, {
+      'user-agent': req.get('User-Agent'),
+      referer: req.get('Referer'),
+      'x-forwarded-for': req.get('X-Forwarded-For'),
+    })
+
     return passport.authenticate('openidconnect', {
       successReturnToOrRedirect: req.session.returnTo || '/',
       failureRedirect: '/autherror',
