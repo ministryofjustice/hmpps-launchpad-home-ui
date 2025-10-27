@@ -167,6 +167,29 @@ const stubOauth2AuthorizeCallback = () =>
       },
     },
   })
+
+const stubOauth2Token = () =>
+  stubFor({
+    request: {
+      method: 'POST',
+      urlPattern: '/v1/oauth2/token',
+    },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      jsonBody: {
+        access_token: 'mock-access-token',
+        token_type: 'Bearer',
+        expires_in: 3600,
+        refresh_token: 'mock-refresh-token',
+        id_token: 'mock-id-token',
+        scope: 'openid user.basic.read user.establishment.read user.booking.read',
+      },
+    },
+  })
+
 export default {
   getSignInUrl,
   stubAuthPing: ping,
@@ -174,4 +197,5 @@ export default {
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
   stubOauth2AuthorizeCallback,
+  stubOauth2Token,
 }

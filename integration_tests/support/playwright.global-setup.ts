@@ -11,6 +11,8 @@ export default async function globalSetup() {
       // Setup OAuth2 Launchpad Auth mock (authorize callback)
       // eslint-disable-next-line no-await-in-loop
       await auth.stubOauth2AuthorizeCallback()
+      // eslint-disable-next-line no-await-in-loop
+      await auth.stubOauth2Token()
 
       // Setup token verification mocks
       // eslint-disable-next-line no-await-in-loop
