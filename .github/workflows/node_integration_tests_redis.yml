@@ -48,21 +48,26 @@ jobs:
         id: integration-tests
         shell: bash
         env:
+          # Override auth URLs to point to WireMock for CI testing (no VPN needed)
+          LAUNCHPAD_AUTH_URL: http://localhost:9091
+          HMPPS_AUTH_URL: http://localhost:9091/auth
+          TOKEN_VERIFICATION_ENABLED: false
+          # Real API URLs (these work from CI)
+          PRISON_API_URL: ${{ secrets.PRISON_API_URL }}
+          # Client credentials from secrets (used for real API calls)
           LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
           LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
-          LAUNCHPAD_AUTH_URL: ${{ secrets.LAUNCHPAD_AUTH_URL }}
-          HMPPS_AUTH_URL: ${{ secrets.HMPPS_AUTH_URL }}
-          PRISON_API_URL: ${{ secrets.PRISON_API_URL }}
           SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
           SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
+          # Monitoring
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           AUDIT_ENABLED: ${{ secrets.AUDIT_ENABLED }}
         run: |
-          # Start Wiremock in background
-          echo "Starting Wiremock..."
-          nohup java -jar wiremock.jar --port 9091 > wiremock.log 2>&1 &
+          # Start Wiremock in background with response templating for OAuth2
+          echo "Starting Wiremock with OAuth2 support..."
+          nohup java -jar wiremock.jar --port 9091 --global-response-templating --verbose > wiremock.log 2>&1 &
           WIREMOCK_PID=$!
-          echo "Wiremock started on port 9091 (PID: $WIREMOCK_PID)"
+          echo "Wiremock started on port 9091 with global-response-templating (PID: $WIREMOCK_PID)"
           
           # Start the application in background  
           echo "Starting application..."
