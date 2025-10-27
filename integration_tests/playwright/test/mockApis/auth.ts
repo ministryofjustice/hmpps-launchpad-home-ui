@@ -153,22 +153,20 @@ const stubUserRoles = () =>
     },
   })
 
-  // Mimic /v1/oauth2/authorize callback
-  const stubOauth2AuthorizeCallback = () =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern:
-          '/v1/oauth2/authorize\\?response_type=code&client_id=.*&redirect_uri=.*&scope=.*&nonce=.*&state=.*',
+// Mimic /v1/oauth2/authorize callback
+const stubOauth2AuthorizeCallback = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/v1/oauth2/authorize\\?response_type=code&client_id=.*&redirect_uri=.*&scope=.*&nonce=.*&state=.*',
+    },
+    response: {
+      status: 302,
+      headers: {
+        Location: 'http://localhost:3000/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
-      response: {
-        status: 302,
-        headers: {
-          Location:
-            'http://localhost:3000/sign-in/callback?code=codexxxx&state=stateyyyy',
-        },
-      },
-    })
+    },
+  })
 export default {
   getSignInUrl,
   stubAuthPing: ping,
