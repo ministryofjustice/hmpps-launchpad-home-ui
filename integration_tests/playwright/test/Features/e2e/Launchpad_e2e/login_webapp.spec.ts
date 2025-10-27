@@ -1,9 +1,14 @@
 import dotenv from 'dotenv'
 import { test } from '@playwright/test'
+import auth from '../../../mockApis/auth'
 
 dotenv.config()
 
 const baseURL = process.env.HMPPS_AUTH_URL || 'http://localhost:3000'
+
+test.beforeEach(async () => {
+  await auth.stubOauth2AuthorizeCallback()
+})
 
 test('User can access application with bypassed authentication', async ({ page }) => {
   const fullUrl = `${baseURL}/`

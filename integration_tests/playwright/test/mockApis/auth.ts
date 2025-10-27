@@ -20,7 +20,7 @@ const createToken = () => {
 const getSignInUrl = (): Promise<string> =>
   getMatchingRequests({
     method: 'GET',
-    urlPath: '/auth/oauth/authorize',
+    urlPath: '/auth/oauth2/authorize',
   }).then(data => {
     const { requests } = data.body
     const stateValue = requests[requests.length - 1].queryParams.state.values[0]
@@ -153,10 +153,27 @@ const stubUserRoles = () =>
     },
   })
 
+  // Mimic /v1/oauth2/authorize callback
+  const stubOauth2AuthorizeCallback = () =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern:
+          '/v1/oauth2/authorize\\?response_type=code&client_id=.*&redirect_uri=.*&scope=.*&nonce=.*&state=.*',
+      },
+      response: {
+        status: 302,
+        headers: {
+          Location:
+            'http://localhost:3000/sign-in/callback?code=codexxxx&state=stateyyyy',
+        },
+      },
+    })
 export default {
   getSignInUrl,
   stubAuthPing: ping,
   stubSignIn: (): Promise<[Response, Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), manageDetails(), token(), tokenVerification.stubVerifyToken()]),
   stubAuthUser: (name = 'john smith'): Promise<[Response, Response]> => Promise.all([stubUser(name), stubUserRoles()]),
+  stubOauth2AuthorizeCallback,
 }
