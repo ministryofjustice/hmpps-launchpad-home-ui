@@ -1,15 +1,24 @@
-import auth from '../mockApis/auth'
+import auth from '../playwright/test/mockApis/auth'
+import tokenVerification from '../playwright/test/mockApis/tokenVerification'
 
 export default async function globalSetup() {
-  // Set up Wiremock authentication bypass stubs
-  // This replaces Microsoft SSO with mock authentication for testing
+  // Set up Wiremock authentication stubs for OAuth2 and legacy auth
   const maxRetries = 10
   let retries = 0
 
   while (retries < maxRetries) {
     try {
-      // Setup authentication bypass stubs for Wiremock
-      // These stubs allow tests to access protected routes without actual login
+      // Setup OAuth2 Launchpad Auth mock (authorize callback)
+      // eslint-disable-next-line no-await-in-loop
+      await auth.stubOauth2AuthorizeCallback()
+
+      // Setup token verification mocks
+      // eslint-disable-next-line no-await-in-loop
+      await tokenVerification.stubVerifyToken(true)
+      // eslint-disable-next-line no-await-in-loop
+      await tokenVerification.stubPing(200)
+
+      // Setup legacy HMPPS Auth mocks (for backward compatibility)
       // eslint-disable-next-line no-await-in-loop
       await auth.stubAuthPing()
       // eslint-disable-next-line no-await-in-loop
