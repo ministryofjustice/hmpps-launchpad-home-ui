@@ -95,8 +95,11 @@ const manageDetails = () =>
     },
   })
 
-const token = () =>
-  stubFor({
+const token = () => {
+  const generatedToken = createToken()
+  console.log('[Mock Auth] Generated token:', generatedToken)
+  
+  return stubFor({
     request: {
       method: 'POST',
       urlPattern: '/auth/oauth/token',
@@ -108,7 +111,7 @@ const token = () =>
         Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
       },
       jsonBody: {
-        access_token: createToken(),
+        access_token: generatedToken,
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,
@@ -117,6 +120,7 @@ const token = () =>
       },
     },
   })
+}
 
 const stubUser = (name: string) =>
   stubFor({
