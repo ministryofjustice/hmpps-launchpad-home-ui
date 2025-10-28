@@ -169,8 +169,36 @@ const stubOauth2AuthorizeCallback = () =>
     },
   })
 
-const stubOauth2Token = () =>
-  stubFor({
+const stubOauth2Token = () => {
+  // Create a proper JWT token structure for OAuth2
+  const now = Math.floor(Date.now() / 1000)
+  const payload = {
+    sub: 'G3682UE',
+    name: 'Test User',
+    given_name: 'Test',
+    family_name: 'User',
+    email: 'test.user@example.com',
+    preferred_username: 'G3682UE',
+    establishment_id: 'MDI',
+    establishment_name: 'HMP Moorland',
+    booking_id: '123456',
+    prisoner_number: 'A1234BC',
+    iat: now,
+    exp: now + 3600,
+    iss: 'http://localhost:9091',
+    aud: 'launchpad-home-ui',
+  }
+
+  const refreshPayload = {
+    ...payload,
+    type: 'refresh',
+    exp: now + 604800, // 7 days
+  }
+
+  const accessToken = jwt.sign(payload, 'secret')
+  const refreshToken = jwt.sign(refreshPayload, 'secret')
+
+  return stubFor({
     request: {
       method: 'POST',
       urlPattern: '/v1/oauth2/token',
@@ -181,15 +209,16 @@ const stubOauth2Token = () =>
         'Content-Type': 'application/json',
       },
       jsonBody: {
-        access_token: 'mock-access-token',
+        access_token: accessToken,
         token_type: 'Bearer',
         expires_in: 3600,
-        refresh_token: 'mock-refresh-token',
-        id_token: 'mock-id-token',
+        refresh_token: refreshToken,
+        id_token: accessToken,
         scope: 'openid user.basic.read user.establishment.read user.booking.read',
       },
     },
   })
+}
 
 export default {
   getSignInUrl,
