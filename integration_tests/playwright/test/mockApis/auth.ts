@@ -158,13 +158,14 @@ const stubOauth2AuthorizeCallback = () =>
   stubFor({
     request: {
       method: 'GET',
-      urlPattern: '/v1/oauth2/authorize\\?response_type=code&client_id=.*&redirect_uri=.*&scope=.*&nonce=.*&state=.*',
+      urlPattern: '/v1/oauth2/authorize\\?.*',
     },
     response: {
       status: 302,
       headers: {
-        Location: 'http://localhost:3000/sign-in/callback?code=codexxxx&state=stateyyyy',
+        Location: 'http://localhost:3000/sign-in/callback?code=mock-auth-code&state={{request.query.state}}',
       },
+      transformers: ['response-template'],
     },
   })
 
