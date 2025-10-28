@@ -48,9 +48,14 @@ jobs:
         id: integration-tests
         shell: bash
         env:
+          # Basic config
+          PORT: 3000
+          NODE_ENV: development
+          INGRESS_URL: http://localhost:3000
           # Override auth URLs to point to WireMock for CI testing (no VPN needed)
           LAUNCHPAD_AUTH_URL: http://localhost:9091
           HMPPS_AUTH_URL: http://localhost:9091/auth
+          TOKEN_VERIFICATION_API_URL: http://localhost:9091/verification
           TOKEN_VERIFICATION_ENABLED: false
           # Real API URLs (these work from CI)
           PRISON_API_URL: ${{ secrets.PRISON_API_URL }}
@@ -59,6 +64,11 @@ jobs:
           LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
           SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
           SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
+          # Mock client credentials for WireMock auth
+          API_CLIENT_ID: clientid
+          API_CLIENT_SECRET: clientsecret
+          # Session secret
+          SESSION_SECRET: test-session-secret-for-ci
           # Monitoring
           APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           AUDIT_ENABLED: ${{ secrets.AUDIT_ENABLED }}
@@ -71,7 +81,8 @@ jobs:
           
           # Start the application in background  
           echo "Starting application..."
-          nohup npm run start-feature > app.log 2>&1 &
+          # Use npm start instead of start-feature to respect CI environment variables
+          nohup npm start > app.log 2>&1 &
           APP_PID=$!
           echo "Application started (PID: $APP_PID)"
           
