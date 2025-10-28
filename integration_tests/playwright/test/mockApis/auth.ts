@@ -97,8 +97,9 @@ const manageDetails = () =>
 
 const token = () => {
   const generatedToken = createToken()
+  // eslint-disable-next-line no-console
   console.log('[Mock Auth] Generated token:', generatedToken)
-  
+
   return stubFor({
     request: {
       method: 'POST',
@@ -202,9 +203,11 @@ const stubOauth2Token = () => {
   const accessToken = jwt.sign(payload, 'secret')
   const refreshToken = jwt.sign(refreshPayload, 'secret')
 
+  /* eslint-disable no-console */
   console.log('[Mock OAuth2] Generated access token:', accessToken)
   console.log('[Mock OAuth2] Generated refresh token:', refreshToken)
   console.log('[Mock OAuth2] Token payload:', JSON.stringify(payload, null, 2))
+  /* eslint-enable no-console */
 
   return stubFor({
     request: {
