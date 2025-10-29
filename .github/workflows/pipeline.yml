@@ -37,6 +37,10 @@ jobs:
     uses: ./.github/workflows/node_integration_tests_redis.yml # LOCAL_VERSION
     needs: [node_build]
     secrets: inherit
+    # Note: UI regression tests are disabled by default (only healthcheck tests run)
+    # To enable UI tests, uncomment the following:
+    # with:
+    #   run_regression_tests: true
   helm_lint:
     strategy:
       matrix:

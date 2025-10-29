@@ -4,7 +4,7 @@ import launchpadExternalLinksLocators from '../../../Framework/pages/LaunchPad_P
 
 dotenv.config()
 
-test.describe('Launchpad External Web Links - National Prison Radio', () => {
+test.describe('Launchpad External Web Links - National Prison Radio @regression', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
   })

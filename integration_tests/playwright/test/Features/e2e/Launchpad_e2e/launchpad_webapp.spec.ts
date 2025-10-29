@@ -4,7 +4,7 @@ import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/l
 
 dotenv.config()
 
-test.describe('Launchpad Web App', () => {
+test.describe('Launchpad Web App @regression', () => {
   test.beforeEach(async ({ page }) => {
     // Add retry logic for navigation to handle application instability
     const targetUrl = '/'

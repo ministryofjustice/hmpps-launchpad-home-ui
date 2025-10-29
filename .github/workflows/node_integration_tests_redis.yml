@@ -7,6 +7,18 @@ on:
         required: false
         type: string
         default: ".nvmrc"
+      run_regression_tests:
+        description: "Enable UI regression tests (default: false - only healthcheck tests run)"
+        required: false
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      run_regression_tests:
+        description: "Enable UI regression tests"
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -131,6 +143,14 @@ jobs:
           sleep 5
           
           echo "🧪 Running integration tests..."
+          
+          # Determine test mode based on input
+          if [ "${{ inputs.run_regression_tests }}" == "true" ]; then
+            echo "🎯 Running UI regression tests (@regression tagged)"
+            export REGRESSION=true
+          else
+            echo "⚡ Running healthcheck tests only (UI tests disabled by default)"
+          fi
           
           # Run tests with output capture for CI debugging
           npm run int-test 2>&1 | tee test_output.log

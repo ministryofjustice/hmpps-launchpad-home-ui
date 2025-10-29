@@ -4,7 +4,7 @@ import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/l
 
 dotenv.config()
 
-test.describe('Launchpad Timetable', () => {
+test.describe('Launchpad Timetable @regression', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
   })

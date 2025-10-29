@@ -4,7 +4,7 @@ import ProfileLocators from '../../../Framework/pages/Profile_Portal/ProfileLoca
 
 dotenv.config()
 
-test.describe('Launchpad Profile Timetable', () => {
+test.describe('Launchpad Profile Timetable @regression', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
   })
