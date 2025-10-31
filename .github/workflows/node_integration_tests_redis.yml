@@ -7,6 +7,18 @@ on:
         required: false
         type: string
         default: ".nvmrc"
+      run_regression_tests:
+        description: "Enable UI regression tests (default: false - only healthcheck tests run)"
+        required: false
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      run_regression_tests:
+        description: "Enable UI regression tests"
+        required: false
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -47,11 +59,127 @@ jobs:
       - name: Prepare and run integration tests
         id: integration-tests
         shell: bash
+        env:
+          # Basic config
+          PORT: 3000
+          NODE_ENV: development
+          INGRESS_URL: http://localhost:3000
+          # Override auth URLs to point to WireMock for CI testing (no VPN needed)
+          LAUNCHPAD_AUTH_URL: http://localhost:9091
+          HMPPS_AUTH_URL: http://localhost:9091/auth
+          TOKEN_VERIFICATION_API_URL: http://localhost:9091/verification
+          TOKEN_VERIFICATION_ENABLED: false
+          # Real API URLs (these work from CI)
+          PRISON_API_URL: ${{ secrets.PRISON_API_URL }}
+          # Client credentials from secrets (used for real API calls)
+          LAUNCHPAD_API_CLIENT_ID: ${{ secrets.LAUNCHPAD_API_CLIENT_ID }}
+          LAUNCHPAD_API_CLIENT_SECRET: ${{ secrets.LAUNCHPAD_API_CLIENT_SECRET }}
+          SYSTEM_CLIENT_ID: ${{ secrets.SYSTEM_CLIENT_ID }}
+          SYSTEM_CLIENT_SECRET: ${{ secrets.SYSTEM_CLIENT_SECRET }}
+          # Mock client credentials for WireMock auth
+          API_CLIENT_ID: clientid
+          API_CLIENT_SECRET: clientsecret
+          # Session secret
+          SESSION_SECRET: test-session-secret-for-ci
+          # Monitoring
+          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          AUDIT_ENABLED: ${{ secrets.AUDIT_ENABLED }}
         run: |
-          nohup java -jar wiremock.jar --port 9091 &
-          nohup npm run start-feature &
+          # Start Wiremock in background with response templating for OAuth2
+          echo "Starting Wiremock with OAuth2 support..."
+          nohup java -jar wiremock.jar --port 9091 --global-response-templating --verbose > wiremock.log 2>&1 &
+          WIREMOCK_PID=$!
+          echo "Wiremock started on port 9091 with global-response-templating (PID: $WIREMOCK_PID)"
+          
+          # Start the application in background  
+          echo "Starting application..."
+          # Use npm start instead of start-feature to respect CI environment variables
+          nohup npm start > app.log 2>&1 &
+          APP_PID=$!
+          echo "Application started (PID: $APP_PID)"
+          
+          # Function to cleanup on exit
+          cleanup() {
+            echo "Cleaning up processes..."
+            kill $WIREMOCK_PID 2>/dev/null || true
+            kill $APP_PID 2>/dev/null || true
+            pkill -f "java.*wiremock" 2>/dev/null || true
+            pkill -f "npm run start-feature" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          
+          # Wait for Wiremock to be ready first
+          echo "Waiting for Wiremock to be ready..."
+          timeout 30 bash -c 'until curl -f http://localhost:9091/__admin > /dev/null 2>&1; do 
+            echo -n "."
+            sleep 1
+          done' || {
+            echo "❌ Wiremock failed to start within 30 seconds"
+            echo "Wiremock logs:"
+            tail -20 wiremock.log 2>/dev/null || echo "No wiremock logs available"
+            exit 1
+          }
+          echo "✅ Wiremock is ready"
+          
+          # Wait for application to be ready
+          echo "Waiting for application to be ready..."
+          timeout 120 bash -c 'until curl -f http://localhost:3000/ping > /dev/null 2>&1; do 
+            echo -n "."
+            sleep 2
+          done' || {
+            echo "❌ Application failed to start within 120 seconds"
+            echo "Application logs:"
+            tail -50 app.log 2>/dev/null || echo "No application logs available"
+            echo "Process status:"
+            ps aux | grep -E "(node|npm)" | grep -v grep || echo "No node processes found"
+            echo "Port status:"
+            netstat -tulpn | grep 3000 || echo "Port 3000 not in use"
+            exit 1
+          }
+          echo "✅ Application is ready"
+          
+          # Give a bit more time for everything to settle
+          echo "Waiting 5 seconds for services to stabilize..."
           sleep 5
-          npm run int-test
+          
+          echo "🧪 Running integration tests..."
+          
+          # Determine test mode based on input
+          if [ "${{ inputs.run_regression_tests }}" == "true" ]; then
+            echo "🎯 Running UI regression tests (@regression tagged)"
+            export REGRESSION=true
+          else
+            echo "⚡ Running healthcheck tests only (UI tests disabled by default)"
+          fi
+          
+          # Run tests with output capture for CI debugging
+          npm run int-test 2>&1 | tee test_output.log
+          TEST_EXIT_CODE=${PIPESTATUS[0]}
+          
+          echo "📊 Test run completed with exit code: $TEST_EXIT_CODE"
+          
+          # Show navigation logs if any failures occurred
+          if [ $TEST_EXIT_CODE -ne 0 ]; then
+            echo "🔍 Showing navigation logs from failed test run:"
+            grep -E "🌐|✅|❌|⚠️" test_output.log || echo "No navigation logs found"
+          fi
+          
+          exit $TEST_EXIT_CODE
+      - name: Check generated reports and screenshots
+        if: ${{ !cancelled() }}
+        run: |
+          echo "📊 Checking for generated reports and test artifacts..."
+          echo "Playwright report directory:"
+          ls -la playwright-report/ 2>/dev/null || echo "No playwright-report directory found"
+          echo "Test results directory (screenshots, videos, traces):"
+          ls -la test-results/ 2>/dev/null || echo "No test-results directory found"
+          if [ -d "test-results" ]; then
+            echo "Contents of test-results:"
+            find test-results -type f -name "*.png" -o -name "*.webm" -o -name "*.zip" | head -10
+          fi
+          echo "Legacy integration test directories:"
+          ls -la integration_tests/videos/ 2>/dev/null || echo "No integration_tests/videos directory found"
+          ls -la integration_tests/screenshots/ 2>/dev/null || echo "No integration_tests/screenshots directory found"
       - name: upload results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -60,21 +188,19 @@ jobs:
           path: |
             integration_tests/videos/
             integration_tests/screenshots/
+            playwright-report/
+            test-results/
             coverage/
-            test_results/
             ctrf/
-      - name: publish test report
-        if: ${{ !cancelled() && github.event.repository.visibility == 'public' }}
-        uses: dorny/test-reporter@v2
+            test_output.log
+      - name: Upload Playwright Report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
         with:
-          artifact: npm_integration_test_artifacts
-          name: Test Report
-          path: 'test_results/**/*.xml'
-          reporter: java-junit
-          fail-on-empty: false
-          fail-on-error: false
-          list-suites: 'failed'
-          list-tests: 'failed'
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
       - name: fail the action if the tests failed
         if: ${{ steps.integration-tests.outcome == 'failure' }}
         uses: actions/github-script@v7
