@@ -37,7 +37,7 @@ jobs:
         with:
           node-version-file: ${{ inputs.node_version_file }}
       - name: download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: npm_build_artifacts
       - name: restore cache
@@ -182,7 +182,7 @@ jobs:
           ls -la integration_tests/screenshots/ 2>/dev/null || echo "No integration_tests/screenshots directory found"
       - name: upload results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: npm_integration_test_artifacts
           path: |
@@ -195,7 +195,7 @@ jobs:
             test_output.log
       - name: Upload Playwright Report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report
           path: playwright-report/
