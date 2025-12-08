@@ -29,7 +29,8 @@
     "int-test-ui": "npx playwright test --ui",
     "int-test-init:ci": "npx playwright install --with-deps chromium",
     "clean": "rm -rf dist build node_modules stylesheets",
-    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test"
+    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test",
+    "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
     "node": "^22",
@@ -129,6 +130,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "^12.2.0",
     "@ministryofjustice/eslint-config-hmpps": "^0.0.3",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@playwright/test": "^1.55.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/bunyan": "^1.8.11",
