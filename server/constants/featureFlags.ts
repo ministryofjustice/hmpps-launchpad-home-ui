@@ -63,7 +63,7 @@ export const featureFlags: FeatureFlags = {
   },
   [Features.Translations]: {
     enabled: true,
-    allowedPrisons: [prisonAgencyIds.Cardiff],
+    allowedPrisons: [prisonAgencyIds.Berwyn, prisonAgencyIds.Cardiff],
   },
   [Features.Visits]: {
     enabled: true,
