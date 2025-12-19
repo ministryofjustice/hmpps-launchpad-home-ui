@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { defineConfig } from '@playwright/test'
 import dotenv from 'dotenv'
 import path from 'path'
