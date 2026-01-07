@@ -299,6 +299,7 @@ export default {
   },
   externalUrls: {
     insideTime: 'https://insidetimeprison.org/',
+    thinkThroughNutrition: 'https://lanah.org/hmpps',
   },
   analytics: {
     // use staging GA4 tag as fallback

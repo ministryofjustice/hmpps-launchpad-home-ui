@@ -20,6 +20,7 @@ export default function routes(): Router {
       '/visits',
       '/privacy-policy',
       '/transactions-help',
+      '/think-through-nutrition',
     ],
     async (req: Request, res: Response) => {
       const { idToken } = res.locals.user
@@ -41,6 +42,7 @@ export default function routes(): Router {
         '/visits': `${prisonerContentHubURL}/${config.contentHubUrls.visits}`,
         '/privacy-policy': `${prisonerContentHubURL}/${config.contentHubUrls.privacyPolicy}`,
         '/transactions-help': `${prisonerContentHubURL}/${config.contentHubUrls.transactionsHelp}`,
+        '/think-through-nutrition': config.externalUrls.thinkThroughNutrition,
       }
 
       const redirectUrl = links[target]

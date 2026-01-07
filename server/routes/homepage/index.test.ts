@@ -224,7 +224,8 @@ describe('GET /', () => {
           }),
         )
       })
-    
+  })
+
   it('should show think through nutrition tile when hide flag is unset', () => {
     links[4].hidden = false
     linksService.getHomepageLinks.mockResolvedValue({ links })
