@@ -15,9 +15,7 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { prisonerContentHubURL, selfServiceURL, hideInsideTime, hideThinkThroughNutrition } = getEstablishmentData(
-      user.idToken.establishment.agency_id,
-    )
+    const { hideInsideTime, hideThinkThroughNutrition } = getEstablishmentData(user.idToken.establishment.agency_id)
 
     const links = [
       {
