@@ -169,102 +169,122 @@ export default {
       agencyId: 'BNI',
       prisonerContentHubURL: 'https://bullingdon.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bniclient.unilink.prisoner.service.justice.gov.uk:1128',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'BWI',
       prisonerContentHubURL: 'https://berwyn.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bwiclient.unilink.prisoner.service.justice.gov.uk:1108',
       hideHomepageEventsSummaryAndProfileLinkTile: true,
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'CDI',
       prisonerContentHubURL: 'https://chelmsford.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://cdiclient.unilink.prisoner.service.justice.gov.uk:1126',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'CFI',
       prisonerContentHubURL: 'https://cardiff.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://cficlient.unilink.prisoner.service.justice.gov.uk:1132',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'CKI',
       prisonerContentHubURL: 'https://cookhamwood.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ckiclient.unilink.prisoner.service.justice.gov.uk:82',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'EEI',
       prisonerContentHubURL: 'https://erlestoke.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://eeiclient.unilink.prisoner.service.justice.gov.uk:1118',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'FYI',
       prisonerContentHubURL: 'https://felthama.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://fyiclient.unilink.prisoner.service.justice.gov.uk:1106',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'FMI',
       prisonerContentHubURL: 'https://felthamb.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://fmiclient.unilink.prisoner.service.justice.gov.uk:1104',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'GHI',
       prisonerContentHubURL: 'https://garth.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://ghiclient.unilink.prisoner.service.justice.gov.uk:1120',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'LHI',
       prisonerContentHubURL: 'https://lindholme.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://lhiclient.unilink.prisoner.service.justice.gov.uk:84',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'MTI',
       prisonerContentHubURL: 'https://themount.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://mticlient.unilink.prisoner.service.justice.gov.uk:1110',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'NHI',
       prisonerContentHubURL: 'https://newhall.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://nhiclient.unilink.prisoner.service.justice.gov.uk:96',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'RNI',
       prisonerContentHubURL: 'https://ranby.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://rniclient.unilink.prisoner.service.justice.gov.uk:1112',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'SHI',
       prisonerContentHubURL: 'https://stokeheath.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://shiclient.unilink.prisoner.service.justice.gov.uk:1122',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'SLI',
       prisonerContentHubURL: 'https://swaleside.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://sliclient.unilink.prisoner.service.justice.gov.uk:1116',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'STI',
       prisonerContentHubURL: 'https://styal.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://sticlient.unilink.prisoner.service.justice.gov.uk:1102',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'WHI',
       prisonerContentHubURL: 'https://woodhill.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://whiclient.unilink.prisoner.service.justice.gov.uk:1124',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'WLI',
       prisonerContentHubURL: 'https://wayland.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://wliclient.unilink.prisoner.service.justice.gov.uk:1114',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'WNI',
       prisonerContentHubURL: 'https://werrington.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://wniclient.unilink.prisoner.service.justice.gov.uk:98',
+      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'WYI',
       prisonerContentHubURL: 'https://wetherby.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://wyiclient.unilink.prisoner.service.justice.gov.uk:1100',
+      hideThinkThroughNutrition: true,
     },
   ],
   contentHubUrls: {
@@ -279,6 +299,8 @@ export default {
   },
   externalUrls: {
     insideTime: 'https://insidetimeprison.org/',
+    thinkThroughNutrition:
+      get('ENVIRONMENT_NAME', 'UNKNOWN') === 'PROD' ? 'https://lanah.org/' : 'https://stg.lanah.org/',
   },
   analytics: {
     // use staging GA4 tag as fallback

@@ -15,7 +15,7 @@ export default class Linkservice {
     user: { idToken: { establishment: { agency_id: string } } },
     language: string,
   ): Promise<LinksData> {
-    const { hideInsideTime } = getEstablishmentData(user.idToken.establishment.agency_id)
+    const { hideInsideTime, hideThinkThroughNutrition } = getEstablishmentData(user.idToken.establishment.agency_id)
 
     const links = [
       {
@@ -49,6 +49,14 @@ export default class Linkservice {
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
         hidden: hideInsideTime || false,
+      },
+      {
+        image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
+        title: i18next.t('homepage.links.thinkThroughNutrition', { lng: language }),
+        url: '/external/think-through-nutrition',
+        description: i18next.t('homepage.links.thinkThroughNutritionDesc', { lng: language }),
+        openInNewTab: true,
+        hidden: hideThinkThroughNutrition || false,
       },
     ]
     return { links }
