@@ -7,7 +7,7 @@ export default configureAllowedScripts({
     // CPU profiler and native binaries used by @sentry
     'node_modules/@sentry-internal/node-cpu-profiler@2.2.0': 'ALLOW',
     // Needed by Cypress for pulling in the Cypress binary
-    'node_modules/cypress@15.8.2': 'ALLOW',
+    'node_modules/cypress@15.9.0': 'ALLOW',
     // Provides native integration, supporting the ability to write dtrace probes for bunyan
     'node_modules/dtrace-provider@0.8.8': 'ALLOW',
     // Needed by jest for running tests in watch mode
