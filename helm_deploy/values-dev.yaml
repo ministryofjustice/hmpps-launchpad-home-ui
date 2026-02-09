@@ -27,9 +27,9 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: 'true'
 
-namespace_secrets:
-  sqs-hmpps-prisoner-audit-secret:
-    AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
+  namespace_secrets:
+    sqs-hmpps-prisoner-audit-secret:
+      AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
 
   allowlist:
     appsec-testers: 80.195.27.199
