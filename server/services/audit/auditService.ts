@@ -2,6 +2,7 @@ import { auditService as auditClient } from '@ministryofjustice/hmpps-audit-clie
 import config from '../../config'
 
 export const enum AUDIT_EVENTS {
+  AUTHENTICATION_FAILURE = 'AUTHENTICATION_FAILURE',
   DELETE_APP_ACCESS = 'DELETE_APP_ACCESS',
   LOGGED_IN = 'LOGGED_IN',
   VIEW_ADJUDICATIONS = 'VIEW_ADJUDICATIONS',
@@ -19,7 +20,7 @@ export const enum AUDIT_EVENTS {
 
 export interface AuditEvent {
   what: AUDIT_EVENTS
-  idToken: { sub: string; establishment: { agency_id: string }; booking: { id: string } }
+  idToken?: { sub: string; establishment: { agency_id: string }; booking: { id: string } }
   details?: object
 }
 
@@ -32,12 +33,12 @@ export const auditService: AuditService = {
     if (config.apis.audit.enabled === 'true') {
       await auditClient.sendAuditMessage({
         action: what,
-        who: idToken.sub,
+        who: idToken! ? idToken.sub : '',
         service: config.apis.audit.serviceName,
         details: JSON.stringify({
           ...details,
-          bookingId: idToken.booking.id,
-          agencyId: idToken.establishment.agency_id,
+          bookingId: idToken! ? idToken.booking.id : '',
+          agencyId: idToken! ? idToken.establishment.agency_id : '',
         }),
       })
     }
