@@ -2,7 +2,7 @@ import { auditService as auditClient } from '@ministryofjustice/hmpps-audit-clie
 import config from '../../config'
 
 export const enum AUDIT_EVENTS {
-  AUTHENTICATION_FAILURE = 'AUTHENTICATION_FAILURE',
+  ERROR_PAGE = 'ERROR_PAGE',
   DELETE_APP_ACCESS = 'DELETE_APP_ACCESS',
   LOGGED_IN = 'LOGGED_IN',
   VIEW_ADJUDICATIONS = 'VIEW_ADJUDICATIONS',

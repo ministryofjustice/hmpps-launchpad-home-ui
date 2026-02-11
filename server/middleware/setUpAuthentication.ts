@@ -5,7 +5,6 @@ import passport from 'passport'
 import logger from '../../logger'
 import auth from '../authentication/auth'
 import { checkTokenValidityAndUpdate } from '../authentication/refreshToken'
-import { AUDIT_EVENTS, auditService } from '../services/audit/auditService'
 
 const router = express.Router()
 
@@ -35,10 +34,6 @@ export default function setUpAuth(): Router {
 
   router.get('/autherror', async (req, res) => {
     res.status(401)
-    await auditService.audit({
-      what: AUDIT_EVENTS.AUTHENTICATION_FAILURE,
-      details: { url: req.originalUrl, query: req.query },
-    })
     return res.render('autherror')
   })
 
