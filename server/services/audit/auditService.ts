@@ -1,5 +1,7 @@
 import { auditService as auditClient } from '@ministryofjustice/hmpps-audit-client'
 import config from '../../config'
+import logger from '../../../logger'
+import { formatLogMessage } from '../../utils/utils'
 
 export const enum AUDIT_EVENTS {
   ERROR_PAGE = 'ERROR_PAGE',
@@ -31,16 +33,27 @@ export declare class AuditService {
 export const auditService: AuditService = {
   audit: async ({ what, idToken, details }: AuditEvent) => {
     if (config.apis.audit.enabled === 'true') {
-      await auditClient.sendAuditMessage({
-        action: what,
-        who: idToken! ? idToken.sub : '',
-        service: config.apis.audit.serviceName,
-        details: JSON.stringify({
-          ...details,
-          bookingId: idToken! ? idToken.booking.id : '',
-          agencyId: idToken! ? idToken.establishment.agency_id : '',
-        }),
-      })
+      try {
+        await auditClient.sendAuditMessage({
+          action: what,
+          who: idToken! ? idToken.sub : '',
+          service: config.apis.audit.serviceName,
+          details: JSON.stringify({
+            ...details,
+            bookingId: idToken! ? idToken.booking.id : '',
+            agencyId: idToken! ? idToken.establishment.agency_id : '',
+          }),
+        })
+      } catch (error) {
+        logger.error(
+          formatLogMessage(
+            `Error logging user audit entry`,
+            idToken! ? idToken.sub : '',
+            idToken! ? idToken.establishment.agency_id : '',
+          ),
+          error,
+        )
+      }
     }
   },
 }

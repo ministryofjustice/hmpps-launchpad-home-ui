@@ -2,6 +2,8 @@
 # Per environment values which override defaults in hmpps-launchpad-home-ui/values.yaml
 
 generic-service:
+  serviceAccountName: hmpps-launchpad-home-ui
+
   ingress:
     host: launchpad-home.hmpps.service.justice.gov.uk
 

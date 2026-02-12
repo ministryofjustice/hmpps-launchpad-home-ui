@@ -2,6 +2,7 @@
 # Per environment values which override defaults in hmpps-launchpad-home-ui/values.yaml
 
 generic-service:
+  serviceAccountName: hmpps-launchpad-preprod
   replicaCount: 2
 
   ingress:
