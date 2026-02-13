@@ -36,7 +36,7 @@ describe('PrisonerContactRegistryApiClient', () => {
 
       expect(mockRestClient.get).toHaveBeenCalledWith(
         {
-          path: `/prisoners/${mockPrisonerId}/contacts/social`,
+          path: `v2/prisoners/${mockPrisonerId}/contacts/social`,
         },
         mockPrisonerId,
         mockAgencyId,
