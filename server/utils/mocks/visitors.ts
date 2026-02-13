@@ -37,7 +37,7 @@ export const prisonerContact: PrisonerContact = {
     country: 'England',
     primary: false,
     noFixedAddress: false,
-  }
+  },
 }
 
 export const visitBalances: VisitBalances = {
