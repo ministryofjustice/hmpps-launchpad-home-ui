@@ -19,7 +19,7 @@ export default class PrisonerContactRegistryApiClient {
     try {
       return await this.restClient.get(
         {
-          path: `/prisoners/${prisonerId}/contacts/social`,
+          path: `v2/prisoners/${prisonerId}/contacts/social`,
         },
         prisonerId,
         agencyId,
