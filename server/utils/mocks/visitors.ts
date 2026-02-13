@@ -25,11 +25,19 @@ export const prisonerContact: PrisonerContact = {
       country: 'England',
       primary: false,
       noFixedAddress: false,
-      startDate: '2015-03-01',
-      phones: [],
-      addressUsages: [],
     },
   ],
+  address: {
+    premise: 'zz',
+    street: 'RQtwMDRQtwMD',
+    locality: 'HWslHWsl',
+    town: 'Stroud',
+    postalCode: 'KK1 6CD',
+    county: 'Kent',
+    country: 'England',
+    primary: false,
+    noFixedAddress: false,
+  }
 }
 
 export const visitBalances: VisitBalances = {
