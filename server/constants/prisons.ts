@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
 export const prisonAgencyIds = {
+  Bedford: 'BFI',
   Berwyn: 'BWI',
   Bullingdon: 'BNI',
   Cardiff: 'CFI',
