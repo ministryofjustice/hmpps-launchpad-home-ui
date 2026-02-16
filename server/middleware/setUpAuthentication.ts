@@ -32,7 +32,7 @@ export default function setUpAuth(): Router {
     next()
   })
 
-  router.get('/autherror', (req, res) => {
+  router.get('/autherror', async (req, res) => {
     res.status(401)
     return res.render('autherror')
   })

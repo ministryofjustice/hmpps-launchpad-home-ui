@@ -25,7 +25,6 @@ generic-service:
     APPLICATIONINSIGHTS_CONNECTION_STRING: null
     GA4_SITE_ID: 'G-4VW039LBEF'
     ENVIRONMENT_NAME: STAGING
-    AUDIT_SQS_QUEUE_URL: '' # required, but unused as auditing is disabled
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-launchpad-nonprod
