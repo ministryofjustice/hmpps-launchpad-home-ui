@@ -54,8 +54,8 @@ export const featureFlags: FeatureFlags = {
     allowedPrisons: [],
   },
   [Features.SocialVisitors]: {
-    enabled: false,
-    allowedPrisons: [],
+    enabled: true,
+    allowedPrisons: [prisonAgencyIds.CookhamWood],
   },
   [Features.Transactions]: {
     enabled: true,
