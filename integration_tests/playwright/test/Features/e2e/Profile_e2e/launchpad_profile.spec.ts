@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import ProfileLocators from '../../../Framework/pages/Profile_Portal/ProfileLocators'
-import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
+import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 

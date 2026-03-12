@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
+import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
 const baseURL = process.env.TEST_INGRESS_URL || 'http://localhost:3000'
 

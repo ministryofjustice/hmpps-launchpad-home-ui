@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import launchpadExternalLinksLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadExternalLinksLocators'
-import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
+import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 

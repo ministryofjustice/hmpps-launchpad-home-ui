@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import TimetableLocators from '../../../Framework/pages/Timetable_Portal/TimetableLocators'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
-import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
+import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 
