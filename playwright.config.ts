@@ -17,8 +17,9 @@ export default defineConfig({
   timeout: 30000,
   retries: process.env.CI ? 0 : 0, // More retries in CI
   // Grep configuration to control which tests to run
-  // When REGRESSION=true, run only @regression tests; otherwise run all tests.
+  // When REGRESSION=true, run only @regression tests; otherwise skip them.
   grep: process.env.REGRESSION === 'true' ? /@regression/ : undefined,
+  grepInvert: process.env.REGRESSION === 'true' ? undefined : /@regression/,
   reporter: [
     ['html', { open: 'never', outputFolder: 'playwright-report' }],
     ['list'],
