@@ -151,6 +151,7 @@ playwright/.cache/
 # Playwright local output
 pw-output/
 **/pw-output/
+**/.last-run.json
 
 # Playwright browser downloads
 /ms-playwright/
