@@ -14,13 +14,13 @@ export async function acceptDataAccessModal(page: Page): Promise<void> {
   }
 
   // Fall back to frames in case the consent modal renders inside an iframe.
-  for (const frame of page.frames()) {
-    const frameButton = frame.locator(selector)
-    const frameVisible = await frameButton.isVisible({ timeout: 5000 }).catch(() => false)
-    if (frameVisible) {
-      await frameButton.click()
-      await page.waitForLoadState('networkidle')
-      return
-    }
+  const frames = page.frames()
+  const frameVisibility = await Promise.all(
+    frames.map(frame => frame.locator(selector).isVisible({ timeout: 5000 }).catch(() => false)),
+  )
+  const visibleIndex = frameVisibility.findIndex(Boolean)
+  if (visibleIndex >= 0) {
+    await frames[visibleIndex].locator(selector).click()
+    await page.waitForLoadState('networkidle')
   }
 }

@@ -27,9 +27,7 @@ test.describe('Launchpad Home Page Accessibility @regression', () => {
       console.log(
         results.violations
           .map(violation => {
-            const nodes = violation.nodes
-              .map(node => `- ${node.target.join(', ')}\n  ${node.html}`)
-              .join('\n')
+            const nodes = violation.nodes.map(node => `- ${node.target.join(', ')}\n  ${node.html}`).join('\n')
             return `${violation.id}: ${violation.help}\n${nodes}`
           })
           .join('\n\n'),
