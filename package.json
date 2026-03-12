@@ -94,7 +94,7 @@
   },
   "dependencies": {
     "@ministryofjustice/frontend": "^8.0.1",
-    "@ministryofjustice/hmpps-audit-client": "^1.1.1",
+    "@ministryofjustice/hmpps-audit-client": "1.1.1",
     "@sentry/node": "^9.47.1",
     "@sentry/profiling-node": "^9.47.1",
     "agentkeepalive": "^4.6.0",
@@ -174,6 +174,7 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
+    "fast-xml-parser": "^5.3.8",
     "tmp": "^0.2.5",
     "form-data": "^4.0.5",
     "glob": "^13.0.6",
