@@ -1,12 +1,14 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import ProfileLocators from '../../../Framework/pages/Profile_Portal/ProfileLocators'
+import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 
 test.describe('Launchpad Profile @regression', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
+    await acceptDataAccessModal(page)
 
     const profileLink = page.locator(ProfileLocators.profileLink)
     await profileLink.click()

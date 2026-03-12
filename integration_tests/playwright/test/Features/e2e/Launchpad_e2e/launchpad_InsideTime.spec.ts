@@ -1,12 +1,14 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import launchpadExternalLinksLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadExternalLinksLocators'
+import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 
 test.describe('Launchpad External Web Links - Inside Time @regression', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
+    await acceptDataAccessModal(page)
   })
 
   test('Assert that the user can see the inside time module', async ({ page }) => {

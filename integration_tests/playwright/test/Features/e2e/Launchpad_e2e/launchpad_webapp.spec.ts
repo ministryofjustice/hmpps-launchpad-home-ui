@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
+import { acceptDataAccessModal } from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 
@@ -19,6 +20,10 @@ test.describe('Launchpad Web App @regression', () => {
       try {
         // eslint-disable-next-line no-await-in-loop
         const response = await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 30000 })
+
+        // If the consent modal appears, approve it before continuing.
+        // eslint-disable-next-line no-await-in-loop
+        await acceptDataAccessModal(page)
 
         if (response) {
           // eslint-disable-next-line no-console
