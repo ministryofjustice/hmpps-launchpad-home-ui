@@ -30,7 +30,7 @@ services:
       - hmpps
     depends_on: [redis]
     ports:
-      - "3000:3000"
+      - "3000"
     environment:
       - REDIS_HOST=redis
       - HMPPS_AUTH_EXTERNAL_URL=http://localhost:9090/auth

@@ -142,10 +142,16 @@ appsettings.json
 # Playwright Reports and Artifacts
 playwright-report/
 **/playwright-report/
+playwright-report/index.html
 test-results/
 **/test-results/
 playwright/.cache/
 **/playwright/.cache/
+
+# Playwright local output
+pw-output/
+**/pw-output/
+**/.last-run.json
 
 # Playwright browser downloads
 /ms-playwright/

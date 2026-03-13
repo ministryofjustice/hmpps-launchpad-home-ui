@@ -2,12 +2,14 @@ import dotenv from 'dotenv'
 import { test, expect } from '@playwright/test'
 import TimetableLocators from '../../../Framework/pages/Timetable_Portal/TimetableLocators'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
+import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()
 
 test.describe('Launchpad Portal - Timetable @regression', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
+    await acceptDataAccessModal(page)
 
     const timetableLink = page.locator(launchpadPortalLocators.timetableLink)
     await timetableLink.click()
