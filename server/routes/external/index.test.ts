@@ -37,7 +37,7 @@ describe('GET /external', () => {
     ['visits', `${establishment.prisonerContentHubURL}/tags/1133`],
     ['privacy-policy', `${establishment.prisonerContentHubURL}/content/4856`],
     ['transactions-help', `${establishment.prisonerContentHubURL}/content/8534`],
-    ['think-through-nutrition', 'https://stg.lanah.org/'],
+    ['think-through-nutrition', 'https://stg.lanah.org/hmpps'],
   ])('/external/%s', (url: string, redirectUrl: string) => {
     it(`should redirect the user`, async () => {
       const res = await request(app).get(`/external/${url}`)
