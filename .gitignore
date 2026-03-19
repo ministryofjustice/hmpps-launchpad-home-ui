@@ -143,6 +143,10 @@ appsettings.json
 playwright-report/
 **/playwright-report/
 playwright-report/index.html
+allure-results/
+**/allure-results/
+allure-report/
+**/allure-report/
 test-results/
 **/test-results/
 playwright/.cache/

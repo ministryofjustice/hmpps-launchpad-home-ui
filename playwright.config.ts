@@ -23,6 +23,7 @@ export default defineConfig({
   reporter: [
     ['html', { open: 'never', outputFolder: 'playwright-report' }],
     ['list'],
+    ['allure-playwright', { outputFolder: 'allure-results' }],
     ['junit', { outputFile: 'test-results/results.xml' }],
     ...(process.env.CI ? [['github'] as const] : []), // GitHub Actions annotations in CI
   ],

@@ -171,6 +171,8 @@ jobs:
           echo "📊 Checking for generated reports and test artifacts..."
           echo "Playwright report directory:"
           ls -la playwright-report/ 2>/dev/null || echo "No playwright-report directory found"
+          echo "Allure results directory:"
+          ls -la allure-results/ 2>/dev/null || echo "No allure-results directory found"
           echo "Test results directory (screenshots, videos, traces):"
           ls -la test-results/ 2>/dev/null || echo "No test-results directory found"
           if [ -d "test-results" ]; then
@@ -180,6 +182,14 @@ jobs:
           echo "Legacy integration test directories:"
           ls -la integration_tests/videos/ 2>/dev/null || echo "No integration_tests/videos directory found"
           ls -la integration_tests/screenshots/ 2>/dev/null || echo "No integration_tests/screenshots directory found"
+      - name: Generate Allure report
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -d "allure-results" ]; then
+            npm run allure:generate
+          else
+            echo "No allure-results directory found, skipping report generation"
+          fi
       - name: upload results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
@@ -189,6 +199,8 @@ jobs:
             integration_tests/videos/
             integration_tests/screenshots/
             playwright-report/
+            allure-results/
+            allure-report/
             test-results/
             coverage/
             ctrf/
@@ -199,6 +211,13 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 30
+      - name: Upload Allure Report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-report
+          path: allure-report/
           retention-days: 30
 
       - name: fail the action if the tests failed
