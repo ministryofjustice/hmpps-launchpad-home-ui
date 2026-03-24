@@ -18,6 +18,7 @@ export declare global {
     interface User {
       refreshToken: string
       idToken: IdToken
+      name: string
       accessToken: string
       token: string
     }

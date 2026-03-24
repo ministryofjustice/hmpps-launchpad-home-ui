@@ -36,6 +36,7 @@ describe('authentication', () => {
       refreshToken,
       accessToken,
       token: accessToken,
+      name: 'YKAESSUMAR ALORES',
     }
   })
 
