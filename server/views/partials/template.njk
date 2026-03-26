@@ -1,5 +1,5 @@
 {% from "govuk/components/skip-link/macro.njk" import govukSkipLink -%}
-{% from "govuk/components/header/macro.njk" import govukHeader -%}
+{% from "pfs/components/launchpad-header/macro.njk" import launchpadHeader %}
 {% from "../components/footer/macro.njk" import govukFooter -%}
 
 <!DOCTYPE html>
@@ -36,8 +36,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', '{{ ga4SiteId }}');
-    </script>  
-
+    </script>
   </head>
   <body class="govuk-template__body {{ bodyClasses }}" {%- for attribute, value in bodyAttributes %} {{attribute}}="{{value}}"{% endfor %}>
     <script{% if cspNonce %} nonce="{{ cspNonce }}"{% endif %}>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
@@ -51,9 +50,8 @@
     {% endblock %}
 
     {% block header %}
-      {{ govukHeader({}) }}
+      {{ launchpadHeader(launchpadHeaderConfig) }}
     {% endblock %}
-
 
     {% block main %}
       <div class="{{ containerClasses }}">

@@ -1,3 +1,4 @@
+import { LaunchpadHeaderLocals } from '@ministryofjustice/hmpps-prisoner-facing-components'
 import { IdToken } from '../launchpad'
 
 export default {}
@@ -28,5 +29,8 @@ export declare global {
       id: string
       logout(done: (err: unknown) => void): void
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface Locals extends LaunchpadHeaderLocals {}
   }
 }

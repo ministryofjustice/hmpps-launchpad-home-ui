@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import { isFeatureEnabled } from '../utils/featureFlag/featureFlagUtils'
-import { setTranslationsEnabled } from './setTranslationsEnabled'
+import { setUpLaunchpadHeader } from './setUpLaunchpadHeader'
 
 jest.mock('../utils/featureFlag/featureFlagUtils')
 
-describe('setTranslationsEnabled middleware', () => {
+describe('setUpLaunchpadHeader middleware', () => {
   let req: Partial<Request>
   let res: Partial<Response>
   let next: jest.Mock
@@ -53,50 +53,50 @@ describe('setTranslationsEnabled middleware', () => {
     jest.clearAllMocks()
   })
 
-  it('should set isTranslationsEnabled to true when feature is enabled', () => {
+  it('sets translations to be enabled when feature is enabled', () => {
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(true)
 
-    setTranslationsEnabled(req as Request, res as Response, next)
+    setUpLaunchpadHeader(req as Request, res as Response, next)
 
-    expect(res.locals.isTranslationsEnabled).toBe(true)
+    expect(res.locals.launchpadHeaderConfig.translations.enabled).toBe(true)
     expect(next).toHaveBeenCalled()
   })
 
-  it('should set isTranslationsEnabled to false when feature is disabled', () => {
+  it('sets translations to be disabled when feature is disabled', () => {
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(false)
 
-    setTranslationsEnabled(req as Request, res as Response, next)
+    setUpLaunchpadHeader(req as Request, res as Response, next)
 
-    expect(res.locals.isTranslationsEnabled).toBe(false)
+    expect(res.locals.launchpadHeaderConfig.translations.enabled).toBe(false)
     expect(next).toHaveBeenCalled()
   })
 
-  it('should set currentLng to the value from the query string if provided', () => {
+  it('sets currentLanguageCode to the value from the query string if provided', () => {
     req.language = 'cy'
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(true)
 
-    setTranslationsEnabled(req as Request, res as Response, next)
+    setUpLaunchpadHeader(req as Request, res as Response, next)
 
-    expect(res.locals.currentLng).toBe('cy')
-    expect(res.locals.isTranslationsEnabled).toBe(true)
+    expect(res.locals.launchpadHeaderConfig.translations.currentLanguageCode).toBe('cy')
+    expect(res.locals.launchpadHeaderConfig.translations.enabled).toBe(true)
     expect(next).toHaveBeenCalled()
   })
 
-  it('should set currentLng to "en" if no query string is provided', () => {
+  it('sets currentLanguageCode to "en" if no query string is provided', () => {
     req.language = undefined
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(true)
 
-    setTranslationsEnabled(req as Request, res as Response, next)
+    setUpLaunchpadHeader(req as Request, res as Response, next)
 
-    expect(res.locals.currentLng).toBe('en')
-    expect(res.locals.isTranslationsEnabled).toBe(true)
+    expect(res.locals.launchpadHeaderConfig.translations.currentLanguageCode).toBe('en')
+    expect(res.locals.launchpadHeaderConfig.translations.enabled).toBe(true)
     expect(next).toHaveBeenCalled()
   })
 
-  it('should call next function regardless of feature flag status', () => {
+  it('always calls next function', () => {
     ;(isFeatureEnabled as jest.Mock).mockReturnValue(true)
 
-    setTranslationsEnabled(req as Request, res as Response, next)
+    setUpLaunchpadHeader(req as Request, res as Response, next)
 
     expect(next).toHaveBeenCalled()
   })
