@@ -11,7 +11,7 @@ import { metricsMiddleware } from './monitoring/metricsApp'
 import { initSentry, sentryErrorHandler } from './sentrySetup'
 import nunjucksSetup from './utils/nunjucksSetup'
 
-import { setTranslationsEnabled } from './middleware/setTranslationsEnabled'
+import { setUpLaunchpadHeader } from './middleware/setUpLaunchpadHeader'
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
@@ -76,7 +76,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
-  app.use(setTranslationsEnabled)
+  app.use(setUpLaunchpadHeader)
   app.use(setPrisonerContentHubUrl)
 
   app.use('/', indexRoutes(services))

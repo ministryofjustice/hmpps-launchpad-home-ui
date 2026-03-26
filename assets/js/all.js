@@ -6,8 +6,6 @@ mojFrontend.initAll()
 
 document.addEventListener('DOMContentLoaded', () => {
   initCardClickHandlers()
-  initDeleteButtonHandler()
-  initHeader()
 })
 
 function initCardClickHandlers() {
@@ -27,19 +25,6 @@ function handleCardClick(event) {
     openSpan.classList.toggle('hidden')
     closedSpan.classList.toggle('hidden')
     sensitiveDiv.classList.toggle('hidden')
-  }
-}
-
-function initHeader() {
-  const userToggle = document.querySelector('.launchpad-home-header__user-menu-toggle')
-  const userMenu = document.getElementById('launchpad-home-header-user-menu')
-
-  if (userToggle && userMenu) {
-    userToggle.removeAttribute('hidden')
-
-    initCloseTabs([[userToggle, userMenu]])
-
-    userToggle.addEventListener('click', () => toggleMenu(userToggle, userMenu))
   }
 }
 

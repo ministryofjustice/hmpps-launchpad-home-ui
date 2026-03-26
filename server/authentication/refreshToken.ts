@@ -6,10 +6,8 @@ import config from '../config'
 import { generateBasicAuthHeader } from '../utils/utils'
 
 export const createUserObject = (idToken: string, refreshToken: string, accessToken: string) => {
-  const idTokenJson = JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString())
   return {
-    idToken: idTokenJson,
-    name: idTokenJson.name,
+    idToken: JSON.parse(Buffer.from(idToken.split('.')[1], 'base64').toString()),
     refreshToken,
     accessToken,
     token: accessToken,
