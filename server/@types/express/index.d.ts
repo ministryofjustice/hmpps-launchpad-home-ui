@@ -1,4 +1,4 @@
-import { LaunchpadHeaderLocals } from '@ministryofjustice/hmpps-prisoner-facing-components'
+import { LaunchpadFooterLocals, LaunchpadHeaderLocals } from '@ministryofjustice/hmpps-prisoner-facing-components'
 import { IdToken } from '../launchpad'
 
 export default {}
@@ -30,7 +30,6 @@ export declare global {
       logout(done: (err: unknown) => void): void
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface Locals extends LaunchpadHeaderLocals {}
+    interface Locals extends LaunchpadHeaderLocals, LaunchpadFooterLocals {}
   }
 }
