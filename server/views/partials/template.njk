@@ -1,6 +1,6 @@
 {% from "govuk/components/skip-link/macro.njk" import govukSkipLink -%}
 {% from "pfs/components/launchpad-header/macro.njk" import launchpadHeader %}
-{% from "../components/footer/macro.njk" import govukFooter -%}
+{% from "pfs/components/launchpad-footer/macro.njk" import launchpadFooter %}
 
 <!DOCTYPE html>
 <html lang="{{ htmlLang | default('en') }}" class="govuk-template {{ htmlClasses }}">
@@ -65,7 +65,7 @@
     {% endblock %}
 
     {% block footer %}
-      {{ govukFooter(prisonerContentHubUrl) }}
+      {{ launchpadFooter(launchpadFooterConfig) }}
     {% endblock %}
 
     {% block bodyEnd %}{% endblock %}

@@ -12,6 +12,7 @@ import { initSentry, sentryErrorHandler } from './sentrySetup'
 import nunjucksSetup from './utils/nunjucksSetup'
 
 import { setUpLaunchpadHeader } from './middleware/setUpLaunchpadHeader'
+import { setUpLaunchpadFooter } from './middleware/setUpLaunchpadFooter'
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpHealthChecks from './middleware/setUpHealthChecks'
@@ -77,6 +78,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpLaunchpadHeader)
+  app.use(setUpLaunchpadFooter)
   app.use(setPrisonerContentHubUrl)
 
   app.use('/', indexRoutes(services))
