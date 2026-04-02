@@ -14,7 +14,6 @@ export const user: Express.User = {
     iss: 'https://launchpad-auth-dev.test',
     booking: { id: '12345' },
     establishment: {
-      id: prisonAgencyIds.CookhamWood,
       agency_id: prisonAgencyIds.CookhamWood,
       name: 'cookhamwood',
       display_name: 'HMP Cookham Wood',
@@ -24,6 +23,20 @@ export const user: Express.User = {
   refreshToken: 'refreshToken',
   accessToken: 'accessToken',
   token: 'token',
+  authSource: 'prisoner-auth',
+  establishment: {
+    agency_id: prisonAgencyIds.CookhamWood,
+    name: 'cookhamwood',
+    display_name: 'HMP Cookham Wood',
+    youth: false,
+  },
+  name: 'Name',
+  givenName: 'Given Name',
+  familyName: 'Surname',
+  username: 'Name',
+  userId: 'G1234UE',
+  displayName: 'Name',
+  userRoles: [],
 }
 
 export const staffUser: UserDetail = {

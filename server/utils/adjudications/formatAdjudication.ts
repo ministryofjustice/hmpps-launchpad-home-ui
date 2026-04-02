@@ -6,12 +6,13 @@ import logger from '../../../logger'
 import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
 import { convertToTitleCase, formatLogMessage, toSentenceCase } from '../utils'
-import { IdToken } from '../../@types/launchpad'
+
+type ReducedIdToken = { sub: string; establishment: { agency_id: string } }
 
 export const formatAdjudication = async (
   reportedAdjudication: ReportedAdjudicationDto,
   services: Services,
-  userIdToken: IdToken,
+  userIdToken: ReducedIdToken,
 ) => {
   try {
     logger.info(
@@ -83,7 +84,7 @@ export const formatHearing = async (
   offenceDetails: OffenceDto,
   punishments: PunishmentDto[],
   services: Services,
-  userIdToken: IdToken,
+  userIdToken: ReducedIdToken,
 ) => {
   try {
     logger.info(
