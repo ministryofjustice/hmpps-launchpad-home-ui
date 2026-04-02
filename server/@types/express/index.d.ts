@@ -1,4 +1,4 @@
-import { LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
+import { IdToken, LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
 import { LaunchpadFooterLocals, LaunchpadHeaderLocals } from '@ministryofjustice/hmpps-prisoner-facing-components'
 
 export default {}
@@ -16,8 +16,14 @@ declare module 'express-session' {
 
 export declare global {
   namespace Express {
+    type SimplifiedLaunchpadUser = {
+      idToken: LaunchpadUser['idToken']
+      accessToken: LaunchpadUser['accessToken']
+      refreshToken: LaunchpadUser['refreshToken']
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    interface User extends LaunchpadUser {}
+    interface User extends SimplifiedLaunchpadUser {}
 
     interface Request {
       user: User
