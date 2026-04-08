@@ -306,7 +306,7 @@ export default {
   externalUrls: {
     insideTime: 'https://insidetimeprison.org/',
     thinkThroughNutrition:
-      get('ENVIRONMENT_NAME', 'UNKNOWN') === 'PROD' ? 'https://lanah.org/' : 'https://stg.lanah.org/',
+      get('ENVIRONMENT_NAME', 'UNKNOWN') === 'PROD' ? 'https://lanah.org/hmpps' : 'https://stg.lanah.org/hmpps',
   },
   analytics: {
     // use staging GA4 tag as fallback
