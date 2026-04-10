@@ -181,8 +181,6 @@ export default {
       agencyId: 'BWI',
       prisonerContentHubURL: 'https://berwyn.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bwiclient.unilink.prisoner.service.justice.gov.uk:1108',
-      hideHomepageEventsSummaryAndProfileLinkTile: false,
-      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'CDI',
@@ -242,7 +240,6 @@ export default {
       agencyId: 'NHI',
       prisonerContentHubURL: 'https://newhall.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://nhiclient.unilink.prisoner.service.justice.gov.uk:96',
-      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'RNI',
@@ -266,7 +263,6 @@ export default {
       agencyId: 'STI',
       prisonerContentHubURL: 'https://styal.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://sticlient.unilink.prisoner.service.justice.gov.uk:1102',
-      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'WHI',
@@ -278,7 +274,6 @@ export default {
       agencyId: 'WLI',
       prisonerContentHubURL: 'https://wayland.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://wliclient.unilink.prisoner.service.justice.gov.uk:1114',
-      hideThinkThroughNutrition: true,
     },
     {
       agencyId: 'WNI',
@@ -306,7 +301,7 @@ export default {
   externalUrls: {
     insideTime: 'https://insidetimeprison.org/',
     thinkThroughNutrition:
-      get('ENVIRONMENT_NAME', 'UNKNOWN') === 'PROD' ? 'https://lanah.org/' : 'https://stg.lanah.org/',
+      get('ENVIRONMENT_NAME', 'UNKNOWN') === 'PROD' ? 'https://lanah.org/hmpps' : 'https://stg.lanah.org/hmpps',
   },
   analytics: {
     // use staging GA4 tag as fallback
