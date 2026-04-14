@@ -97,7 +97,7 @@
   "dependencies": {
     "@ministryofjustice/frontend": "^8.0.1",
     "@ministryofjustice/hmpps-audit-client": "1.1.1",
-    "@ministryofjustice/hmpps-prisoner-auth": "0.0.5",
+    "@ministryofjustice/hmpps-prisoner-auth": "0.0.6",
     "@ministryofjustice/hmpps-prisoner-facing-components": "^0.0.8",
     "@sentry/node": "^9.47.1",
     "@sentry/profiling-node": "^9.47.1",
