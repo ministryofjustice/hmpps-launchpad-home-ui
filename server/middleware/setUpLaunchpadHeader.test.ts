@@ -32,6 +32,13 @@ describe('setUpLaunchpadHeader middleware', () => {
         },
         refreshToken: '',
         accessToken: '',
+        authSource: 'prisoner-auth',
+        name: '',
+        token: '',
+        username: '',
+        userId: '',
+        displayName: '',
+        userRoles: [],
       },
       language: 'en',
       get: jest.fn().mockImplementation((header: string) => {

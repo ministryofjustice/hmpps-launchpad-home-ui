@@ -47,15 +47,12 @@ export const user: LaunchpadUser = {
   idToken,
   accessToken: 'ACCESS_TOKEN',
   token: 'ACCESS_TOKEN',
-  establishment: idToken.establishment,
   authSource: 'prisoner-auth',
   name: '',
-  givenName: '',
-  familyName: '',
   username: '',
   userId: '',
   displayName: '',
-  userRoles: []
+  userRoles: [],
 }
 
 export const flashProvider = jest.fn()
