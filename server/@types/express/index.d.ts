@@ -26,6 +26,8 @@ export declare global {
       logout(done: (err: unknown) => void): void
     }
 
-    interface Locals extends LaunchpadHeaderLocals, LaunchpadFooterLocals {}
+    interface Locals extends LaunchpadHeaderLocals, LaunchpadFooterLocals {
+      user?: LaunchpadUser
+    }
   }
 }

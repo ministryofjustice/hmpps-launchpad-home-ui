@@ -72,7 +72,7 @@ function appSetup(
   app.use((req, res, next) => {
     req.user = userSupplier()
     req.flash = flashProvider
-    res.locals = {}
+    res.locals = { user: req.user }
     res.locals.user = { ...req.user }
     next()
   })
