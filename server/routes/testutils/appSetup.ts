@@ -1,10 +1,10 @@
+import { LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
 import cookieSession from 'cookie-session'
 import express, { Express } from 'express'
 import createError from 'http-errors'
 import path from 'path'
 
 import { csrfSync } from 'csrf-sync'
-import * as auth from '../../authentication/auth'
 import errorHandler from '../../errorHandler'
 import featureFlagMiddleware from '../../middleware/featureFlag/featureFlag'
 import { Services } from '../../services'
@@ -42,11 +42,17 @@ export const idToken = {
   iss: 'iss',
 }
 
-export const user = {
+export const user: LaunchpadUser = {
   refreshToken: 'REFRESH_TOKEN',
   idToken,
   accessToken: 'ACCESS_TOKEN',
   token: 'ACCESS_TOKEN',
+  authSource: 'prisoner-auth',
+  name: '',
+  username: '',
+  userId: '',
+  displayName: '',
+  userRoles: [],
 }
 
 export const flashProvider = jest.fn()
@@ -66,7 +72,7 @@ function appSetup(
   app.use((req, res, next) => {
     req.user = userSupplier()
     req.flash = flashProvider
-    res.locals = {}
+    res.locals = { user: req.user }
     res.locals.user = { ...req.user }
     next()
   })
@@ -119,6 +125,5 @@ export function appWithAllRoutes({
   userSupplier?: () => Express.User
   disableCsrf?: boolean
 }): Express {
-  auth.default.authenticationMiddleware = () => (req, res, next) => next()
   return appSetup(services as Services, production, userSupplier, disableCsrf)
 }

@@ -14,14 +14,13 @@ import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
 import { formatAdjudication, formatHearing } from './formatAdjudication'
-import { IdToken } from '../../@types/launchpad'
 
 const mockIdToken = {
   sub: 'prisonerId',
   establishment: {
     agency_id: 'agencyId',
   },
-} as IdToken
+}
 
 const services = {
   adjudicationsService: createMockAdjucationsService(),

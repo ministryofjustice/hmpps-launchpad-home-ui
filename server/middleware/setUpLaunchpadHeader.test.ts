@@ -23,7 +23,6 @@ describe('setUpLaunchpadHeader middleware', () => {
           exp: 123456789,
           booking: { id: '' },
           establishment: {
-            id: '',
             agency_id: 'CKI',
             name: '',
             display_name: '',
@@ -33,7 +32,13 @@ describe('setUpLaunchpadHeader middleware', () => {
         },
         refreshToken: '',
         accessToken: '',
+        authSource: 'prisoner-auth',
+        name: '',
         token: '',
+        username: '',
+        userId: '',
+        displayName: '',
+        userRoles: [],
       },
       language: 'en',
       get: jest.fn().mockImplementation((header: string) => {

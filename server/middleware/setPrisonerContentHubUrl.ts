@@ -6,7 +6,7 @@ export async function setPrisonerContentHubUrl(req: Request, res: Response, next
   const { user } = res.locals
 
   if (user) {
-    const { prisonerContentHubURL } = (await getEstablishmentData(user.idToken.establishment.agency_id)) || {}
+    const { prisonerContentHubURL } = getEstablishmentData(user.idToken.establishment.agency_id) || {}
 
     res.locals.prisonerContentHubUrl = prisonerContentHubURL
   }
