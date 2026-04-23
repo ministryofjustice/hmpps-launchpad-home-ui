@@ -312,4 +312,5 @@ export default {
     // use staging GA4 tag as fallback
     ga4SiteId: get('GA4_SITE_ID', 'G-4VW039LBEF', requiredInProduction),
   },
+  allowEventsAndProfileTileToPrisoners: get('FEATURE_ALLOW_EVENTS_PROFILE_TO_PRISONERS', ''),
 }
