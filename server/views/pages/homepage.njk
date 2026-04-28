@@ -5,9 +5,6 @@
 
 {% set pageTitle = data.title + " - " + applicationName %}
 {% set mainClasses = "govuk-body govuk-!-margin-bottom-0 govuk-!-padding-bottom-0" %}
-{% if data.hideHomepageEventsSummaryAndProfileLinkTile %}
-  {% set mainClasses = mainClasses + " hidden-tiles" %}
-{% endif %}    
 
 {% block content %}
   <div class="hp-container">
@@ -24,7 +21,7 @@
       <div class="internal-link-tile" id="internal-link-tile-profile">
         <a href="/profile" rel="noreferrer noopener">
           <h2 class="govuk-!-font-size-24 govuk-!-margin-top-0">{{ t('homepage.links.profile') }}</h2>
-          <p>{{ t('homepage.links.profileDesc') }}</p> 
+          <p>{{ t('homepage.links.profileDesc') }}</p>
         </a>
       </div>
     </section>

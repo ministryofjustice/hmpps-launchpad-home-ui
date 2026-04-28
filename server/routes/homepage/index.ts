@@ -2,10 +2,8 @@ import { Request, Response, Router } from 'express'
 import i18next from 'i18next'
 import { DateFormats } from '../../constants/date'
 import type { Services } from '../../services'
-import { getEstablishmentData } from '../../utils/utils'
 import { formatDateLocalized } from '../../utils/date/formatDateLocalized'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
-import config from '../../config'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -21,7 +19,6 @@ export default function routes(services: Services): Router {
       user.idToken.establishment.agency_id,
     )
     const homepageLinks = await services.linksService.getHomepageLinks(user, language)
-    const establishmentData = getEstablishmentData(user.idToken?.establishment?.agency_id)
 
     await auditService.audit({ what: AUDIT_EVENTS.VIEW_HOMEPAGE, idToken: user.idToken })
 
@@ -31,10 +28,6 @@ export default function routes(services: Services): Router {
         today: formatDateLocalized(new Date(), DateFormats.PRETTY_DATE, language),
         prisonerEventsSummary,
         homepageLinks,
-        hideEventsSummaryAndProfileLinkTile: !showEventsSummaryAndProfileLinkTile(
-          establishmentData?.hideHomepageEventsSummaryAndProfileLinkTile,
-          req.user.idToken.sub,
-        ),
       },
       errors: req.flash('errors'),
       message: req.flash('message'),
@@ -42,9 +35,4 @@ export default function routes(services: Services): Router {
   })
 
   return router
-}
-
-export const showEventsSummaryAndProfileLinkTile = (featureIsHiddenInConfig: boolean, prisonerId: string): boolean => {
-  const allowedPrisoners = config.allowEventsAndProfileTileToPrisoners.split(',')
-  return !featureIsHiddenInConfig || allowedPrisoners.includes(prisonerId)
 }
