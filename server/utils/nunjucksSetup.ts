@@ -30,10 +30,10 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
-      'node_modules/govuk-frontend/dist/govuk/assets',
       'node_modules/govuk-frontend/dist/',
-      'node_modules/@ministryofjustice/frontend/moj/assets',
-      'node_modules/@ministryofjustice/frontend',
+      'node_modules/govuk-frontend/dist/components/',
+      'node_modules/@ministryofjustice/frontend/',
+      'node_modules/@ministryofjustice/frontend/moj/components/',
       'node_modules/@ministryofjustice/hmpps-prisoner-facing-components/dist/assets/',
     ],
     {
