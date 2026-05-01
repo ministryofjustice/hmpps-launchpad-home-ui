@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@ministryofjustice/frontend": "^9.0.0",
+    "@ministryofjustice/frontend": "^8.0.1",
     "@ministryofjustice/hmpps-audit-client": "1.1.1",
     "@ministryofjustice/hmpps-prisoner-auth": "0.0.6",
     "@ministryofjustice/hmpps-prisoner-facing-components": "^0.0.8",
@@ -114,7 +114,7 @@
     "express": "^5.2.1",
     "express-prom-bundle": "^8.0.0",
     "express-session": "^1.19.0",
-    "govuk-frontend": "^6.1.0",
+    "govuk-frontend": "^5.14.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
     "i18next": "^26.0.8",
