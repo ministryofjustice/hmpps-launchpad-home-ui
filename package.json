@@ -117,7 +117,7 @@
     "govuk-frontend": "^5.14.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
-    "i18next": "^25.8.14",
+    "i18next": "^26.0.8",
     "i18next-fs-backend": "^2.6.1",
     "i18next-http-middleware": "^3.9.2",
     "jwt-decode": "^4.0.0",
