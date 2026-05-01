@@ -42,7 +42,7 @@
     <script{% if cspNonce %} nonce="{{ cspNonce }}"{% endif %}>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
     {% block bodyStart %}{% endblock %}
 
-    {% block skipLink %}
+    {% block govukSkipLink %}
       {{ govukSkipLink({
         href: '#main-content',
         text: 'Skip to main content'
@@ -53,9 +53,9 @@
       {{ launchpadHeader(launchpadHeaderConfig) }}
     {% endblock %}
 
-    {% block main %}
+    {% block container %}
       <div class="{{ containerClasses }}">
-        {% block beforeContent %}
+        {% block containerStart %}
         {% endblock %}
         <main class="govuk-main-wrapper {{ mainClasses }}" id="main-content" role="main"{% if mainLang %} lang="{{ mainLang }}"{% endif %}>
           {% block title %}{% endblock %}
