@@ -4,8 +4,8 @@ $path: '/assets/images/';
 $moj-page-width: 1170px;
 $govuk-page-width: $moj-page-width;
 
-@import "govuk-frontend/dist/govuk/index";
-@import "@ministryofjustice/frontend/moj/all";
+@import "node_modules/govuk-frontend/dist/govuk/index";
+@import "node_modules/@ministryofjustice/frontend/moj/all";
 @import 'node_modules/@ministryofjustice/hmpps-prisoner-facing-components/dist/assets/scss/all';
 
 @import './components/events-summary';
