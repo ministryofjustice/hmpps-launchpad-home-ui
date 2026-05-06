@@ -40,7 +40,6 @@ export type Establishment = {
   agencyId: string
   prisonerContentHubURL: string
   selfServiceURL: string
-  hideHomepageEventsSummaryAndProfileLinkTile?: boolean
   hideInsideTime?: boolean
   hideThinkThroughNutrition?: boolean
 }

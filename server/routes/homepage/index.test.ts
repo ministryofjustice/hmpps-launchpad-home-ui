@@ -141,32 +141,6 @@ describe('GET /', () => {
       })
   })
 
-  it('should hide events summary and profile link tile when hide flag is set', () => {
-    ;(getEstablishmentData as jest.Mock).mockReturnValue({
-      agencyId,
-      prisonerContentHubURL: links[1].url,
-      selfServiceURL: links[0].url,
-      hideHomepageEventsSummaryAndProfileLinkTile: true,
-    })
-
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        const $ = cheerio.load(res.text)
-
-        expect($('#events-summary-wrapper h2').text()).not.toBe("Today's events")
-        expect($('#events-summary-wrapper a').attr('href')).not.toBe(`/timetable`)
-        expect($('#events-summary-wrapper a').text()).not.toBe('View my timetable')
-
-        expect($('#internal-link-tile-profile a').attr('href')).not.toBe(`${links[1].url}/profile`)
-        expect($('#internal-link-tile-profile a h2').text()).not.toBe('Profile')
-        expect($('#internal-link-tile-profile a p').text()).not.toBe(
-          'Check money, visits, IEP, adjudications and timetable',
-        )
-      })
-  })
-
   it('should show inside times tile when hide flag is unset', () => {
     links[3].hidden = false
     linksService.getHomepageLinks.mockResolvedValue({ links })
