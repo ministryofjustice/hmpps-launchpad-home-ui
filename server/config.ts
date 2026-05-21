@@ -299,7 +299,7 @@ export default {
     learningAndSkills: 'tags/1341',
     moneyAndDebt: 'tags/872',
     visits: 'tags/1133',
-    privacyPolicy: 'content/4856',
+    privacyPolicy: 'content/64583',
     transactionsHelp: 'content/8534',
   },
   externalUrls: {
