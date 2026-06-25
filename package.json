@@ -27,7 +27,7 @@
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "npx playwright test",
     "int-test-ui": "npx playwright test --ui",
-    "int-test-init:ci": "npx playwright install --with-deps chromium",
+    "int-test-init:ci": "npx playwright install chromium",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",
     "clean": "rm -rf dist build node_modules stylesheets",
