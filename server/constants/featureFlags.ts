@@ -12,6 +12,7 @@ interface FeatureFlags {
 const COMMON_PRISON_LIST = [
   prisonAgencyIds.Berwyn,
   prisonAgencyIds.Bedford,
+  prisonAgencyIds.Bristol,
   prisonAgencyIds.Bullingdon,
   prisonAgencyIds.Cardiff,
   prisonAgencyIds.Chelmsford,

@@ -2,6 +2,7 @@
 export const prisonAgencyIds = {
   Bedford: 'BFI',
   Berwyn: 'BWI',
+  Bristol: 'BLI',
   Bullingdon: 'BNI',
   Cardiff: 'CFI',
   CookhamWood: 'CKI',
