@@ -37,6 +37,8 @@
       "exampleAppDesc": "This link opens an allow-listed application which is hosted externally to Launchpad.",
       "insideTime": "Inside Time",
       "insideTimeDesc": "Read the national newspaper for prisoners and detainees.",
+      "manageApps": "Apps",
+      "manageAppsDesc": "Send a new app and check on apps already sent",
       "nationalPrisonRadio": "National Prison Radio",
       "nationalPrisonRadioDesc": "Listen to 24/7 music, talk, requests and playback",
       "profile": "Profile",
