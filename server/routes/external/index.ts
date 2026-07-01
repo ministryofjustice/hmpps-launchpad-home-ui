@@ -32,7 +32,7 @@ export default function routes(): Router {
       const { prisonerContentHubURL, selfServiceURL } = getEstablishmentData(agencyId)
 
       const links: { [key: string]: string } = {
-        '/manage-apps': config.externalUrls.manageAppsUi,
+        '/manage-apps': config.apis.manageApps.url,
         '/self-service': selfServiceURL,
         '/content-hub': prisonerContentHubURL,
         '/prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,

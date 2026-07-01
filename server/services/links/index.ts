@@ -91,7 +91,7 @@ export default class Linkservice {
   }
 }
 
-const isManageAppsHidden = (agencyId: string, prisonerId: string, activeEstablishments: string[]): boolean => {
+const isManageAppsHidden = (agencyId: string, prisonerId: string, activeAgencies: string[]): boolean => {
   const allowedPrisoners = config.allowBetaAccessToPrisoners.split(',')
-  return !(activeEstablishments.includes(agencyId) && allowedPrisoners.includes(prisonerId))
+  return !(activeAgencies.includes(agencyId) && allowedPrisoners.includes(prisonerId))
 }

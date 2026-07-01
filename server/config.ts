@@ -163,7 +163,7 @@ export default {
       serviceName: get('AUDIT_SERVICE_NAME', serviceName, requiredInProduction),
     },
     manageApps: {
-      url: get('MANAGE_APPS_API_URL', 'http://localhost:8080', requiredInProduction),
+      url: get('MANAGE_APPS_UI_URL', 'http://localhost:8080', requiredInProduction),
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -314,7 +314,6 @@ export default {
     insideTime: 'https://insidetimeprison.org/',
     thinkThroughNutrition:
       get('ENVIRONMENT_NAME', 'UNKNOWN') === 'PROD' ? 'https://lanah.org/hmpps' : 'https://stg.lanah.org/hmpps',
-    manageAppsUi: get('MANAGE_APPS_UI_URL', ''),
   },
   analytics: {
     // use staging GA4 tag as fallback

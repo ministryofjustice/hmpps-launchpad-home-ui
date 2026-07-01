@@ -2,6 +2,10 @@ import logger from '../../../../logger'
 import config, { ApiConfig } from '../../../config'
 import RestClient from '../../restClient'
 
+interface ManageAppsInfoResponse {
+  activeAgencies: string[]
+}
+
 export default class ManageAppsClient {
   public restClient: RestClient
 
@@ -11,9 +15,11 @@ export default class ManageAppsClient {
 
   async getActiveAgencies(): Promise<string[]> {
     try {
-      return await this.restClient.get({
+      const response = await this.restClient.get<ManageAppsInfoResponse>({
         path: '/info',
       })
+
+      return response.activeAgencies
     } catch (error) {
       logger.error('Error fetching active manage apps establishments', error)
       throw new Error('Failed to fetch active manage apps establishments')
