@@ -13,6 +13,7 @@ import HmppsAuthClient from './api/hmppsAuth/client'
 import IncentivesApiClient from './api/incentivesApi/client'
 import LaunchpadAuthClient from './api/launchpadAuth/client'
 import LocationApiClient from './api/locationApi/client'
+import ManageAppsClient from './api/manageAppsApi/client'
 import NomisMappingApiClient from './api/nomisMappingApi/client'
 import PrisonApiClient from './api/prisonApi/client'
 import PrisonerContactRegistryApiClient from './api/prisonerContactRegistryApi/client'
@@ -36,6 +37,7 @@ export const dataAccess = () => ({
   locationApiClientBuilder: ((token: string) => new LocationApiClient(token)) as RestClientBuilder<LocationApiClient>,
   nomisMappingApiClientBuilder: ((token: string) =>
     new NomisMappingApiClient(token)) as RestClientBuilder<NomisMappingApiClient>,
+  manageAppsApiClientBuilder: ((token: string) => new ManageAppsClient(token)) as RestClientBuilder<ManageAppsClient>,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>
@@ -46,6 +48,7 @@ export {
   IncentivesApiClient,
   LaunchpadAuthClient,
   LocationApiClient,
+  ManageAppsClient,
   NomisMappingApiClient,
   PrisonApiClient,
   PrisonerContactRegistryApiClient,

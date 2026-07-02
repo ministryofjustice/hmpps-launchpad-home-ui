@@ -9,6 +9,7 @@ export default function routes(): Router {
 
   router.get(
     [
+      '/manage-apps',
       '/self-service',
       '/content-hub',
       '/prison-radio',
@@ -31,6 +32,7 @@ export default function routes(): Router {
       const { prisonerContentHubURL, selfServiceURL } = getEstablishmentData(agencyId)
 
       const links: { [key: string]: string } = {
+        '/manage-apps': config.apis.manageApps.url,
         '/self-service': selfServiceURL,
         '/content-hub': prisonerContentHubURL,
         '/prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,

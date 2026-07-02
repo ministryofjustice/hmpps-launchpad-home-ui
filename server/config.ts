@@ -162,6 +162,14 @@ export default {
       enabled: get('AUDIT_ENABLED', 'false', requiredInProduction),
       serviceName: get('AUDIT_SERVICE_NAME', serviceName, requiredInProduction),
     },
+    manageApps: {
+      url: get('MANAGE_APPS_UI_URL', 'http://localhost:8080', requiredInProduction),
+      timeout: {
+        response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
+    },
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   establishments: [
@@ -311,5 +319,5 @@ export default {
     // use staging GA4 tag as fallback
     ga4SiteId: get('GA4_SITE_ID', 'G-4VW039LBEF', requiredInProduction),
   },
-  allowEventsAndProfileTileToPrisoners: get('FEATURE_ALLOW_EVENTS_PROFILE_TO_PRISONERS', ''),
+  allowBetaAccessToPrisoners: get('FEATURE_ALLOW_BETA_ACCESS_TO_PRISONERS', ''),
 }
