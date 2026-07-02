@@ -19,6 +19,7 @@ generic-service:
     LOCATION_API_URL: 'https://locations-inside-prison-api.hmpps.service.justice.gov.uk'
     NOMIS_MAPPING_API_URL: 'https://nomis-sync-prisoner-mapping.hmpps.service.justice.gov.uk'
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth.hmpps.service.justice.gov.uk'
+    MANAGE_APPS_UI_URL: 'https://prisoner-apps.hmpps.service.justice.gov.uk'
     GA4_SITE_ID: 'G-7M5BW140G4'
     ENVIRONMENT_NAME: PROD
     AUDIT_ENABLED: 'true'

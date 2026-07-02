@@ -22,6 +22,7 @@ generic-service:
     LOCATION_API_URL: 'https://locations-inside-prison-api-staging.hmpps.service.justice.gov.uk'
     NOMIS_MAPPING_API_URL: 'https://nomis-sync-prisoner-mapping-staging.hmpps.service.justice.gov.uk'
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-dev.hmpps.service.justice.gov.uk'
+    MANAGE_APPS_UI_URL: 'https://prisoner-apps-staging.hmpps.service.justice.gov.uk'
     APPLICATIONINSIGHTS_CONNECTION_STRING: null
     GA4_SITE_ID: 'G-4VW039LBEF'
     ENVIRONMENT_NAME: STAGING
