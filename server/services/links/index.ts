@@ -28,7 +28,8 @@ export default class Linkservice {
 
     const manageAppsApiClient = this.manageAppsApiClientFactory(token)
     const manageAppsActiveAgencies = await manageAppsApiClient.getActiveAgencies()
-    const manageAppsVisible = manageAppsActiveAgencies.includes(agencyId) && isUserBetaAccessPrisoner(user.idToken.sub)
+    const manageAppsVisible =
+      isAgencyActive(agencyId, manageAppsActiveAgencies) && isUserBetaAccessPrisoner(user.idToken.sub)
 
     const links = [
       {
@@ -84,8 +85,12 @@ export default class Linkservice {
   }
 }
 
+export const isAgencyActive = (agencyId: string, activeAgencies: string[]): boolean => {
+  return activeAgencies.includes(agencyId) || activeAgencies[0] === '***'
+}
+
 // NOTE: intended only for Manage Apps on a temporary basis
 const isUserBetaAccessPrisoner = (prisonerId: string): boolean => {
-  const betaAccessPrisoners = config.allowBetaAccessToPrisoners.split(',')
-  return betaAccessPrisoners.includes(prisonerId)
+  const betaAccessPrisoner = config.allowBetaAccessToPrisoners.split(',')
+  return betaAccessPrisoner.includes(prisonerId)
 }

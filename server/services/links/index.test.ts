@@ -1,9 +1,9 @@
-import Linkservice from '.'
+import Linkservice, { isAgencyActive } from '.'
 import { HmppsAuthClient, ManageAppsClient, RestClientBuilder } from '../../data'
 
 jest.mock('../../config', () => ({
   ...jest.requireActual('../../config').default,
-  allowBetaAccessToPrisoners: 'prisoner 1, prisoner 2, prisoner 3',
+  allowBetaAccessToPrisoners: 'prisoner 1,prisoner 2,prisoner 3',
 }))
 
 jest.mock('i18next', () => ({
@@ -44,18 +44,34 @@ describe('Linkservice', () => {
     expect(thinkThroughNutritionTile.hidden).toBe(true)
   })
 
-  it('displays manage app link for allowed users in Ranby', async () => {
+  test.each(['prisoner 1', 'prisoner 2', 'prisoner 3'])(
+    'displays manage app link for allowed users in Ranby',
+    async prisonerId => {
+      const { links } = await linkService.getHomepageLinks(
+        { idToken: { establishment: { agency_id: 'RNI' }, sub: prisonerId } },
+        'en',
+      )
+
+      const manageAppsTile = links[0]
+
+      expect(manageAppsTile.hidden).toBe(false)
+    },
+  )
+
+  it('does not display manage app link for disallowed users', async () => {
     const { links } = await linkService.getHomepageLinks(
-      { idToken: { establishment: { agency_id: 'RNI' }, sub: 'prisoner 1' } },
+      { idToken: { establishment: { agency_id: 'RNI' }, sub: 'prisoner 4' } },
       'en',
     )
 
     const manageAppsTile = links[0]
 
-    expect(manageAppsTile.hidden).toBe(false)
+    expect(manageAppsTile.hidden).toBe(true)
   })
 
-  it('does not display manage app link for disallowed users', async () => {
+  it('does not display manage app link for disallowed users even if available at all prisons', async () => {
+    manageAppsApiClient.getActiveAgencies.mockResolvedValue(['***'])
+
     const { links } = await linkService.getHomepageLinks(
       { idToken: { establishment: { agency_id: 'RNI' }, sub: 'prisoner 4' } },
       'en',
@@ -75,5 +91,21 @@ describe('Linkservice', () => {
     const manageAppsTile = links[0]
 
     expect(manageAppsTile.hidden).toBe(true)
+  })
+})
+
+describe('isAgencyActive', () => {
+  test.each([
+    ['LEI', ['LEI', 'ABC']],
+    ['ABC', ['LEI', 'ABC']],
+  ])(
+    'is active when the given agencyId appears in the given list of active agencyIds',
+    (agencyId: string, activeAgencyIds: string[]) => {
+      expect(isAgencyActive(agencyId, activeAgencyIds)).toBe(true)
+    },
+  )
+
+  it('is active when the activeAgencyIds is a wildcard indicating all prisons are active', () => {
+    expect(isAgencyActive('LEI', ['***'])).toBe(true)
   })
 })
