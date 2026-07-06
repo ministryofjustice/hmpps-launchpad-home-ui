@@ -180,6 +180,12 @@ export default {
       hideThinkThroughNutrition: true,
     },
     {
+      agencyId: 'BLI',
+      prisonerContentHubURL: 'https://bristol.content-hub.prisoner.service.justice.gov.uk',
+      selfServiceURL: 'https://example.com:1234',
+      hideThinkThroughNutrition: true,
+    },
+    {
       agencyId: 'BNI',
       prisonerContentHubURL: 'https://bullingdon.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://bniclient.unilink.prisoner.service.justice.gov.uk:1128',
