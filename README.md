@@ -1,29 +1,33 @@
 # HMPPS Launchpad
-## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies.
-
-`docker-compose pull`
-
-`docker-compose up`
 
 ### Dependencies
 The app requires:
 * hmpps-auth - for authentication
 * redis - session store and token caching
 
-### Running the app for development
+## Running the app for development
 
-To start the main services excluding the example typescript template app:
+### Set up environment variables
 
-`docker-compose up --scale=app=0`
+1. copy `example.env` into `.env`
+2. External urls are already present for the dev environment. To configure for another environment, values can be copied from the `values-<env>.yaml` files in `helm_deploy`
+3. the client secrets can be copied from the `hmpps-launchpad-home-ui` kubernetes secret in the corresponding launchpad namespace
+    - if `cloud-platform-cli` is installed you can decode the secret with `cloud-platform decode-secret -n hmpps-launchpad-dev -s hmpps-launchpad-home-ui`
+    - alternatively with kubectl: `kubectl get secret hmpps-launchpad-home-ui -n hmpps-launchpad-dev -o json | jq '.data | map_values(@base64d)'`
 
-Install dependencies using `npm run update`, ensuring you are using `node v24.x` and `npm v11.x`
+**N.B** Secrets should never be committed to the codebase
 
-Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the GitHub actions build config.
+### Set up local dependencies
 
-And then, to build the assets and start the app with nodemon:
+The only local dependency required in order to run LaunchPad is Redis.  The easiest way to achieve this is to run the `local` docker-compose profile via:
 
-`npm run start:dev`
+`docker compose --profile local up -d`
+
+### Run application 
+
+`npm start:dev`
+
+The application will then be available on port 3000
 
 ### Run linter
 
