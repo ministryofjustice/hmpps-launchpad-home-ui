@@ -22,7 +22,7 @@ export default class ManageAppsClient {
       return response.activeAgencies
     } catch (error) {
       logger.error('Error fetching active manage apps establishments', error)
-      throw new Error('Failed to fetch active manage apps establishments')
+      return []
     }
   }
 }

@@ -4,7 +4,6 @@ import { Link } from '../../@types/launchpad'
 import { getEstablishmentData } from '../../utils/utils'
 import config from '../../config'
 import { HmppsAuthClient, ManageAppsClient, RestClientBuilder } from '../../data'
-import logger from '../../../logger'
 
 export type LinksData = {
   links: Link[]
@@ -26,16 +25,11 @@ export default class Linkservice {
     )
 
     const token = await this.hmppsAuthClient.getSystemClientToken()
-    const manageAppsApiClient = this.manageAppsApiClientFactory(token)
 
-    let manageAppsHidden: boolean
-    try {
-      const activeAgencies = await manageAppsApiClient.getActiveAgencies()
-      manageAppsHidden = isManageAppsHidden(agencyId, user.idToken.sub, activeAgencies)
-    } catch (error) {
-      manageAppsHidden = true
-      logger.error('Unable to establish manage apps active agencies', error)
-    }
+    const manageAppsApiClient = this.manageAppsApiClientFactory(token)
+    const manageAppsActiveAgencies = await manageAppsApiClient.getActiveAgencies()
+    const manageAppsVisible =
+      isAgencyActive(agencyId, manageAppsActiveAgencies) && isUserBetaAccessPrisoner(user.idToken.sub)
 
     const links = [
       {
@@ -44,7 +38,7 @@ export default class Linkservice {
         url: '/external/manage-apps',
         description: i18next.t('homepage.links.manageAppsDesc', { lng: language }),
         openInNewTab: true,
-        hidden: manageAppsHidden,
+        hidden: !manageAppsVisible,
       },
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',
@@ -91,7 +85,12 @@ export default class Linkservice {
   }
 }
 
-const isManageAppsHidden = (agencyId: string, prisonerId: string, activeAgencies: string[]): boolean => {
-  const allowedPrisoners = config.allowBetaAccessToPrisoners.split(',')
-  return !(activeAgencies.includes(agencyId) && allowedPrisoners.includes(prisonerId))
+export const isAgencyActive = (agencyId: string, activeAgencies: string[]): boolean => {
+  return activeAgencies.includes(agencyId) || activeAgencies[0] === '***'
+}
+
+// NOTE: intended only for Manage Apps on a temporary basis
+const isUserBetaAccessPrisoner = (prisonerId: string): boolean => {
+  const betaAccessPrisoner = config.allowBetaAccessToPrisoners.split(',')
+  return betaAccessPrisoner.includes(prisonerId)
 }
