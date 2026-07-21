@@ -19,6 +19,7 @@ export const services = () => {
     launchpadAuthClientBuilder,
     locationApiClientBuilder,
     manageAppsApiClientBuilder,
+    pinPhonesApiClientBuilder,
     nomisMappingApiClientBuilder,
     prisonApiClientBuilder,
     prisonerContactRegistryApiClientBuilder,
@@ -27,7 +28,7 @@ export const services = () => {
   const adjudicationsService = new AdjudicationsService(hmppsAuthClient, adjudicationsApiClientBuilder)
   const incentivesService = new IncentivesService(hmppsAuthClient, incentivesApiClientBuilder)
   const launchpadAuthService = new LaunchpadAuthService(hmppsAuthClient, launchpadAuthClientBuilder)
-  const linksService = new LinksService(hmppsAuthClient, manageAppsApiClientBuilder)
+  const linksService = new LinksService(hmppsAuthClient, manageAppsApiClientBuilder, pinPhonesApiClientBuilder)
   const locationService = new LocationService(hmppsAuthClient, locationApiClientBuilder)
   const nomisMappingService = new NomisMappingService(hmppsAuthClient, nomisMappingApiClientBuilder)
   const prisonService = new PrisonService(hmppsAuthClient, prisonApiClientBuilder)

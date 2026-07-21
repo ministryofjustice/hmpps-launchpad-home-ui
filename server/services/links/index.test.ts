@@ -1,5 +1,5 @@
 import Linkservice, { isAgencyActive } from '.'
-import { HmppsAuthClient, ManageAppsClient, RestClientBuilder } from '../../data'
+import { HmppsAuthClient, ManageAppsClient, PinPhonesClient, RestClientBuilder } from '../../data'
 
 jest.mock('../../config', () => ({
   ...jest.requireActual('../../config').default,
@@ -20,6 +20,8 @@ describe('Linkservice', () => {
   let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
   let manageAppsApiClientFactory: jest.MockedFunction<RestClientBuilder<ManageAppsClient>>
   let manageAppsApiClient: jest.Mocked<ManageAppsClient>
+  let pinPhonesApiClientFactory: jest.MockedFunction<RestClientBuilder<PinPhonesClient>>
+  let pinPhonesApiClient: jest.Mocked<PinPhonesClient>
 
   let linkService: Linkservice
 
@@ -29,9 +31,15 @@ describe('Linkservice', () => {
     manageAppsApiClientFactory = jest.fn()
     manageAppsApiClient = new ManageAppsClient(null) as jest.Mocked<ManageAppsClient>
 
-    linkService = new Linkservice(hmppsAuthClient, manageAppsApiClientFactory)
+    pinPhonesApiClientFactory = jest.fn()
+    pinPhonesApiClient = new PinPhonesClient(null) as jest.Mocked<PinPhonesClient>
+
+    linkService = new Linkservice(hmppsAuthClient, manageAppsApiClientFactory, pinPhonesApiClientFactory)
     manageAppsApiClientFactory.mockReturnValue(manageAppsApiClient)
     manageAppsApiClient.getActiveAgencies.mockResolvedValue(['RNI'])
+
+    pinPhonesApiClientFactory.mockReturnValue(pinPhonesApiClient)
+    pinPhonesApiClient.getActiveAgencies.mockResolvedValue(['RNI'])
   })
 
   it('hides think through nutrition for certain establishments', async () => {
@@ -53,8 +61,10 @@ describe('Linkservice', () => {
       )
 
       const manageAppsTile = links[0]
+      const pinPhoneTile = links[6]
 
       expect(manageAppsTile.hidden).toBe(false)
+      expect(pinPhoneTile.hidden).toBe(false)
     },
   )
 
@@ -89,8 +99,10 @@ describe('Linkservice', () => {
     )
 
     const manageAppsTile = links[0]
+    const pinPhoneTile = links[6]
 
     expect(manageAppsTile.hidden).toBe(true)
+    expect(pinPhoneTile.hidden).toBe(true)
   })
 })
 

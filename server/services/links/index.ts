@@ -3,7 +3,7 @@ import i18next from 'i18next'
 import { Link } from '../../@types/launchpad'
 import { getEstablishmentData } from '../../utils/utils'
 import config from '../../config'
-import { HmppsAuthClient, ManageAppsClient, RestClientBuilder } from '../../data'
+import { HmppsAuthClient, ManageAppsClient, PinPhonesClient, RestClientBuilder } from '../../data'
 
 export type LinksData = {
   links: Link[]
@@ -14,6 +14,7 @@ export default class Linkservice {
   constructor(
     private readonly hmppsAuthClient: HmppsAuthClient,
     private readonly manageAppsApiClientFactory: RestClientBuilder<ManageAppsClient>,
+    private readonly pinPhonesApiClientFactory: RestClientBuilder<PinPhonesClient>,
   ) {}
 
   async getHomepageLinks(
@@ -30,6 +31,10 @@ export default class Linkservice {
     const manageAppsActiveAgencies = await manageAppsApiClient.getActiveAgencies()
     const manageAppsVisible =
       isAgencyActive(agencyId, manageAppsActiveAgencies) && isUserBetaAccessPrisoner(user.idToken.sub)
+
+    const pinPhonesApiClient = this.pinPhonesApiClientFactory(token)
+    const pinPhonesActiveAgencies = await pinPhonesApiClient.getActiveAgencies()
+    const pinPhonesVisible = isAgencyActive(agencyId, pinPhonesActiveAgencies)
 
     const links = [
       {
@@ -79,6 +84,14 @@ export default class Linkservice {
         description: i18next.t('homepage.links.thinkThroughNutritionDesc', { lng: language }),
         openInNewTab: true,
         hidden: hideThinkThroughNutrition || false,
+      },
+      {
+        image: '/assets/images/link-tile-images/pin-phone-tile-image.png',
+        title: i18next.t('homepage.links.pinPhone', { lng: language }),
+        url: '/external/pin-phone',
+        description: i18next.t('homepage.links.pinPhoneDesc', { lng: language }),
+        openInNewTab: true,
+        hidden: !pinPhonesVisible,
       },
     ]
     return { links }

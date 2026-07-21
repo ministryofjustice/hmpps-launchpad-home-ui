@@ -10,6 +10,7 @@ export default function routes(): Router {
   router.get(
     [
       '/manage-apps',
+      '/pin-phone',
       '/self-service',
       '/content-hub',
       '/prison-radio',
@@ -33,6 +34,7 @@ export default function routes(): Router {
 
       const links: { [key: string]: string } = {
         '/manage-apps': config.apis.manageApps.url,
+        '/pin-phone': config.apis.pinPhones.url,
         '/self-service': selfServiceURL,
         '/content-hub': prisonerContentHubURL,
         '/prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,
