@@ -168,6 +168,10 @@ pw-output/
 **/*.jpeg
 **/error-context.md
 
+# We do actually want to commit asset images!
+!assets/images/**/*.jpg
+!assets/images/**/*.png
+
 # Storage state files (if using authentication state)
 storageState.json
 **/storageState.json
