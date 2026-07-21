@@ -5,6 +5,7 @@ import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 import * as utils from '../../utils/utils'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { Establishment } from '../../@types/launchpad'
+import config from '../../config'
 
 let app: Express
 const auditServiceSpy = jest.spyOn(auditService, 'audit')
@@ -38,6 +39,8 @@ describe('GET /external', () => {
     ['privacy-policy', `${establishment.prisonerContentHubURL}/content/64583`],
     ['transactions-help', `${establishment.prisonerContentHubURL}/content/8534`],
     ['think-through-nutrition', 'https://stg.lanah.org/hmpps'],
+    ['manage-apps', config.apis.manageApps.url],
+    ['pin-phone', config.apis.pinPhones.url],
   ])('/external/%s', (url: string, redirectUrl: string) => {
     it(`should redirect the user`, async () => {
       const res = await request(app).get(`/external/${url}`)
