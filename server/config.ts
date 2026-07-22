@@ -190,7 +190,7 @@ export default {
     {
       agencyId: 'BLI',
       prisonerContentHubURL: 'https://bristol.content-hub.prisoner.service.justice.gov.uk',
-      selfServiceURL: 'https://example.com:1234',
+      selfServiceURL: 'https://bliclient.unilink.prisoner.service.justice.gov.uk:1137',
       hideThinkThroughNutrition: true,
     },
     {
