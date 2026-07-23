@@ -99,7 +99,7 @@ export default class Linkservice {
 }
 
 export const isAgencyActive = (agencyId: string, activeAgencies: string[]): boolean => {
-  return activeAgencies.includes(agencyId) || activeAgencies[0] === '***'
+  return activeAgencies !== undefined && (activeAgencies.includes(agencyId) || activeAgencies[0] === '***')
 }
 
 // NOTE: intended only for Manage Apps on a temporary basis

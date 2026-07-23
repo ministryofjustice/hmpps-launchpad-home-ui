@@ -120,4 +120,8 @@ describe('isAgencyActive', () => {
   it('is active when the activeAgencyIds is a wildcard indicating all prisons are active', () => {
     expect(isAgencyActive('LEI', ['***'])).toBe(true)
   })
+
+  it('is NOT active when the activeAgencyIds is undefined', () => {
+    expect(isAgencyActive('LEI', undefined)).toBe(false)
+  })
 })
