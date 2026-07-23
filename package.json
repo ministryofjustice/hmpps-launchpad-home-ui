@@ -131,7 +131,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "^12.7.0",
+    "@cucumber/cucumber": "^13.1.1",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.4",
     "@playwright/test": "1.61.1",
