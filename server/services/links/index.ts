@@ -1,5 +1,5 @@
 import i18next from 'i18next'
-
+import { LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
 import { Link } from '../../@types/launchpad'
 import { getEstablishmentData } from '../../utils/utils'
 import config from '../../config'
@@ -10,18 +10,16 @@ export type LinksData = {
   title?: string
 }
 
-export default class Linkservice {
-  async getHomepageLinks(
-    user: { idToken: { establishment: { agency_id: string }; sub: string } },
-    language: string,
-  ): Promise<LinksData> {
-    const { agencyId, hideInsideTime, hideThinkThroughNutrition } = getEstablishmentData(
-      user.idToken.establishment.agency_id,
-    )
+export default class LinkService {
+  async getHomepageLinks(user: LaunchpadUser, language: string): Promise<LinksData> {
+    const {
+      establishment: { agency_id: agencyId },
+      sub: prisonerId,
+    } = user.idToken
 
     const manageAppsVisible =
       (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
-      isUserBetaAccessPrisoner(user.idToken.sub)
+      config.allowBetaAccessToPrisoners.split(',').includes(prisonerId)
 
     const pinPhonesVisible = await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL)
 
@@ -64,7 +62,7 @@ export default class Linkservice {
         url: '/external/inside-time',
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
-        show: hideInsideTime !== true,
+        show: !getEstablishmentData(agencyId).hideInsideTime,
       },
       {
         image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
@@ -72,7 +70,7 @@ export default class Linkservice {
         url: '/external/think-through-nutrition',
         description: i18next.t('homepage.links.thinkThroughNutritionDesc', { lng: language }),
         openInNewTab: true,
-        show: hideThinkThroughNutrition !== true,
+        show: !getEstablishmentData(agencyId).hideThinkThroughNutrition,
       },
       {
         image: '/assets/images/link-tile-images/pin-phone-tile-image.png',
@@ -83,12 +81,7 @@ export default class Linkservice {
         show: pinPhonesVisible,
       },
     ]
+
     return { links }
   }
-}
-
-// NOTE: intended only for Manage Apps on a temporary basis
-const isUserBetaAccessPrisoner = (prisonerId: string): boolean => {
-  const betaAccessPrisoner = config.allowBetaAccessToPrisoners.split(',')
-  return betaAccessPrisoner.includes(prisonerId)
 }
