@@ -20,8 +20,8 @@ export default class Linkservice {
     )
 
     const manageAppsVisible =
-      (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
-      isUserBetaAccessPrisoner(user.idToken.sub)
+      isUserBetaAccessPrisoner(user.idToken.sub) &&
+      (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL))
 
     const pinPhonesVisible = await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL)
 
@@ -32,7 +32,7 @@ export default class Linkservice {
         url: '/external/manage-apps',
         description: i18next.t('homepage.links.manageAppsDesc', { lng: language }),
         openInNewTab: true,
-        hidden: !manageAppsVisible,
+        show: manageAppsVisible,
       },
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',
@@ -40,7 +40,7 @@ export default class Linkservice {
         url: '/external/self-service',
         description: i18next.t('homepage.links.selfServiceDesc', { lng: language }),
         openInNewTab: true,
-        hidden: false,
+        show: true,
       },
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
@@ -48,7 +48,7 @@ export default class Linkservice {
         url: '/external/content-hub',
         description: i18next.t('homepage.links.contentHubDesc', { lng: language }),
         openInNewTab: true,
-        hidden: false,
+        show: true,
       },
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.jpg',
@@ -56,7 +56,7 @@ export default class Linkservice {
         url: '/external/prison-radio',
         description: i18next.t('homepage.links.nationalPrisonRadioDesc', { lng: language }),
         openInNewTab: true,
-        hidden: false,
+        show: true,
       },
       {
         image: '/assets/images/link-tile-images/inside-time-link-tile-image.jpg',
@@ -64,7 +64,7 @@ export default class Linkservice {
         url: '/external/inside-time',
         description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
         openInNewTab: true,
-        hidden: hideInsideTime || false,
+        show: hideInsideTime !== true,
       },
       {
         image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
@@ -72,7 +72,7 @@ export default class Linkservice {
         url: '/external/think-through-nutrition',
         description: i18next.t('homepage.links.thinkThroughNutritionDesc', { lng: language }),
         openInNewTab: true,
-        hidden: hideThinkThroughNutrition || false,
+        show: hideThinkThroughNutrition !== true,
       },
       {
         image: '/assets/images/link-tile-images/pin-phone-tile-image.png',
@@ -80,7 +80,7 @@ export default class Linkservice {
         url: '/external/pin-phone',
         description: i18next.t('homepage.links.pinPhoneDesc', { lng: language }),
         openInNewTab: true,
-        hidden: !pinPhonesVisible,
+        show: pinPhonesVisible,
       },
     ]
     return { links }

@@ -8,7 +8,7 @@ export const links: Link[] = [
     url: 'self-service-url',
     description: 'Access to kiosk apps',
     openInNewTab: true,
-    hidden: false,
+    show: true,
   },
   {
     image: '/assets/images/link-tile-images/content-hub-link-tile-image.png',
@@ -16,7 +16,7 @@ export const links: Link[] = [
     url: 'content-hub-url',
     description: 'Watch, read and listen to local and national content',
     openInNewTab: false,
-    hidden: false,
+    show: true,
   },
   {
     image: '/assets/images/link-tile-images/npr-link-tile-image.png',
@@ -24,7 +24,7 @@ export const links: Link[] = [
     url: 'npr-url',
     description: 'Listen to 24/7 music, talk, requests and playbacks',
     openInNewTab: true,
-    hidden: false,
+    show: true,
   },
   {
     image: '/assets/images/link-tile-images/inside-time-link-tile-image.png',
@@ -32,7 +32,7 @@ export const links: Link[] = [
     url: 'inside-time-url',
     description: 'Read the national newspaper for prisoners and detainees',
     openInNewTab: true,
-    hidden: true,
+    show: false,
   },
   {
     image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
@@ -40,6 +40,6 @@ export const links: Link[] = [
     url: 'think-through-nutrition-url',
     description: 'Learn how food affects your brain, mood and energy – and track your progress',
     openInNewTab: true,
-    hidden: true,
+    show: false,
   },
 ]

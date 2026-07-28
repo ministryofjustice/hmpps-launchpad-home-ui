@@ -1,4 +1,4 @@
-import Linkservice, { isAgencyActive } from '.'
+import Linkservice from '.'
 import { ifWithinActiveAgency } from './activeAgencies'
 
 jest.mock('./activeAgencies')
@@ -31,7 +31,7 @@ describe('Linkservice', () => {
     )
     const thinkThroughNutritionTile = links[5]
 
-    expect(thinkThroughNutritionTile.hidden).toBe(true)
+    expect(thinkThroughNutritionTile.show).toBe(false)
   })
 
   test.each(['prisoner 1', 'prisoner 2', 'prisoner 3'])(
@@ -45,8 +45,8 @@ describe('Linkservice', () => {
       const manageAppsTile = links[0]
       const pinPhoneTile = links[6]
 
-      expect(manageAppsTile.hidden).toBe(false)
-      expect(pinPhoneTile.hidden).toBe(false)
+      expect(manageAppsTile.show).toBe(true)
+      expect(pinPhoneTile.show).toBe(true)
     },
   )
 
@@ -58,7 +58,7 @@ describe('Linkservice', () => {
 
     const manageAppsTile = links[0]
 
-    expect(manageAppsTile.hidden).toBe(true)
+    expect(manageAppsTile.show).toBe(false)
   })
 
   it('does not display manage app link for disallowed users even if available at that prison', async () => {
@@ -69,7 +69,7 @@ describe('Linkservice', () => {
 
     const manageAppsTile = links[0]
 
-    expect(manageAppsTile.hidden).toBe(true)
+    expect(manageAppsTile.show).toBe(false)
   })
 
   it('does not display manage app link locations other than Ranby', async () => {
@@ -81,8 +81,7 @@ describe('Linkservice', () => {
     const manageAppsTile = links[0]
     const pinPhoneTile = links[6]
 
-    expect(manageAppsTile.hidden).toBe(true)
-    expect(pinPhoneTile.hidden).toBe(true)
+    expect(manageAppsTile.show).toBe(false)
+    expect(pinPhoneTile.show).toBe(false)
   })
 })
-

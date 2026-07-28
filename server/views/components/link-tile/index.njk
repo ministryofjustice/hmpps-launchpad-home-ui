@@ -1,5 +1,5 @@
 {% macro linkTile(params, user) %}
-  {% if not params.hidden %}
+  {% if params.show %}
     <div class="link-tile">
       <a href="{{ params.url }}" {% if params.openInNewTab %}rel="noreferrer noopener" target="_blank"{% endif %}>
         <img src="{{ params.image }}"
