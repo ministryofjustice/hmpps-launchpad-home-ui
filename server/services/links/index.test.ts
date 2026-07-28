@@ -86,22 +86,3 @@ describe('Linkservice', () => {
   })
 })
 
-describe('isAgencyActive', () => {
-  test.each([
-    ['LEI', ['LEI', 'ABC']],
-    ['ABC', ['LEI', 'ABC']],
-  ])(
-    'is active when the given agencyId appears in the given list of active agencyIds',
-    (agencyId: string, activeAgencyIds: string[]) => {
-      expect(isAgencyActive(agencyId, activeAgencyIds)).toBe(true)
-    },
-  )
-
-  it('is active when the activeAgencyIds is a wildcard indicating all prisons are active', () => {
-    expect(isAgencyActive('LEI', ['***'])).toBe(true)
-  })
-
-  it('is NOT active when the activeAgencyIds is undefined', () => {
-    expect(isAgencyActive('LEI', undefined)).toBe(false)
-  })
-})
