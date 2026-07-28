@@ -13,7 +13,7 @@ export const ifWithinActiveAgency = async (
 
 type ActiveAgenciesFetcher = (serviceUrl: string) => Promise<string[]>
 
-const activeAgenciesFrom: ActiveAgenciesFetcher = serviceUrl =>
+const activeAgenciesFrom: ActiveAgenciesFetcher = async serviceUrl =>
   new Promise<string[]>((resolve, _reject) => {
     superagent
       .get(`${serviceUrl}/info`)
@@ -24,10 +24,10 @@ const activeAgenciesFrom: ActiveAgenciesFetcher = serviceUrl =>
           return resolve([])
         }
         const { activeAgencies } = res.body
-        if (activeAgencies === undefined) {
+        if (!Array.isArray(activeAgencies)) {
           logger.error(`Unable to fetch activeAgencies from ${serviceUrl} - returning empty list`)
           return resolve([])
         }
-        return activeAgencies
+        return resolve(activeAgencies)
       })
   })

@@ -20,8 +20,8 @@ export default class Linkservice {
     )
 
     const manageAppsVisible =
-      isUserBetaAccessPrisoner(user.idToken.sub) &&
-      (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL))
+      (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
+      isUserBetaAccessPrisoner(user.idToken.sub)
 
     const pinPhonesVisible = await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL)
 
