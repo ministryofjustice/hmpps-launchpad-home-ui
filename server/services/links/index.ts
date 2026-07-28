@@ -3,7 +3,7 @@ import i18next from 'i18next'
 import { Link } from '../../@types/launchpad'
 import { getEstablishmentData } from '../../utils/utils'
 import config from '../../config'
-import { HmppsAuthClient, ManageAppsClient, PinPhonesClient, RestClientBuilder } from '../../data'
+import { ifWithinActiveAgency } from './activeAgencies'
 
 export type LinksData = {
   links: Link[]
@@ -11,12 +11,6 @@ export type LinksData = {
 }
 
 export default class Linkservice {
-  constructor(
-    private readonly hmppsAuthClient: HmppsAuthClient,
-    private readonly manageAppsApiClientFactory: RestClientBuilder<ManageAppsClient>,
-    private readonly pinPhonesApiClientFactory: RestClientBuilder<PinPhonesClient>,
-  ) {}
-
   async getHomepageLinks(
     user: { idToken: { establishment: { agency_id: string }; sub: string } },
     language: string,
@@ -25,16 +19,11 @@ export default class Linkservice {
       user.idToken.establishment.agency_id,
     )
 
-    const token = await this.hmppsAuthClient.getSystemClientToken()
-
-    const manageAppsApiClient = this.manageAppsApiClientFactory(token)
-    const manageAppsActiveAgencies = await manageAppsApiClient.getActiveAgencies()
     const manageAppsVisible =
-      isAgencyActive(agencyId, manageAppsActiveAgencies) && isUserBetaAccessPrisoner(user.idToken.sub)
+      (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
+      isUserBetaAccessPrisoner(user.idToken.sub)
 
-    const pinPhonesApiClient = this.pinPhonesApiClientFactory(token)
-    const pinPhonesActiveAgencies = await pinPhonesApiClient.getActiveAgencies()
-    const pinPhonesVisible = isAgencyActive(agencyId, pinPhonesActiveAgencies)
+    const pinPhonesVisible = await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL)
 
     const links = [
       {

@@ -1,45 +1,27 @@
 import Linkservice, { isAgencyActive } from '.'
-import { HmppsAuthClient, ManageAppsClient, PinPhonesClient, RestClientBuilder } from '../../data'
+import { ifWithinActiveAgency } from './activeAgencies'
+
+jest.mock('./activeAgencies')
 
 jest.mock('../../config', () => ({
   ...jest.requireActual('../../config').default,
   allowBetaAccessToPrisoners: 'prisoner 1,prisoner 2,prisoner 3',
 }))
 
-jest.mock('i18next', () => ({
-  t: (key: string) => key,
-}))
-
-jest.mock('../../data')
-
-afterEach(() => {
-  jest.resetAllMocks()
-})
-
 describe('Linkservice', () => {
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
-  let manageAppsApiClientFactory: jest.MockedFunction<RestClientBuilder<ManageAppsClient>>
-  let manageAppsApiClient: jest.Mocked<ManageAppsClient>
-  let pinPhonesApiClientFactory: jest.MockedFunction<RestClientBuilder<PinPhonesClient>>
-  let pinPhonesApiClient: jest.Mocked<PinPhonesClient>
-
   let linkService: Linkservice
 
+  const activeAgenciesMap: Record<string, string[]> = {
+    [process.env.MANAGE_APPS_UI_URL]: ['RNI'],
+    [process.env.PIN_PHONES_UI_URL]: ['RNI'],
+  }
+
   beforeEach(() => {
-    hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+    linkService = new Linkservice()
 
-    manageAppsApiClientFactory = jest.fn()
-    manageAppsApiClient = new ManageAppsClient(null) as jest.Mocked<ManageAppsClient>
-
-    pinPhonesApiClientFactory = jest.fn()
-    pinPhonesApiClient = new PinPhonesClient(null) as jest.Mocked<PinPhonesClient>
-
-    linkService = new Linkservice(hmppsAuthClient, manageAppsApiClientFactory, pinPhonesApiClientFactory)
-    manageAppsApiClientFactory.mockReturnValue(manageAppsApiClient)
-    manageAppsApiClient.getActiveAgencies.mockResolvedValue(['RNI'])
-
-    pinPhonesApiClientFactory.mockReturnValue(pinPhonesApiClient)
-    pinPhonesApiClient.getActiveAgencies.mockResolvedValue(['RNI'])
+    ;(ifWithinActiveAgency as jest.Mock).mockImplementation(async (agencyId: string, serviceUrl: string) => {
+      return activeAgenciesMap[serviceUrl].includes(agencyId)
+    })
   })
 
   it('hides think through nutrition for certain establishments', async () => {
@@ -79,9 +61,7 @@ describe('Linkservice', () => {
     expect(manageAppsTile.hidden).toBe(true)
   })
 
-  it('does not display manage app link for disallowed users even if available at all prisons', async () => {
-    manageAppsApiClient.getActiveAgencies.mockResolvedValue(['***'])
-
+  it('does not display manage app link for disallowed users even if available at that prison', async () => {
     const { links } = await linkService.getHomepageLinks(
       { idToken: { establishment: { agency_id: 'RNI' }, sub: 'prisoner 4' } },
       'en',
