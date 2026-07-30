@@ -156,7 +156,7 @@
     "audit-ci": "^7.1.0",
     "axe-core": "4.12.1",
     "cheerio": "^1.2.0",
-    "concurrently": "^9.2.4",
+    "concurrently": "^10.0.3",
     "cookie-session": "^2.1.1",
     "cypress": "^15.19.0",
     "cypress-multi-reporters": "^2.0.5",
