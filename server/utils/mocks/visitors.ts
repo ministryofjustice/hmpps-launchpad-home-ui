@@ -14,19 +14,6 @@ export const prisonerContact: PrisonerContact = {
   emergencyContact: false,
   nextOfKin: false,
   restrictions: [],
-  addresses: [
-    {
-      premise: 'zz',
-      street: 'RQtwMDRQtwMD',
-      locality: 'HWslHWsl',
-      town: 'Stroud',
-      postalCode: 'KK1 6CD',
-      county: 'Kent',
-      country: 'England',
-      primary: false,
-      noFixedAddress: false,
-    },
-  ],
   address: {
     premise: 'zz',
     street: 'RQtwMDRQtwMD',
