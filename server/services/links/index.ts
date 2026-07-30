@@ -1,13 +1,12 @@
 import i18next from 'i18next'
 import { LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
+import config from '../../config'
 import { Link } from '../../@types/launchpad'
 import { getEstablishmentData } from '../../utils/utils'
-import config from '../../config'
 import { ifWithinActiveAgency } from './activeAgencies'
 
-export type LinksData = {
+type LinksData = {
   links: Link[]
-  title?: string
 }
 
 export default class LinkService {
@@ -17,68 +16,80 @@ export default class LinkService {
       sub: prisonerId,
     } = user.idToken
 
-    const manageAppsVisible =
-      (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
-      config.allowBetaAccessToPrisoners.split(',').includes(prisonerId)
-
-    const pinPhonesVisible = await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL)
+    const establishment = getEstablishmentData(agencyId)
+    const i18n = (i18nKey: string) => i18next.t(i18nKey, { lng: language })
 
     const links = [
+      // Manage Apps Tile
       {
         image: '/assets/images/link-tile-images/manage-apps-link-tile-image.png',
-        title: i18next.t('homepage.links.manageApps', { lng: language }),
+        title: i18n('homepage.links.manageApps'),
         url: '/external/manage-apps',
-        description: i18next.t('homepage.links.manageAppsDesc', { lng: language }),
+        description: i18n('homepage.links.manageAppsDesc'),
         openInNewTab: true,
-        show: manageAppsVisible,
+        show:
+          (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
+          config.allowBetaAccessToPrisoners.split(',').includes(prisonerId),
       },
+
+      // UniLink / Self Service Tile
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',
-        title: i18next.t('homepage.links.selfService', { lng: language }),
+        title: i18n('homepage.links.selfService'),
         url: '/external/self-service',
-        description: i18next.t('homepage.links.selfServiceDesc', { lng: language }),
+        description: i18n('homepage.links.selfServiceDesc'),
         openInNewTab: true,
         show: true,
       },
+
+      // Content Hub Tile
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
-        title: i18next.t('homepage.links.contentHub', { lng: language }),
+        title: i18n('homepage.links.contentHub'),
         url: '/external/content-hub',
-        description: i18next.t('homepage.links.contentHubDesc', { lng: language }),
+        description: i18n('homepage.links.contentHubDesc'),
         openInNewTab: true,
         show: true,
       },
+
+      // NPR - National Prison Radio Tile
       {
         image: '/assets/images/link-tile-images/npr-link-tile-image.jpg',
-        title: i18next.t('homepage.links.nationalPrisonRadio', { lng: language }),
+        title: i18n('homepage.links.nationalPrisonRadio'),
         url: '/external/prison-radio',
-        description: i18next.t('homepage.links.nationalPrisonRadioDesc', { lng: language }),
+        description: i18n('homepage.links.nationalPrisonRadioDesc'),
         openInNewTab: true,
         show: true,
       },
+
+      // Inside Time Tile
       {
         image: '/assets/images/link-tile-images/inside-time-link-tile-image.jpg',
-        title: i18next.t('homepage.links.insideTime', { lng: language }),
+        title: i18n('homepage.links.insideTime'),
         url: '/external/inside-time',
-        description: i18next.t('homepage.links.insideTimeDesc', { lng: language }),
+        description: i18n('homepage.links.insideTimeDesc'),
         openInNewTab: true,
-        show: !getEstablishmentData(agencyId).hideInsideTime,
+        show: !establishment.hideInsideTime,
       },
+
+      // Think Through Nurtition Tile
       {
         image: '/assets/images/link-tile-images/think-through-nutrition-link-tile-image.png',
-        title: i18next.t('homepage.links.thinkThroughNutrition', { lng: language }),
+        title: i18n('homepage.links.thinkThroughNutrition'),
         url: '/external/think-through-nutrition',
-        description: i18next.t('homepage.links.thinkThroughNutritionDesc', { lng: language }),
+        description: i18n('homepage.links.thinkThroughNutritionDesc'),
         openInNewTab: true,
-        show: !getEstablishmentData(agencyId).hideThinkThroughNutrition,
+        show: !establishment.hideThinkThroughNutrition,
       },
+
+      // PIN Phone Tile
       {
         image: '/assets/images/link-tile-images/pin-phone-tile-image.png',
-        title: i18next.t('homepage.links.pinPhone', { lng: language }),
+        title: i18n('homepage.links.pinPhone'),
         url: '/external/pin-phone',
-        description: i18next.t('homepage.links.pinPhoneDesc', { lng: language }),
+        description: i18n('homepage.links.pinPhoneDesc'),
         openInNewTab: true,
-        show: pinPhonesVisible,
+        show: await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL),
       },
     ]
 
