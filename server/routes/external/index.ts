@@ -1,70 +1,61 @@
-import { Request, Response, Router } from 'express'
+import { Router } from 'express'
 import logger from '../../../logger'
 import { getEstablishmentData } from '../../utils/utils'
 import config from '../../config'
 import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
+import { Establishment } from '../../@types/launchpad'
 
 export default function routes(): Router {
   const router = Router()
 
-  router.get(
-    [
-      '/manage-apps',
-      '/pin-phone',
-      '/self-service',
-      '/content-hub',
-      '/prison-radio',
-      '/inside-time',
-      '/adjudications',
-      '/incentives',
-      '/learning-and-skills',
-      '/money-and-debt',
-      '/visits',
-      '/privacy-policy',
-      '/transactions-help',
-      '/think-through-nutrition',
-    ],
-    async (req: Request, res: Response) => {
-      const { idToken } = res.locals.user
-      const agencyId = idToken.establishment?.agency_id
-      const prisonerId = idToken.sub
-      const target = req.path
+  const {
+    prisonRadio,
+    adjudications,
+    incentives,
+    learningAndSkills,
+    moneyAndDebt,
+    visits,
+    privacyPolicy,
+    transactionsHelp,
+  } = config.contentHubUrls
 
-      const { prisonerContentHubURL, selfServiceURL } = getEstablishmentData(agencyId)
+  const redirections: { [path: string]: (e: Establishment) => string } = {
+    '/manage-apps': () => config.apis.manageApps.url,
+    '/pin-phone': () => config.apis.pinPhones.url,
+    '/self-service': ({ selfServiceURL }) => selfServiceURL,
+    '/content-hub': ({ prisonerContentHubURL }) => prisonerContentHubURL,
+    '/prison-radio': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${prisonRadio}`,
+    '/inside-time': () => config.externalUrls.insideTime,
+    '/adjudications': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${adjudications}`,
+    '/incentives': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${incentives}`,
+    '/learning-and-skills': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${learningAndSkills}`,
+    '/money-and-debt': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${moneyAndDebt}`,
+    '/visits': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${visits}`,
+    '/privacy-policy': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${privacyPolicy}`,
+    '/transactions-help': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${transactionsHelp}`,
+    '/think-through-nutrition': () => config.externalUrls.thinkThroughNutrition,
+  }
 
-      const links: { [key: string]: string } = {
-        '/manage-apps': config.apis.manageApps.url,
-        '/pin-phone': config.apis.pinPhones.url,
-        '/self-service': selfServiceURL,
-        '/content-hub': prisonerContentHubURL,
-        '/prison-radio': `${prisonerContentHubURL}/${config.contentHubUrls.prisonRadio}`,
-        '/inside-time': config.externalUrls.insideTime,
-        '/adjudications': `${prisonerContentHubURL}/${config.contentHubUrls.adjudications}`,
-        '/incentives': `${prisonerContentHubURL}/${config.contentHubUrls.incentives}`,
-        '/learning-and-skills': `${prisonerContentHubURL}/${config.contentHubUrls.learningAndSkills}`,
-        '/money-and-debt': `${prisonerContentHubURL}/${config.contentHubUrls.moneyAndDebt}`,
-        '/visits': `${prisonerContentHubURL}/${config.contentHubUrls.visits}`,
-        '/privacy-policy': `${prisonerContentHubURL}/${config.contentHubUrls.privacyPolicy}`,
-        '/transactions-help': `${prisonerContentHubURL}/${config.contentHubUrls.transactionsHelp}`,
-        '/think-through-nutrition': config.externalUrls.thinkThroughNutrition,
-      }
+  router.get(Object.keys(redirections), async (req, res) => {
+    const { idToken } = res.locals.user
+    const {
+      establishment: { agency_id: agencyId },
+      sub: prisonerId,
+    } = idToken
 
-      const redirectUrl = links[target]
+    const establishment = getEstablishmentData(agencyId)
+    const redirectUrl = redirections[req.path](establishment)
 
-      logger.info(`Redirecting ${prisonerId} to ${redirectUrl}`)
+    logger.info(`Redirecting ${prisonerId} to ${redirectUrl}`)
 
-      await auditService.audit({
-        what: AUDIT_EVENTS.VIEW_EXTERNAL_PAGE,
-        idToken,
-        details: {
-          pageUrl: req.originalUrl,
-          redirectUrl,
-        },
-      })
+    await auditService.audit({
+      what: AUDIT_EVENTS.VIEW_EXTERNAL_PAGE,
+      idToken,
+      details: { pageUrl: req.originalUrl, redirectUrl },
+    })
 
-      res.redirect(redirectUrl)
-    },
-  )
+    res.redirect(redirectUrl)
+  })
 
   return router
 }

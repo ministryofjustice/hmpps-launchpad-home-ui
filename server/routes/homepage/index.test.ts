@@ -142,7 +142,7 @@ describe('GET /', () => {
   })
 
   it('should show inside times tile when hide flag is unset', () => {
-    links[3].hidden = false
+    links[3].show = true
     linksService.getHomepageLinks.mockResolvedValue({ links })
     ;(getEstablishmentData as jest.Mock).mockReturnValue({
       agencyId,
@@ -164,7 +164,7 @@ describe('GET /', () => {
   })
 
   it('should hide inside times tile when hide flag is set', () => {
-    links[3].hidden = true
+    links[3].show = false
     linksService.getHomepageLinks.mockResolvedValue({ links })
     ;(getEstablishmentData as jest.Mock).mockReturnValue({
       agencyId,
@@ -201,7 +201,7 @@ describe('GET /', () => {
   })
 
   it('should show think through nutrition tile when hide flag is unset', () => {
-    links[4].hidden = false
+    links[4].show = true
     linksService.getHomepageLinks.mockResolvedValue({ links })
     ;(getEstablishmentData as jest.Mock).mockReturnValue({
       agencyId,
@@ -225,7 +225,7 @@ describe('GET /', () => {
   })
 
   it('should hide think through nutrition tile when hide flag is set', () => {
-    links[4].hidden = true
+    links[4].show = false
     linksService.getHomepageLinks.mockResolvedValue({ links })
     ;(getEstablishmentData as jest.Mock).mockReturnValue({
       agencyId,

@@ -23,7 +23,7 @@ The only local dependency required in order to run LaunchPad is Redis.  The easi
 
 `docker compose --profile local up -d`
 
-### Run application 
+### Run application
 
 `npm start:dev`
 
@@ -55,6 +55,10 @@ Or run tests with the cypress UI:
 
 `npm run int-test-ui`
 
+
+## Adding tiles to launchpad home
+
+[Please read here](./server/services/links/README.md) for instructions on how to add a tile to launchpad home.
 
 ## Maintenance page
 See the [maintenance page README](./maintenance_page/README.md) for how to turn this on/off and update the content.

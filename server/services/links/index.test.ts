@@ -1,127 +1,54 @@
-import Linkservice, { isAgencyActive } from '.'
-import { HmppsAuthClient, ManageAppsClient, PinPhonesClient, RestClientBuilder } from '../../data'
+import {
+  expectToShowEveryTime,
+  expectToShowWhenEstablishmentValueIsSetOnly,
+  expectToShowWhenUserAllowListedOnly,
+  expectToShowWhenUserWithinActiveAgencyOnly,
+} from './index.test.helpers'
+
+jest.mock('./activeAgencies')
+
+jest.mock('../../utils/utils', () => ({
+  ...jest.requireActual('../../utils/utils'),
+  getEstablishmentData: jest.fn().mockReturnValue({
+    hideInsideTime: true,
+    hideThinkThroughNutrition: true,
+  }),
+}))
 
 jest.mock('../../config', () => ({
   ...jest.requireActual('../../config').default,
   allowBetaAccessToPrisoners: 'prisoner 1,prisoner 2,prisoner 3',
 }))
 
-jest.mock('i18next', () => ({
-  t: (key: string) => key,
-}))
+describe('LinkService', () => {
+  describe('getHomepageLinks', () => {
+    describe('Manage Apps tile', () => {
+      expectToShowWhenUserWithinActiveAgencyOnly(0)
+      expectToShowWhenUserAllowListedOnly(0)
+    })
 
-jest.mock('../../data')
+    describe('Self Service tile', () => {
+      expectToShowEveryTime(1)
+    })
 
-afterEach(() => {
-  jest.resetAllMocks()
-})
+    describe('Content-hub tile', () => {
+      expectToShowEveryTime(2)
+    })
 
-describe('Linkservice', () => {
-  let hmppsAuthClient: jest.Mocked<HmppsAuthClient>
-  let manageAppsApiClientFactory: jest.MockedFunction<RestClientBuilder<ManageAppsClient>>
-  let manageAppsApiClient: jest.Mocked<ManageAppsClient>
-  let pinPhonesApiClientFactory: jest.MockedFunction<RestClientBuilder<PinPhonesClient>>
-  let pinPhonesApiClient: jest.Mocked<PinPhonesClient>
+    describe('National Prison Radio tile', () => {
+      expectToShowEveryTime(3)
+    })
 
-  let linkService: Linkservice
+    describe('Inside Time tile', () => {
+      expectToShowWhenEstablishmentValueIsSetOnly(4, 'hideInsideTime', false, true)
+    })
 
-  beforeEach(() => {
-    hmppsAuthClient = new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
+    describe('Think Through Nutrition tile', () => {
+      expectToShowWhenEstablishmentValueIsSetOnly(5, 'hideThinkThroughNutrition', false, true)
+    })
 
-    manageAppsApiClientFactory = jest.fn()
-    manageAppsApiClient = new ManageAppsClient(null) as jest.Mocked<ManageAppsClient>
-
-    pinPhonesApiClientFactory = jest.fn()
-    pinPhonesApiClient = new PinPhonesClient(null) as jest.Mocked<PinPhonesClient>
-
-    linkService = new Linkservice(hmppsAuthClient, manageAppsApiClientFactory, pinPhonesApiClientFactory)
-    manageAppsApiClientFactory.mockReturnValue(manageAppsApiClient)
-    manageAppsApiClient.getActiveAgencies.mockResolvedValue(['RNI'])
-
-    pinPhonesApiClientFactory.mockReturnValue(pinPhonesApiClient)
-    pinPhonesApiClient.getActiveAgencies.mockResolvedValue(['RNI'])
-  })
-
-  it('hides think through nutrition for certain establishments', async () => {
-    const { links } = await linkService.getHomepageLinks(
-      { idToken: { establishment: { agency_id: 'BFI' }, sub: 'prisoner 1' } },
-      'en',
-    )
-    const thinkThroughNutritionTile = links[5]
-
-    expect(thinkThroughNutritionTile.hidden).toBe(true)
-  })
-
-  test.each(['prisoner 1', 'prisoner 2', 'prisoner 3'])(
-    'displays manage app link for allowed users in Ranby',
-    async prisonerId => {
-      const { links } = await linkService.getHomepageLinks(
-        { idToken: { establishment: { agency_id: 'RNI' }, sub: prisonerId } },
-        'en',
-      )
-
-      const manageAppsTile = links[0]
-      const pinPhoneTile = links[6]
-
-      expect(manageAppsTile.hidden).toBe(false)
-      expect(pinPhoneTile.hidden).toBe(false)
-    },
-  )
-
-  it('does not display manage app link for disallowed users', async () => {
-    const { links } = await linkService.getHomepageLinks(
-      { idToken: { establishment: { agency_id: 'RNI' }, sub: 'prisoner 4' } },
-      'en',
-    )
-
-    const manageAppsTile = links[0]
-
-    expect(manageAppsTile.hidden).toBe(true)
-  })
-
-  it('does not display manage app link for disallowed users even if available at all prisons', async () => {
-    manageAppsApiClient.getActiveAgencies.mockResolvedValue(['***'])
-
-    const { links } = await linkService.getHomepageLinks(
-      { idToken: { establishment: { agency_id: 'RNI' }, sub: 'prisoner 4' } },
-      'en',
-    )
-
-    const manageAppsTile = links[0]
-
-    expect(manageAppsTile.hidden).toBe(true)
-  })
-
-  it('does not display manage app link locations other than Ranby', async () => {
-    const { links } = await linkService.getHomepageLinks(
-      { idToken: { establishment: { agency_id: 'BNI' }, sub: 'prisoner 1' } },
-      'en',
-    )
-
-    const manageAppsTile = links[0]
-    const pinPhoneTile = links[6]
-
-    expect(manageAppsTile.hidden).toBe(true)
-    expect(pinPhoneTile.hidden).toBe(true)
-  })
-})
-
-describe('isAgencyActive', () => {
-  test.each([
-    ['LEI', ['LEI', 'ABC']],
-    ['ABC', ['LEI', 'ABC']],
-  ])(
-    'is active when the given agencyId appears in the given list of active agencyIds',
-    (agencyId: string, activeAgencyIds: string[]) => {
-      expect(isAgencyActive(agencyId, activeAgencyIds)).toBe(true)
-    },
-  )
-
-  it('is active when the activeAgencyIds is a wildcard indicating all prisons are active', () => {
-    expect(isAgencyActive('LEI', ['***'])).toBe(true)
-  })
-
-  it('is NOT active when the activeAgencyIds is undefined', () => {
-    expect(isAgencyActive('LEI', undefined)).toBe(false)
+    describe('PIN Phone tile', () => {
+      expectToShowWhenUserWithinActiveAgencyOnly(6)
+    })
   })
 })

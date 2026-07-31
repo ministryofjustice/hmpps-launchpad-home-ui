@@ -25,7 +25,7 @@ export type Link = {
   url: string
   description: string
   openInNewTab: boolean
-  hidden: boolean
+  show: boolean
 }
 
 export type UpdatedTokensResponse = {
