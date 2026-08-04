@@ -1,5 +1,3 @@
-import './utils/azureAppInsights'
-
 import promClient from 'prom-client'
 import { createMetricsApp } from './monitoring/metricsApp'
 import createApp from './app'
