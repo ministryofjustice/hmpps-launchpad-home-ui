@@ -1,56 +1,19 @@
-import { setup, defaultClient, TelemetryClient, DistributedTracingModes, Contracts } from 'applicationinsights'
-import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import applicationVersion from '../applicationVersion'
+import { initialiseTelemetry, flushTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 
-export type ContextObject = {
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  [name: string]: any
+initialiseTelemetry({
+  serviceName: 'hmpps-template-typescript',
+  serviceVersion: process.env.BUILD_NUMBER || 'unknown',
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+  debug: process.env.DEBUG_TELEMETRY === 'true',
+})
+  .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/info', '/assets/*', '/favicon.ico']))
+  .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
+  .startRecording()
+
+const shutdown = async () => {
+  await flushTelemetry()
+  process.exit(0)
 }
 
-function defaultName(): string {
-  const {
-    packageData: { name },
-  } = applicationVersion
-  return name
-}
-
-function version(): string {
-  const { buildNumber } = applicationVersion
-  return buildNumber
-}
-
-export function initialiseAppInsights(): void {
-  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    // eslint-disable-next-line no-console
-    console.log('Enabling azure application insights')
-
-    setup().setDistributedTracingMode(DistributedTracingModes.AI_AND_W3C).start()
-  }
-}
-
-export function buildAppInsightsClient(name = defaultName()): TelemetryClient {
-  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    defaultClient.context.tags['ai.cloud.role'] = name
-    defaultClient.context.tags['ai.application.ver'] = version()
-    defaultClient.addTelemetryProcessor(addUserDataToRequests)
-    return defaultClient
-  }
-  return null
-}
-
-export function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: ContextObject) {
-  const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
-  if (isRequest) {
-    const { sub, establishment } = contextObjects?.['http.ServerRequest']?.res?.locals?.user?.idToken || {}
-    if (sub) {
-      const { properties } = envelope.data.baseData
-      // eslint-disable-next-line no-param-reassign
-      envelope.data.baseData.properties = {
-        username: sub,
-        activeCaseLoadId: establishment?.agency_id,
-        ...properties,
-      }
-    }
-  }
-  return true
-}
+process.on('SIGTERM', () => shutdown())
+process.on('SIGINT', () => shutdown())
