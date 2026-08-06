@@ -30,7 +30,6 @@ generic-service:
     AUDIT_ENABLED: 'true'
 
   allowlist:
-    appsec-testers: 80.195.27.199
     groups:
       - internal
 
