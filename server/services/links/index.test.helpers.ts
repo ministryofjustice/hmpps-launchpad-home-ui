@@ -29,6 +29,8 @@ export const expectToShowWhenUserWithinActiveAgencyOnly = (tileIndex: number) =>
   const activeAgenciesMap: Record<string, string[]> = {
     [process.env.MANAGE_APPS_UI_URL]: ['RNI'],
     [process.env.PIN_PHONES_UI_URL]: ['RNI'],
+    [process.env.CONTENT_HUB_URL]: ['RNI'],
+    [process.env.CONTENT_HUB_LEGACY_URL]: ['RNI'],
   }
 
   describe('checking for active agencies', () => {

@@ -25,7 +25,9 @@ const activeAgenciesFrom: ActiveAgenciesFetcher = async serviceUrl =>
         }
         const { activeAgencies } = res.body
         if (!Array.isArray(activeAgencies)) {
-          logger.error(`Unable to fetch activeAgencies from ${serviceUrl} - returning empty list`)
+          logger.error(
+            `Request body from ${serviceUrl} does not contain an array of active agencies - returning empty list`,
+          )
           return resolve([])
         }
         return resolve(activeAgencies)

@@ -42,14 +42,24 @@ export default class LinkService {
         show: true,
       },
 
-      // Content Hub Tile
+      // Content Hub Legacy Tile ( version - to be removed)
+      {
+        image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
+        title: i18n('homepage.links.contentHub'),
+        url: '/external/content-hub-legacy',
+        description: i18n('homepage.links.contentHubDesc'),
+        openInNewTab: true,
+        show: await ifWithinActiveAgency(agencyId, process.env.CONTENT_HUB_LEGACY_URL),
+      },
+
+      // Content Hub Tile (TypeScript refactor)
       {
         image: '/assets/images/link-tile-images/content-hub-link-tile-image.jpg',
         title: i18n('homepage.links.contentHub'),
         url: '/external/content-hub',
         description: i18n('homepage.links.contentHubDesc'),
         openInNewTab: true,
-        show: true,
+        show: await ifWithinActiveAgency(agencyId, process.env.CONTENT_HUB_URL),
       },
 
       // NPR - National Prison Radio Tile

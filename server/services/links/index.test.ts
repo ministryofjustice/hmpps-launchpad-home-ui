@@ -31,24 +31,28 @@ describe('LinkService', () => {
       expectToShowEveryTime(1)
     })
 
+    describe('Content-hub Legacy tile', () => {
+      expectToShowWhenUserWithinActiveAgencyOnly(2)
+    })
+
     describe('Content-hub tile', () => {
-      expectToShowEveryTime(2)
+      expectToShowWhenUserWithinActiveAgencyOnly(3)
     })
 
     describe('National Prison Radio tile', () => {
-      expectToShowEveryTime(3)
+      expectToShowEveryTime(4)
     })
 
     describe('Inside Time tile', () => {
-      expectToShowWhenEstablishmentValueIsSetOnly(4, 'hideInsideTime', false, true)
+      expectToShowWhenEstablishmentValueIsSetOnly(5, 'hideInsideTime', false, true)
     })
 
     describe('Think Through Nutrition tile', () => {
-      expectToShowWhenEstablishmentValueIsSetOnly(5, 'hideThinkThroughNutrition', false, true)
+      expectToShowWhenEstablishmentValueIsSetOnly(6, 'hideThinkThroughNutrition', false, true)
     })
 
     describe('PIN Phone tile', () => {
-      expectToShowWhenUserWithinActiveAgencyOnly(6)
+      expectToShowWhenUserWithinActiveAgencyOnly(7)
     })
   })
 })

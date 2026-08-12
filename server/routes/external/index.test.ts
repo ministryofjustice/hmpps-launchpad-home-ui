@@ -28,7 +28,8 @@ describe('GET /external', () => {
 
   describe.each([
     ['self-service', establishment.selfServiceURL],
-    ['content-hub', establishment.prisonerContentHubURL],
+    ['content-hub', config.apis.contentHub.url],
+    ['content-hub-legacy', establishment.prisonerContentHubURL],
     ['prison-radio', `${establishment.prisonerContentHubURL}/tags/785`],
     ['inside-time', 'https://insidetimeprison.org/'],
     ['adjudications', `${establishment.prisonerContentHubURL}/content/4193`],
