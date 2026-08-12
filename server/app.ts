@@ -91,7 +91,7 @@ export default function createApp(services: Services): express.Application {
   app.use('/visits', visitsRoutes(services))
   app.use('/external', externalRoutes())
 
-  app.use(sentryErrorHandler())
+  sentryErrorHandler(app)
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

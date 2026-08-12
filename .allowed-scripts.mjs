@@ -3,9 +3,9 @@ import { configureAllowedScripts } from '@ministryofjustice/hmpps-npm-script-all
 export default configureAllowedScripts({
   allowlist: {
     // Needed for watching files during development
-    'node_modules/@parcel/watcher@2.5.6': 'ALLOW',
+    'node_modules/@parcel/watcher@2.6.0': 'ALLOW',
     // CPU profiler and native binaries used by @sentry
-    'node_modules/@sentry-internal/node-cpu-profiler@2.4.1': 'ALLOW',
+    'node_modules/@sentry/node-cpu-profiler@2.4.3': 'ALLOW',
     // Needed by Cypress for pulling in the Cypress binary
     'node_modules/cypress@15.19.0': 'ALLOW',
     // Provides native integration, supporting the ability to write dtrace probes for bunyan
