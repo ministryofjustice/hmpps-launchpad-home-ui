@@ -37,25 +37,27 @@ export default function routes(): Router {
     '/think-through-nutrition': () => config.externalUrls.thinkThroughNutrition,
   }
 
-  router.get(Object.keys(redirections), async (req, res) => {
-    const { idToken } = res.locals.user
-    const {
-      establishment: { agency_id: agencyId },
-      sub: prisonerId,
-    } = idToken
+  Object.entries(redirections).forEach(([path, getRedirectUrl]) => {
+    router.get(path, async (req, res) => {
+      const { idToken } = res.locals.user
+      const {
+        establishment: { agency_id: agencyId },
+        sub: prisonerId,
+      } = idToken
 
-    const establishment = getEstablishmentData(agencyId)
-    const redirectUrl = redirections[req.path](establishment)
+      const establishment = getEstablishmentData(agencyId)
+      const redirectUrl = getRedirectUrl(establishment)
 
-    logger.info(`Redirecting ${prisonerId} to ${redirectUrl}`)
+      logger.info(`Redirecting ${prisonerId} to ${redirectUrl}`)
 
-    await auditService.audit({
-      what: AUDIT_EVENTS.VIEW_EXTERNAL_PAGE,
-      idToken,
-      details: { pageUrl: req.originalUrl, redirectUrl },
+      await auditService.audit({
+        what: AUDIT_EVENTS.VIEW_EXTERNAL_PAGE,
+        idToken,
+        details: { pageUrl: req.originalUrl, redirectUrl },
+      })
+
+      res.redirect(redirectUrl)
     })
-
-    res.redirect(redirectUrl)
   })
 
   return router
