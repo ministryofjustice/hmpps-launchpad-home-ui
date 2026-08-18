@@ -26,7 +26,7 @@ generic-service:
     MANAGE_APPS_UI_URL: 'https://prisoner-apps-dev.hmpps.service.justice.gov.uk'
     PIN_PHONES_UI_URL: 'https://digital-canteen-ui-dev.hmpps.service.justice.gov.uk'
     CONTENT_HUB_URL: 'https://content-hub-dev.hmpps.service.justice.gov.uk'
-    CONTENT_HUB_LEGACY_URL: 'https://prisoner-content-hub-development.apps.live.cloud-platform.service.justice.gov.uk'
+    CONTENT_HUB_LEGACY_URL: 'https://bedford-prisoner-content-hub-development.apps.live.cloud-platform.service.justice.gov.uk'
     GA4_SITE_ID: 'G-EJVJ26SLFY'
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: 'true'

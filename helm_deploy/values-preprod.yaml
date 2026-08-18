@@ -25,7 +25,8 @@ generic-service:
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-preprod.hmpps.service.justice.gov.uk'
     MANAGE_APPS_UI_URL: 'https://prisoner-apps-preprod.hmpps.service.justice.gov.uk'
     PIN_PHONES_UI_URL: 'https://digital-canteen-ui-preprod.hmpps.service.justice.gov.uk'
-    CONTENT_HUB_LEGACY_URL: 'https://prisoner-content-hub-preprod.apps.live.cloud-platform.service.justice.gov.uk'
+    CONTENT_HUB_URL: 'https://content-hub-preprod.hmpps.service.justice.gov.uk'
+    CONTENT_HUB_LEGACY_URL: 'https://bedford.content-hub.prisoner.service.justice.gov.uk'
     GA4_SITE_ID: 'G-4VW039LBEF'
     ENVIRONMENT_NAME: PREPROD
     AUDIT_ENABLED: 'true'
