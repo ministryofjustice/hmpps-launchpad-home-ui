@@ -70,7 +70,7 @@ export default function setUpPrisonerAuth() {
         req.user = user
         next()
       })
-      .catch(() => res.redirect('/autherror'))
+      .catch(() => res.redirect('/sign-out'))
   })
 
   router.use((req, res, next) => {
