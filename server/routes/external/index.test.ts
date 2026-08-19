@@ -5,7 +5,6 @@ import { AUDIT_EVENTS, auditService } from '../../services/audit/auditService'
 import * as utils from '../../utils/utils'
 import { appWithAllRoutes } from '../testutils/appSetup'
 import { Establishment } from '../../@types/launchpad'
-import config from '../../config'
 
 let app: Express
 const auditServiceSpy = jest.spyOn(auditService, 'audit')
