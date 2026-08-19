@@ -32,6 +32,10 @@ export interface ApiConfig {
 }
 
 export default {
+  buildNumber: get('BUILD_NUMBER', '1_0_0', requiredInProduction),
+  productId: get('PRODUCT_ID', 'UNASSIGNED', requiredInProduction),
+  gitRef: get('GIT_REF', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
+  branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
   production,
   https: production,
   staticResourceCacheDuration: '1h',
@@ -48,6 +52,7 @@ export default {
   apis: {
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
@@ -59,6 +64,7 @@ export default {
     },
     launchpadAuth: {
       url: get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('LAUNCHPAD_AUTH_URL', 'http://localhost:8080'),
       timeout: {
         response: Number(get('LAUNCHPAD_AUTH_TIMEOUT_RESPONSE', 10000)),
@@ -103,6 +109,7 @@ export default {
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
@@ -112,6 +119,7 @@ export default {
     },
     prison: {
       url: get('PRISON_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -120,6 +128,7 @@ export default {
     },
     incentives: {
       url: get('INCENTIVES_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -128,6 +137,7 @@ export default {
     },
     adjudications: {
       url: get('ADJUDICATIONS_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -136,6 +146,7 @@ export default {
     },
     prisonerContactRegistry: {
       url: get('PRISONER_CONTACT_REGISTRY_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -144,6 +155,7 @@ export default {
     },
     location: {
       url: get('LOCATION_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -152,18 +164,16 @@ export default {
     },
     nomisMapping: {
       url: get('NOMIS_MAPPING_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
     },
-    audit: {
-      enabled: get('AUDIT_ENABLED', 'false', requiredInProduction),
-      serviceName: get('AUDIT_SERVICE_NAME', serviceName, requiredInProduction),
-    },
     manageApps: {
       url: get('MANAGE_APPS_UI_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -172,6 +182,7 @@ export default {
     },
     pinPhones: {
       url: get('PIN_PHONES_UI_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
@@ -180,12 +191,17 @@ export default {
     },
     contentHub: {
       url: get('CONTENT_HUB_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
     },
+  },
+  audit: {
+    enabled: get('AUDIT_ENABLED', 'false', requiredInProduction),
+    serviceName: get('AUDIT_SERVICE_NAME', serviceName, requiredInProduction),
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   establishments: [
