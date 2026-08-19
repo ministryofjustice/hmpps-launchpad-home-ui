@@ -20,11 +20,11 @@ export default function routes(): Router {
   } = config.contentHubUrls
 
   const redirections: { [path: string]: (e: Establishment) => string } = {
-    '/manage-apps': () => config.apis.manageApps.url,
-    '/pin-phone': () => config.apis.pinPhones.url,
+    '/manage-apps': () => process.env.MANAGE_APPS_UI_URL,
+    '/pin-phone': () => process.env.PIN_PHONES_UI_URL,
     '/self-service': ({ selfServiceURL }) => selfServiceURL,
     '/content-hub-legacy': ({ prisonerContentHubURL }) => prisonerContentHubURL,
-    '/content-hub': () => config.apis.contentHub.url,
+    '/content-hub': () => process.env.CONTENT_HUB_URL,
     '/prison-radio': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${prisonRadio}`,
     '/inside-time': () => config.externalUrls.insideTime,
     '/adjudications': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${adjudications}`,

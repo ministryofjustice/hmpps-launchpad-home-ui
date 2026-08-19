@@ -171,33 +171,6 @@ export default {
       },
       agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
     },
-    manageApps: {
-      url: get('MANAGE_APPS_UI_URL', 'http://localhost:8080', requiredInProduction),
-      healthPath: '/health/ping',
-      timeout: {
-        response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
-      },
-      agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
-    },
-    pinPhones: {
-      url: get('PIN_PHONES_UI_URL', 'http://localhost:8080', requiredInProduction),
-      healthPath: '/health/ping',
-      timeout: {
-        response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
-      },
-      agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
-    },
-    contentHub: {
-      url: get('CONTENT_HUB_URL', 'http://localhost:8080', requiredInProduction),
-      healthPath: '/health/ping',
-      timeout: {
-        response: Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('PRISONER_DETAILS_API_TIMEOUT_DEADLINE', 10000)),
-      },
-      agent: new AgentConfig(Number(get('PRISONER_DETAILS_API_TIMEOUT_RESPONSE', 10000))),
-    },
   },
   audit: {
     enabled: get('AUDIT_ENABLED', 'false', requiredInProduction),
