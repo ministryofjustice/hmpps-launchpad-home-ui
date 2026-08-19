@@ -14,6 +14,7 @@ import { location } from '../mocks/location'
 import { staffUser } from '../mocks/user'
 
 import { formatAdjudication, formatHearing } from './formatAdjudication'
+import { Services } from '../../services'
 
 const mockIdToken = {
   sub: 'prisonerId',
@@ -42,7 +43,11 @@ describe('formatAdjudication', () => {
       nomisLocationId: location.id,
     })
 
-    const formattedReportedAdjudication = await formatAdjudication(reportedAdjudication, services, mockIdToken)
+    const formattedReportedAdjudication = await formatAdjudication(
+      reportedAdjudication,
+      services as unknown as Services,
+      mockIdToken,
+    )
 
     expect(formattedReportedAdjudication).toEqual(formattedAdjudication)
   })
@@ -60,7 +65,7 @@ describe('formatHearing', () => {
       reportedAdjudication.hearings[0],
       reportedAdjudication.offenceDetails,
       [],
-      services,
+      services as unknown as Services,
       mockIdToken,
     )
 

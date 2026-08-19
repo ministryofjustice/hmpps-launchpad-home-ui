@@ -6,6 +6,7 @@ import LocationApiClient from './api/locationApi/client'
 import NomisMappingApiClient from './api/nomisMappingApi/client'
 import PrisonApiClient from './api/prisonApi/client'
 import PrisonerContactRegistryApiClient from './api/prisonerContactRegistryApi/client'
+import applicationInfoSupplier from '../applicationInfo'
 
 import { createRedisClient } from './redisClient'
 import TokenStore from './tokenStore'
@@ -13,6 +14,7 @@ import TokenStore from './tokenStore'
 export type RestClientBuilder<T> = (token: string) => T
 
 export const dataAccess = () => ({
+  applicationInfo: applicationInfoSupplier(),
   hmppsAuthClient: new HmppsAuthClient(new TokenStore(createRedisClient())),
   prisonApiClientBuilder: ((token: string) => new PrisonApiClient(token)) as RestClientBuilder<PrisonApiClient>,
   incentivesApiClientBuilder: ((token: string) =>

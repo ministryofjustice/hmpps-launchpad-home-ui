@@ -66,7 +66,7 @@ export default function createApp(services: Services): express.Application {
   )
 
   app.use(metricsMiddleware)
-  app.use(setUpHealthChecks())
+  app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())

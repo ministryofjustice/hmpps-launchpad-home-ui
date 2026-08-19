@@ -32,12 +32,12 @@ export declare class AuditService {
 
 export const auditService: AuditService = {
   audit: async ({ what, idToken, details }: AuditEvent) => {
-    if (config.apis.audit.enabled === 'true') {
+    if (config.audit.enabled === 'true') {
       try {
         await auditClient.sendAuditMessage({
           action: what,
           who: idToken! ? idToken.sub : '',
-          service: config.apis.audit.serviceName,
+          service: config.audit.serviceName,
           details: JSON.stringify({
             ...details,
             bookingId: idToken! ? idToken.booking.id : '',

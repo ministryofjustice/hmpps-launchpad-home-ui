@@ -13,6 +13,7 @@ export type Services = ReturnType<typeof services>
 
 export const services = () => {
   const {
+    applicationInfo,
     hmppsAuthClient,
     adjudicationsApiClientBuilder,
     incentivesApiClientBuilder,
@@ -36,6 +37,7 @@ export const services = () => {
   )
 
   return {
+    applicationInfo,
     adjudicationsService,
     incentivesService,
     launchpadAuthService,

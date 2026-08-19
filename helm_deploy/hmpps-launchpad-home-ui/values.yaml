@@ -1,6 +1,7 @@
 ---
 generic-service:
   nameOverride: hmpps-launchpad-home-ui
+  productId: "DPS026"
 
   replicaCount: 4
 

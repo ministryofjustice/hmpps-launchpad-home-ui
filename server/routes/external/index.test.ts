@@ -21,6 +21,10 @@ describe('GET /external', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    process.env.CONTENT_HUB_URL = 'CONTENT_HUB_URL'
+    process.env.MANAGE_APPS_UI_URL = 'MANAGE_APPS_UI_URL'
+    process.env.PIN_PHONES_UI_URL = 'PIN_PHONES_UI_URL'
+
     auditServiceSpy.mockResolvedValue()
     establishmentDataSpy.mockReturnValue(establishment)
     app = appWithAllRoutes({})
@@ -28,7 +32,7 @@ describe('GET /external', () => {
 
   describe.each([
     ['self-service', establishment.selfServiceURL],
-    ['content-hub', config.apis.contentHub.url],
+    ['content-hub', 'CONTENT_HUB_URL'],
     ['content-hub-legacy', establishment.prisonerContentHubURL],
     ['prison-radio', `${establishment.prisonerContentHubURL}/tags/785`],
     ['inside-time', 'https://insidetimeprison.org/'],
@@ -40,8 +44,8 @@ describe('GET /external', () => {
     ['privacy-policy', `${establishment.prisonerContentHubURL}/content/64583`],
     ['transactions-help', `${establishment.prisonerContentHubURL}/content/8534`],
     ['think-through-nutrition', 'https://stg.lanah.org/hmpps'],
-    ['manage-apps', config.apis.manageApps.url],
-    ['pin-phone', config.apis.pinPhones.url],
+    ['manage-apps', 'MANAGE_APPS_UI_URL'],
+    ['pin-phone', 'PIN_PHONES_UI_URL'],
   ])('/external/%s', (url: string, redirectUrl: string) => {
     it(`should redirect the user`, async () => {
       const res = await request(app).get(`/external/${url}`)
