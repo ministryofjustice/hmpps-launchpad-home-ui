@@ -1,47 +1,37 @@
-# Stage: base image
-FROM node:24.19-bookworm-slim AS base
+# Build args available to all stages
+ARG BUILD_NUMBER
+ARG GIT_REF
+ARG GIT_BRANCH
 
-ARG BUILD_NUMBER=1_0_0
-ARG GIT_REF=not-available
+# Stage: build assets
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS build
 
-LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
+ARG BUILD_NUMBER
+ARG GIT_REF
+ARG GIT_BRANCH
 
-ENV TZ=Europe/London
-RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
-
-RUN addgroup --gid 2000 --system appgroup && \
-        adduser --uid 2000 --system appuser --gid 2000
+# Cache breaking and ensure required build / git args defined
+RUN test -n "$BUILD_NUMBER" || (echo "BUILD_NUMBER not set" && false)
+RUN test -n "$GIT_REF" || (echo "GIT_REF not set" && false)
+RUN test -n "$GIT_BRANCH" || (echo "GIT_BRANCH not set" && false)
 
 WORKDIR /app
 
-# Cache breaking
-ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
-
-RUN apt-get update && \
-        apt-get upgrade -y && \
-        apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
-
-# Stage: build assets
-FROM base AS build
-
-ARG BUILD_NUMBER=1_0_0
-ARG GIT_REF=not-available
-
 COPY package*.json .allowed-scripts.mjs .npmrc ./
-RUN CYPRESS_INSTALL_BINARY=0 npm run setup --no-audit
+RUN NPM_CONFIG_AUDIT=false NPM_CONFIG_FUND=false npm run setup
+ENV NODE_ENV='production'
 
 COPY . .
 RUN npm run build
 
-RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
-        export GIT_REF=${GIT_REF} && \
-        npm run record-build-info
-
-RUN npm prune --no-audit --omit=dev
+RUN npm prune --no-audit --no-fund --omit=dev
 
 # Stage: copy production assets and dependencies
-FROM base
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine-runtime
+
+ARG BUILD_NUMBER
+ARG GIT_REF
+ARG GIT_BRANCH
 
 COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
@@ -49,19 +39,16 @@ COPY --from=build --chown=appuser:appgroup \
         ./
 
 COPY --from=build --chown=appuser:appgroup \
-        /app/build-info.json ./dist/build-info.json
-
-COPY --from=build --chown=appuser:appgroup \
-        /app/assets ./assets
-
-COPY --from=build --chown=appuser:appgroup \
         /app/dist ./dist
 
 COPY --from=build --chown=appuser:appgroup \
         /app/node_modules ./node_modules
 
-EXPOSE 3000 3001
+EXPOSE 3000
+ENV BUILD_NUMBER=${BUILD_NUMBER}
+ENV GIT_REF=${GIT_REF}
+ENV GIT_BRANCH=${GIT_BRANCH}
 ENV NODE_ENV='production'
 USER 2000
 
-CMD [ "npm", "start" ]
+CMD [ "node", "dist/server.js" ]
