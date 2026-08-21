@@ -24,6 +24,11 @@ const getBuildConfig = () => {
           to: path.join(cwd, 'dist/server/views'),
           watch: isWatchMode,
         },
+        {
+          from: path.join(cwd, 'server/locales/**/*'),
+          to: path.join(cwd, 'dist/server/locales'),
+          watch: isWatchMode,
+        },
       ],
     },
 
