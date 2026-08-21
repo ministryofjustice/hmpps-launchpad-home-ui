@@ -51,4 +51,4 @@ ENV GIT_BRANCH=${GIT_BRANCH}
 ENV NODE_ENV='production'
 USER 2000
 
-CMD [ "node", "dist/server.js" ]
+CMD [ "npm", "start" ]
