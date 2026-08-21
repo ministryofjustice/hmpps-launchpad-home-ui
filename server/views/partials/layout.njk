@@ -12,5 +12,5 @@
 {% set homepage = false %}
 
 {% block bodyEnd %}
-  <script type="module" src="/assets/js/all.js"></script>
+  <script type="module" src="{{ '/assets/js/application.js'  | assetMap }}"></script>
 {% endblock %}

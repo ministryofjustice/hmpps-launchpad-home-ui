@@ -12,7 +12,5 @@
 {% set homepage = true %}
 
 {% block bodyEnd %}
-  {# Run JavaScript at end of the
-  <body>, to avoid blocking the initial render. #}
-  <script type="module" src="/assets/js/all.js"></script>
+  <script type="module" src="{{ '/assets/js/application.js'  | assetMap }}"></script>
 {% endblock %}
