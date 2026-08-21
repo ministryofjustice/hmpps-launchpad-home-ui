@@ -5,74 +5,29 @@
   "repository": "git@github.com:ministryofjustice/hmpps-launchpad-home-ui.git",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky",
-    "copy-views": "cp -R server/views dist/server/",
-    "compile-sass": "sass --quiet-deps --no-source-map --load-path=node_modules/govuk-frontend/dist --load-path=node_modules/@ministryofjustice/frontend --load-path=. assets/scss/application.scss:./assets/stylesheets/application.css --style compressed",
+    "prepare": "hmpps-precommit-hooks-prepare",
     "watch-ts": "tsc -w",
-    "watch-views": "nodemon --watch server/views -e html,njk -x npm run copy-views",
-    "watch-node": "DEBUG=gov-starter-server* nodemon -r dotenv/config --watch dist/ dist/server.js | bunyan -o short",
-    "watch-sass": "npm run compile-sass -- --watch",
-    "build": "npm run compile-sass && tsc",
+    "build": "node esbuild/esbuild",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
-    "start:dev": "concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\" \"npm run watch-sass\"",
-    "start-feature": "export $(cat feature.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
-    "watch-node-feature": "export $(cat feature.env) && nodemon --watch dist/ $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
-    "start-feature:dev": "concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node,Sass\" -c \"yellow.bold,cyan.bold,green.bold,blue.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node-feature\" \"npm run watch-sass\"",
-    "record-build-info": "node ./bin/record-build-info",
+    "start:dev": "node esbuild/esbuild --watch",
+    "start-feature": " node $NODE_DEBUG_OPTION --env-file=feature.env dist/server.js | bunyan -o short",
+    "start-feature:dev": "node esbuild/esbuild --watch --env feature.env",
     "lint": "eslint . --cache --max-warnings 0",
-    "lint-fix": "eslint . --fix",
-    "typecheck": "tsc && tsc -p integration_tests",
+    "lint-fix": "eslint . --cache --max-warnings 0 --fix",
+    "typecheck": "tsc && tsc -p integration_tests && tsc -p assets/js",
     "test": "jest",
     "test:ci": "jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "npx playwright test",
     "int-test-ui": "npx playwright test --ui",
-    "int-test-init:ci": "npx playwright install --with-deps chromium",
-    "allure:generate": "allure generate allure-results --clean -o allure-report",
-    "allure:open": "allure open allure-report",
-    "clean": "rm -rf dist build node_modules stylesheets",
-    "test:playwright": "PW_TEST_PRELOAD=ts-node/register npx playwright test",
-    "setup": "npm ci && hmpps-npm-script-run-allowlist"
+    "int-test-init:ci": "npx playwright install",
+    "clean": "rm -rf dist test_results",
+    "rebuild": "npm run clean && npm run setup && npm run build",
+    "setup": "npm ci"
   },
   "engines": {
     "node": "^24",
     "npm": "^11"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": [
-        "ts-jest"
-      ]
-    },
-    "collectCoverageFrom": [
-      "server/**/*.{ts,js,jsx,mjs}"
-    ],
-    "testMatch": [
-      "<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
-    ],
-    "testEnvironment": "node",
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "test_results/jest/"
-        }
-      ],
-      [
-        "./node_modules/jest-html-reporter",
-        {
-          "outputPath": "test_results/unit-test-reports.html"
-        }
-      ]
-    ],
-    "moduleFileExtensions": [
-      "web.js",
-      "js",
-      "json",
-      "node",
-      "ts"
-    ]
   },
   "nodemonConfig": {
     "ignore": [
@@ -98,6 +53,8 @@
     "@ministryofjustice/frontend": "^8.0.1",
     "@ministryofjustice/hmpps-audit-client": "1.1.3",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.0.2",
+    "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
+    "@ministryofjustice/frontend-types": "2.0.1",
     "@ministryofjustice/hmpps-monitoring": "2.1.0",
     "@ministryofjustice/hmpps-prisoner-auth": "0.0.7",
     "@ministryofjustice/hmpps-prisoner-facing-components": "0.0.13",
@@ -132,9 +89,11 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@cucumber/cucumber": "^12.9.0",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.3",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
+    "@ministryofjustice/hmpps-precommit-hooks": "3.0.1",
     "@playwright/test": "1.62.1",
     "@tsconfig/node24": "24.0.4",
     "@types/bunyan": "^1.8.11",
@@ -161,7 +120,11 @@
     "cookie-session": "^2.1.1",
     "cypress": "^15.19.0",
     "dotenv": "^17.4.2",
-    "husky": "^9.1.7",
+    "esbuild": "^0.28.2",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-manifest": "^1.0.5",
+    "esbuild-sass-plugin": "^3.7.0",
+    "del": "8.0.1",
     "jest": "^30.4.2",
     "jest-html-reporter": "^4.4.0",
     "jest-junit": "^17.0.0",

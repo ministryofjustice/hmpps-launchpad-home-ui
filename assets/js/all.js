@@ -1,5 +1,5 @@
-import * as govukFrontend from '/assets/govuk/govuk-frontend.min.js'
-import * as mojFrontend from '/assets/moj/moj-frontend.min.js'
+import * as govukFrontend from 'govuk-frontend'
+import * as mojFrontend from '@ministryofjustice/frontend'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
@@ -27,33 +27,3 @@ function handleCardClick(event) {
     sensitiveDiv.classList.toggle('hidden')
   }
 }
-
-function initCloseTabs(tabTuples) {
-  tabTuples.forEach(([toggle, menu]) => {
-    if (menu) {
-      menu.setAttribute('hidden', 'hidden')
-      if (toggle) {
-        toggle.classList.remove(tabOpenClass)
-        toggle.parentElement.classList.remove('item-open')
-        toggle.setAttribute('aria-expanded', 'false')
-      }
-    }
-  })
-}
-
-function toggleMenu(toggle, menu) {
-  if (menu) {
-    const isOpen = !menu.hasAttribute('hidden')
-
-    if (isOpen) {
-      initCloseTabs([[toggle, menu]])
-    } else {
-      menu.removeAttribute('hidden')
-      toggle.classList.add(tabOpenClass)
-      toggle.parentElement.classList.add('item-open')
-      toggle.setAttribute('aria-expanded', 'true')
-    }
-  }
-}
-
-const tabOpenClass = 'launchpad-home-header__toggle-open'
