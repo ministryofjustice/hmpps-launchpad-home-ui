@@ -4,8 +4,10 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import i18next from 'i18next'
 
+import fs from 'fs'
 import { initialiseName } from './utils'
 import config from '../config'
+import logger from '../../logger'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -41,6 +43,19 @@ export default function nunjucksSetup(app: express.Express, path: pathModule.Pla
       express: app,
     },
   )
+
+  let assetManifest: Record<string, string> = {}
+
+  try {
+    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'test') {
+      logger.error(e, 'Could not read asset manifest file')
+    }
+  }
+
+  njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
 
   njkEnv.addGlobal('t', (key: string) => {
     return i18next.t(key)

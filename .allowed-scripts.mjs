@@ -10,6 +10,8 @@ export default configureAllowedScripts({
     'node_modules/cypress@15.19.0': 'ALLOW',
     // Provides native integration, supporting the ability to write dtrace probes for bunyan
     'node_modules/dtrace-provider@0.8.8': 'ALLOW',
+    // Needed for building the app
+    'node_modules/esbuild@0.28.1': 'ALLOW',
     // Needed by jest for running tests in watch mode
     'node_modules/fsevents@2.3.3': 'ALLOW',
     // Needed by playwright for detecting file system changes during test runs
