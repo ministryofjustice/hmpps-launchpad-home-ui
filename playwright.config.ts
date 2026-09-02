@@ -17,12 +17,11 @@ export default defineConfig({
   timeout: 30000,
   retries: process.env.CI ? 0 : 0, // More retries in CI
   reporter: [
-    ['html', { open: 'never', outputFolder: 'playwright-report' }],
+    ['html', { open: 'never', outputFolder: 'test_results/playwright-report' }],
     ['list'],
-    ['allure-playwright', { outputFolder: 'allure-results' }],
-    ['junit', { outputFile: 'test-results/results.xml' }],
+    ['junit', { outputFile: 'test_results/junit.xml' }],
     ...(process.env.CI ? [['github'] as const] : []), // GitHub Actions annotations in CI
   ],
-  outputDir: 'test-results',
+  outputDir: 'test_results',
   testDir: './integration_tests/playwright/test/Features/e2e',
 })
