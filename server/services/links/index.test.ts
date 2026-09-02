@@ -1,7 +1,6 @@
 import {
   expectToShowEveryTime,
   expectToShowWhenEstablishmentValueIsSetOnly,
-  expectToShowWhenUserAllowListedOnly,
   expectToShowWhenUserWithinActiveAgencyOnly,
 } from './index.test.helpers'
 
@@ -24,7 +23,6 @@ describe('LinkService', () => {
   describe('getHomepageLinks', () => {
     describe('Manage Apps tile', () => {
       expectToShowWhenUserWithinActiveAgencyOnly(0)
-      expectToShowWhenUserAllowListedOnly(0)
     })
 
     describe('Self Service tile', () => {
