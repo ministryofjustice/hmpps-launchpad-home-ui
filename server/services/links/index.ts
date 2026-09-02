@@ -1,6 +1,5 @@
 import i18next from 'i18next'
 import { LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
-import config from '../../config'
 import { Link } from '../../@types/launchpad'
 import { getEstablishmentData } from '../../utils/utils'
 import { ifWithinActiveAgency } from './activeAgencies'
@@ -13,7 +12,6 @@ export default class LinkService {
   async getHomepageLinks(user: LaunchpadUser, language: string): Promise<LinksData> {
     const {
       establishment: { agency_id: agencyId },
-      sub: prisonerId,
     } = user.idToken
 
     const establishment = getEstablishmentData(agencyId)
@@ -27,9 +25,7 @@ export default class LinkService {
         url: '/external/manage-apps',
         description: i18n('homepage.links.manageAppsDesc'),
         openInNewTab: true,
-        show:
-          (await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL)) &&
-          config.allowBetaAccessToPrisoners.split(',').includes(prisonerId),
+        show: await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL),
       },
 
       // UniLink / Self Service Tile
