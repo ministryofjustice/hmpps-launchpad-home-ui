@@ -10,9 +10,9 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     headless: true,
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    trace: 'retain-on-failure',
+    screenshot: 'on',
+    video: 'on',
+    trace: 'on',
   },
   timeout: 30000,
   retries: process.env.CI ? 0 : 0, // More retries in CI

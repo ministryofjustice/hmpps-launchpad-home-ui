@@ -144,6 +144,7 @@ jobs:
           path: |
             playwright-report/*
             test-results/results.xml
+            test-results/**/*
 
       - name: Summarise Playwright JUnit XML
         if: always()
@@ -170,7 +171,7 @@ jobs:
                   fh.write(f"- Failed: {failures}\n")
                   fh.write(f"- Skipped: {skipped}\n")
           PY
-          
+
   node_integration_tests_status:
     name: node integration tests / Run the integration tests
     needs: [node_integration_tests]
