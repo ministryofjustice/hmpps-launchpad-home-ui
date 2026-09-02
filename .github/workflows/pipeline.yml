@@ -145,6 +145,32 @@ jobs:
             playwright-report/*
             test-results/results.xml
 
+      - name: Summarise Playwright JUnit XML
+        if: always()
+        run: |
+          python - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+      
+          p = Path("test-results/results.xml")
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+      
+          with summary.open("a", encoding="utf-8") as fh:
+              fh.write("## Playwright test summary\n")
+              if not p.exists():
+                  fh.write("- JUnit XML not generated.\n")
+              else:
+                  root = ET.parse(p).getroot()
+                  tests = root.attrib.get("tests", "0")
+                  failures = root.attrib.get("failures", "0")
+                  skipped = root.attrib.get("skipped", "0")
+                  fh.write(f"- JUnit XML: {p}\n")
+                  fh.write(f"- Total tests: {tests}\n")
+                  fh.write(f"- Failed: {failures}\n")
+                  fh.write(f"- Skipped: {skipped}\n")
+          PY
+          
   node_integration_tests_status:
     name: node integration tests / Run the integration tests
     needs: [node_integration_tests]
