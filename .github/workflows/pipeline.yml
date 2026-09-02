@@ -51,6 +51,8 @@ jobs:
     needs: [node_build]
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
+    with:
+      redis_tag: '7.4'
   helm_lint:
     strategy:
       matrix:
