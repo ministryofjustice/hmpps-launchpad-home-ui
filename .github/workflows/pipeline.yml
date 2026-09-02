@@ -77,29 +77,57 @@ jobs:
           BASE_URL: 'http://localhost:3000'
           REDIS_URL: 'redis://localhost:6379'
           WIREMOCK_BASE_URL: 'http://localhost:9091'
+          LAUNCHPAD_AUTH_URL: 'http://localhost:9091'
+          HMPPS_AUTH_URL: 'http://localhost:9091/auth'
+          TOKEN_VERIFICATION_API_URL: 'http://localhost:9091/verification'
+          TOKEN_VERIFICATION_ENABLED: 'true'
+          PRISON_API_URL: 'http://localhost:9091'
+          INCENTIVES_API_URL: 'http://localhost:9091'
+          ADJUDICATIONS_API_URL: 'http://localhost:9091'
         run: |
-          MOCK_AUTH=true PORT=3000 timeout 120 node dist/server.js > /tmp/app.log 2>&1 &
+          set -euo pipefail
+
+          if pgrep -af "dist/server.js" >/dev/null 2>&1; then
+            pkill -f "dist/server.js" || true
+          fi
+
+          nohup env \
+            MOCK_AUTH=true \
+            PORT=3000 \
+            BASE_URL=http://localhost:3000 \
+            REDIS_URL=redis://localhost:6379 \
+            WIREMOCK_BASE_URL=http://localhost:9091 \
+            LAUNCHPAD_AUTH_URL=http://localhost:9091 \
+            HMPPS_AUTH_URL=http://localhost:9091/auth \
+            TOKEN_VERIFICATION_API_URL=http://localhost:9091/verification \
+            TOKEN_VERIFICATION_ENABLED=true \
+            PRISON_API_URL=http://localhost:9091 \
+            INCENTIVES_API_URL=http://localhost:9091 \
+            ADJUDICATIONS_API_URL=http://localhost:9091 \
+            node --env-file=feature.env dist/server.js > /tmp/app.log 2>&1 &
+
           APP_PID=$!
           echo "App started with PID: $APP_PID"
 
-          # Wait for app to be ready
-          max_attempts=30
+          max_attempts=60
           attempt=0
           while [ $attempt -lt $max_attempts ]; do
-            if curl -s http://localhost:3000 > /dev/null 2>&1; then
+            if curl --fail --silent http://localhost:3000/health >/dev/null 2>&1; then
               echo "App is ready!"
-              break
+              exit 0
+            fi
+            if curl --fail --silent http://localhost:3000/sign-in >/dev/null 2>&1; then
+              echo "App is ready on sign-in route!"
+              exit 0
             fi
             echo "Waiting for app to be ready... (attempt $((attempt+1))/$max_attempts)"
             sleep 2
             attempt=$((attempt+1))
           done
 
-          if [ $attempt -eq $max_attempts ]; then
-            echo "App failed to start in time"
-            cat /tmp/app.log
-            exit 1
-          fi
+          echo "App failed to start in time"
+          cat /tmp/app.log
+          exit 1
 
       - name: Run Playwright tests
         env:
