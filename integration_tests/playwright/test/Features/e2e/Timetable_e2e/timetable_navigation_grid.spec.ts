@@ -1,6 +1,6 @@
 /* eslint-disable no-console, no-plusplus, no-await-in-loop */
 import dotenv from 'dotenv'
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../../Framework/utils/authenticatedTest'
 import TimetableLocators from '../../../Framework/pages/Timetable_Portal/TimetableLocators'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
 import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
@@ -157,8 +157,9 @@ test.describe('Timetable Navigation and Grid Tests @regression', () => {
 
     console.log(`Grid content - Time elements: ${allTimeElements}, Description elements: ${allDescriptionElements}`)
 
-    if (allTimeElements > 0) {
-      const firstTimeElement = page.locator(TimetableLocators.timetableTime).first()
+    if (allDescriptionElements > 0) {
+      const firstActivity = page.locator(TimetableLocators.timetableDescription).first().locator('xpath=..')
+      const firstTimeElement = firstActivity.locator(TimetableLocators.timetableTime)
       await expect(firstTimeElement).toBeVisible()
 
       const timeText = await firstTimeElement.textContent()

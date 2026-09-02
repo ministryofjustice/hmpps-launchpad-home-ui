@@ -45,12 +45,106 @@ jobs:
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_unit_tests.yml@v2 # WORKFLOW_VERSION
     needs: [node_build]
     secrets: inherit
-  # generic node integration tests using wiremock - feel free to override with local tests if required
+  # Playwright E2E tests in mock mode
   node_integration_tests:
-    name: node integration tests
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
+    name: Playwright E2E tests (mock)
     needs: [node_build]
-    secrets: inherit
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7.4
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+      wiremock:
+        image: wiremock/wiremock
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/__admin/mappings || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --global-response-templating
+          --verbose
+        ports:
+          - 9091:8080
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npm run int-test-init:ci
+
+      - name: Start mock app
+        env:
+          MOCK_AUTH: 'true'
+          BASE_URL: 'http://localhost:3100'
+          REDIS_URL: 'redis://localhost:6379'
+          WIREMOCK_BASE_URL: 'http://localhost:9091'
+        run: |
+          MOCK_AUTH=true timeout 120 node dist/server.js > /tmp/app.log 2>&1 &
+          APP_PID=$!
+          echo "App started with PID: $APP_PID"
+          
+          # Wait for app to be ready
+          max_attempts=30
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -s http://localhost:3100 > /dev/null 2>&1; then
+              echo "App is ready!"
+              break
+            fi
+            echo "Waiting for app to be ready... (attempt $((attempt+1))/$max_attempts)"
+            sleep 2
+            attempt=$((attempt+1))
+          done
+          
+          if [ $attempt -eq $max_attempts ]; then
+            echo "App failed to start in time"
+            cat /tmp/app.log
+            exit 1
+          fi
+
+      - name: Run Playwright tests
+        env:
+          BASE_URL: 'http://localhost:3100'
+          REGRESSION: 'true'
+          CI: 'true'
+        run: npm run int-test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results/
   helm_lint:
     strategy:
       matrix:

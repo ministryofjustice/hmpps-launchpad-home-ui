@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
-import { test, expect } from '@playwright/test'
 import axe from 'axe-core'
+import { test, expect } from '../../../Framework/utils/authenticatedTest'
 import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
 dotenv.config()

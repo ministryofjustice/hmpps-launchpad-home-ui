@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../../Framework/utils/authenticatedTest'
 import ProfileLocators from '../../../Framework/pages/Profile_Portal/ProfileLocators'
 import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
