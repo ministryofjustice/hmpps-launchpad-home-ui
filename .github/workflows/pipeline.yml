@@ -47,7 +47,7 @@ jobs:
     secrets: inherit
   # Playwright E2E tests in mock mode
   node_integration_tests:
-    name: Playwright E2E tests (mock)
+    name: node integration tests
     needs: [node_build]
     runs-on: ubuntu-latest
     steps:
@@ -129,33 +129,36 @@ jobs:
           cat /tmp/app.log
           exit 1
 
-      - name: Run Playwright tests
+      - name: Run the integration tests
         env:
           BASE_URL: 'http://localhost:3000'
           REGRESSION: 'true'
           CI: 'true'
         run: npm run int-test
 
-      - name: Upload Playwright report
+      - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: |
+            playwright-report/*
+            test-results/results.xml
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: test-results/
-
-      - name: Upload Allure results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: allure-results/
+  node_integration_tests_status:
+    name: node integration tests / Run the integration tests
+    needs: [node_integration_tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run the integration tests
+        run: |
+          if [[ "${{ needs.node_integration_tests.result }}" == "success" ]]; then
+            echo "Integration tests passed"
+            exit 0
+          fi
+          echo "node_integration_tests result: ${{ needs.node_integration_tests.result }}"
+          exit 1
   helm_lint:
     strategy:
       matrix:
