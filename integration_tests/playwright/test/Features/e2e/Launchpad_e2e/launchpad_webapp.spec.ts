@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../../Framework/utils/authenticatedTest'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
 import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 

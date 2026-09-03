@@ -45,12 +45,14 @@ jobs:
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_unit_tests.yml@v2 # WORKFLOW_VERSION
     needs: [node_build]
     secrets: inherit
-  # generic node integration tests using wiremock - feel free to override with local tests if required
+  # Playwright E2E tests in mock mode
   node_integration_tests:
     name: node integration tests
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
     needs: [node_build]
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
+    with:
+      redis_tag: '7.4'
   helm_lint:
     strategy:
       matrix:
