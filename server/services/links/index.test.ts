@@ -37,20 +37,20 @@ describe('LinkService', () => {
       expectToShowWhenUserWithinActiveAgencyOnly(3)
     })
 
+    describe('PIN Phone tile', () => {
+      expectToShowWhenUserWithinActiveAgencyOnly(4)
+    })
+
     describe('National Prison Radio tile', () => {
-      expectToShowEveryTime(4)
+      expectToShowEveryTime(5)
     })
 
     describe('Inside Time tile', () => {
-      expectToShowWhenEstablishmentValueIsSetOnly(5, 'hideInsideTime', false, true)
+      expectToShowWhenEstablishmentValueIsSetOnly(6, 'hideInsideTime', false, true)
     })
 
     describe('Think Through Nutrition tile', () => {
-      expectToShowWhenEstablishmentValueIsSetOnly(6, 'hideThinkThroughNutrition', false, true)
-    })
-
-    describe('PIN Phone tile', () => {
-      expectToShowWhenUserWithinActiveAgencyOnly(7)
+      expectToShowWhenEstablishmentValueIsSetOnly(7, 'hideThinkThroughNutrition', false, true)
     })
   })
 })
