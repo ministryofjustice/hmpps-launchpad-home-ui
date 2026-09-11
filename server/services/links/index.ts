@@ -28,6 +28,16 @@ export default class LinkService {
         show: await ifWithinActiveAgency(agencyId, process.env.MANAGE_APPS_UI_URL),
       },
 
+      // PIN Phone Tile
+      {
+        image: '/assets/images/link-tile-images/pin-phone-tile-image.png',
+        title: i18n('homepage.links.pinPhone'),
+        url: '/external/pin-phone',
+        description: i18n('homepage.links.pinPhoneDesc'),
+        openInNewTab: true,
+        show: await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL),
+      },
+
       // UniLink / Self Service Tile
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',
@@ -86,16 +96,6 @@ export default class LinkService {
         description: i18n('homepage.links.thinkThroughNutritionDesc'),
         openInNewTab: true,
         show: !establishment.hideThinkThroughNutrition,
-      },
-
-      // PIN Phone Tile
-      {
-        image: '/assets/images/link-tile-images/pin-phone-tile-image.png',
-        title: i18n('homepage.links.pinPhone'),
-        url: '/external/pin-phone',
-        description: i18n('homepage.links.pinPhoneDesc'),
-        openInNewTab: true,
-        show: await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL),
       },
     ]
 
