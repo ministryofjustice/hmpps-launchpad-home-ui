@@ -50,8 +50,8 @@ const ProfileLocators = {
   // Profile page - Visits section
   visitsSection: 'h2.govuk-heading-m:has-text("Visits")',
   visitsContainer: '[data-test="visits-container"]',
-  nextVisitCard: 'h3:has-text("Next visit")',
-  visitsLeftCard: 'h3:has-text("Visits I\'ve got left")',
+  nextVisitCard: 'h3.govuk-heading-m.card__heading:text-is("Next visit")',
+  visitsLeftCard: 'h3.govuk-heading-m.card__heading:text-is("Visits I\'ve got left")',
   visitsLink: '[data-test="visitsLink"]',
 }
 

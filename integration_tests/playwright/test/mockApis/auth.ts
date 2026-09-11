@@ -5,7 +5,14 @@ import { stubFor, getMatchingRequests } from './wiremock'
 import tokenVerification from './tokenVerification'
 
 const createToken = () => {
-  const payload = {
+  const payload: {
+    user_name: string
+    scope: string[]
+    auth_source: string
+    authorities: string[]
+    jti: string
+    client_id: string
+  } = {
     user_name: 'USER1',
     scope: ['read'],
     auth_source: 'nomis',
@@ -168,7 +175,7 @@ const stubOauth2AuthorizeCallback = () =>
     response: {
       status: 302,
       headers: {
-        Location: 'http://localhost:3000/sign-in/callback?code=mock-auth-code&state={{request.query.state}}',
+        Location: 'http://localhost:3000/sign-in/callback?code=mock-auth-code&state={{urlEncode request.query.state}}',
       },
       transformers: ['response-template'],
     },
@@ -184,14 +191,20 @@ const stubOauth2Token = () => {
     family_name: 'User',
     email: 'test.user@example.com',
     preferred_username: 'G3682UE',
-    establishment_id: 'MDI',
-    establishment_name: 'HMP Moorland',
-    booking_id: '123456',
+    booking: {
+      id: 'G6123VG',
+    },
+    establishment: {
+      agency_id: 'BWI',
+      name: 'HMP Berwyn',
+      display_name: 'HMP Berwyn',
+      youth: false,
+    },
     prisoner_number: 'A1234BC',
     iat: now,
     exp: now + 3600,
     iss: 'http://localhost:9091',
-    aud: 'launchpad-home-ui',
+    aud: 'clientid',
   }
 
   const refreshPayload = {

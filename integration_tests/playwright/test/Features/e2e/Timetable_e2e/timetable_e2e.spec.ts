@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../../Framework/utils/authenticatedTest'
 import TimetableLocators from '../../../Framework/pages/Timetable_Portal/TimetableLocators'
 import launchpadPortalLocators from '../../../Framework/pages/LaunchPad_Portal/launchpadPortalLocators'
 import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
@@ -91,8 +91,9 @@ test.describe('Launchpad Portal - Timetable @regression', () => {
     const timetableTimeCount = await page.locator(TimetableLocators.timetableTime).count()
     const timetableDescriptionCount = await page.locator(TimetableLocators.timetableDescription).count()
 
-    if (timetableTimeCount > 0) {
-      const timetableTime = page.locator(TimetableLocators.timetableTime).first()
+    if (timetableDescriptionCount > 0) {
+      const firstActivity = page.locator(TimetableLocators.timetableDescription).first().locator('xpath=..')
+      const timetableTime = firstActivity.locator(TimetableLocators.timetableTime)
       await expect(timetableTime).toBeVisible()
       await expect(timetableTime).toContainText(/\d+\.\d+[ap]m to \d+\.\d+[ap]m/)
     }

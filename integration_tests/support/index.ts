@@ -1,1 +1,1 @@
-import './commands'
+// Playwright support bootstrap file.

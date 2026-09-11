@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../../Framework/utils/authenticatedTest'
 import acceptDataAccessModal from '../../../Framework/utils/acceptDataAccessModal'
 
-const baseURL = process.env.TEST_INGRESS_URL || 'http://localhost:3000'
+const baseURL = process.env.BASE_URL || process.env.TEST_INGRESS_URL || 'http://localhost:3000'
 
 test('User is logged in via Microsoft SSO @regression', async ({ page }) => {
   await page.goto('/')

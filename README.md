@@ -37,23 +37,41 @@ The application will then be available on port 3000
 
 `npm run test`
 
-### Running integration tests
+### Running WireMock and Playwright tests
 
-For local running, start a test db, redis, and wiremock instance by:
+This project uses WireMock to stub the external services and a mock auth setup so the app can be exercised in a predictable local/test environment.
 
-`docker-compose -f docker-compose-test.yml up`
+1. Start the local test services (Redis + WireMock):
 
-Then run the server in test mode by:
+   `docker compose -f docker-compose-test.yml up -d`
 
-`npm run start-feature` (or `npm run start-feature:dev` to run with nodemon)
+2. Build the app if needed:
 
-And then either, run tests in headless mode with:
+   `npm run build`
 
-`npm run int-test`
+3. Start the app in mock mode using the project startup script:
 
-Or run tests with the cypress UI:
+   `npm run start-mock-app`
 
-`npm run int-test-ui`
+   This script waits for WireMock to be available and then starts the app with the mock env file (`feature.env`) so it does not point at the live dev services.
+
+4. Run the Playwright suite in headless mode:
+
+   `npm run int-test`
+
+   To run the regression-focused suite:
+
+   `REGRESSION=true npm run int-test`
+
+5. To run the UI mode locally:
+
+   `npm run int-test-ui`
+
+6. To run a single test file or browser test:
+
+   `npx playwright test integration_tests/playwright/test/Features/e2e/Timetable_e2e/timetable_e2e.spec.ts`
+
+> The app should be started via the mock script above before running Playwright tests. This keeps the mock configuration contained to the test harness and avoids relying on the production server to know about local WireMock stubs.
 
 
 ## Adding tiles to launchpad home
