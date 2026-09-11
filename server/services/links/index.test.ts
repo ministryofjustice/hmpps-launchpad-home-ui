@@ -25,19 +25,19 @@ describe('LinkService', () => {
       expectToShowWhenUserWithinActiveAgencyOnly(0)
     })
 
+    describe('PIN Phone tile', () => {
+      expectToShowWhenUserWithinActiveAgencyOnly(1)
+    })
+
     describe('Self Service tile', () => {
-      expectToShowEveryTime(1)
+      expectToShowEveryTime(2)
     })
 
     describe('Content-hub Legacy tile', () => {
-      expectToShowWhenUserWithinActiveAgencyOnly(2)
-    })
-
-    describe('Content-hub tile', () => {
       expectToShowWhenUserWithinActiveAgencyOnly(3)
     })
 
-    describe('PIN Phone tile', () => {
+    describe('Content-hub tile', () => {
       expectToShowWhenUserWithinActiveAgencyOnly(4)
     })
 
