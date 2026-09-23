@@ -21,5 +21,6 @@ export const prisonAgencyIds = {
   Wayland: 'WLI',
   Werrington: 'WNI',
   Wetherby: 'WYI',
+  Winchester: 'WCI',
   Woodhill: 'WHI',
 }

@@ -287,6 +287,12 @@ export default {
       hideThinkThroughNutrition: false,
     },
     {
+      agencyId: 'WCI',
+      prisonerContentHubURL: 'https://winchester.content-hub.prisoner.service.justice.gov.uk',
+      selfServiceURL: 'https://wciclient.unilink.prisoner.service.justice.gov.uk:1139',
+      hideThinkThroughNutrition: true,
+    },
+    {
       agencyId: 'WHI',
       prisonerContentHubURL: 'https://woodhill.content-hub.prisoner.service.justice.gov.uk',
       selfServiceURL: 'https://whiclient.unilink.prisoner.service.justice.gov.uk:1124',
