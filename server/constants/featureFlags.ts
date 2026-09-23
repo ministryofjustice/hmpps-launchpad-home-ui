@@ -31,6 +31,7 @@ const COMMON_PRISON_LIST = [
   prisonAgencyIds.Wayland,
   prisonAgencyIds.Werrington,
   prisonAgencyIds.Wetherby,
+  prisonAgencyIds.Winchester,
   prisonAgencyIds.Woodhill,
 ]
 
