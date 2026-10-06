@@ -27,8 +27,15 @@ export const user: Express.User = {
   name: 'Name',
   username: 'Name',
   userId: 'G1234UE',
+  userUuid: undefined,
   displayName: 'Name',
   userRoles: [],
+  establishment: {
+    agency_id: prisonAgencyIds.CookhamWood,
+    name: 'cookhamwood',
+    display_name: 'HMP Cookham Wood',
+    youth: false,
+  },
 }
 
 export const staffUser: UserDetail = {

@@ -51,8 +51,15 @@ export const user: LaunchpadUser = {
   name: '',
   username: '',
   userId: '',
+  userUuid: undefined,
   displayName: '',
   userRoles: [],
+  establishment: {
+    agency_id: '67890',
+    name: 'name',
+    display_name: 'display name',
+    youth: false,
+  },
 }
 
 export const flashProvider = jest.fn()

@@ -37,8 +37,15 @@ describe('setUpLaunchpadHeader middleware', () => {
         token: '',
         username: '',
         userId: '',
+        userUuid: undefined,
         displayName: '',
         userRoles: [],
+        establishment: {
+          agency_id: 'CKI',
+          name: '',
+          display_name: '',
+          youth: false,
+        },
       },
       language: 'en',
       get: jest.fn().mockImplementation((header: string) => {
