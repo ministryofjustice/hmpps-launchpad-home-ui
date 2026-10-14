@@ -32,6 +32,3 @@ generic-service:
       - internal
       - prisons
       - prisoner_facing_services
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-launchpad

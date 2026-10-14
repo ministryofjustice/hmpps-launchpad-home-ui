@@ -30,6 +30,3 @@ generic-service:
     GA4_SITE_ID: 'G-4VW039LBEF'
     ENVIRONMENT_NAME: PREPROD
     AUDIT_ENABLED: 'true'
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-launchpad-nonprod
