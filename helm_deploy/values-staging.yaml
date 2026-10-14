@@ -28,6 +28,3 @@ generic-service:
     CONTENT_HUB_LEGACY_URL: 'https://bedford-staging.content-hub.prisoner.service.justice.gov.uk'
     GA4_SITE_ID: 'G-4VW039LBEF'
     ENVIRONMENT_NAME: STAGING
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-launchpad-nonprod

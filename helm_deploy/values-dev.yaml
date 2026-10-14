@@ -34,6 +34,3 @@ generic-service:
   allowlist:
     groups:
       - internal
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-launchpad-nonprod
