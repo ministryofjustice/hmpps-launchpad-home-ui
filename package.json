@@ -58,7 +58,7 @@
     "@ministryofjustice/hmpps-audit-client": "1.1.3",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.1.0",
     "@ministryofjustice/hmpps-monitoring": "2.1.0",
-    "@ministryofjustice/hmpps-prisoner-auth": "0.0.11",
+    "@ministryofjustice/hmpps-prisoner-auth": "0.0.10",
     "@ministryofjustice/hmpps-prisoner-facing-components": "0.0.14",
     "@sentry/node": "^11.6.0",
     "@sentry/profiling-node": "^11.6.0",
