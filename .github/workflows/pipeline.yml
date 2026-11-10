@@ -47,12 +47,136 @@ jobs:
     secrets: inherit
   # Playwright E2E tests in mock mode
   node_integration_tests:
-    name: node integration tests
+    name: node integration tests / shard ${{ matrix.shard }}
     needs: [node_build]
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_integration_tests.yml@v2 # WORKFLOW_VERSION
-    secrets: inherit
-    with:
-      redis_tag: '7.4'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5]
+    services:
+      wiremock:
+        image: wiremock/wiremock:3.13.2
+        ports:
+          - 9091:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/__admin/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7.4
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Install Playwright browsers
+        run: npm run int-test-init:ci
+      - name: Start mock application
+        run: npm run start-mock-app
+      - name: Run integration tests
+        env:
+          BASE_URL: http://localhost:3000
+          WIREMOCK_BASE_URL: http://localhost:9091
+        run: npm run int-test -- --shard=${{ matrix.shard }}/5
+      - name: Upload shard results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-shard-${{ matrix.shard }}
+          path: |
+            test_results/blob-report/
+            test_results/junit.xml
+          if-no-files-found: warn
+  node_integration_test_report:
+    name: node integration test report
+    needs: [node_integration_tests]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Download shard results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: integration-test-shard-*
+          path: shard-results
+      - name: Merge Playwright reports
+        id: merge
+        env:
+          PLAYWRIGHT_MERGE_REPORTS: 'true'
+        run: |
+          mkdir -p merged-blob-reports
+          find shard-results -type f -name '*.zip' -exec cp {} merged-blob-reports/ \;
+          report_count=$(find merged-blob-reports -type f -name '*.zip' | wc -l | tr -d ' ')
+          if [ "$report_count" -eq 0 ]; then
+            echo 'No Playwright blob reports found'
+            exit 1
+          fi
+          echo "report_count=$report_count" >> "$GITHUB_OUTPUT"
+          npx playwright merge-reports --config=playwright.config.ts merged-blob-reports
+      - name: Upload consolidated report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-report
+          path: |
+            test_results/playwright-report/
+            test_results/junit.xml
+          if-no-files-found: warn
+      - name: Publish test summary
+        if: ${{ !cancelled() && steps.merge.outcome == 'success' }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: Integration Test Report
+          path: test_results/junit.xml
+          reporter: java-junit
+          fail-on-error: false
+          list-suites: failed
+          list-tests: failed
+      - name: Check all shard reports were merged
+        if: ${{ !cancelled() && steps.merge.outcome == 'success' }}
+        env:
+          REPORT_COUNT: ${{ steps.merge.outputs.report_count }}
+        run: |
+          if [ "$REPORT_COUNT" -ne 5 ]; then
+            echo "Expected five shard reports, found $REPORT_COUNT"
+            exit 1
+          fi
+  ci_pass:
+    name: node integration tests / Run the integration tests
+    needs: [node_integration_tests, node_integration_test_report]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check integration test results
+        env:
+          SHARDS_RESULT: ${{ needs.node_integration_tests.result }}
+          REPORT_RESULT: ${{ needs.node_integration_test_report.result }}
+        run: |
+          if [[ "$SHARDS_RESULT" != "success" || "$REPORT_RESULT" != "success" ]]; then
+            echo "Integration shards: $SHARDS_RESULT; consolidated report: $REPORT_RESULT"
+            exit 1
+          fi
   helm_lint:
     strategy:
       matrix:
@@ -66,7 +190,7 @@ jobs:
     name: Build docker image from hmpps-github-actions
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2 # WORKFLOW_VERSION
     needs:
-      - node_integration_tests
+      - ci_pass
       - node_unit_tests
     with:
       docker_registry: 'ghcr.io'
