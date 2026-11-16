@@ -15,13 +15,23 @@ export default defineConfig({
     trace: 'on',
   },
   timeout: 30000,
+  fullyParallel: !!process.env.CI,
+  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 0 : 0, // More retries in CI
-  reporter: [
-    ['html', { open: 'never', outputFolder: 'test_results/playwright-report' }],
-    ['list'],
-    ['junit', { outputFile: 'test_results/junit.xml' }],
-    ...(process.env.CI ? [['github'] as const] : []), // GitHub Actions annotations in CI
-  ],
-  outputDir: 'test_results',
+  reporter:
+    process.env.CI && process.env.PLAYWRIGHT_MERGE_REPORTS !== 'true'
+      ? [
+          ['blob', { outputDir: 'test_results/blob-report' }],
+          ['list'],
+          ['junit', { outputFile: 'test_results/junit.xml' }],
+          ['github'],
+        ]
+      : [
+          ['html', { open: 'never', outputFolder: 'test_results/playwright-report' }],
+          ['list'],
+          ['junit', { outputFile: 'test_results/junit.xml' }],
+        ],
+  outputDir: 'test_results/test-output',
   testDir: './integration_tests/playwright/test/Features/e2e',
 })

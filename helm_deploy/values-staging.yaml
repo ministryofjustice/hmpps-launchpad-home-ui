@@ -21,7 +21,7 @@ generic-service:
     ADJUDICATIONS_API_URL: 'https://manage-adjudications-api-dev.hmpps.service.justice.gov.uk'
     LOCATION_API_URL: 'https://locations-inside-prison-api-staging.hmpps.service.justice.gov.uk'
     NOMIS_MAPPING_API_URL: 'https://nomis-sync-prisoner-mapping-staging.hmpps.service.justice.gov.uk'
-    LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-dev.hmpps.service.justice.gov.uk'
+    LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-staging.hmpps.service.justice.gov.uk'
     MANAGE_APPS_UI_URL: 'https://prisoner-apps-staging.hmpps.service.justice.gov.uk'
     PIN_PHONES_UI_URL: 'https://pin-phone-staging.prison.service.justice.gov.uk'
     CONTENT_HUB_URL: 'https://content-hub-staging.hmpps.service.justice.gov.uk'
