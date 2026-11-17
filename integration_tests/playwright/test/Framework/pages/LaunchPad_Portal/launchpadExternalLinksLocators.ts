@@ -32,5 +32,8 @@ const launchpadExternalLinksLocators = {
   insideTimeImg: 'img[alt="link tile image"]',
   insideTimeHeading: 'h3.govuk-heading-m',
   insideTimeDescription: 'p.govuk-body',
+  canteenLink: 'a[href="/external/canteen"][rel="noreferrer noopener"][target="_blank"]',
+  canteenImg: 'img[alt="link tile image"]',
+  canteenHeading: 'h3.govuk-heading-m',
 }
 export default launchpadExternalLinksLocators

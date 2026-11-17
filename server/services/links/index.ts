@@ -38,6 +38,16 @@ export default class LinkService {
         show: await ifWithinActiveAgency(agencyId, process.env.PIN_PHONES_UI_URL),
       },
 
+      // Canteen Tile (keep directly after the PIN Phone tile)
+      {
+        image: '/assets/images/link-tile-images/canteen-link-tile-image.png',
+        title: i18n('homepage.links.canteen'),
+        url: '/external/canteen',
+        description: i18n('homepage.links.canteenDesc'),
+        openInNewTab: true,
+        show: await ifWithinActiveAgency(agencyId, process.env.CANTEEN_UI_URL),
+      },
+
       // UniLink / Self Service Tile
       {
         image: '/assets/images/link-tile-images/unilink-link-tile-image.jpg',

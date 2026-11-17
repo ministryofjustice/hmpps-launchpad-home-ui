@@ -31,6 +31,8 @@
       "viewTimetable": "Gweld fy amserlen"
     },
     "links": {
+      "canteen": "Canteen",
+      "canteenDesc": "Order items from the Canteen, such as stamps, toiletries and snacks",
       "contentHub": "Hwb Cynnwys",
       "contentHubDesc": "Gwylio, darllen a gwrando ar gynnwys lleol a chenedlaethol.",
       "exampleApp": "Rhaglen enghreifftiol",

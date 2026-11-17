@@ -67,6 +67,14 @@ export default class LaunchpadDashboardPage {
         expectedHeading: 'Think Through Nutrition',
         screenshotPath: 'test_results/think-through-nutrition-tile.png',
       },
+      {
+        name: 'Canteen',
+        linkSelector: launchpadExternalLinksLocators.canteenLink,
+        imageSelector: launchpadExternalLinksLocators.canteenImg,
+        headingSelector: launchpadExternalLinksLocators.canteenHeading,
+        expectedHeading: 'Canteen',
+        screenshotPath: 'test_results/canteen-tile.png',
+      },
     ]
 
     await Promise.all(
