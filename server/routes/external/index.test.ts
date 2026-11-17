@@ -23,6 +23,7 @@ describe('GET /external', () => {
     process.env.CONTENT_HUB_URL = 'CONTENT_HUB_URL'
     process.env.MANAGE_APPS_UI_URL = 'MANAGE_APPS_UI_URL'
     process.env.PIN_PHONES_UI_URL = 'PIN_PHONES_UI_URL'
+    process.env.CANTEEN_UI_URL = 'CANTEEN_UI_URL'
 
     auditServiceSpy.mockResolvedValue()
     establishmentDataSpy.mockReturnValue(establishment)
@@ -45,6 +46,7 @@ describe('GET /external', () => {
     ['think-through-nutrition', 'https://stg.lanah.org/hmpps'],
     ['manage-apps', 'MANAGE_APPS_UI_URL'],
     ['pin-phone', 'PIN_PHONES_UI_URL'],
+    ['canteen', 'CANTEEN_UI_URL'],
   ])('/external/%s', (url: string, redirectUrl: string) => {
     it(`should redirect the user`, async () => {
       const res = await request(app).get(`/external/${url}`)

@@ -4,7 +4,7 @@ import { Establishment } from '../../@types/launchpad'
 import LinkService from './index'
 import { getEstablishmentData } from '../../utils/utils'
 
-const linksFor = (options: { agencyId?: string; prisonerId?: string }) => {
+export const linksFor = (options: { agencyId?: string; prisonerId?: string }) => {
   const linkService = new LinkService()
   return linkService.getHomepageLinks(
     { idToken: { establishment: { agency_id: options.agencyId }, sub: options.prisonerId } } as LaunchpadUser,
