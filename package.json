@@ -79,7 +79,7 @@
     "http-errors": "^2.0.1",
     "i18next": "^26.7.2",
     "i18next-fs-backend": "^2.6.12",
-    "i18next-http-middleware": "^3.10.3",
+    "i18next-http-middleware": "^3.11.0",
     "jwt-decode": "^4.0.0",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
@@ -143,10 +143,10 @@
   },
   "overrides": {
     "@opentelemetry/core": "2.12.1",
-    "@opentelemetry/instrumentation-http": "0.222.0",
+    "@opentelemetry/instrumentation-http": "0.301.2",
     "brace-expansion": "5.0.13",
     "diff": "^9.0.0",
-    "glob": "^14.0.2",
+    "glob": "^14.0.6",
     "js-yaml": "^4.3.2",
     "moment": "^2.31.0"
   }
