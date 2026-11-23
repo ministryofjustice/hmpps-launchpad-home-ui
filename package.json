@@ -143,10 +143,10 @@
   },
   "overrides": {
     "@opentelemetry/core": "2.12.1",
-    "@opentelemetry/instrumentation-http": "0.222.0",
+    "@opentelemetry/instrumentation-http": "0.301.2",
     "brace-expansion": "5.0.13",
     "diff": "^9.0.0",
-    "glob": "^14.0.2",
+    "glob": "^14.0.6",
     "js-yaml": "^4.3.2",
     "moment": "^2.31.0"
   }
