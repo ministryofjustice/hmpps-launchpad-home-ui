@@ -12,7 +12,7 @@ test.describe('Launchpad Dashboard Tile Capture @regression', () => {
     await acceptDataAccessModal(page)
   })
 
-  test('Capture Pin Phone, National Prison Radio, Self-service, Content Hub and Think Through Nutrition tiles', async ({
+  test('Capture Pin Phone, National Prison Radio, Self-service, Content Hub, Think Through Nutrition and Canteen tiles', async ({
     page,
   }) => {
     const launchpadDashboardPage = new LaunchpadDashboardPage(page)

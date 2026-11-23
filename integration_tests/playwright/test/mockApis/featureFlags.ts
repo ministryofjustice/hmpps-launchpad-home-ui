@@ -4,6 +4,14 @@ const activeAgenciesResponse = {
   activeAgencies: ['BWI', 'BFI'],
 }
 
+const externalServiceInfoPaths = [
+  '/manage-apps/info',
+  '/pin-phone/info',
+  '/canteen/info',
+  '/content-hub/info',
+  '/content-hub-legacy/info',
+]
+
 export default {
   // Feature flags endpoint - enable all features
   stubFeatureFlags: () =>
@@ -28,7 +36,7 @@ export default {
     }),
 
   stubExternalServiceInfo: () =>
-    ['/manage-apps/info', '/pin-phone/info', '/content-hub/info', '/content-hub-legacy/info'].map(path =>
+    externalServiceInfoPaths.map(path =>
       stubFor({
         request: {
           method: 'GET',

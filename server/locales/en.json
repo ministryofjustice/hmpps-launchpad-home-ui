@@ -31,6 +31,8 @@
       "viewTimetable": "View my timetable"
     },
     "links": {
+      "canteen": "Canteen",
+      "canteenDesc": "Order items from the Canteen, such as stamps, toiletries and snacks",
       "contentHub": "Content Hub",
       "contentHubDesc": "Watch, read and listen to local and national content.",
       "exampleApp": "Example application",
