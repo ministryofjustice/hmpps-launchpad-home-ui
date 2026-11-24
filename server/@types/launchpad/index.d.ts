@@ -42,6 +42,7 @@ export type Establishment = {
   selfServiceURL: string
   hideInsideTime?: boolean
   hideThinkThroughNutrition?: boolean
+  hidePrisonReformTrust?: boolean
 }
 
 export type TimetableOptions = {

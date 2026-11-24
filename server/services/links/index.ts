@@ -107,6 +107,16 @@ export default class LinkService {
         openInNewTab: true,
         show: !establishment.hideThinkThroughNutrition,
       },
+
+      // Prison Reform Trust (PRT) Tile
+      {
+        image: '/assets/images/link-tile-images/prt-link-tile-image.png',
+        title: i18n('homepage.links.prisonReformTrust'),
+        url: '/external/prison-reform-trust',
+        description: i18n('homepage.links.prisonReformTrustDesc'),
+        openInNewTab: true,
+        show: !establishment.hidePrisonReformTrust,
+      },
     ]
 
     return { links }
