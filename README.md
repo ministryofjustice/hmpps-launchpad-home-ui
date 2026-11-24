@@ -25,7 +25,7 @@ The only local dependency required in order to run LaunchPad is Redis.  The easi
 
 ### Run application
 
-`npm start:dev`
+`npm run start:dev`
 
 The application will then be available on port 3000
 

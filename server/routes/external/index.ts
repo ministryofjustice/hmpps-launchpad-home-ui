@@ -35,6 +35,7 @@ export default function routes(): Router {
     '/privacy-policy': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${privacyPolicy}`,
     '/transactions-help': ({ prisonerContentHubURL }) => `${prisonerContentHubURL}/${transactionsHelp}`,
     '/think-through-nutrition': () => config.externalUrls.thinkThroughNutrition,
+    '/prison-reform-trust': () => config.externalUrls.prisonReformTrust,
     '/canteen': () => process.env.CANTEEN_UI_URL,
   }
 
