@@ -44,6 +44,7 @@ describe('GET /external', () => {
     ['privacy-policy', `${establishment.prisonerContentHubURL}/content/64583`],
     ['transactions-help', `${establishment.prisonerContentHubURL}/content/8534`],
     ['think-through-nutrition', 'https://stg.lanah.org/hmpps'],
+    ['prison-reform-trust', 'https://prtinfopages.org.uk/'],
     ['manage-apps', 'MANAGE_APPS_UI_URL'],
     ['pin-phone', 'PIN_PHONES_UI_URL'],
     ['canteen', 'CANTEEN_UI_URL'],

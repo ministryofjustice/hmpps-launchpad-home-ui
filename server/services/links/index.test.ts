@@ -56,5 +56,9 @@ describe('LinkService', () => {
     describe('Think Through Nutrition tile', () => {
       expectToShowWhenEstablishmentValueIsSetOnly(8, 'hideThinkThroughNutrition', false, true)
     })
+
+    describe('Prison Reform Trust tile', () => {
+      expectToShowWhenEstablishmentValueIsSetOnly(9, 'hidePrisonReformTrust', false, true)
+    })
   })
 })
