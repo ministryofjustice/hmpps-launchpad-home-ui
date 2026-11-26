@@ -28,7 +28,7 @@
     "setup": "npm ci"
   },
   "engines": {
-    "node": "^24",
+    "node": "^26",
     "npm": "^11"
   },
   "nodemonConfig": {
@@ -58,8 +58,8 @@
     "@ministryofjustice/hmpps-audit-client": "1.1.3",
     "@ministryofjustice/hmpps-azure-telemetry": "^1.3.0",
     "@ministryofjustice/hmpps-monitoring": "2.1.0",
-    "@ministryofjustice/hmpps-prisoner-auth": "0.0.12",
-    "@ministryofjustice/hmpps-prisoner-facing-components": "0.0.16",
+    "@ministryofjustice/hmpps-prisoner-auth": "0.0.13",
+    "@ministryofjustice/hmpps-prisoner-facing-components": "0.0.17",
     "@sentry/node": "^11.14.0",
     "@sentry/profiling-node": "^11.14.0",
     "agentkeepalive": "^4.6.0",
@@ -96,7 +96,7 @@
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@ministryofjustice/hmpps-precommit-hooks": "3.0.2",
     "@playwright/test": "1.65.1",
-    "@tsconfig/node24": "24.0.6",
+    "@tsconfig/node26": "26.0.2",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/compression": "^1.8.1",
@@ -106,7 +106,7 @@
     "@types/http-errors": "^2.0.5",
     "@types/jest": "30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-openidconnect": "^0.1.3",
