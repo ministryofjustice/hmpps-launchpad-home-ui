@@ -93,7 +93,7 @@ jobs:
         run: npm run int-test -- --shard=${{ matrix.shard }}/5
       - name: Upload shard results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-shard-${{ matrix.shard }}
           path: |
@@ -116,7 +116,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Download shard results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: integration-test-shard-*
           path: shard-results
@@ -136,7 +136,7 @@ jobs:
           npx playwright merge-reports --config=playwright.config.ts merged-blob-reports
       - name: Upload consolidated report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-report
           path: |
